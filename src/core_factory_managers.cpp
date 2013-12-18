@@ -7,7 +7,13 @@
 
 #include "core_factory_managers.h"
 
+#include "core_factories.h"
+
+#include <algorithm>
+#include <vector>
 #include <cassert>
+
+std::vector<int> v;
 
 OdeInstanceFactoryManager OdeInstanceFactoryManager::instance;
 OdeSolverFactoryManager OdeSolverFactoryManager::instance;
@@ -29,16 +35,36 @@ void OdeInstanceFactoryManager::remove(OdeInstanceFactory* f){
 }
 
 std::pair<OdeInstanceFactoryManager::SupportedSolversIterator, OdeInstanceFactoryManager::SupportedSolversIterator>
-OdeInstanceFactoryManager::getSupportedSolvers(OdeInstanceFactory* f){
-	auto range_to_return = solvers_map.equal_range(f);
+OdeInstanceFactoryManager::getSupportedSolvers(const OdeInstanceFactory* f) const {
+	//std::pair<inst_to_solvers_map::iterator, inst_to_solvers_map::iterator>
+	auto
+		range_to_return = solvers_map.equal_range(f);
 	SupportedSolversIterator begin( range_to_return.first );
 	SupportedSolversIterator end( range_to_return.second );
 	return std::make_pair(begin, end);
 }
 
+bool OdeInstanceFactoryManager::isSolverSupported(const OdeInstanceFactory* ifactory, const OdeSolverFactory* sfactory) const {
+	auto range = solvers_map.equal_range(ifactory);
+	return std::find_if(range.first, range.second,
+			[=](const inst_to_solvers_map::value_type& pr){
+				return pr.second == sfactory;
+			}
+	) != range.second;
+}
+
+void OdeInstanceFactoryManager::addSupportedSolver(const OdeInstanceFactory* ifactory, OdeSolverFactory* sfactory){
+	// TODO: think about this const
+	assert(instance_factories.find(const_cast<OdeInstanceFactory*>(ifactory)) != instance_factories.end());
+	solvers_map.insert(std::make_pair(ifactory, sfactory));
+}
+
 void OdeSolverFactoryManager::add(OdeSolverFactory* f){
 	assert(solver_factories.find(f)==solver_factories.end());
 	solver_factories.insert(f);
+
+	// tell our corresponding instance factory about us!
+	OdeInstanceFactoryManager::getInstance()->addSupportedSolver(f->getCorrespondingInstanceFactory(), f);
 }
 
 void OdeSolverFactoryManager::remove(OdeSolverFactory* f){

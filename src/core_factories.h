@@ -16,35 +16,30 @@ class OdeInstance;
 class OdeSolverConfig;
 class OdeSolver;
 
-class OdeConfigFactory{
-
-};
-
-class OdeStateFactory{
-
-};
-
 class OdeInstanceFactory{
 public:
-	virtual OdeInstance* create() const = 0;
+	virtual OdeInstance* createInstance() const = 0;
+	virtual OdeConfig* createConfig() const = 0;
+	virtual OdeState* createState() const = 0;
+
 	virtual std::string getDisplayName() const = 0;
 private:
 	OdeInstanceFactory();
 	virtual ~OdeInstanceFactory();
 };
 
-class OdeSolverConfigFactory{
-
-};
-
 class OdeSolverFactory{
 public:
-	virtual OdeSolver* create() const = 0;
+	virtual OdeSolver* createSolver() const = 0;
+	virtual OdeSolverConfig* createSolverConfg() const = 0;
+
 	virtual std::string getDisplayName() const = 0;
 	virtual OdeInstanceFactory* getCorrespondingInstanceFactory() const = 0;
+
 private:
-	OdeSolverFactory();
+	OdeSolverFactory(OdeInstanceFactory* corresponding_instance_factory);
 	virtual ~OdeSolverFactory();
+	OdeInstanceFactory* corresponding_instance_factory;
 };
 
 #endif /* CORE_FACTORIES_H_ */

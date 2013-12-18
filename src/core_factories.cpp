@@ -8,6 +8,8 @@
 #include "core_factories.h"
 #include "core_factory_managers.h"
 
+#include <cassert>
+
 OdeInstanceFactory::OdeInstanceFactory(){
 	OdeInstanceFactoryManager::getInstance()->add(this);
 }
@@ -15,7 +17,10 @@ OdeInstanceFactory::~OdeInstanceFactory(){
 	OdeInstanceFactoryManager::getInstance()->remove(this);
 }
 
-OdeSolverFactory::OdeSolverFactory(){
+OdeSolverFactory::OdeSolverFactory(OdeInstanceFactory* corresponding_instance_factory){
+	assert(corresponding_instance_factory);
+	this->corresponding_instance_factory = corresponding_instance_factory;
+
 	OdeSolverFactoryManager::getInstance()->add(this);
 }
 OdeSolverFactory::~OdeSolverFactory(){

@@ -50,14 +50,21 @@ public:
 		}
 
 	private:		// friend interface
-		SupportedSolversIterator(OdeInstanceFactoryManager::inst_to_solvers_map::iterator it){
-			this->iterator = it;
+		SupportedSolversIterator(OdeInstanceFactoryManager::inst_to_solvers_map::const_iterator it)
+			:iterator(it)
+		{
 		}
 
 	private:		// implementation
-		OdeInstanceFactoryManager::inst_to_solvers_map::iterator iterator;
+		OdeInstanceFactoryManager::inst_to_solvers_map::const_iterator iterator;
 	};
-	std::pair<SupportedSolversIterator, SupportedSolversIterator> getSupportedSolvers(OdeInstanceFactory* f);
+	std::pair<SupportedSolversIterator, SupportedSolversIterator> getSupportedSolvers(const OdeInstanceFactory* f) const;
+	bool isSolverSupported(const OdeInstanceFactory* ifactory, const OdeSolverFactory* sfactory) const;
+
+private:			// for our friend
+	friend class OdeSolverFactoryManager;
+	// TODO Think about second non-const
+	void addSupportedSolver(const OdeInstanceFactory* ifactory, OdeSolverFactory* sfactory);
 
 private:
 	static OdeInstanceFactoryManager instance;
