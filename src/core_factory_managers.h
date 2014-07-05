@@ -15,8 +15,6 @@ class OdeInstanceFactory;
 class OdeSolverFactory;
 
 class OdeInstanceFactoryManager{
-private:
-	typedef std::multimap<const OdeInstanceFactory*, OdeSolverFactory*> inst_to_solvers_map;
 public:
 	static OdeInstanceFactoryManager* getInstance(){
 		return &instance;
@@ -24,8 +22,24 @@ public:
 	void add(OdeInstanceFactory* f);
 	void remove(OdeInstanceFactory* f);
 
+private:
+	static OdeInstanceFactoryManager instance;
+
+	std::set<OdeInstanceFactory*> instance_factories;
+};
+
+class OdeSolverFactoryManager{
+private:
+	typedef std::multimap<const OdeInstanceFactory*, OdeSolverFactory*> inst_to_solvers_map;
+public:
+	static OdeSolverFactoryManager* getInstance(){
+		return &instance;
+	}
+	void add(OdeSolverFactory* sfact, OdeInstanceFactory* ifact);
+	void remove(OdeSolverFactory* f);
+
 	class SupportedSolversIterator: public std::iterator<std::input_iterator_tag, OdeInstanceFactory*>{
-		friend class OdeInstanceFactoryManager;
+		friend class OdeSolverFactoryManager;
 	public:
 		OdeSolverFactory* operator*() const {
 			return iterator->second;
@@ -50,41 +64,21 @@ public:
 		}
 
 	private:		// friend interface
-		SupportedSolversIterator(OdeInstanceFactoryManager::inst_to_solvers_map::const_iterator it)
+		SupportedSolversIterator(OdeSolverFactoryManager::inst_to_solvers_map::const_iterator it)
 			:iterator(it)
 		{
 		}
 
 	private:		// implementation
-		OdeInstanceFactoryManager::inst_to_solvers_map::const_iterator iterator;
+		OdeSolverFactoryManager::inst_to_solvers_map::const_iterator iterator;
 	};
+
 	std::pair<SupportedSolversIterator, SupportedSolversIterator> getSupportedSolvers(const OdeInstanceFactory* f) const;
 	bool isSolverSupported(const OdeInstanceFactory* ifactory, const OdeSolverFactory* sfactory) const;
 
-private:			// for our friend
-	friend class OdeSolverFactoryManager;
-	// TODO Think about second non-const
-	void addSupportedSolver(const OdeInstanceFactory* ifactory, OdeSolverFactory* sfactory);
-
-private:
-	static OdeInstanceFactoryManager instance;
-
-	std::set<OdeInstanceFactory*> instance_factories;
-
-	inst_to_solvers_map solvers_map;
-};
-
-class OdeSolverFactoryManager{
-public:
-	static OdeSolverFactoryManager* getInstance(){
-		return &instance;
-	}
-	void add(OdeSolverFactory* f);
-	void remove(OdeSolverFactory* f);
-
 private:
 	static OdeSolverFactoryManager instance;
-	std::set<OdeSolverFactory*> solver_factories;
+	inst_to_solvers_map solvers_map;
 };
 
 #endif /* CORE_FACTORY_MANAGERS_H_ */

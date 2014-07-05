@@ -8,19 +8,20 @@
 #ifndef GUI_INTERFACES_H_
 #define GUI_INTERFACES_H_
 
-class OdeConfigWidget: public Gtk::Widget{
+#include "core_interfaces.h"
+#include <gtkmm/frame.h>
+
+class OdeConfigWidget: public Gtk::Frame{
+public:
+	virtual void loadConfig(const OdeConfig* cfg) = 0;
+	virtual const OdeConfig* getConfig() = 0;
+};
+
+class OdeStateWidget: public Gtk::Frame{
 
 };
 
-class OdeStateWidget: public Gtk::Widget{
-
-};
-
-class OdeInstanceWidget: public Gtk::Widget{
-
-};
-
-class OdeSolverConfigWidget: public Gtk::Widget{
+class OdeSolverConfigWidget: public Gtk::Frame{
 
 };
 

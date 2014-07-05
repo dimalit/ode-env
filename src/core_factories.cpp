@@ -8,13 +8,22 @@
 #include "core_factories.h"
 #include "core_factory_managers.h"
 
+#include "core_interfaces.h"
+
 #include <cassert>
 
 OdeInstanceFactory::OdeInstanceFactory(){
 	OdeInstanceFactoryManager::getInstance()->add(this);
 }
+
 OdeInstanceFactory::~OdeInstanceFactory(){
 	OdeInstanceFactoryManager::getInstance()->remove(this);
+}
+
+OdeInstance* OdeInstanceFactory::createInstance() const {
+	OdeConfig* c = createConfig();
+	OdeState*  s = createState(c);
+	return new OdeInstance(c, s);
 }
 
 OdeSolverFactory::OdeSolverFactory(OdeInstanceFactory* corresponding_instance_factory){

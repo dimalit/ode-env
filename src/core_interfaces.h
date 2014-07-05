@@ -9,26 +9,41 @@
 #define CORE_INTERFACES_H_
 
 class OdeConfig{
-
+public:
+	virtual ~OdeConfig(){}	// make it polymorphic
 };
 
 class OdeState{
-
+public:
+	virtual ~OdeState(){}	// make it polymorphic
 };
 
 class OdeInstance{
+private:
+	const OdeConfig* config;
+	const OdeState* initial_state;
 public:
-	OdeState* getInitialState() const;
-	OdeConfig* getConfig() const;
+	OdeInstance(const OdeConfig* cfg, const OdeState* state){
+		this->config = cfg;
+		this->initial_state = state;
+	}
+	const OdeState* getInitialState() const {return initial_state;}
+	const OdeConfig* getConfig() const {return config;}
+	void setConfig(const OdeConfig* cfg) {this->config = cfg;}
+	void setInitialState(const OdeState* state) {this->initial_state = state;}
 };
 
 class OdeSolverConfig{
-
+public:
+	virtual ~OdeSolverConfig(){}	// make it polymorphic
 };
 
+// TODO: Virtual destructor here and elsewhere!
 class OdeSolver{
 public:
-	OdeSolver(OdeInstance*);
+	virtual const OdeState* getCurrentState() const = 0;
+	virtual double getTime() const = 0;
+	virtual void step() = 0;
 };
 
 #endif /* CORE_INTERFACES_H_ */

@@ -9,31 +9,51 @@
  */
 
 #include "HelloWorld.h"
+
+#include <gtkmm/main.h>
+
 #include <iostream>
 
 HelloWorld::HelloWorld()
-: m_button("Hello World")   // creates a new button with label "Hello World".
+:launch_button("Launch"), cancel_button("Cancel")
 {
-  // Sets the border width of the window.
   set_border_width(10);
 
-  // When the button receives the "clicked" signal, it will call the
-  // on_button_clicked() method defined below.
-  m_button.signal_clicked().connect(sigc::mem_fun(*this,
-              &HelloWorld::on_button_clicked));
+  button_box.pack_end(launch_button, false, false, 0);
+  button_box.pack_end(cancel_button, false, false, 0);
 
-  // This packs the button into the Window (a container).
-  add(m_button);
+  this->config_widget = new E1ConfigWidget();
+  vbox.pack_start(*this->config_widget, false, false, 0);
 
-  // The final step is to display this newly created widget...
-  m_button.show();
+  vbox.pack_start(button_box, false, false, 0);
+
+  add(vbox);
+
+
+  launch_button.signal_clicked().connect(sigc::mem_fun(*this,
+              &HelloWorld::on_launch_clicked));
+  cancel_button.signal_clicked().connect(sigc::mem_fun(*this,
+              &HelloWorld::on_cancel_clicked));
+
+  this->show_all();
 }
 
 HelloWorld::~HelloWorld()
 {
 }
 
-void HelloWorld::on_button_clicked()
+void HelloWorld::on_launch_clicked()
 {
-  std::cout << "Hello World" << std::endl;
+  const OdeConfig* config = config_widget->getConfig();
+  const OdeState* init_state = state_widget->getState();
+  const OdeSolverConfig* solver_config = solver_config_widget->getConfig();
+
+  OdeSolver* solver = E1SolverFactory::getInstance()->createSolver(solver_config, config, init_state);
+  solver->step();
+  delete solver;
+}
+
+void HelloWorld::on_cancel_clicked()
+{
+  Gtk::Main::quit();
 }

@@ -16,10 +16,6 @@ class OdeStateWidgetFactory{
 
 };
 
-class OdeInstanceWidgetFactory{
-
-};
-
 class OdeSolverConfigWidgetFactory{
 
 };
