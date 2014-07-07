@@ -18,11 +18,17 @@ public:
 };
 
 class OdeStateWidget: public Gtk::Frame{
-
+public:
+	virtual void loadState(const OdeState* state) = 0;
+	virtual const OdeState* getState() = 0;
+	virtual void loadConfig(const OdeConfig* config) = 0;
+	virtual const OdeConfig* getConfig() = 0;
 };
 
 class OdeSolverConfigWidget: public Gtk::Frame{
-
+public:
+	virtual const OdeSolverConfig* getConfig() = 0;
+	virtual void loadConfig(const OdeSolverConfig* config) = 0;
 };
 
 #endif /* GUI_INTERFACES_H_ */

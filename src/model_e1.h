@@ -19,12 +19,69 @@
 class E1Config: public OdeConfig{
 public:
 	PetscInt  g_m;			// number of particles
+	PetscScalar ksi;		// particle phase if all the same
+	bool random_ksi, linear_ksi;
+
+	E1Config(){
+		g_m = 250;
+		ksi = 0.2499;
+		random_ksi = true;
+		linear_ksi = false;
+	}
 };
 
-// TODO: Make child from this specifig co PETSc-solver
+// TODO: Make child from this specific to PETSc-solver
 class E1State: public OdeState{
 	friend class E1PetscSolver;
 	Vec	u;			// approximate solution vector
+	double E, phi;	// field
+	double b;		// particles amplitude
+	double ksi;		// particles phase if equal
+	bool random_ksi, linear_ksi;
+
+public:
+	E1State(const E1Config* cfg) {
+		VecCreateMPI(PETSC_COMM_WORLD, PETSC_DECIDE, 2*cfg->g_m + 2, &u);
+		random_ksi = cfg->random_ksi;
+		linear_ksi = cfg->linear_ksi;
+
+		E = 1.0;
+		b = 0.5;
+		phi = 0.0;
+		ksi = 0.2499;
+	}
+
+	double getE() const {
+		return E;
+	}
+	double getPhi() const {
+		return phi;
+	}
+	double getB() const {
+		return b;
+	}
+
+	void setE(double E){
+		this->E = E;
+	}
+	void setPhi(double phi){
+		this->phi = phi;
+	}
+	void setB(double b){
+		this->b = b;
+	}
+
+	bool getRandomKsi() const {
+		return random_ksi;
+	}
+	bool getLinearKsi() const {
+		return linear_ksi;
+	}
+	double getKsi() const {
+		return ksi;
+	}
+
+private:
 	PetscScalar get_elem(PetscInt i) const {
 		PetscInt       mybase,myend;
 		PetscScalar    *u_localptr;
@@ -39,16 +96,6 @@ class E1State: public OdeState{
 		ierr = VecRestoreArray(u,&u_localptr);assert(!ierr);
 
 		return ret;
-	}
-public:
-	E1State(const E1Config* cfg) {
-		VecCreateMPI(PETSC_COMM_WORLD, PETSC_DECIDE, 2*cfg->g_m + 2, &u);
-	}
-	PetscScalar getE() const {
-		return get_elem(0);
-	}
-	PetscScalar getPhi() const {
-		return get_elem(1);
 	}
 };
 

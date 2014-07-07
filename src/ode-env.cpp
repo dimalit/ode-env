@@ -7,16 +7,18 @@
 int main (int argc, char *argv[])
 {
 
-	Gtk::Main kit(argc, argv);
-
-  HelloWorld helloworld;
-
-  //Shows the window and returns when it is closed.
-  kit.run(helloworld);
-
-/*
 	PetscInitialize(&argc,&argv,(char*)0,(char*)0);
 
+	Gtk::Main kit(argc, argv);
+	libgoffice_init();
+	go_plugins_init (NULL, NULL, NULL, NULL, TRUE, GO_TYPE_PLUGIN_LOADER_MODULE);
+
+	HelloWorld helloworld;
+
+	//Shows the window and returns when it is closed.
+	kit.run(helloworld);
+
+/*
 	E1InstanceFactory* eif = E1InstanceFactory::getInstance();
 	E1SolverFactory* esf = E1SolverFactory::getInstance();
 
@@ -30,8 +32,10 @@ int main (int argc, char *argv[])
 		E1State* cur_state = (E1State*) solver->getCurrentState();
 		solver->step();
 	}
-
-	PetscFinalize();
 */
+
+	libgoffice_shutdown();
+	PetscFinalize();
+
 	return 0;
 }

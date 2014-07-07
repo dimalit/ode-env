@@ -25,6 +25,13 @@ HelloWorld::HelloWorld()
   this->config_widget = new E1ConfigWidget();
   vbox.pack_start(*this->config_widget, false, false, 0);
 
+  const E1Config* ecfg = dynamic_cast<const E1Config*>(this->config_widget->getConfig());
+  this->state_widget = new E1StateWidget(ecfg);
+  vbox.pack_start(*this->state_widget, false, false, 0);
+
+  this->solver_config_widget = new E1PetscSolverConfigWidget();
+  vbox.pack_start(*this->solver_config_widget, false, false, 0);
+
   vbox.pack_start(button_box, false, false, 0);
 
   add(vbox);
@@ -45,8 +52,8 @@ HelloWorld::~HelloWorld()
 void HelloWorld::on_launch_clicked()
 {
   const OdeConfig* config = config_widget->getConfig();
-  const OdeState* init_state = state_widget->getState();
-  const OdeSolverConfig* solver_config = solver_config_widget->getConfig();
+  const OdeState* init_state;// = state_widget->getState();
+  const OdeSolverConfig* solver_config;// = solver_config_widget->getConfig();
 
   OdeSolver* solver = E1SolverFactory::getInstance()->createSolver(solver_config, config, init_state);
   solver->step();

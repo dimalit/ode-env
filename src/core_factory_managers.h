@@ -10,6 +10,8 @@
 
 #include <set>
 #include <map>
+#include <algorithm>
+#include <cassert>
 
 class OdeInstanceFactory;
 class OdeSolverFactory;
@@ -28,57 +30,83 @@ private:
 	std::set<OdeInstanceFactory*> instance_factories;
 };
 
-class OdeSolverFactoryManager{
+template<class AuxFactory>
+class AuxFactoryManager{
 private:
-	typedef std::multimap<const OdeInstanceFactory*, OdeSolverFactory*> inst_to_solvers_map;
+	typedef std::multimap<const OdeInstanceFactory*, AuxFactory*> inst_to_aux_map;
 public:
-	static OdeSolverFactoryManager* getInstance(){
+	static AuxFactoryManager* getInstance(){
 		return &instance;
 	}
-	void add(OdeSolverFactory* sfact, OdeInstanceFactory* ifact);
-	void remove(OdeSolverFactory* f);
+	void add(AuxFactory* xfact){
+		// TODO: think about this const
+		aux_map.insert(std::make_pair(xfact->getCorrespondingInstanceFactory(), xfact));
+	}
+	void remove(AuxFactory* f){
+		const OdeInstanceFactory* ifact = f->getCorrespondingInstanceFactory();
+		typename inst_to_aux_map::iterator ilow = aux_map.lower_bound(ifact);
+		typename inst_to_aux_map::iterator ihi = aux_map.upper_bound(ifact);
+			assert(ilow!=aux_map.end());
 
-	class SupportedSolversIterator: public std::iterator<std::input_iterator_tag, OdeInstanceFactory*>{
-		friend class OdeSolverFactoryManager;
+		// TODO: Написать:
+		// 1 Как искать через std::find в multimap'е
+		// 2 вложенный класс внутри шаблонного (AuxFactory)
+		// 3 статические поля в шаблонных классах (там же)
+		typename inst_to_aux_map::iterator found = std::find(ilow, ihi, std::pair<const OdeInstanceFactory *const, AuxFactory*>(ifact, f));
+			assert(found != aux_map.end());
+		aux_map.erase(found);
+	}
+
+	class SupportedAuxIterator: public std::iterator<std::input_iterator_tag, OdeInstanceFactory*>{
+		friend class AuxFactoryManager;
 	public:
-		OdeSolverFactory* operator*() const {
+		AuxFactory* operator*() const {
 			return iterator->second;
 		}
-		OdeSolverFactory* operator->() const {
+		AuxFactory* operator->() const {
 			return iterator->second;
 		}
-		SupportedSolversIterator& operator++(){				// prefix
+		SupportedAuxIterator& operator++(){				// prefix
 			++iterator;
 			return *this;
 		}
-		SupportedSolversIterator operator++(int){			// postfix
-			SupportedSolversIterator tmp = *this;
+		SupportedAuxIterator operator++(int){			// postfix
+			SupportedAuxIterator tmp = *this;
 			++iterator;
 			return tmp;
 		}
-		bool operator==(const SupportedSolversIterator& rhs) const {
+		bool operator==(const SupportedAuxIterator& rhs) const {
 			return iterator == rhs.iterator;
 		}
-		bool operator!=(const SupportedSolversIterator& rhs) const {
+		bool operator!=(const SupportedAuxIterator& rhs) const {
 			return iterator != rhs.iterator;
 		}
 
 	private:		// friend interface
-		SupportedSolversIterator(OdeSolverFactoryManager::inst_to_solvers_map::const_iterator it)
+		SupportedAuxIterator(typename AuxFactoryManager::inst_to_aux_map::const_iterator it)
 			:iterator(it)
 		{
 		}
 
 	private:		// implementation
-		OdeSolverFactoryManager::inst_to_solvers_map::const_iterator iterator;
+		typename AuxFactoryManager::inst_to_aux_map::const_iterator iterator;
 	};
 
-	std::pair<SupportedSolversIterator, SupportedSolversIterator> getSupportedSolvers(const OdeInstanceFactory* f) const;
-	bool isSolverSupported(const OdeInstanceFactory* ifactory, const OdeSolverFactory* sfactory) const;
+	std::pair< SupportedAuxIterator, SupportedAuxIterator > getSupportedSolvers(const OdeInstanceFactory* f) const {
+		auto range_to_return = aux_map.equal_range(f);
+		SupportedAuxIterator begin( range_to_return.first );
+		SupportedAuxIterator end( range_to_return.second );
+		return std::make_pair(begin, end);
+	}
 
 private:
-	static OdeSolverFactoryManager instance;
-	inst_to_solvers_map solvers_map;
+	static AuxFactoryManager instance;
+	inst_to_aux_map aux_map;
 };
+
+template<class AuxFactory>
+AuxFactoryManager<AuxFactory> AuxFactoryManager<AuxFactory>::instance;
+
+typedef AuxFactoryManager<OdeSolverFactory> OdeSolverFactoryManager;
 
 #endif /* CORE_FACTORY_MANAGERS_H_ */
