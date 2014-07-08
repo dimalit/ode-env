@@ -18,6 +18,7 @@
 #include <goffice/goffice.h>
 
 #include <cassert>
+#include <iostream>
 
 class E1ConfigWidget: public OdeConfigWidget{
 private:
@@ -111,6 +112,29 @@ private:
 	static E1InstanceWidgetFactory instance;
 	E1InstanceWidgetFactory()
 		:OdeInstanceWidgetFactory(E1InstanceFactory::getInstance()){}
+};
+
+class E1PetscSolverConfigWidgetFactory: public OdeSolverConfigWidgetFactory{
+public:
+	static E1PetscSolverConfigWidgetFactory* getInstance(){
+		return &instance;
+	}
+
+	virtual OdeSolverConfigWidget* createConfigWidget(const OdeSolverConfig* = NULL) const;
+
+	virtual std::string getDisplayName() const;
+
+private:
+	static E1PetscSolverConfigWidgetFactory instance;
+	E1PetscSolverConfigWidgetFactory()
+		:OdeSolverConfigWidgetFactory(E1SolverFactory::getInstance())
+	{
+		std::cout << "added " << this << std::endl;
+	}
+	virtual ~E1PetscSolverConfigWidgetFactory()
+	{
+		std::cout << "will remove " << this << std::endl;
+	}
 };
 
 #endif /* GUI_E1_H_ */

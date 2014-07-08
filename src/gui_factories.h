@@ -20,19 +20,29 @@ public:
 
 	virtual std::string getDisplayName() const = 0;
 
-	OdeInstanceFactory* getCorrespondingInstanceFactory() const {
+	OdeInstanceFactory* getBaseFactory() const {
 		return corresponding_instance_factory;
 	}
 private:
 	OdeInstanceFactory* corresponding_instance_factory;
 };
 
-
 class OdeSolverConfigWidgetFactory{
+public:
+	OdeSolverConfigWidgetFactory(OdeSolverFactory* corresponding_solver_factory);
+	virtual ~OdeSolverConfigWidgetFactory();
+	virtual OdeSolverConfigWidget* createConfigWidget(const OdeSolverConfig* = NULL) const = 0;
 
+	virtual std::string getDisplayName() const = 0;
+
+	OdeSolverFactory* getBaseFactory() const {
+		return corresponding_solver_factory;
+	}
+private:
+	OdeSolverFactory* corresponding_solver_factory;
 };
 
-typedef AuxFactoryManager<OdeInstanceWidgetFactory> OdeInstanceWidgetFactoryManager;
-//typedef AuxFactoryManager<OdeSolverConfigWidgetFactory> OdeSolverConfigWidgetFactoryManager;
+typedef AuxFactoryManager<OdeInstanceWidgetFactory, OdeInstanceFactory> OdeInstanceWidgetFactoryManager;
+typedef AuxFactoryManager<OdeSolverConfigWidgetFactory, OdeSolverFactory> OdeSolverConfigWidgetFactoryManager;
 
 #endif /* GUI_FACTORIES_H_ */

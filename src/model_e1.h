@@ -148,6 +148,8 @@ public:
 
 	virtual ~E1InstanceFactory(){}
 private:
+	// TODO: write: when this is created it calls parent ctor which calls add(this) - and tihis fails because getName() isn't here yet (object partially constructed!)
+	E1InstanceFactory();
 	static E1InstanceFactory instance;
 };
 

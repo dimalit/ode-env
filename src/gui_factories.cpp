@@ -15,4 +15,10 @@ OdeInstanceWidgetFactory::~OdeInstanceWidgetFactory(){
 	OdeInstanceWidgetFactoryManager::getInstance()->remove(this);
 }
 
-
+OdeSolverConfigWidgetFactory::OdeSolverConfigWidgetFactory(OdeSolverFactory* corresponding_solver_factory){
+	this->corresponding_solver_factory = corresponding_solver_factory;
+	OdeSolverConfigWidgetFactoryManager::getInstance()->add(this);
+}
+OdeSolverConfigWidgetFactory::~OdeSolverConfigWidgetFactory(){
+	OdeSolverConfigWidgetFactoryManager::getInstance()->remove(this);
+}

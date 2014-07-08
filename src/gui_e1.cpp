@@ -18,6 +18,7 @@
 #define UI_FILE_PETSC_SOLVER "e1_petsc_solver.glade"
 
 E1InstanceWidgetFactory E1InstanceWidgetFactory::instance;
+E1PetscSolverConfigWidgetFactory E1PetscSolverConfigWidgetFactory::instance;
 
 E1ConfigWidget::E1ConfigWidget(const E1Config* cfg){
 	if(cfg)
@@ -308,4 +309,14 @@ OdeStateWidget* E1InstanceWidgetFactory::createStateWidget(const OdeConfig* cfg,
 	const E1State* estate = dynamic_cast<const E1State*>(state);
 		assert(estate || !state);		// it exists or other inexists
 	return new E1StateWidget(ecfg, estate);
+}
+
+std::string E1PetscSolverConfigWidgetFactory::getDisplayName() const {
+	return "PETSc solver for E1 config widget";
+}
+
+OdeSolverConfigWidget* E1PetscSolverConfigWidgetFactory::createConfigWidget(const OdeSolverConfig* cfg) const {
+	const E1PetscSolverConfig* ecfg = dynamic_cast<const E1PetscSolverConfig*>(cfg);
+		assert(ecfg || !cfg);
+	return new E1PetscSolverConfigWidget(ecfg);
 }

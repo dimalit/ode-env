@@ -7,6 +7,8 @@
 
 #include "model_e1.h"
 
+#include "core_factory_managers.h"
+
 #include <map>
 #include <limits>
 
@@ -19,6 +21,10 @@ extern PetscErrorCode PostStepFunction(TS ts);
 
 // if they don't want to sore extra parameter - we will!
 std::map<TS, E1PetscSolver*> PostStep_selfs;
+
+E1InstanceFactory::E1InstanceFactory(){
+	OdeInstanceFactoryManager::getInstance()->add(this);
+}
 
 E1PetscSolver::E1PetscSolver(const E1PetscSolverConfig* scfg, const E1Config* pcfg, const E1State* init_state){
 	pconfig = new E1Config(*pcfg);

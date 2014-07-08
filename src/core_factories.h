@@ -34,7 +34,7 @@ public:
 	virtual OdeSolverConfig* createSolverConfg() const = 0;
 
 	virtual std::string getDisplayName() const = 0;
-	OdeInstanceFactory* getCorrespondingInstanceFactory() const {
+	OdeInstanceFactory* getBaseFactory() const {
 		return corresponding_instance_factory;
 	}
 

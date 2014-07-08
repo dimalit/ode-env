@@ -13,7 +13,8 @@
 #include <cassert>
 
 OdeInstanceFactory::OdeInstanceFactory(){
-	OdeInstanceFactoryManager::getInstance()->add(this);
+	//TODO: better it worked. but for now - moved to children...
+	//OdeInstanceFactoryManager::getInstance()->add(this);
 }
 
 OdeInstanceFactory::~OdeInstanceFactory(){

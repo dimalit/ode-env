@@ -11,39 +11,44 @@
 #include <set>
 #include <map>
 #include <algorithm>
+#include <vector>
 #include <cassert>
 
 class OdeInstanceFactory;
 class OdeSolverFactory;
 
 class OdeInstanceFactoryManager{
+	typedef std::map<std::string, OdeInstanceFactory*> name_to_inst_map;
 public:
 	static OdeInstanceFactoryManager* getInstance(){
 		return &instance;
 	}
 	void add(OdeInstanceFactory* f);
 	void remove(OdeInstanceFactory* f);
+	std::vector<std::string> getInstanceNames() const;
+	OdeInstanceFactory* getFactory(const std::string& name);
 
 private:
 	static OdeInstanceFactoryManager instance;
 
-	std::set<OdeInstanceFactory*> instance_factories;
+	// TODO: See in Josuttis how to store this with possibility to search by name!
+	name_to_inst_map instance_factories;
 };
 
-template<class AuxFactory>
+template<class AuxFactory, class BaseFactory>
 class AuxFactoryManager{
 private:
-	typedef std::multimap<const OdeInstanceFactory*, AuxFactory*> inst_to_aux_map;
+	typedef std::multimap<const BaseFactory*, AuxFactory*> inst_to_aux_map;
 public:
 	static AuxFactoryManager* getInstance(){
 		return &instance;
 	}
 	void add(AuxFactory* xfact){
 		// TODO: think about this const
-		aux_map.insert(std::make_pair(xfact->getCorrespondingInstanceFactory(), xfact));
+		aux_map.insert(std::make_pair(xfact->getBaseFactory(), xfact));
 	}
 	void remove(AuxFactory* f){
-		const OdeInstanceFactory* ifact = f->getCorrespondingInstanceFactory();
+		const BaseFactory* ifact = f->getBaseFactory();
 		typename inst_to_aux_map::iterator ilow = aux_map.lower_bound(ifact);
 		typename inst_to_aux_map::iterator ihi = aux_map.upper_bound(ifact);
 			assert(ilow!=aux_map.end());
@@ -52,12 +57,12 @@ public:
 		// 1 Как искать через std::find в multimap'е
 		// 2 вложенный класс внутри шаблонного (AuxFactory)
 		// 3 статические поля в шаблонных классах (там же)
-		typename inst_to_aux_map::iterator found = std::find(ilow, ihi, std::pair<const OdeInstanceFactory *const, AuxFactory*>(ifact, f));
+		typename inst_to_aux_map::iterator found = std::find(ilow, ihi, std::pair<const BaseFactory *const, AuxFactory*>(ifact, f));
 			assert(found != aux_map.end());
 		aux_map.erase(found);
 	}
 
-	class SupportedAuxIterator: public std::iterator<std::input_iterator_tag, OdeInstanceFactory*>{
+	class FactoryIterator: public std::iterator<std::input_iterator_tag, BaseFactory*>{
 		friend class AuxFactoryManager;
 	public:
 		AuxFactory* operator*() const {
@@ -66,24 +71,24 @@ public:
 		AuxFactory* operator->() const {
 			return iterator->second;
 		}
-		SupportedAuxIterator& operator++(){				// prefix
+		FactoryIterator& operator++(){				// prefix
 			++iterator;
 			return *this;
 		}
-		SupportedAuxIterator operator++(int){			// postfix
-			SupportedAuxIterator tmp = *this;
+		FactoryIterator operator++(int){			// postfix
+			FactoryIterator tmp = *this;
 			++iterator;
 			return tmp;
 		}
-		bool operator==(const SupportedAuxIterator& rhs) const {
+		bool operator==(const FactoryIterator& rhs) const {
 			return iterator == rhs.iterator;
 		}
-		bool operator!=(const SupportedAuxIterator& rhs) const {
+		bool operator!=(const FactoryIterator& rhs) const {
 			return iterator != rhs.iterator;
 		}
 
 	private:		// friend interface
-		SupportedAuxIterator(typename AuxFactoryManager::inst_to_aux_map::const_iterator it)
+		FactoryIterator(typename AuxFactoryManager::inst_to_aux_map::const_iterator it)
 			:iterator(it)
 		{
 		}
@@ -92,11 +97,19 @@ public:
 		typename AuxFactoryManager::inst_to_aux_map::const_iterator iterator;
 	};
 
-	std::pair< SupportedAuxIterator, SupportedAuxIterator > getSupportedSolvers(const OdeInstanceFactory* f) const {
+	std::pair< FactoryIterator, FactoryIterator > getFactoriesFor(const OdeInstanceFactory* f) const {
 		auto range_to_return = aux_map.equal_range(f);
-		SupportedAuxIterator begin( range_to_return.first );
-		SupportedAuxIterator end( range_to_return.second );
+		FactoryIterator begin( range_to_return.first );
+		FactoryIterator end( range_to_return.second );
 		return std::make_pair(begin, end);
+	}
+
+	FactoryIterator begin(){
+		return aux_map.begin();
+	}
+
+	FactoryIterator end(){
+		return aux_map.end();
 	}
 
 private:
@@ -104,9 +117,9 @@ private:
 	inst_to_aux_map aux_map;
 };
 
-template<class AuxFactory>
-AuxFactoryManager<AuxFactory> AuxFactoryManager<AuxFactory>::instance;
+template<class AuxFactory, class BaseFactory>
+AuxFactoryManager<AuxFactory, BaseFactory> AuxFactoryManager<AuxFactory, BaseFactory>::instance;
 
-typedef AuxFactoryManager<OdeSolverFactory> OdeSolverFactoryManager;
+typedef AuxFactoryManager<OdeSolverFactory, OdeInstanceFactory> OdeSolverFactoryManager;
 
 #endif /* CORE_FACTORY_MANAGERS_H_ */
