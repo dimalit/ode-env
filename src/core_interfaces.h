@@ -42,8 +42,9 @@ public:
 class OdeSolver{
 public:
 	virtual const OdeState* getCurrentState() const = 0;
+	virtual ~OdeSolver(){}
 	virtual double getTime() const = 0;
-	virtual void step() = 0;
+	virtual void run() = 0;
 };
 
 #endif /* CORE_INTERFACES_H_ */

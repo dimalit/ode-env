@@ -57,8 +57,8 @@ private:
 	double series_E_ys[2];
 
 	GOData *series_b_data;
-	double series_b_xs[2];
-	double series_b_ys[2];
+	double* series_b_xs;
+	double* series_b_ys;
 
 	GOData *series_phi_data_x;
 	GOData *series_phi_data_y;

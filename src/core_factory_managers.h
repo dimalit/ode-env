@@ -97,7 +97,7 @@ public:
 		typename AuxFactoryManager::inst_to_aux_map::const_iterator iterator;
 	};
 
-	std::pair< FactoryIterator, FactoryIterator > getFactoriesFor(const OdeInstanceFactory* f) const {
+	std::pair< FactoryIterator, FactoryIterator > getFactoriesFor(const BaseFactory* f) const {
 		auto range_to_return = aux_map.equal_range(f);
 		FactoryIterator begin( range_to_return.first );
 		FactoryIterator end( range_to_return.second );

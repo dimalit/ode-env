@@ -13,6 +13,7 @@
 
 #include <petscts.h>
 
+#include <vector>
 #include <string>
 #include <cassert>
 
@@ -33,15 +34,15 @@ public:
 // TODO: Make child from this specific to PETSc-solver
 class E1State: public OdeState{
 	friend class E1PetscSolver;
-	Vec	u;			// approximate solution vector
+	std::vector<double> ksi_array;	// approximate solution vector
+	std::vector<double> b_array;	// approximate solution vector
 	double E, phi;	// field
 	double b;		// particles amplitude
 	double ksi;		// particles phase if equal
 	bool random_ksi, linear_ksi;
 
 public:
-	E1State(const E1Config* cfg) {
-		VecCreateMPI(PETSC_COMM_WORLD, PETSC_DECIDE, 2*cfg->g_m + 2, &u);
+	E1State(const E1Config* cfg):ksi_array(cfg->g_m), b_array(cfg->g_m) {
 		random_ksi = cfg->random_ksi;
 		linear_ksi = cfg->linear_ksi;
 
@@ -49,7 +50,11 @@ public:
 		b = 0.5;
 		phi = 0.0;
 		ksi = 0.2499;
+
+		generate_arrays();
 	}
+
+	void sort_arrays();
 
 	double getE() const {
 		return E;
@@ -69,6 +74,7 @@ public:
 	}
 	void setB(double b){
 		this->b = b;
+		generate_arrays();
 	}
 
 	bool getRandomKsi() const {
@@ -81,21 +87,25 @@ public:
 		return ksi;
 	}
 
+	std::vector<double>& getKsiArray(){
+		return ksi_array;
+	}
+
+	std::vector<double>& getBArray(){
+		return b_array;
+	}
 private:
-	PetscScalar get_elem(PetscInt i) const {
-		PetscInt       mybase,myend;
-		PetscScalar    *u_localptr;
-		PetscErrorCode ierr;
-
-		ierr = VecGetOwnershipRange(u,&mybase,&myend);assert(!ierr);
-		assert(mybase==0);			// use this only on rank 0
-		assert(i<myend);
-
-		ierr = VecGetArray(u,&u_localptr);assert(!ierr);
-		PetscScalar ret = u_localptr[i];
-		ierr = VecRestoreArray(u,&u_localptr);assert(!ierr);
-
-		return ret;
+	void generate_arrays(){
+		int m = ksi_array.size();
+		for(int i=0; i<m; i++){
+			if(linear_ksi)
+				ksi_array[i] = 1.0 / m * i;
+			else if(random_ksi)
+				ksi_array[i] = rand() / (double)RAND_MAX;
+			else
+				assert(false);
+			b_array[i] = getB();
+		}
 	}
 };
 
@@ -115,15 +125,20 @@ public:
 	virtual ~E1PetscSolver();
 	virtual const OdeState* getCurrentState() const;
 	virtual double getTime() const;
-	virtual void step();
+	virtual void run();
 private:
 	E1Config* pconfig;				// problem config
 	E1PetscSolverConfig* sconfig;	// solver config
+	E1State* state;
 
-	TS             ts;			// solver
-	Vec            u;			// solution
+	double *b;
+	double *ksi;
 
-	PetscScalar max_integral, min_integral;
+	double time_passed;
+	int steps_passed;
+
+private:
+	int read_simulation(FILE* fp, int m);
 };
 
 /////////////////// factories //////////////////

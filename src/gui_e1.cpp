@@ -94,17 +94,17 @@ const OdeConfig* E1ConfigWidget::getConfig() {
 	return config;
 }
 
-E1StateWidget::E1StateWidget(const E1Config* config, const E1State* state){
-	if(config)
-		this->config = new E1Config(*config);
+E1StateWidget::E1StateWidget(const E1Config* _config, const E1State* _state){
+	if(_config)
+		this->config = new E1Config(*_config);
 	else
 		this->config = new E1Config();
 
-	if(state)
-		this->state = new E1State(*state);
+	if(_state)
+		this->state = new E1State(*_state);
 	else
 		// TODO: may be state should remember its config?!
-		this->state = new E1State(config);
+		this->state = new E1State(this->config);
 
 	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_STATE);
 
@@ -122,8 +122,9 @@ E1StateWidget::E1StateWidget(const E1Config* config, const E1State* state){
 	// chart:
 	series_E_xs[0] = 0.0;
 	series_E_xs[1] = 1.0;
-	series_b_xs[0] = 0.0;
-	series_b_xs[1] = 1.0;
+	series_b_xs = new double[config->g_m];
+	series_b_ys = new double[config->g_m];
+
 	series_phi_data_x = NULL;
 	series_phi_data_y = NULL;
 
@@ -178,6 +179,16 @@ void E1StateWidget::state_to_widget(){
 	adj_E->set_value(state->getE());
 	adj_b->set_value(state->getB());
 	adj_phi->set_value(state->getPhi());
+
+	// draw particles
+	for(int i=0; i<20; i++){
+		std::cout << state->getBArray()[i] << " ";
+	}
+	std::cout << std::endl;
+
+	std::copy(state->getBArray().begin(), state->getBArray().end(), this->series_b_ys);
+	std::copy(state->getKsiArray().begin(), state->getKsiArray().end(), this->series_b_xs);
+	go_data_emit_changed(series_b_data);
 }
 
 void E1StateWidget::draw(GogChart* chart){
@@ -196,9 +207,9 @@ void E1StateWidget::draw(GogChart* chart){
 
 	series_b = gog_plot_new_series (plot);
 	gog_series_set_name(series_b, GO_DATA_SCALAR(go_data_scalar_str_new("b", 0)), &error);
-	series_b_data = go_data_vector_val_new (series_b_xs, 2, NULL);
+	series_b_data = go_data_vector_val_new (series_b_xs, config->g_m, NULL);
 	gog_series_set_dim (series_b, 0, series_b_data, &error);
-	series_b_data = go_data_vector_val_new (series_b_ys, 2, NULL);
+	series_b_data = go_data_vector_val_new (series_b_ys, config->g_m, NULL);
 	gog_series_set_dim (series_b, 1, series_b_data, &error);
 	adj_b_value_changed_cb();
 
@@ -227,8 +238,9 @@ void E1StateWidget::adj_E_value_changed_cb (){
 }
 void E1StateWidget::adj_b_value_changed_cb (){
 	double val = adj_b->get_value();
-	series_b_ys[0] = val;
-	series_b_ys[1] = val;
+	for(int i=0; i<config->g_m; i++){
+		series_b_ys[i] = val;
+	}
 
 	go_data_emit_changed(series_b_data);
 	// change also sine profile
