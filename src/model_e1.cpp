@@ -13,7 +13,6 @@
 #include <limits>
 #include <algorithm>
 
-E1InstanceFactory E1InstanceFactory::instance;
 E1SolverFactory E1SolverFactory::instance;
 
 void E1State::sort_arrays(){
@@ -47,10 +46,6 @@ void E1State::sort_arrays(){
 	delete[] tmp;
 
 	delete[] indices;
-}
-
-E1InstanceFactory::E1InstanceFactory(){
-	OdeInstanceFactoryManager::getInstance()->add(this);
 }
 
 E1PetscSolver::E1PetscSolver(const E1PetscSolverConfig* scfg, const E1Config* pcfg, const E1State* init_state){

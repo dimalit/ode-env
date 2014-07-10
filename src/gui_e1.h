@@ -33,6 +33,10 @@ public:
 	virtual const OdeConfig* getConfig();
 	virtual void loadConfig(const OdeConfig* cfg);
 
+	static std::string getDisplayName(){
+		return "GTK+ widgets for E1";
+	}
+
 private:
 	void widget_to_config();
 	void config_to_widget();
@@ -90,51 +94,17 @@ public:
 	E1PetscSolverConfigWidget(const E1PetscSolverConfig* config = NULL);
 	virtual const OdeSolverConfig* getConfig();
 	virtual void loadConfig(const OdeSolverConfig* config);
+
+	static std::string getDisplayName(){
+		return "PETSc solver for E1 config widget";
+	}
 private:
 	void widget_to_config();
 	void config_to_widget();
 };
 
 /////////////////////////////////////////////////////////////////////
-
-class E1InstanceWidgetFactory: public OdeInstanceWidgetFactory{
-public:
-	static E1InstanceWidgetFactory* getInstance(){
-		return &instance;
-	}
-
-	virtual OdeConfigWidget* createConfigWidget(const OdeConfig* = NULL) const;
-	virtual OdeStateWidget* createStateWidget(const OdeConfig* cfg, const OdeState* state = NULL) const;
-
-	virtual std::string getDisplayName() const;
-
-private:
-	static E1InstanceWidgetFactory instance;
-	E1InstanceWidgetFactory()
-		:OdeInstanceWidgetFactory(E1InstanceFactory::getInstance()){}
-};
-
-class E1PetscSolverConfigWidgetFactory: public OdeSolverConfigWidgetFactory{
-public:
-	static E1PetscSolverConfigWidgetFactory* getInstance(){
-		return &instance;
-	}
-
-	virtual OdeSolverConfigWidget* createConfigWidget(const OdeSolverConfig* = NULL) const;
-
-	virtual std::string getDisplayName() const;
-
-private:
-	static E1PetscSolverConfigWidgetFactory instance;
-	E1PetscSolverConfigWidgetFactory()
-		:OdeSolverConfigWidgetFactory(E1SolverFactory::getInstance())
-	{
-		std::cout << "added " << this << std::endl;
-	}
-	virtual ~E1PetscSolverConfigWidgetFactory()
-	{
-		std::cout << "will remove " << this << std::endl;
-	}
-};
+typedef TemplateInstanceWidgetFactory<E1ConfigWidget, E1StateWidget, E1Config, E1State> E1InstanceWidgetFactory;
+typedef TemplateSolverConfigWidgetFactory<E1SolverFactory, E1PetscSolverConfig, E1PetscSolverConfigWidget> E1PetscSolverConfigWidgetFactory;
 
 #endif /* GUI_E1_H_ */

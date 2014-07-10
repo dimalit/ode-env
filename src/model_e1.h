@@ -10,6 +10,7 @@
 
 #include "core_interfaces.h"
 #include "core_factories.h"
+#include "core_factory_managers.h"
 
 #include <petscts.h>
 
@@ -28,6 +29,10 @@ public:
 		ksi = 0.2499;
 		random_ksi = true;
 		linear_ksi = false;
+	}
+
+	static std::string getDisplayName(){
+		return "model e1";
 	}
 };
 
@@ -142,31 +147,39 @@ private:
 };
 
 /////////////////// factories //////////////////
-class E1InstanceFactory: public OdeInstanceFactory{
+template<class C, class S>
+class TemplateInstanceFactory: public OdeInstanceFactory{
 public:
-	static E1InstanceFactory* getInstance(){
+	static TemplateInstanceFactory* getInstance(){
 		return &instance;
 	}
 
 	virtual OdeConfig* createConfig() const {
-		return new E1Config();
+		return new C();
 	}
 	virtual OdeState* createState(const OdeConfig* cfg) const {
-		const E1Config* ecfg = dynamic_cast<const E1Config*>(cfg);
+		const C* ecfg = dynamic_cast<const C*>(cfg);
 			assert(ecfg);
-		return new E1State(ecfg);
+		return new S(ecfg);
 	}
 
 	virtual std::string getDisplayName() const {
-		return "model e1";
+		return C::getDisplayName();
 	}
 
-	virtual ~E1InstanceFactory(){}
+	virtual ~TemplateInstanceFactory(){}
 private:
 	// TODO: write: when this is created it calls parent ctor which calls add(this) - and tihis fails because getName() isn't here yet (object partially constructed!)
-	E1InstanceFactory();
-	static E1InstanceFactory instance;
+	TemplateInstanceFactory(){
+		OdeInstanceFactoryManager::getInstance()->add(this);
+	}
+	static TemplateInstanceFactory instance;
 };
+
+template<class C, class S>
+TemplateInstanceFactory<C, S> TemplateInstanceFactory<C, S>::instance;
+
+typedef TemplateInstanceFactory<E1Config, E1State> E1InstanceFactory;
 
 class E1SolverFactory: public OdeSolverFactory{
 public:

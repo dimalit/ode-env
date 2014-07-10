@@ -45,4 +45,70 @@ private:
 typedef AuxFactoryManager<OdeInstanceWidgetFactory, OdeInstanceFactory> OdeInstanceWidgetFactoryManager;
 typedef AuxFactoryManager<OdeSolverConfigWidgetFactory, OdeSolverFactory> OdeSolverConfigWidgetFactoryManager;
 
+///////////////////// DEMPLATES FOR DERIVED CLASSES /////////////////////////
+
+template<class CW, class SW, class C, class S>
+class TemplateInstanceWidgetFactory: public OdeInstanceWidgetFactory{
+public:
+	static TemplateInstanceWidgetFactory* getInstance(){
+		return &instance;
+	}
+
+	virtual OdeConfigWidget* createConfigWidget(const OdeConfig* cfg = NULL) const {
+		const C* ecfg = dynamic_cast<const C*>(cfg);
+			assert(ecfg || !cfg);		// it exists or other inexists
+		return new CW(ecfg);
+	}
+	virtual OdeStateWidget* createStateWidget(const OdeConfig* cfg, const OdeState* state = NULL) const {
+		const C* ecfg = dynamic_cast<const C*>(cfg);
+			assert(ecfg);
+		const S* estate = dynamic_cast<const S*>(state);
+			assert(estate || !state);		// it exists or other inexists
+		return new SW(ecfg, estate);
+	}
+
+	virtual std::string getDisplayName() const {
+		return CW::getDisplayName();
+	}
+
+private:
+	static TemplateInstanceWidgetFactory instance;
+	TemplateInstanceWidgetFactory()
+		:OdeInstanceWidgetFactory(TemplateInstanceWidgetFactory::getInstance()){}
+};
+
+template<class CW, class SW, class C, class S>
+TemplateInstanceWidgetFactory<CW, SW, C, S> TemplateInstanceWidgetFactory<CW, SW, C, S>::instance;
+
+template<class SF, class SC, class SCW>
+class TemplateSolverConfigWidgetFactory: public OdeSolverConfigWidgetFactory{
+public:
+	static TemplateSolverConfigWidgetFactory* getInstance(){
+		return &instance;
+	}
+
+	virtual OdeSolverConfigWidget* createConfigWidget(const OdeSolverConfig* cfg = NULL) const {
+		const SC* ecfg = dynamic_cast<const SC*>(cfg);
+			assert(ecfg || !cfg);
+		return new SCW(ecfg);
+	}
+
+	virtual std::string getDisplayName() const {
+		return SC::getDisplayName();
+	}
+
+private:
+	static TemplateSolverConfigWidgetFactory instance;
+	TemplateSolverConfigWidgetFactory()
+		:TemplateSolverConfigWidgetFactory(SF::getInstance())
+	{
+	}
+	virtual ~TemplateSolverConfigWidgetFactory()
+	{
+	}
+};
+
+template<class SF, class SC, class SCW>
+TemplateSolverConfigWidgetFactory<SF, SC, SCW> TemplateSolverConfigWidgetFactory<SF, SC, SCW>::instance;
+
 #endif /* GUI_FACTORIES_H_ */

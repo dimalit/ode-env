@@ -17,9 +17,6 @@
 #define UI_FILE_STATE "e1_state.glade"
 #define UI_FILE_PETSC_SOLVER "e1_petsc_solver.glade"
 
-E1InstanceWidgetFactory E1InstanceWidgetFactory::instance;
-E1PetscSolverConfigWidgetFactory E1PetscSolverConfigWidgetFactory::instance;
-
 E1ConfigWidget::E1ConfigWidget(const E1Config* cfg){
 	if(cfg)
 		this->config = new E1Config(*cfg);
@@ -306,32 +303,4 @@ void E1PetscSolverConfigWidget::config_to_widget(){
 	buf.str("");
 	buf << config->g_tol;
 	entry_tol->set_text(buf.str());
-}
-
-/////////////////////////////////////////////////////////////////////
-
-std::string E1InstanceWidgetFactory::getDisplayName() const {
-	return "GTK+ widgets for E1";
-}
-OdeConfigWidget* E1InstanceWidgetFactory::createConfigWidget(const OdeConfig* cfg) const {
-	const E1Config* ecfg = dynamic_cast<const E1Config*>(cfg);
-		assert(ecfg || !cfg);		// it exists or other inexists
-	return new E1ConfigWidget(ecfg);
-}
-OdeStateWidget* E1InstanceWidgetFactory::createStateWidget(const OdeConfig* cfg, const OdeState* state) const {
-	const E1Config* ecfg = dynamic_cast<const E1Config*>(cfg);
-		assert(ecfg);
-	const E1State* estate = dynamic_cast<const E1State*>(state);
-		assert(estate || !state);		// it exists or other inexists
-	return new E1StateWidget(ecfg, estate);
-}
-
-std::string E1PetscSolverConfigWidgetFactory::getDisplayName() const {
-	return "PETSc solver for E1 config widget";
-}
-
-OdeSolverConfigWidget* E1PetscSolverConfigWidgetFactory::createConfigWidget(const OdeSolverConfig* cfg) const {
-	const E1PetscSolverConfig* ecfg = dynamic_cast<const E1PetscSolverConfig*>(cfg);
-		assert(ecfg || !cfg);
-	return new E1PetscSolverConfigWidget(ecfg);
 }
