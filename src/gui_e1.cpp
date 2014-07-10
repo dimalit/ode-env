@@ -172,8 +172,11 @@ const OdeConfig* E1StateWidget::getConfig(){
 
 void E1StateWidget::widget_to_state(){
 	state->setE(adj_E->get_value());
-	state->setB(adj_b->get_value());
 	state->setPhi(adj_phi->get_value());
+
+	std::copy(this->series_b_ys, this->series_b_ys+config->g_m, state->getBArray().begin());
+	std::copy(this->series_b_xs, this->series_b_xs+config->g_m, state->getKsiArray().begin());
+	// TODO: add "dirty" field meaning that this state was already ran
 }
 void E1StateWidget::state_to_widget(){
 	adj_E->set_value(state->getE());

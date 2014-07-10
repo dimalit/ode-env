@@ -121,25 +121,43 @@ void E1PetscSolver::run(){
 	char buf_tol[20];	sprintf(buf_tol, "%f", tol);
 	char buf_step[20];	sprintf(buf_step,"%f", step);
 
-	int ends[2];
-	assert(pipe(ends)==0);
+	int ends_to_child[2];
+	int ends_from_child[2];
+	assert(pipe(ends_to_child)==0);
+	assert(pipe(ends_from_child)==0);
 
 //	sprintf(cmd, "../e1/Debug/e1 -M %d -E %f -phi %f -b %f -ksi %s -tol %f -step %f", m, E, phi, b, buf_ksi, tol, step);
 //	system(cmd);
 	pid_t pid;
 	pid = fork();
 	if(pid == 0){		// child
+
+		close(0);
+		dup2(ends_to_child[0], 0);	// pipe read->stdin
+		close(ends_to_child[0]);
+		close(ends_to_child[1]);
+
 		close(1);
-		dup2(ends[1], 1);	// dup pipe write end to stdout
-		close(ends[1]);
+		dup2(ends_from_child[1], 1);	// dup pipe write end to stdout
+		close(ends_from_child[1]);
+		close(ends_from_child[0]);
+
 //		close(ends[0]);		// XXX Strange it gives SIGPIPE when uncommented...
-		execl("../e1/Debug/e1", "e1", "-M", buf_m, "-E", buf_E, "-b", buf_b, "-phi", buf_phi, "-ksi", buf_ksi, "-tol", buf_tol, "-step", buf_step, (char*) NULL);
+		execl("../e1/Debug/e1", "e1", "-M", buf_m, "-E", buf_E, "-b", buf_b, "-phi", buf_phi, "-ksi", buf_ksi, "-tol", buf_tol, "-step", buf_step, "-input", (char*) NULL);
 	}
 
-	// parent will receive
-	int pipe_input = ends[0];
-	close(ends[1]);
+	// send initial state
+	int pipe_out = ends_to_child[1];
+	close(ends_to_child[0]);
+	FILE* wfd = fdopen(pipe_out, "wb");
+	for(unsigned i=0; i<state->getBArray().size(); i++){
+		fprintf(wfd, "%lf %lf ", state->getBArray()[i], state->getKsiArray()[i]);
+	}
+	fclose(wfd);
 
+	// parent will receive
+	int pipe_input = ends_from_child[0];
+	close(ends_from_child[1]);
 	FILE* fp = fdopen(pipe_input, "rb");
 
 	delete[] this->b;
@@ -152,6 +170,7 @@ void E1PetscSolver::run(){
 	while(read_simulation(fp, m)==0)
 		steps_passed++;
 	printf("Iterations = %d\n", steps_passed);
+
 	fclose(fp);	// close pipe input
 }
 
