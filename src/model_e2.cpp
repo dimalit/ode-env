@@ -16,11 +16,7 @@ E2State::E2State(const E2Config* config){
 	}
 }
 
-E2InstanceFactory::E2InstanceFactory(){
-	OdeInstanceFactoryManager::getInstance()->add(this);
-}
-
-E2PetscSolver::E2PetscSolver(const E2Config* pcfg, const E2State* init_state, const E2PetscSolverConfig* scfg){
+E2PetscSolver::E2PetscSolver(const E2PetscSolverConfig* scfg, const E2Config* pcfg, const E2State* init_state){
 	pconfig = new E2Config(*pcfg);
 	sconfig = new E2PetscSolverConfig(*scfg);
 	state = new E2State(*init_state);
