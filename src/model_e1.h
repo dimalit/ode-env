@@ -10,7 +10,6 @@
 
 #include "core_interfaces.h"
 #include "core_factories.h"
-#include "core_factory_managers.h"
 
 #include <petscts.h>
 
@@ -147,64 +146,8 @@ private:
 };
 
 /////////////////// factories //////////////////
-template<class C, class S>
-class TemplateInstanceFactory: public OdeInstanceFactory{
-public:
-	static TemplateInstanceFactory* getInstance(){
-		static TemplateInstanceFactory instance;
-		return &instance;
-	}
 
-	virtual OdeConfig* createConfig() const {
-		return new C();
-	}
-	virtual OdeState* createState(const OdeConfig* cfg) const {
-		const C* ecfg = dynamic_cast<const C*>(cfg);
-			assert(ecfg);
-		return new S(ecfg);
-	}
-
-	virtual std::string getDisplayName() const {
-		return C::getDisplayName();
-	}
-
-	virtual ~TemplateInstanceFactory(){}
-private:
-	// TODO: write: when this is created it calls parent ctor which calls add(this) - and tihis fails because getName() isn't here yet (object partially constructed!)
-	TemplateInstanceFactory(){
-		OdeInstanceFactoryManager::getInstance()->add(this);
-	}
-};
-
-typedef TemplateInstanceFactory<E1Config, E1State> E1InstanceFactory;
-template class TemplateInstanceFactory<E1Config, E1State>;
-
-class E1SolverFactory: public OdeSolverFactory{
-public:
-	static E1SolverFactory* getInstance(){
-		return &instance;
-	}
-
-	virtual OdeSolver* createSolver(const OdeSolverConfig* scfg, const OdeConfig* pcfg, const OdeState* initial_state) const {
-		const E1PetscSolverConfig* e1_scfg = dynamic_cast<const E1PetscSolverConfig*>(scfg);
-			assert(e1_scfg);
-		const E1Config* e1_pcfg = dynamic_cast<const E1Config*>(pcfg);
-			assert(e1_pcfg);
-		const E1State* e1_state = dynamic_cast<const E1State*>(initial_state);
-			assert(e1_state);
-		return new E1PetscSolver(e1_scfg, e1_pcfg, e1_state);
-	}
-	virtual OdeSolverConfig* createSolverConfg() const {
-		return new E1PetscSolverConfig();
-	}
-
-	virtual std::string getDisplayName() const {
-		return "PETSc RK solver for e1";
-	}
-private:
-	static E1SolverFactory instance;
-	E1SolverFactory():OdeSolverFactory(E1InstanceFactory::getInstance()){
-	}
-};
+REGISTER_INSTANCE_FACTORY(E1InstanceFactory, E1Config, E1State)
+REGISTER_SOLVER_FACTORY(E1SolverFactory, E1InstanceFactory, E1PetscSolver, E1PetscSolverConfig, E1Config, E1State)
 
 #endif /* MODEL_E1_H_ */

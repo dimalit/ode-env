@@ -7,13 +7,9 @@
 
 #include "model_e1.h"
 
-#include "core_factory_managers.h"
-
 #include <map>
 #include <limits>
 #include <algorithm>
-
-E1SolverFactory E1SolverFactory::instance;
 
 void E1State::sort_arrays(){
 	// TODO: Do it better then copy many times:(

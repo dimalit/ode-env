@@ -9,7 +9,7 @@
 #define GUI_FACTORIES_H_
 
 #include "gui_interfaces.h"
-#include "core_factory_managers.h"
+#include "core_factories.h"
 
 #include <iostream>
 
@@ -109,5 +109,13 @@ private:
 
 template<class SF, class SC, class SCW>
 TemplateSolverConfigWidgetFactory<SF, SC, SCW> TemplateSolverConfigWidgetFactory<SF, SC, SCW>::instance;
+
+#define REGISTER_INSTANCE_WIDGET_FACTORY(NAME, T1, T2, T3, T4, T5) \
+typedef TemplateInstanceWidgetFactory<T1, T2, T3, T4, T5> NAME;    \
+template class TemplateInstanceWidgetFactory<T1, T2, T3, T4, T5>;
+
+#define REGISTER_SOLVER_CONFIG_WIDGET_FACTORY(NAME, T1, T2, T3) \
+typedef TemplateSolverConfigWidgetFactory<T1, T2, T3> NAME;     \
+template class TemplateSolverConfigWidgetFactory<T1, T2, T3>;
 
 #endif /* GUI_FACTORIES_H_ */

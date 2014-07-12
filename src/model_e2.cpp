@@ -6,7 +6,6 @@
  */
 
 #include "model_e2.h"
-#include "core_factory_managers.h"
 
 #include "rpc.h"
 
