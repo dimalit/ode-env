@@ -151,6 +151,7 @@ template<class C, class S>
 class TemplateInstanceFactory: public OdeInstanceFactory{
 public:
 	static TemplateInstanceFactory* getInstance(){
+		static TemplateInstanceFactory instance;
 		return &instance;
 	}
 
@@ -173,13 +174,10 @@ private:
 	TemplateInstanceFactory(){
 		OdeInstanceFactoryManager::getInstance()->add(this);
 	}
-	static TemplateInstanceFactory instance;
 };
 
-template<class C, class S>
-TemplateInstanceFactory<C, S> TemplateInstanceFactory<C, S>::instance;
-
 typedef TemplateInstanceFactory<E1Config, E1State> E1InstanceFactory;
+template class TemplateInstanceFactory<E1Config, E1State>;
 
 class E1SolverFactory: public OdeSolverFactory{
 public:

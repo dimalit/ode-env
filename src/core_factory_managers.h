@@ -14,13 +14,13 @@
 #include <vector>
 #include <cassert>
 
-class OdeInstanceFactory;
-class OdeSolverFactory;
+#include "core_factories.h"
 
 class OdeInstanceFactoryManager{
 	typedef std::map<std::string, OdeInstanceFactory*> name_to_inst_map;
 public:
 	static OdeInstanceFactoryManager* getInstance(){
+		static OdeInstanceFactoryManager instance;
 		return &instance;
 	}
 	void add(OdeInstanceFactory* f);
@@ -29,7 +29,6 @@ public:
 	OdeInstanceFactory* getFactory(const std::string& name);
 
 private:
-	static OdeInstanceFactoryManager instance;
 
 	// TODO: See in Josuttis how to store this with possibility to search by name!
 	name_to_inst_map instance_factories;
@@ -41,6 +40,7 @@ private:
 	typedef std::multimap<const BaseFactory*, AuxFactory*> inst_to_aux_map;
 public:
 	static AuxFactoryManager* getInstance(){
+		static AuxFactoryManager instance;
 		return &instance;
 	}
 	void add(AuxFactory* xfact){
@@ -105,21 +105,20 @@ public:
 	}
 
 	FactoryIterator begin(){
-		return aux_map.begin();
+		return FactoryIterator(aux_map.begin());
 	}
 
 	FactoryIterator end(){
-		return aux_map.end();
+		return FactoryIterator(aux_map.end());
 	}
 
 private:
-	static AuxFactoryManager instance;
 	inst_to_aux_map aux_map;
 };
 
-template<class AuxFactory, class BaseFactory>
-AuxFactoryManager<AuxFactory, BaseFactory> AuxFactoryManager<AuxFactory, BaseFactory>::instance;
-
 typedef AuxFactoryManager<OdeSolverFactory, OdeInstanceFactory> OdeSolverFactoryManager;
+template class AuxFactoryManager<OdeSolverFactory, OdeInstanceFactory>;
+
+//TODO: for cross-table: explicit template instantiation for static members like this ^
 
 #endif /* CORE_FACTORY_MANAGERS_H_ */

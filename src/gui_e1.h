@@ -104,7 +104,9 @@ private:
 };
 
 /////////////////////////////////////////////////////////////////////
-typedef TemplateInstanceWidgetFactory<E1ConfigWidget, E1StateWidget, E1Config, E1State> E1InstanceWidgetFactory;
+typedef TemplateInstanceWidgetFactory<E1InstanceFactory, E1ConfigWidget, E1StateWidget, E1Config, E1State> E1InstanceWidgetFactory;
+template class TemplateInstanceWidgetFactory<E1InstanceFactory, E1ConfigWidget, E1StateWidget, E1Config, E1State>;
 typedef TemplateSolverConfigWidgetFactory<E1SolverFactory, E1PetscSolverConfig, E1PetscSolverConfigWidget> E1PetscSolverConfigWidgetFactory;
+template class TemplateSolverConfigWidgetFactory<E1SolverFactory, E1PetscSolverConfig, E1PetscSolverConfigWidget>;
 
 #endif /* GUI_E1_H_ */

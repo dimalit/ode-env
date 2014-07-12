@@ -10,9 +10,6 @@
 
 #include "rpc.h"
 
-E2InstanceFactory E2InstanceFactory::instance;
-E2SolverFactory E2SolverFactory::instance;
-
 E2State::E2State(const E2Config* config){
 	int n = config->n();
 	for(int i=0; i<n; i++){

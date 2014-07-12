@@ -37,6 +37,7 @@ private:
 class E2InstanceFactory: public OdeInstanceFactory{
 public:
 	static E2InstanceFactory* getInstance(){
+		static E2InstanceFactory instance;
 		return &instance;
 	}
 
@@ -57,12 +58,12 @@ public:
 private:
 	// TODO: write: when this is created it calls parent ctor which calls add(this) - and tihis fails because getName() isn't here yet (object partially constructed!)
 	E2InstanceFactory();
-	static E2InstanceFactory instance;
 };
 
 class E2SolverFactory: public OdeSolverFactory{
 public:
 	static E2SolverFactory* getInstance(){
+		static E2SolverFactory instance;
 		return &instance;
 	}
 
@@ -83,7 +84,6 @@ public:
 		return "PETSc RK solver through protobuf for e1";
 	}
 private:
-	static E2SolverFactory instance;
 	E2SolverFactory():OdeSolverFactory(E2InstanceFactory::getInstance()){
 	}
 };

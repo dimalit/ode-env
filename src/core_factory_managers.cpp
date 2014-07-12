@@ -15,11 +15,10 @@
 
 std::vector<int> v;
 
-OdeInstanceFactoryManager OdeInstanceFactoryManager::instance;
-
 void OdeInstanceFactoryManager::add(OdeInstanceFactory* f){
-	assert(instance_factories.find(f->getDisplayName())==instance_factories.end());
-	instance_factories[f->getDisplayName()] = f;
+	std::string key = f->getDisplayName();
+	assert(instance_factories.find(key)==instance_factories.end());
+	instance_factories[key] = f;
 }
 
 void OdeInstanceFactoryManager::remove(OdeInstanceFactory* f){

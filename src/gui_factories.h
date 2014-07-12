@@ -11,6 +11,8 @@
 #include "gui_interfaces.h"
 #include "core_factory_managers.h"
 
+#include <iostream>
+
 class OdeInstanceWidgetFactory{
 public:
 	OdeInstanceWidgetFactory(OdeInstanceFactory* corresponding_instance_factory);
@@ -43,17 +45,15 @@ private:
 };
 
 typedef AuxFactoryManager<OdeInstanceWidgetFactory, OdeInstanceFactory> OdeInstanceWidgetFactoryManager;
+template class AuxFactoryManager<OdeInstanceWidgetFactory, OdeInstanceFactory>;
 typedef AuxFactoryManager<OdeSolverConfigWidgetFactory, OdeSolverFactory> OdeSolverConfigWidgetFactoryManager;
+template class AuxFactoryManager<OdeSolverConfigWidgetFactory, OdeSolverFactory>;
 
 ///////////////////// DEMPLATES FOR DERIVED CLASSES /////////////////////////
 
-template<class CW, class SW, class C, class S>
+template<class IF, class CW, class SW, class C, class S>
 class TemplateInstanceWidgetFactory: public OdeInstanceWidgetFactory{
 public:
-	static TemplateInstanceWidgetFactory* getInstance(){
-		return &instance;
-	}
-
 	virtual OdeConfigWidget* createConfigWidget(const OdeConfig* cfg = NULL) const {
 		const C* ecfg = dynamic_cast<const C*>(cfg);
 			assert(ecfg || !cfg);		// it exists or other inexists
@@ -74,19 +74,18 @@ public:
 private:
 	static TemplateInstanceWidgetFactory instance;
 	TemplateInstanceWidgetFactory()
-		:OdeInstanceWidgetFactory(TemplateInstanceWidgetFactory::getInstance()){}
+		:OdeInstanceWidgetFactory(IF::getInstance())
+	{
+		std::cout << "here";
+	}
 };
 
-template<class CW, class SW, class C, class S>
-TemplateInstanceWidgetFactory<CW, SW, C, S> TemplateInstanceWidgetFactory<CW, SW, C, S>::instance;
+template<class IF, class CW, class SW, class C, class S>
+TemplateInstanceWidgetFactory<IF, CW, SW, C, S> TemplateInstanceWidgetFactory<IF, CW, SW, C, S>::instance;
 
 template<class SF, class SC, class SCW>
 class TemplateSolverConfigWidgetFactory: public OdeSolverConfigWidgetFactory{
 public:
-	static TemplateSolverConfigWidgetFactory* getInstance(){
-		return &instance;
-	}
-
 	virtual OdeSolverConfigWidget* createConfigWidget(const OdeSolverConfig* cfg = NULL) const {
 		const SC* ecfg = dynamic_cast<const SC*>(cfg);
 			assert(ecfg || !cfg);
@@ -94,13 +93,13 @@ public:
 	}
 
 	virtual std::string getDisplayName() const {
-		return SC::getDisplayName();
+		return SCW::getDisplayName();
 	}
 
 private:
 	static TemplateSolverConfigWidgetFactory instance;
 	TemplateSolverConfigWidgetFactory()
-		:TemplateSolverConfigWidgetFactory(SF::getInstance())
+		:OdeSolverConfigWidgetFactory(SF::getInstance())
 	{
 	}
 	virtual ~TemplateSolverConfigWidgetFactory()
