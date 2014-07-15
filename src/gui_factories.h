@@ -76,7 +76,6 @@ private:
 	TemplateInstanceWidgetFactory()
 		:OdeInstanceWidgetFactory(IF::getInstance())
 	{
-		std::cout << "here";
 	}
 };
 

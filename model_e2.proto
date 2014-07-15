@@ -20,3 +20,9 @@ message E2PetscSolverConfig{
 	optional double tolerance = 1;
 	optional double init_step = 2;
 }
+
+message E2Model{
+	required E2Config pconfig = 1;
+	required E2State state = 2;
+	required E2PetscSolverConfig sconfig = 3;
+}

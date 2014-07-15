@@ -117,6 +117,18 @@ class Person : public ::google::protobuf::Message {
   inline ::std::string* mutable_email();
   inline ::std::string* release_email();
   
+  // repeated int32 dummy = 4;
+  inline int dummy_size() const;
+  inline void clear_dummy();
+  static const int kDummyFieldNumber = 4;
+  inline ::google::protobuf::int32 dummy(int index) const;
+  inline void set_dummy(int index, ::google::protobuf::int32 value);
+  inline void add_dummy(::google::protobuf::int32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
+      dummy() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
+      mutable_dummy();
+  
   // @@protoc_insertion_point(class_scope:Person)
  private:
   inline void set_has_id();
@@ -130,10 +142,11 @@ class Person : public ::google::protobuf::Message {
   
   ::std::string* name_;
   ::std::string* email_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::int32 > dummy_;
   ::google::protobuf::int32 id_;
   
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
   
   friend void  protobuf_AddDesc_model_5fe1_2eproto();
   friend void protobuf_AssignDesc_model_5fe1_2eproto();
@@ -285,6 +298,31 @@ inline ::std::string* Person::release_email() {
     email_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
+}
+
+// repeated int32 dummy = 4;
+inline int Person::dummy_size() const {
+  return dummy_.size();
+}
+inline void Person::clear_dummy() {
+  dummy_.Clear();
+}
+inline ::google::protobuf::int32 Person::dummy(int index) const {
+  return dummy_.Get(index);
+}
+inline void Person::set_dummy(int index, ::google::protobuf::int32 value) {
+  dummy_.Set(index, value);
+}
+inline void Person::add_dummy(::google::protobuf::int32 value) {
+  dummy_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
+Person::dummy() const {
+  return dummy_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
+Person::mutable_dummy() {
+  return &dummy_;
 }
 
 

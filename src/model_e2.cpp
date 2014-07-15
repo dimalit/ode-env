@@ -9,6 +9,10 @@
 
 #include "rpc.h"
 
+#include <iostream>
+#include <fcntl.h>
+#include <sys/wait.h>
+
 E2State::E2State(const E2Config* config){
 	int n = config->n();
 	for(int i=0; i<n; i++){
@@ -40,12 +44,23 @@ E2PetscSolver::~E2PetscSolver(){
 
 void E2PetscSolver::run(){
 	int rf, wf;
-	rpc_call("../ts/Debug", &rf, &wf);
+	pid_t child = rpc_call("../ts/Debug/ts", &rf, &wf);
 
-	pconfig->SerializeToFileDescriptor(wf);
-	state->SerializePartialToFileDescriptor(wf);
-	sconfig->SerializePartialToFileDescriptor(wf);
+//	int tmp = open("tmp", O_WRONLY | O_CREAT, 0664);
 
-	close(wf);
+	pb::E2Model all;
+	all.mutable_sconfig()->CopyFrom(*sconfig);
+	all.mutable_pconfig()->CopyFrom(*pconfig);
+	all.mutable_state()->CopyFrom(*state);
+
+	all.SerializeToFileDescriptor(wf);
+	close(wf);		// need EOF for protobuf to catch the end of the message
+
+//	close(tmp);
+
+//	char buf;
+//	while(read(rf, &buf, 1) > 0);
+	waitpid(child, 0, 0);
+
 	close(rf);
 }

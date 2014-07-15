@@ -10,6 +10,7 @@
 
 class HelloWorld : public Gtk::Window
 {
+	std::string problem_name;
 
 public:
   HelloWorld();

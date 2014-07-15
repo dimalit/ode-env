@@ -17,12 +17,14 @@
 HelloWorld::HelloWorld()
 :launch_button("Launch"), cancel_button("Cancel")
 {
+  problem_name = "model e2";
+
   set_border_width(10);
 
   button_box.pack_end(launch_button, false, false, 0);
   button_box.pack_end(cancel_button, false, false, 0);
 
-  OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory("model e1");
+  OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
 
   //this->config_widget = new E1ConfigWidget();
   OdeInstanceWidgetFactory* inst_widget_fact = *OdeInstanceWidgetFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
@@ -62,7 +64,7 @@ void HelloWorld::on_launch_clicked()
   const OdeState* init_state = state_widget->getState();
   const OdeSolverConfig* solver_config = solver_config_widget->getConfig();
 
-  OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory("model e1");
+  OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory(problem_name);
 
   //OdeSolver* solver = E1SolverFactory::getInstance()->createSolver(solver_config, config, init_state);
   OdeSolver* solver = OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first->createSolver(solver_config, config, init_state);

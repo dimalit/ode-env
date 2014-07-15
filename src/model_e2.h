@@ -14,6 +14,9 @@
 
 class E2Config: public pb::E2Config, public OdeConfig{
 public:
+	E2Config(){
+		set_n(250);
+	}
 	static std::string getDisplayName(){
 		return "model e2";
 	}

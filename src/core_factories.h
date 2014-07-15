@@ -74,7 +74,7 @@ public:
 		return C::getDisplayName();
 	}
 
-	virtual ~TemplateInstanceFactory(){}
+	virtual ~TemplateInstanceFactory();
 private:
 	// TODO: write: when this is created it calls parent ctor which calls add(this) - and this fails because getName() isn't here yet (object partially constructed!)
 	TemplateInstanceFactory();
@@ -219,6 +219,11 @@ private:
 template<class C, class S>
 TemplateInstanceFactory<C, S>::TemplateInstanceFactory(){
 	OdeInstanceFactoryManager::getInstance()->add(this);
+}
+
+template<class C, class S>
+TemplateInstanceFactory<C, S>::~TemplateInstanceFactory(){
+	OdeInstanceFactoryManager::getInstance()->remove(this);
 }
 
 typedef AuxFactoryManager<OdeSolverFactory, OdeInstanceFactory> OdeSolverFactoryManager;

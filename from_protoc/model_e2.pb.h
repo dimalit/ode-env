@@ -36,6 +36,7 @@ class E2Config;
 class E2State;
 class E2State_Particles;
 class E2PetscSolverConfig;
+class E2Model;
 
 // ===================================================================
 
@@ -420,6 +421,111 @@ class E2PetscSolverConfig : public ::google::protobuf::Message {
   void InitAsDefaultInstance();
   static E2PetscSolverConfig* default_instance_;
 };
+// -------------------------------------------------------------------
+
+class E2Model : public ::google::protobuf::Message {
+ public:
+  E2Model();
+  virtual ~E2Model();
+  
+  E2Model(const E2Model& from);
+  
+  inline E2Model& operator=(const E2Model& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+  
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+  
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const E2Model& default_instance();
+  
+  void Swap(E2Model* other);
+  
+  // implements Message ----------------------------------------------
+  
+  E2Model* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const E2Model& from);
+  void MergeFrom(const E2Model& from);
+  void Clear();
+  bool IsInitialized() const;
+  
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  
+  ::google::protobuf::Metadata GetMetadata() const;
+  
+  // nested types ----------------------------------------------------
+  
+  // accessors -------------------------------------------------------
+  
+  // required .pb.E2Config pconfig = 1;
+  inline bool has_pconfig() const;
+  inline void clear_pconfig();
+  static const int kPconfigFieldNumber = 1;
+  inline const ::pb::E2Config& pconfig() const;
+  inline ::pb::E2Config* mutable_pconfig();
+  inline ::pb::E2Config* release_pconfig();
+  
+  // required .pb.E2State state = 2;
+  inline bool has_state() const;
+  inline void clear_state();
+  static const int kStateFieldNumber = 2;
+  inline const ::pb::E2State& state() const;
+  inline ::pb::E2State* mutable_state();
+  inline ::pb::E2State* release_state();
+  
+  // required .pb.E2PetscSolverConfig sconfig = 3;
+  inline bool has_sconfig() const;
+  inline void clear_sconfig();
+  static const int kSconfigFieldNumber = 3;
+  inline const ::pb::E2PetscSolverConfig& sconfig() const;
+  inline ::pb::E2PetscSolverConfig* mutable_sconfig();
+  inline ::pb::E2PetscSolverConfig* release_sconfig();
+  
+  // @@protoc_insertion_point(class_scope:pb.E2Model)
+ private:
+  inline void set_has_pconfig();
+  inline void clear_has_pconfig();
+  inline void set_has_state();
+  inline void clear_has_state();
+  inline void set_has_sconfig();
+  inline void clear_has_sconfig();
+  
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+  
+  ::pb::E2Config* pconfig_;
+  ::pb::E2State* state_;
+  ::pb::E2PetscSolverConfig* sconfig_;
+  
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  
+  friend void  protobuf_AddDesc_model_5fe2_2eproto();
+  friend void protobuf_AssignDesc_model_5fe2_2eproto();
+  friend void protobuf_ShutdownFile_model_5fe2_2eproto();
+  
+  void InitAsDefaultInstance();
+  static E2Model* default_instance_;
+};
 // ===================================================================
 
 
@@ -638,6 +744,97 @@ inline double E2PetscSolverConfig::init_step() const {
 inline void E2PetscSolverConfig::set_init_step(double value) {
   set_has_init_step();
   init_step_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// E2Model
+
+// required .pb.E2Config pconfig = 1;
+inline bool E2Model::has_pconfig() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void E2Model::set_has_pconfig() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void E2Model::clear_has_pconfig() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void E2Model::clear_pconfig() {
+  if (pconfig_ != NULL) pconfig_->::pb::E2Config::Clear();
+  clear_has_pconfig();
+}
+inline const ::pb::E2Config& E2Model::pconfig() const {
+  return pconfig_ != NULL ? *pconfig_ : *default_instance_->pconfig_;
+}
+inline ::pb::E2Config* E2Model::mutable_pconfig() {
+  set_has_pconfig();
+  if (pconfig_ == NULL) pconfig_ = new ::pb::E2Config;
+  return pconfig_;
+}
+inline ::pb::E2Config* E2Model::release_pconfig() {
+  clear_has_pconfig();
+  ::pb::E2Config* temp = pconfig_;
+  pconfig_ = NULL;
+  return temp;
+}
+
+// required .pb.E2State state = 2;
+inline bool E2Model::has_state() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void E2Model::set_has_state() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void E2Model::clear_has_state() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void E2Model::clear_state() {
+  if (state_ != NULL) state_->::pb::E2State::Clear();
+  clear_has_state();
+}
+inline const ::pb::E2State& E2Model::state() const {
+  return state_ != NULL ? *state_ : *default_instance_->state_;
+}
+inline ::pb::E2State* E2Model::mutable_state() {
+  set_has_state();
+  if (state_ == NULL) state_ = new ::pb::E2State;
+  return state_;
+}
+inline ::pb::E2State* E2Model::release_state() {
+  clear_has_state();
+  ::pb::E2State* temp = state_;
+  state_ = NULL;
+  return temp;
+}
+
+// required .pb.E2PetscSolverConfig sconfig = 3;
+inline bool E2Model::has_sconfig() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void E2Model::set_has_sconfig() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void E2Model::clear_has_sconfig() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void E2Model::clear_sconfig() {
+  if (sconfig_ != NULL) sconfig_->::pb::E2PetscSolverConfig::Clear();
+  clear_has_sconfig();
+}
+inline const ::pb::E2PetscSolverConfig& E2Model::sconfig() const {
+  return sconfig_ != NULL ? *sconfig_ : *default_instance_->sconfig_;
+}
+inline ::pb::E2PetscSolverConfig* E2Model::mutable_sconfig() {
+  set_has_sconfig();
+  if (sconfig_ == NULL) sconfig_ = new ::pb::E2PetscSolverConfig;
+  return sconfig_;
+}
+inline ::pb::E2PetscSolverConfig* E2Model::release_sconfig() {
+  clear_has_sconfig();
+  ::pb::E2PetscSolverConfig* temp = sconfig_;
+  sconfig_ = NULL;
+  return temp;
 }
 
 

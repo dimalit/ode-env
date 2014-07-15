@@ -8,7 +8,10 @@
 #include <unistd.h>
 #include <cassert>
 
-void rpc_call(const char* cmd, int* rf, int* wf){
+#include <iostream>
+
+// Написать: библиотеку типа RPC для запуска процесса
+pid_t rpc_call(const char* cmd, int* rf, int* wf){
 	int ends_to_child[2];
 	int ends_from_child[2];
 	assert(pipe(ends_to_child)==0);
@@ -22,23 +25,26 @@ void rpc_call(const char* cmd, int* rf, int* wf){
 
 		close(0);
 		dup2(ends_to_child[0], 0);	// pipe read->stdin
-		close(ends_to_child[0]);
+//		close(ends_to_child[0]); - it was closed by dup2!!
 		close(ends_to_child[1]);
 
 		close(1);
 		dup2(ends_from_child[1], 1);	// dup pipe write end to stdout
-		close(ends_from_child[1]);
+//		close(ends_from_child[1]); - it was closed by dup2!!
 		close(ends_from_child[0]);
 
-//		close(ends[0]);		// XXX Strange it gives SIGPIPE when uncommented...
-		execl(cmd, (char*) NULL);
+//		close(ends[0]);fdope		// XXX Strange it gives SIGPIPE when uncommented...
+		execlp(cmd, "-",(char*) NULL);
+		perror(NULL);
 	}
 
 	// will send initial state
-	*rf = ends_to_child[1];
+	*wf = ends_to_child[1];
 	close(ends_to_child[0]);
 
 	// will receive results
-	*wf = ends_from_child[0];
+	*rf = ends_from_child[0];
 	close(ends_from_child[1]);
+
+	return pid;
 }

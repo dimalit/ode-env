@@ -8,6 +8,6 @@
 #ifndef RPC_H_
 #define RPC_H_
 
-extern void rpc_call(const char* cmd, int* rf, int* wf);
+extern pid_t rpc_call(const char* cmd, int* rf, int* wf);
 
 #endif /* RPC_H_ */

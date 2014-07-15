@@ -11,6 +11,8 @@
 #include <limits>
 #include <algorithm>
 
+#include <cstring>
+
 void E1State::sort_arrays(){
 	// TODO: Do it better then copy many times:(
 

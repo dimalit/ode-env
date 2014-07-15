@@ -11,16 +11,14 @@
 #include "core_interfaces.h"
 #include "core_factories.h"
 
-#include <petscts.h>
-
 #include <vector>
 #include <string>
 #include <cassert>
 
 class E1Config: public OdeConfig{
 public:
-	PetscInt  g_m;			// number of particles
-	PetscScalar ksi;		// particle phase if all the same
+	int  g_m;			// number of particles
+	double ksi;		// particle phase if all the same
 	bool random_ksi, linear_ksi;
 
 	E1Config(){
@@ -115,14 +113,11 @@ private:
 
 class E1PetscSolverConfig: public OdeSolverConfig{
 public:
-	PetscReal g_tol;
-	PetscReal g_step;
+	double g_tol;
+	double g_step;
 };
 
 class E1PetscSolver: public OdeSolver{
-
-friend PetscErrorCode RHSFunction(TS ts,PetscReal t,Vec global_in,Vec global_out,void *ctx);
-friend PetscErrorCode PostStepFunction(TS ts);
 
 public:
 	E1PetscSolver(const E1PetscSolverConfig*, const E1Config*, const E1State*);

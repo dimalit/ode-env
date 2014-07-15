@@ -6,9 +6,6 @@
 
 int main (int argc, char *argv[])
 {
-
-	PetscInitialize(&argc,&argv,(char*)0,(char*)0);
-
 	Gtk::Main kit(argc, argv);
 	libgoffice_init();
 	go_plugins_init (NULL, NULL, NULL, NULL, TRUE, GO_TYPE_PLUGIN_LOADER_MODULE);
@@ -35,7 +32,6 @@ int main (int argc, char *argv[])
 */
 
 	libgoffice_shutdown();
-	PetscFinalize();
 
 	return 0;
 }

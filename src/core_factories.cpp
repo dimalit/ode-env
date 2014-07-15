@@ -17,7 +17,8 @@ OdeInstanceFactory::OdeInstanceFactory(){
 }
 
 OdeInstanceFactory::~OdeInstanceFactory(){
-	OdeInstanceFactoryManager::getInstance()->remove(this);
+	//TODO: better it worked. but for now - moved to children...
+	//OdeInstanceFactoryManager::getInstance()->remove(this);
 }
 
 OdeInstance* OdeInstanceFactory::createInstance() const {

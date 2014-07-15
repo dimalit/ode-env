@@ -29,6 +29,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* E2PetscSolverConfig_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   E2PetscSolverConfig_reflection_ = NULL;
+const ::google::protobuf::Descriptor* E2Model_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  E2Model_reflection_ = NULL;
 
 }  // namespace
 
@@ -104,6 +107,23 @@ void protobuf_AssignDesc_model_5fe2_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E2PetscSolverConfig));
+  E2Model_descriptor_ = file->message_type(3);
+  static const int E2Model_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E2Model, pconfig_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E2Model, state_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E2Model, sconfig_),
+  };
+  E2Model_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      E2Model_descriptor_,
+      E2Model::default_instance_,
+      E2Model_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E2Model, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E2Model, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(E2Model));
 }
 
 namespace {
@@ -124,6 +144,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
     E2State_Particles_descriptor_, &E2State_Particles::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     E2PetscSolverConfig_descriptor_, &E2PetscSolverConfig::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    E2Model_descriptor_, &E2Model::default_instance());
 }
 
 }  // namespace
@@ -137,6 +159,8 @@ void protobuf_ShutdownFile_model_5fe2_2eproto() {
   delete E2State_Particles_reflection_;
   delete E2PetscSolverConfig::default_instance_;
   delete E2PetscSolverConfig_reflection_;
+  delete E2Model::default_instance_;
+  delete E2Model_reflection_;
 }
 
 void protobuf_AddDesc_model_5fe2_2eproto() {
@@ -151,17 +175,22 @@ void protobuf_AddDesc_model_5fe2_2eproto() {
     "\"X\n\007E2State\022(\n\tparticles\030\001 \003(\n2\025.pb.E2St"
     "ate.Particles\032#\n\tParticles\022\013\n\003ksi\030\002 \002(\001\022"
     "\t\n\001v\030\003 \002(\001\";\n\023E2PetscSolverConfig\022\021\n\ttol"
-    "erance\030\001 \001(\001\022\021\n\tinit_step\030\002 \001(\001", 231);
+    "erance\030\001 \001(\001\022\021\n\tinit_step\030\002 \001(\001\"n\n\007E2Mod"
+    "el\022\035\n\007pconfig\030\001 \002(\0132\014.pb.E2Config\022\032\n\005sta"
+    "te\030\002 \002(\0132\013.pb.E2State\022(\n\007sconfig\030\003 \002(\0132\027"
+    ".pb.E2PetscSolverConfig", 343);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e2.proto", &protobuf_RegisterTypes);
   E2Config::default_instance_ = new E2Config();
   E2State::default_instance_ = new E2State();
   E2State_Particles::default_instance_ = new E2State_Particles();
   E2PetscSolverConfig::default_instance_ = new E2PetscSolverConfig();
+  E2Model::default_instance_ = new E2Model();
   E2Config::default_instance_->InitAsDefaultInstance();
   E2State::default_instance_->InitAsDefaultInstance();
   E2State_Particles::default_instance_->InitAsDefaultInstance();
   E2PetscSolverConfig::default_instance_->InitAsDefaultInstance();
+  E2Model::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_model_5fe2_2eproto);
 }
 
@@ -1183,6 +1212,315 @@ void E2PetscSolverConfig::Swap(E2PetscSolverConfig* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = E2PetscSolverConfig_descriptor_;
   metadata.reflection = E2PetscSolverConfig_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int E2Model::kPconfigFieldNumber;
+const int E2Model::kStateFieldNumber;
+const int E2Model::kSconfigFieldNumber;
+#endif  // !_MSC_VER
+
+E2Model::E2Model()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void E2Model::InitAsDefaultInstance() {
+  pconfig_ = const_cast< ::pb::E2Config*>(&::pb::E2Config::default_instance());
+  state_ = const_cast< ::pb::E2State*>(&::pb::E2State::default_instance());
+  sconfig_ = const_cast< ::pb::E2PetscSolverConfig*>(&::pb::E2PetscSolverConfig::default_instance());
+}
+
+E2Model::E2Model(const E2Model& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void E2Model::SharedCtor() {
+  _cached_size_ = 0;
+  pconfig_ = NULL;
+  state_ = NULL;
+  sconfig_ = NULL;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+E2Model::~E2Model() {
+  SharedDtor();
+}
+
+void E2Model::SharedDtor() {
+  if (this != default_instance_) {
+    delete pconfig_;
+    delete state_;
+    delete sconfig_;
+  }
+}
+
+void E2Model::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* E2Model::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return E2Model_descriptor_;
+}
+
+const E2Model& E2Model::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_model_5fe2_2eproto();  return *default_instance_;
+}
+
+E2Model* E2Model::default_instance_ = NULL;
+
+E2Model* E2Model::New() const {
+  return new E2Model;
+}
+
+void E2Model::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (has_pconfig()) {
+      if (pconfig_ != NULL) pconfig_->::pb::E2Config::Clear();
+    }
+    if (has_state()) {
+      if (state_ != NULL) state_->::pb::E2State::Clear();
+    }
+    if (has_sconfig()) {
+      if (sconfig_ != NULL) sconfig_->::pb::E2PetscSolverConfig::Clear();
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool E2Model::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required .pb.E2Config pconfig = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_pconfig()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_state;
+        break;
+      }
+      
+      // required .pb.E2State state = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_state:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_state()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_sconfig;
+        break;
+      }
+      
+      // required .pb.E2PetscSolverConfig sconfig = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_sconfig:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_sconfig()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+      
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void E2Model::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required .pb.E2Config pconfig = 1;
+  if (has_pconfig()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->pconfig(), output);
+  }
+  
+  // required .pb.E2State state = 2;
+  if (has_state()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      2, this->state(), output);
+  }
+  
+  // required .pb.E2PetscSolverConfig sconfig = 3;
+  if (has_sconfig()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      3, this->sconfig(), output);
+  }
+  
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* E2Model::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required .pb.E2Config pconfig = 1;
+  if (has_pconfig()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        1, this->pconfig(), target);
+  }
+  
+  // required .pb.E2State state = 2;
+  if (has_state()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        2, this->state(), target);
+  }
+  
+  // required .pb.E2PetscSolverConfig sconfig = 3;
+  if (has_sconfig()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        3, this->sconfig(), target);
+  }
+  
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int E2Model::ByteSize() const {
+  int total_size = 0;
+  
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required .pb.E2Config pconfig = 1;
+    if (has_pconfig()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->pconfig());
+    }
+    
+    // required .pb.E2State state = 2;
+    if (has_state()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->state());
+    }
+    
+    // required .pb.E2PetscSolverConfig sconfig = 3;
+    if (has_sconfig()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->sconfig());
+    }
+    
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void E2Model::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const E2Model* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const E2Model*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void E2Model::MergeFrom(const E2Model& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_pconfig()) {
+      mutable_pconfig()->::pb::E2Config::MergeFrom(from.pconfig());
+    }
+    if (from.has_state()) {
+      mutable_state()->::pb::E2State::MergeFrom(from.state());
+    }
+    if (from.has_sconfig()) {
+      mutable_sconfig()->::pb::E2PetscSolverConfig::MergeFrom(from.sconfig());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void E2Model::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void E2Model::CopyFrom(const E2Model& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool E2Model::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
+  
+  if (has_pconfig()) {
+    if (!this->pconfig().IsInitialized()) return false;
+  }
+  if (has_state()) {
+    if (!this->state().IsInitialized()) return false;
+  }
+  return true;
+}
+
+void E2Model::Swap(E2Model* other) {
+  if (other != this) {
+    std::swap(pconfig_, other->pconfig_);
+    std::swap(state_, other->state_);
+    std::swap(sconfig_, other->sconfig_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata E2Model::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = E2Model_descriptor_;
+  metadata.reflection = E2Model_reflection_;
   return metadata;
 }
 
