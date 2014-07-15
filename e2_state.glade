@@ -97,9 +97,6 @@
         <property name="n_rows">2</property>
         <property name="n_columns">2</property>
         <child>
-          <placeholder/>
-        </child>
-        <child>
           <object class="GtkRadioButton" id="radio_rand">
             <property name="label" translatable="yes">random placement</property>
             <property name="visible">True</property>
@@ -126,19 +123,10 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="button_apply">
-            <property name="label" translatable="yes">Apply</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="use_action_appearance">False</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">1</property>
-            <property name="bottom_attach">2</property>
-          </packing>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
       <packing>

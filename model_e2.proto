@@ -10,9 +10,10 @@ message E2Config{
 }
 
 message E2State{
-	repeated group Particles = 1{
-		required double ksi = 2;
-		required double v = 3;
+	optional bool simulated = 1;
+	repeated group Particles = 2{
+		required double ksi = 3;
+		required double v = 4;
 	}
 }
 

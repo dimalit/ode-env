@@ -206,17 +206,17 @@ class E2State_Particles : public ::google::protobuf::Message {
   
   // accessors -------------------------------------------------------
   
-  // required double ksi = 2;
+  // required double ksi = 3;
   inline bool has_ksi() const;
   inline void clear_ksi();
-  static const int kKsiFieldNumber = 2;
+  static const int kKsiFieldNumber = 3;
   inline double ksi() const;
   inline void set_ksi(double value);
   
-  // required double v = 3;
+  // required double v = 4;
   inline bool has_v() const;
   inline void clear_v();
-  static const int kVFieldNumber = 3;
+  static const int kVFieldNumber = 4;
   inline double v() const;
   inline void set_v(double value);
   
@@ -300,10 +300,17 @@ class E2State : public ::google::protobuf::Message {
   
   // accessors -------------------------------------------------------
   
-  // repeated group Particles = 1 {
+  // optional bool simulated = 1;
+  inline bool has_simulated() const;
+  inline void clear_simulated();
+  static const int kSimulatedFieldNumber = 1;
+  inline bool simulated() const;
+  inline void set_simulated(bool value);
+  
+  // repeated group Particles = 2 {
   inline int particles_size() const;
   inline void clear_particles();
-  static const int kParticlesFieldNumber = 1;
+  static const int kParticlesFieldNumber = 2;
   inline const ::pb::E2State_Particles& particles(int index) const;
   inline ::pb::E2State_Particles* mutable_particles(int index);
   inline ::pb::E2State_Particles* add_particles();
@@ -314,13 +321,16 @@ class E2State : public ::google::protobuf::Message {
   
   // @@protoc_insertion_point(class_scope:pb.E2State)
  private:
+  inline void set_has_simulated();
+  inline void clear_has_simulated();
   
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
   
   ::google::protobuf::RepeatedPtrField< ::pb::E2State_Particles > particles_;
+  bool simulated_;
   
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
   
   friend void  protobuf_AddDesc_model_5fe2_2eproto();
   friend void protobuf_AssignDesc_model_5fe2_2eproto();
@@ -625,7 +635,7 @@ inline void E2Config::set_f(double value) {
 
 // E2State_Particles
 
-// required double ksi = 2;
+// required double ksi = 3;
 inline bool E2State_Particles::has_ksi() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -647,7 +657,7 @@ inline void E2State_Particles::set_ksi(double value) {
   ksi_ = value;
 }
 
-// required double v = 3;
+// required double v = 4;
 inline bool E2State_Particles::has_v() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -673,7 +683,29 @@ inline void E2State_Particles::set_v(double value) {
 
 // E2State
 
-// repeated group Particles = 1 {
+// optional bool simulated = 1;
+inline bool E2State::has_simulated() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void E2State::set_has_simulated() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void E2State::clear_has_simulated() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void E2State::clear_simulated() {
+  simulated_ = false;
+  clear_has_simulated();
+}
+inline bool E2State::simulated() const {
+  return simulated_;
+}
+inline void E2State::set_simulated(bool value) {
+  set_has_simulated();
+  simulated_ = value;
+}
+
+// repeated group Particles = 2 {
 inline int E2State::particles_size() const {
   return particles_.size();
 }

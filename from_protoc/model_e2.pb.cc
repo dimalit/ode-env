@@ -61,7 +61,8 @@ void protobuf_AssignDesc_model_5fe2_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E2Config));
   E2State_descriptor_ = file->message_type(1);
-  static const int E2State_offsets_[1] = {
+  static const int E2State_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E2State, simulated_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E2State, particles_),
   };
   E2State_reflection_ =
@@ -172,13 +173,14 @@ void protobuf_AddDesc_model_5fe2_2eproto() {
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
     "\n\016model_e2.proto\022\002pb\":\n\010E2Config\022\t\n\001N\030\001 "
     "\002(\r\022\t\n\001A\030\002 \001(\001\022\r\n\005delta\030\003 \001(\001\022\t\n\001f\030\004 \001(\001"
-    "\"X\n\007E2State\022(\n\tparticles\030\001 \003(\n2\025.pb.E2St"
-    "ate.Particles\032#\n\tParticles\022\013\n\003ksi\030\002 \002(\001\022"
-    "\t\n\001v\030\003 \002(\001\";\n\023E2PetscSolverConfig\022\021\n\ttol"
-    "erance\030\001 \001(\001\022\021\n\tinit_step\030\002 \001(\001\"n\n\007E2Mod"
-    "el\022\035\n\007pconfig\030\001 \002(\0132\014.pb.E2Config\022\032\n\005sta"
-    "te\030\002 \002(\0132\013.pb.E2State\022(\n\007sconfig\030\003 \002(\0132\027"
-    ".pb.E2PetscSolverConfig", 343);
+    "\"k\n\007E2State\022\021\n\tsimulated\030\001 \001(\010\022(\n\tpartic"
+    "les\030\002 \003(\n2\025.pb.E2State.Particles\032#\n\tPart"
+    "icles\022\013\n\003ksi\030\003 \002(\001\022\t\n\001v\030\004 \002(\001\";\n\023E2Petsc"
+    "SolverConfig\022\021\n\ttolerance\030\001 \001(\001\022\021\n\tinit_"
+    "step\030\002 \001(\001\"n\n\007E2Model\022\035\n\007pconfig\030\001 \002(\0132\014"
+    ".pb.E2Config\022\032\n\005state\030\002 \002(\0132\013.pb.E2State"
+    "\022(\n\007sconfig\030\003 \002(\0132\027.pb.E2PetscSolverConf"
+    "ig", 362);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e2.proto", &protobuf_RegisterTypes);
   E2Config::default_instance_ = new E2Config();
@@ -596,8 +598,8 @@ bool E2State_Particles::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required double ksi = 2;
-      case 2: {
+      // required double ksi = 3;
+      case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
@@ -607,12 +609,12 @@ bool E2State_Particles::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(25)) goto parse_v;
+        if (input->ExpectTag(33)) goto parse_v;
         break;
       }
       
-      // required double v = 3;
-      case 3: {
+      // required double v = 4;
+      case 4: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
          parse_v:
@@ -645,14 +647,14 @@ bool E2State_Particles::MergePartialFromCodedStream(
 
 void E2State_Particles::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // required double ksi = 2;
+  // required double ksi = 3;
   if (has_ksi()) {
-    ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->ksi(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->ksi(), output);
   }
   
-  // required double v = 3;
+  // required double v = 4;
   if (has_v()) {
-    ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->v(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(4, this->v(), output);
   }
   
   if (!unknown_fields().empty()) {
@@ -663,14 +665,14 @@ void E2State_Particles::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* E2State_Particles::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // required double ksi = 2;
+  // required double ksi = 3;
   if (has_ksi()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(2, this->ksi(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->ksi(), target);
   }
   
-  // required double v = 3;
+  // required double v = 4;
   if (has_v()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->v(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(4, this->v(), target);
   }
   
   if (!unknown_fields().empty()) {
@@ -684,12 +686,12 @@ int E2State_Particles::ByteSize() const {
   int total_size = 0;
   
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required double ksi = 2;
+    // required double ksi = 3;
     if (has_ksi()) {
       total_size += 1 + 8;
     }
     
-    // required double v = 3;
+    // required double v = 4;
     if (has_v()) {
       total_size += 1 + 8;
     }
@@ -771,6 +773,7 @@ void E2State_Particles::Swap(E2State_Particles* other) {
 // -------------------------------------------------------------------
 
 #ifndef _MSC_VER
+const int E2State::kSimulatedFieldNumber;
 const int E2State::kParticlesFieldNumber;
 #endif  // !_MSC_VER
 
@@ -790,6 +793,7 @@ E2State::E2State(const E2State& from)
 
 void E2State::SharedCtor() {
   _cached_size_ = 0;
+  simulated_ = false;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -823,6 +827,9 @@ E2State* E2State::New() const {
 }
 
 void E2State::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    simulated_ = false;
+  }
   particles_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -834,17 +841,32 @@ bool E2State::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated group Particles = 1 {
+      // optional bool simulated = 1;
       case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &simulated_)));
+          set_has_simulated();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(19)) goto parse_particles;
+        break;
+      }
+      
+      // repeated group Particles = 2 {
+      case 2: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_START_GROUP) {
          parse_particles:
           DO_(::google::protobuf::internal::WireFormatLite::ReadGroupNoVirtual(
-                1, input, add_particles()));
+                2, input, add_particles()));
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(11)) goto parse_particles;
+        if (input->ExpectTag(19)) goto parse_particles;
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -867,10 +889,15 @@ bool E2State::MergePartialFromCodedStream(
 
 void E2State::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // repeated group Particles = 1 {
+  // optional bool simulated = 1;
+  if (has_simulated()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->simulated(), output);
+  }
+  
+  // repeated group Particles = 2 {
   for (int i = 0; i < this->particles_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteGroupMaybeToArray(
-      1, this->particles(i), output);
+      2, this->particles(i), output);
   }
   
   if (!unknown_fields().empty()) {
@@ -881,11 +908,16 @@ void E2State::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* E2State::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // repeated group Particles = 1 {
+  // optional bool simulated = 1;
+  if (has_simulated()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->simulated(), target);
+  }
+  
+  // repeated group Particles = 2 {
   for (int i = 0; i < this->particles_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteGroupNoVirtualToArray(
-        1, this->particles(i), target);
+        2, this->particles(i), target);
   }
   
   if (!unknown_fields().empty()) {
@@ -898,7 +930,14 @@ void E2State::SerializeWithCachedSizes(
 int E2State::ByteSize() const {
   int total_size = 0;
   
-  // repeated group Particles = 1 {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional bool simulated = 1;
+    if (has_simulated()) {
+      total_size += 1 + 1;
+    }
+    
+  }
+  // repeated group Particles = 2 {
   total_size += 2 * this->particles_size();
   for (int i = 0; i < this->particles_size(); i++) {
     total_size +=
@@ -932,6 +971,11 @@ void E2State::MergeFrom(const ::google::protobuf::Message& from) {
 void E2State::MergeFrom(const E2State& from) {
   GOOGLE_CHECK_NE(&from, this);
   particles_.MergeFrom(from.particles_);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_simulated()) {
+      set_simulated(from.simulated());
+    }
+  }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
 
@@ -957,6 +1001,7 @@ bool E2State::IsInitialized() const {
 
 void E2State::Swap(E2State* other) {
   if (other != this) {
+    std::swap(simulated_, other->simulated_);
     particles_.Swap(&other->particles_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);

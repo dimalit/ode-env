@@ -34,7 +34,6 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="invisible_char">•</property>
-        <property name="text" translatable="yes">250</property>
         <property name="invisible_char_set">True</property>
         <property name="primary_icon_activatable">False</property>
         <property name="secondary_icon_activatable">False</property>
@@ -49,10 +48,8 @@
     <child>
       <object class="GtkEntry" id="entry_a">
         <property name="visible">True</property>
-        <property name="sensitive">False</property>
         <property name="can_focus">True</property>
         <property name="invisible_char">•</property>
-        <property name="text" translatable="yes">0</property>
         <property name="invisible_char_set">True</property>
         <property name="primary_icon_activatable">False</property>
         <property name="secondary_icon_activatable">False</property>
@@ -93,10 +90,8 @@
     <child>
       <object class="GtkEntry" id="entry_delta">
         <property name="visible">True</property>
-        <property name="sensitive">False</property>
         <property name="can_focus">True</property>
         <property name="invisible_char">•</property>
-        <property name="text" translatable="yes">0</property>
         <property name="invisible_char_set">True</property>
         <property name="primary_icon_activatable">False</property>
         <property name="secondary_icon_activatable">False</property>
@@ -113,10 +108,8 @@
     <child>
       <object class="GtkEntry" id="entry_f">
         <property name="visible">True</property>
-        <property name="sensitive">False</property>
         <property name="can_focus">True</property>
         <property name="invisible_char">•</property>
-        <property name="text" translatable="yes">0</property>
         <property name="invisible_char_set">True</property>
         <property name="primary_icon_activatable">False</property>
         <property name="secondary_icon_activatable">False</property>
