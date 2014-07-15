@@ -75,6 +75,7 @@ public:
 	virtual const OdeState* getState();
 	virtual void loadConfig(const OdeConfig* config);
 	virtual const OdeConfig* getConfig();
+	virtual void generateState(){/*not implemented*/}
 
 private:
 	void widget_to_state();

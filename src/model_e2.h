@@ -26,7 +26,13 @@ class E2State: public pb::E2State, public OdeState{
 public:
 	E2State(const E2Config*);
 };
-class E2PetscSolverConfig: public pb::E2PetscSolverConfig, public OdeSolverConfig{};
+class E2PetscSolverConfig: public pb::E2PetscSolverConfig, public OdeSolverConfig{
+public:
+	E2PetscSolverConfig(){
+		this->set_tolerance(0.001);
+		this->set_init_step(0.001);
+	}
+};
 
 class E2PetscSolver: public OdeSolver{
 public:

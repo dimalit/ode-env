@@ -18,6 +18,7 @@ E2State::E2State(const E2Config* config){
 	for(int i=0; i<n; i++){
 		this->add_particles();
 	}
+	set_simulated(false);
 }
 
 E2PetscSolver::E2PetscSolver(const E2PetscSolverConfig* scfg, const E2Config* pcfg, const E2State* init_state){
@@ -61,6 +62,9 @@ void E2PetscSolver::run(){
 //	char buf;
 //	while(read(rf, &buf, 1) > 0);
 	waitpid(child, 0, 0);
+
+	state->ParseFromFileDescriptor(rf);
+	state->set_simulated(true);
 
 	close(rf);
 }

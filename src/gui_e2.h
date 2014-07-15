@@ -49,19 +49,21 @@ private:
 	Gtk::Entry *entry_left, *entry_right;
 	Gtk::CheckButton *radio_rand, *radio_linear;
 
+	FILE* to_gnuplot;
 public:
 	E2StateWidget(const E2Config* config, const E2State* state = NULL);
+	virtual ~E2StateWidget();
 	virtual void loadState(const OdeState* state);
 	virtual const OdeState* getState();
 	virtual void loadConfig(const OdeConfig* config);
 	virtual const OdeConfig* getConfig();
+	virtual void generateState();
 
 private:
 	void widget_to_state();
 	void state_to_widget();
 	void update_chart();
-
-	void apply_cb();
+	void on_realize_cb();
 };
 
 class E2PetscSolverConfigWidget: public OdeSolverConfigWidget{

@@ -35,6 +35,11 @@ E2ConfigWidget::E2ConfigWidget(const E2Config* cfg){
 	this->add(*root);
 
 	config_to_widget();
+
+	entry_n->signal_changed().connect(this->signal_changed());
+	entry_a->signal_changed().connect(this->signal_changed());
+	entry_delta->signal_changed().connect(this->signal_changed());
+	entry_f->signal_changed().connect(this->signal_changed());
 }
 
 void E2ConfigWidget::widget_to_config(){
@@ -75,6 +80,8 @@ const OdeConfig* E2ConfigWidget::getConfig() {
 }
 
 E2StateWidget::E2StateWidget(const E2Config* _config, const E2State* _state){
+	to_gnuplot = NULL;
+
 	if(_config)
 		this->config = new E2Config(*_config);
 	else
@@ -103,13 +110,23 @@ E2StateWidget::E2StateWidget(const E2Config* _config, const E2State* _state){
 
 	this->add(*root);
 
-	// signals
-	Gtk::Button* apply;
-	b->get_widget("button_apply", apply);
-	apply->signal_clicked().connect(sigc::mem_fun(*this, &E2StateWidget::apply_cb));
-
 	state_to_widget();
+	if(!this->state->simulated())
+		generateState();
+
+	// signals
+	this->signal_realize().connect(sigc::mem_fun(this, &E2StateWidget::on_realize_cb));
+
+	entry_left->signal_changed().connect(this->signal_changed());
+	entry_right->signal_changed().connect(this->signal_changed());
+	radio_rand->signal_toggled().connect(this->signal_changed());
 }
+
+E2StateWidget::~E2StateWidget(){
+	if(to_gnuplot)
+		fclose(to_gnuplot);
+}
+
 void E2StateWidget::loadState(const OdeState* state){
 	const E2State* estate = dynamic_cast<const E2State*>(state);
 		assert(estate);
@@ -117,6 +134,8 @@ void E2StateWidget::loadState(const OdeState* state){
 	this->state = new E2State(*estate);
 
 	state_to_widget();
+	if(!this->state->simulated())
+		generateState();
 }
 const OdeState* E2StateWidget::getState(){
 	widget_to_state();
@@ -131,19 +150,21 @@ void E2StateWidget::loadConfig(const OdeConfig* cfg){
 
 	delete this->state;
 	this->state = new E2State(ecfg);
+
+	state_to_widget();
+	widget_to_state();
 }
 const OdeConfig* E2StateWidget::getConfig(){
 	return config;
 }
 
-void E2StateWidget::widget_to_state(){
-	bool use_rand = this->radio_rand->get_active();
-
+void E2StateWidget::generateState(){
 	double left = atof(entry_left->get_text().c_str());
 	double right = atof(entry_right->get_text().c_str());
 
-	int n = config->n();
+	bool use_rand = this->radio_rand->get_active();
 
+	int n = config->n();
 	for(int i=0; i<n; i++){
 		double ksi;
 		if(use_rand)
@@ -157,34 +178,87 @@ void E2StateWidget::widget_to_state(){
 		state->mutable_particles(i)->CopyFrom(p);
 	}
 
+	state->set_simulated(false);
+
 	update_chart();
+}
+
+void E2StateWidget::widget_to_state(){
+	if(!state->simulated()){
+		generateState();
+	}
 }
 void E2StateWidget::state_to_widget(){
 
-}
+	if(state->simulated()){
+		double left =   std::numeric_limits<double>::infinity();
+		double right = -std::numeric_limits<double>::infinity();
 
-void E2StateWidget::apply_cb(){
-	update_chart();
+		for(int i=0; i<state->particles_size(); i++){
+			double ksi = state->particles(i).ksi();
+			if(ksi < left)
+				left = ksi;
+			if(ksi > right)
+				right = ksi;
+		}
+
+		std::ostringstream buf;
+		buf << left;
+		entry_left->set_text(buf.str());
+
+		buf.str("");
+		buf << right;
+		entry_right->set_text(buf.str());
+
+		update_chart();
+
+	}
 }
 
 void E2StateWidget::update_chart(){
-	std::cout << "update_chart()" << std::endl;
-
 	// TODO: Написать как направлять команды gnuplot'у и вставлять его вывод в окно!
 
-	int rf, wf;
-	rpc_call("gnuplot", &rf, &wf);
-//	close(rf);
+	if(to_gnuplot == NULL){
+		int rf, wf;
+		rpc_call("gnuplot", &rf, &wf);
+	//	close(rf);
 
-	FILE* wff = fdopen(wf, "wb");
-	if(!wff){
-		perror(NULL);
-		assert(false);
+		to_gnuplot = fdopen(wf, "wb");
+		if(!to_gnuplot){
+			perror(NULL);
+			assert(false);
+		}
 	}
-	fprintf(wff, "set terminal x11 window \"%x\"\n", x11_socket.get_id());
-	fprintf(wff, "plot [-3.14:3.14] sin(x)\n");
-	fflush(wff);
+
+	unsigned id = x11_socket.get_id();
+
+	// if not added to window yet
+	if(id==0)
+		return;
+
+	// print to file
+	static FILE* data = NULL;
+	if(data)
+		fclose(data);
+
+	char buf[L_tmpnam];
+	tmpnam(buf);
+
+	data = fopen(buf, "wb");
+	for(int i=0; i<state->particles_size(); i++){
+		fprintf(data, "%lf\t%lf\n", state->particles(i).ksi(), state->particles(i).v());
+	}
+	fflush(data);
+
+	fprintf(to_gnuplot, "set terminal x11 window \"%x\"\n", id);
+	fprintf(to_gnuplot, "plot '%s' using 1:2 with points\n", buf);
+//	fprintf(wff, "plot [-3.14:3.14] sin(x)\n");
+	fflush(to_gnuplot);
 //	fclose(wff);
+}
+
+void E2StateWidget::on_realize_cb(){
+	update_chart();
 }
 
 E2PetscSolverConfigWidget::E2PetscSolverConfigWidget(const E2PetscSolverConfig* config){
@@ -202,6 +276,8 @@ E2PetscSolverConfigWidget::E2PetscSolverConfigWidget(const E2PetscSolverConfig* 
 	b->get_widget("entry_step", entry_step);
 
 	this->add(*root);
+
+	config_to_widget();
 }
 const OdeSolverConfig* E2PetscSolverConfigWidget::getConfig(){
 	widget_to_config();
