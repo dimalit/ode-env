@@ -20,11 +20,9 @@ protected:
   // Signal handlers:
   void on_config_changed();
   void on_state_changed();
-  void on_solver_changed();
 
   void on_config_apply();
   void on_state_apply();
-  void on_solver_apply();
 
   void on_launch_clicked();
   void on_cancel_clicked();
@@ -34,7 +32,15 @@ protected:
   OdeStateWidget* state_widget;
   OdeSolverConfigWidget* solver_config_widget;
 
-  Gtk::Button config_apply_button, state_apply_button, solver_apply_button;
+  OdeAnalyzerWidget* analyzer_widget;
+
+  Gtk::Window win_state;
+  Gtk::VBox win_state_vbox;
+  Gtk::RadioButton *radio_time, *radio_steps;
+  Gtk::Entry *entry_time, *entry_steps;
+  Gtk::Label *label_time, *label_steps;
+
+  Gtk::Button config_apply_button, state_apply_button;
   Gtk::Button launch_button, cancel_button;
 
   Gtk::VBox vbox;

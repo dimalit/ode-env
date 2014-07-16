@@ -49,6 +49,8 @@ private:
 	Gtk::Entry *entry_left, *entry_right;
 	Gtk::CheckButton *radio_rand, *radio_linear;
 
+	Gtk::Label *label_i_left, *label_phi_left, *label_e;
+
 	FILE* to_gnuplot;
 public:
 	E2StateWidget(const E2Config* config, const E2State* state = NULL);

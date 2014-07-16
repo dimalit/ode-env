@@ -22,3 +22,12 @@ OdeSolverConfigWidgetFactory::OdeSolverConfigWidgetFactory(OdeSolverFactory* cor
 OdeSolverConfigWidgetFactory::~OdeSolverConfigWidgetFactory(){
 	OdeSolverConfigWidgetFactoryManager::getInstance()->remove(this);
 }
+
+OdeAnalyzerWidgetFactory::OdeAnalyzerWidgetFactory(OdeInstanceFactory* corresponding_instance_factory){
+	this->corresponding_instance_factory = corresponding_instance_factory;
+	OdeAnalyzerWidgetFactoryManager::getInstance()->add(this);
+}
+OdeAnalyzerWidgetFactory::~OdeAnalyzerWidgetFactory(){
+	OdeAnalyzerWidgetFactoryManager::getInstance()->remove(this);
+}
+

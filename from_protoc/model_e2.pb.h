@@ -487,6 +487,20 @@ class E2Model : public ::google::protobuf::Message {
   
   // accessors -------------------------------------------------------
   
+  // required double time = 4;
+  inline bool has_time() const;
+  inline void clear_time();
+  static const int kTimeFieldNumber = 4;
+  inline double time() const;
+  inline void set_time(double value);
+  
+  // required uint32 steps = 5;
+  inline bool has_steps() const;
+  inline void clear_steps();
+  static const int kStepsFieldNumber = 5;
+  inline ::google::protobuf::uint32 steps() const;
+  inline void set_steps(::google::protobuf::uint32 value);
+  
   // required .pb.E2Config pconfig = 1;
   inline bool has_pconfig() const;
   inline void clear_pconfig();
@@ -513,6 +527,10 @@ class E2Model : public ::google::protobuf::Message {
   
   // @@protoc_insertion_point(class_scope:pb.E2Model)
  private:
+  inline void set_has_time();
+  inline void clear_has_time();
+  inline void set_has_steps();
+  inline void clear_has_steps();
   inline void set_has_pconfig();
   inline void clear_has_pconfig();
   inline void set_has_state();
@@ -522,12 +540,14 @@ class E2Model : public ::google::protobuf::Message {
   
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
   
+  double time_;
   ::pb::E2Config* pconfig_;
   ::pb::E2State* state_;
   ::pb::E2PetscSolverConfig* sconfig_;
+  ::google::protobuf::uint32 steps_;
   
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
   
   friend void  protobuf_AddDesc_model_5fe2_2eproto();
   friend void protobuf_AssignDesc_model_5fe2_2eproto();
@@ -782,15 +802,59 @@ inline void E2PetscSolverConfig::set_init_step(double value) {
 
 // E2Model
 
-// required .pb.E2Config pconfig = 1;
-inline bool E2Model::has_pconfig() const {
+// required double time = 4;
+inline bool E2Model::has_time() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void E2Model::set_has_pconfig() {
+inline void E2Model::set_has_time() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void E2Model::clear_has_pconfig() {
+inline void E2Model::clear_has_time() {
   _has_bits_[0] &= ~0x00000001u;
+}
+inline void E2Model::clear_time() {
+  time_ = 0;
+  clear_has_time();
+}
+inline double E2Model::time() const {
+  return time_;
+}
+inline void E2Model::set_time(double value) {
+  set_has_time();
+  time_ = value;
+}
+
+// required uint32 steps = 5;
+inline bool E2Model::has_steps() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void E2Model::set_has_steps() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void E2Model::clear_has_steps() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void E2Model::clear_steps() {
+  steps_ = 0u;
+  clear_has_steps();
+}
+inline ::google::protobuf::uint32 E2Model::steps() const {
+  return steps_;
+}
+inline void E2Model::set_steps(::google::protobuf::uint32 value) {
+  set_has_steps();
+  steps_ = value;
+}
+
+// required .pb.E2Config pconfig = 1;
+inline bool E2Model::has_pconfig() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void E2Model::set_has_pconfig() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void E2Model::clear_has_pconfig() {
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void E2Model::clear_pconfig() {
   if (pconfig_ != NULL) pconfig_->::pb::E2Config::Clear();
@@ -813,13 +877,13 @@ inline ::pb::E2Config* E2Model::release_pconfig() {
 
 // required .pb.E2State state = 2;
 inline bool E2Model::has_state() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
 inline void E2Model::set_has_state() {
-  _has_bits_[0] |= 0x00000002u;
+  _has_bits_[0] |= 0x00000008u;
 }
 inline void E2Model::clear_has_state() {
-  _has_bits_[0] &= ~0x00000002u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void E2Model::clear_state() {
   if (state_ != NULL) state_->::pb::E2State::Clear();
@@ -842,13 +906,13 @@ inline ::pb::E2State* E2Model::release_state() {
 
 // required .pb.E2PetscSolverConfig sconfig = 3;
 inline bool E2Model::has_sconfig() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
+  return (_has_bits_[0] & 0x00000010u) != 0;
 }
 inline void E2Model::set_has_sconfig() {
-  _has_bits_[0] |= 0x00000004u;
+  _has_bits_[0] |= 0x00000010u;
 }
 inline void E2Model::clear_has_sconfig() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void E2Model::clear_sconfig() {
   if (sconfig_ != NULL) sconfig_->::pb::E2PetscSolverConfig::Clear();

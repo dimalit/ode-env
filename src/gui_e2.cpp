@@ -108,6 +108,10 @@ E2StateWidget::E2StateWidget(const E2Config* _config, const E2State* _state){
 	b->get_widget("radio_rand", radio_rand);
 	b->get_widget("radio_linear", radio_linear);
 
+	b->get_widget("label_i_left", label_i_left);
+	b->get_widget("label_phi_left", label_phi_left);
+	b->get_widget("label_e", label_e);
+
 	this->add(*root);
 
 	state_to_widget();
@@ -236,25 +240,17 @@ void E2StateWidget::update_chart(){
 	if(id==0)
 		return;
 
-	// print to file
-	static FILE* data = NULL;
-	if(data)
-		fclose(data);
-
-	char buf[L_tmpnam];
-	tmpnam(buf);
-
-	data = fopen(buf, "wb");
-	for(int i=0; i<state->particles_size(); i++){
-		fprintf(data, "%lf\t%lf\n", state->particles(i).ksi(), state->particles(i).v());
-	}
-	fflush(data);
-
 	fprintf(to_gnuplot, "set terminal x11 window \"%x\"\n", id);
-	fprintf(to_gnuplot, "plot '%s' using 1:2 with points\n", buf);
+	fprintf(to_gnuplot, "plot '-' using 1:2 with points\n");
 //	fprintf(wff, "plot [-3.14:3.14] sin(x)\n");
+
+	// print data
+	for(int i=0; i<state->particles_size(); i++){
+		fprintf(to_gnuplot, "%lf %lf\n", state->particles(i).ksi(), state->particles(i).v());
+	}
+	fprintf(to_gnuplot, "e\n");
 	fflush(to_gnuplot);
-//	fclose(wff);
+
 }
 
 void E2StateWidget::on_realize_cb(){

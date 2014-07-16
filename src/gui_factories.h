@@ -44,10 +44,27 @@ private:
 	OdeSolverFactory* corresponding_solver_factory;
 };
 
+class OdeAnalyzerWidgetFactory{
+public:
+	OdeAnalyzerWidgetFactory(OdeInstanceFactory* corresponding_instance_factory);
+	virtual ~OdeAnalyzerWidgetFactory();
+	virtual OdeAnalyzerWidget* createAnalyzerWidget(const OdeConfig* = NULL) const = 0;
+
+	virtual std::string getDisplayName() const = 0;
+
+	OdeInstanceFactory* getBaseFactory() const {
+		return corresponding_instance_factory;
+	}
+private:
+	OdeInstanceFactory* corresponding_instance_factory;
+};
+
 typedef AuxFactoryManager<OdeInstanceWidgetFactory, OdeInstanceFactory> OdeInstanceWidgetFactoryManager;
 template class AuxFactoryManager<OdeInstanceWidgetFactory, OdeInstanceFactory>;
 typedef AuxFactoryManager<OdeSolverConfigWidgetFactory, OdeSolverFactory> OdeSolverConfigWidgetFactoryManager;
 template class AuxFactoryManager<OdeSolverConfigWidgetFactory, OdeSolverFactory>;
+typedef AuxFactoryManager<OdeAnalyzerWidgetFactory, OdeInstanceFactory> OdeAnalyzerWidgetFactoryManager;
+template class AuxFactoryManager<OdeAnalyzerWidgetFactory, OdeInstanceFactory>;
 
 ///////////////////// DEMPLATES FOR DERIVED CLASSES /////////////////////////
 
@@ -109,6 +126,29 @@ private:
 template<class SF, class SC, class SCW>
 TemplateSolverConfigWidgetFactory<SF, SC, SCW> TemplateSolverConfigWidgetFactory<SF, SC, SCW>::instance;
 
+template<class IF, class AW, class C>
+class TemplateAnalyzerWidgetFactory: public OdeAnalyzerWidgetFactory{
+public:
+	virtual OdeAnalyzerWidget* createAnalyzerWidget(const OdeConfig* cfg = NULL) const {
+		const C* ecfg = dynamic_cast<const C*>(cfg);
+			assert(ecfg || !cfg);		// it exists or other inexists
+		return new AW(ecfg);
+	}
+	virtual std::string getDisplayName() const {
+		return AW::getDisplayName();
+	}
+
+private:
+	static TemplateAnalyzerWidgetFactory instance;
+	TemplateAnalyzerWidgetFactory()
+		:OdeAnalyzerWidgetFactory(IF::getInstance())
+	{
+	}
+};
+
+template<class IF, class AW, class C>
+TemplateAnalyzerWidgetFactory<IF, AW, C> TemplateAnalyzerWidgetFactory<IF, AW, C>::instance;
+
 #define REGISTER_INSTANCE_WIDGET_FACTORY(NAME, T1, T2, T3, T4, T5) \
 typedef TemplateInstanceWidgetFactory<T1, T2, T3, T4, T5> NAME;    \
 template class TemplateInstanceWidgetFactory<T1, T2, T3, T4, T5>;
@@ -116,5 +156,9 @@ template class TemplateInstanceWidgetFactory<T1, T2, T3, T4, T5>;
 #define REGISTER_SOLVER_CONFIG_WIDGET_FACTORY(NAME, T1, T2, T3) \
 typedef TemplateSolverConfigWidgetFactory<T1, T2, T3> NAME;     \
 template class TemplateSolverConfigWidgetFactory<T1, T2, T3>;
+
+#define REGISTER_ANALYZER_WIDGET_FACTORY(NAME, T1, T2, T3) \
+typedef TemplateAnalyzerWidgetFactory<T1, T2, T3> NAME;    \
+template class TemplateAnalyzerWidgetFactory<T1, T2, T3>;
 
 #endif /* GUI_FACTORIES_H_ */

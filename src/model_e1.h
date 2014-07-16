@@ -122,9 +122,9 @@ class E1PetscSolver: public OdeSolver{
 public:
 	E1PetscSolver(const E1PetscSolverConfig*, const E1Config*, const E1State*);
 	virtual ~E1PetscSolver();
-	virtual const OdeState* getCurrentState() const;
+	virtual const OdeState* run(double time_or_steps, bool as_steps = false);
 	virtual double getTime() const;
-	virtual void run();
+	virtual double getSteps() const;
 private:
 	E1Config* pconfig;				// problem config
 	E1PetscSolverConfig* sconfig;	// solver config

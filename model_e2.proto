@@ -23,6 +23,8 @@ message E2PetscSolverConfig{
 }
 
 message E2Model{
+	required double time = 4;
+	required uint32 steps = 5;
 	required E2Config pconfig = 1;
 	required E2State state = 2;
 	required E2PetscSolverConfig sconfig = 3;

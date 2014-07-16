@@ -12,6 +12,7 @@
 #include <algorithm>
 
 #include <cstring>
+#include <cstdio>
 
 void E1State::sort_arrays(){
 	// TODO: Do it better then copy many times:(
@@ -59,14 +60,8 @@ E1PetscSolver::E1PetscSolver(const E1PetscSolverConfig* scfg, const E1Config* pc
 double E1PetscSolver::getTime() const {
 	return time_passed;
 }
-
-const OdeState* E1PetscSolver::getCurrentState() const{
-	std::copy(ksi, ksi+pconfig->g_m, state->getKsiArray().begin());
-	std::copy(b, b+pconfig->g_m, state->getBArray().begin());
-
-	state->sort_arrays();
-
-	return state;
+double E1PetscSolver::getSteps() const {
+	return 0.0;
 }
 
 E1PetscSolver::~E1PetscSolver(){
@@ -77,7 +72,7 @@ E1PetscSolver::~E1PetscSolver(){
 	delete ksi;
 }
 
-void E1PetscSolver::run(){
+const OdeState* E1PetscSolver::run(double time_or_steps, bool as_steps){
 //	PetscErrorCode ierr;
 //	ierr = TSSolve(ts, NULL);assert(!ierr);
 	// get all data
@@ -165,6 +160,12 @@ void E1PetscSolver::run(){
 	printf("Iterations = %d\n", steps_passed);
 
 	fclose(fp);	// close pipe input
+
+	std::copy(this->ksi, this->ksi+pconfig->g_m, state->getKsiArray().begin());
+	std::copy(this->b, this->b+pconfig->g_m, state->getBArray().begin());
+	state->sort_arrays();
+
+	return state;
 }
 
 int E1PetscSolver::read_simulation(FILE* fp, int m){

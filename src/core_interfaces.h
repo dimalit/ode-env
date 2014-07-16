@@ -41,10 +41,10 @@ public:
 // TODO: Virtual destructor here and elsewhere!
 class OdeSolver{
 public:
-	virtual const OdeState* getCurrentState() const = 0;
+	virtual const OdeState* run(double time_or_steps, bool as_steps = false) = 0;
 	virtual ~OdeSolver(){}
 	virtual double getTime() const = 0;
-	virtual void run() = 0;
+	virtual double getSteps() const = 0;
 };
 
 #endif /* CORE_INTERFACES_H_ */

@@ -47,4 +47,12 @@ public:
 	}
 };
 
+class OdeAnalyzerWidget: public Gtk::Frame{
+public:
+	virtual void reset() = 0;
+	virtual void processState(const OdeState* state, double time) = 0;
+	virtual int getStatesCount() = 0;
+	virtual ~OdeAnalyzerWidget(){}
+};
+
 #endif /* GUI_INTERFACES_H_ */

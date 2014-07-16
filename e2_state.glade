@@ -95,7 +95,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="n_rows">2</property>
-        <property name="n_columns">2</property>
+        <property name="n_columns">3</property>
         <child>
           <object class="GtkRadioButton" id="radio_rand">
             <property name="label" translatable="yes">random placement</property>
@@ -123,7 +123,39 @@
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkLabel" id="label_i_left">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">label_i_left</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label_phi_left">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">label_phi_left</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">1</property>
+            <property name="bottom_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label_e">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">label_e</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="right_attach">3</property>
+          </packing>
         </child>
         <child>
           <placeholder/>

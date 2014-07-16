@@ -16,6 +16,7 @@ class E2Config: public pb::E2Config, public OdeConfig{
 public:
 	E2Config(){
 		set_n(250);
+		set_f(1);
 	}
 	static std::string getDisplayName(){
 		return "model e2";
@@ -26,6 +27,7 @@ class E2State: public pb::E2State, public OdeState{
 public:
 	E2State(const E2Config*);
 };
+
 class E2PetscSolverConfig: public pb::E2PetscSolverConfig, public OdeSolverConfig{
 public:
 	E2PetscSolverConfig(){
@@ -38,9 +40,9 @@ class E2PetscSolver: public OdeSolver{
 public:
 	E2PetscSolver(const E2PetscSolverConfig*, const E2Config*, const E2State*);
 	virtual ~E2PetscSolver();
-	virtual const OdeState* getCurrentState() const;
+	virtual const OdeState* run(double time_or_steps, bool as_steps = false);
 	virtual double getTime() const;
-	virtual void run();
+	virtual double getSteps() const;
 
 	static std::string getDisplayName(){
 		return "PETSc RK solver through protobuf for e1";
@@ -49,6 +51,8 @@ private:
 	E2Config* pconfig;				// problem config
 	E2PetscSolverConfig* sconfig;	// solver config
 	E2State* state;
+	double time_passed;
+	int steps_passed;
 };
 
 /////////////////// factories //////////////////

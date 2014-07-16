@@ -109,7 +109,9 @@ void protobuf_AssignDesc_model_5fe2_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E2PetscSolverConfig));
   E2Model_descriptor_ = file->message_type(3);
-  static const int E2Model_offsets_[3] = {
+  static const int E2Model_offsets_[5] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E2Model, time_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E2Model, steps_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E2Model, pconfig_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E2Model, state_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E2Model, sconfig_),
@@ -177,10 +179,10 @@ void protobuf_AddDesc_model_5fe2_2eproto() {
     "les\030\002 \003(\n2\025.pb.E2State.Particles\032#\n\tPart"
     "icles\022\013\n\003ksi\030\003 \002(\001\022\t\n\001v\030\004 \002(\001\";\n\023E2Petsc"
     "SolverConfig\022\021\n\ttolerance\030\001 \001(\001\022\021\n\tinit_"
-    "step\030\002 \001(\001\"n\n\007E2Model\022\035\n\007pconfig\030\001 \002(\0132\014"
-    ".pb.E2Config\022\032\n\005state\030\002 \002(\0132\013.pb.E2State"
-    "\022(\n\007sconfig\030\003 \002(\0132\027.pb.E2PetscSolverConf"
-    "ig", 362);
+    "step\030\002 \001(\001\"\213\001\n\007E2Model\022\014\n\004time\030\004 \002(\001\022\r\n\005"
+    "steps\030\005 \002(\r\022\035\n\007pconfig\030\001 \002(\0132\014.pb.E2Conf"
+    "ig\022\032\n\005state\030\002 \002(\0132\013.pb.E2State\022(\n\007sconfi"
+    "g\030\003 \002(\0132\027.pb.E2PetscSolverConfig", 392);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e2.proto", &protobuf_RegisterTypes);
   E2Config::default_instance_ = new E2Config();
@@ -1264,6 +1266,8 @@ void E2PetscSolverConfig::Swap(E2PetscSolverConfig* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int E2Model::kTimeFieldNumber;
+const int E2Model::kStepsFieldNumber;
 const int E2Model::kPconfigFieldNumber;
 const int E2Model::kStateFieldNumber;
 const int E2Model::kSconfigFieldNumber;
@@ -1288,6 +1292,8 @@ E2Model::E2Model(const E2Model& from)
 
 void E2Model::SharedCtor() {
   _cached_size_ = 0;
+  time_ = 0;
+  steps_ = 0u;
   pconfig_ = NULL;
   state_ = NULL;
   sconfig_ = NULL;
@@ -1328,6 +1334,8 @@ E2Model* E2Model::New() const {
 
 void E2Model::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    time_ = 0;
+    steps_ = 0u;
     if (has_pconfig()) {
       if (pconfig_ != NULL) pconfig_->::pb::E2Config::Clear();
     }
@@ -1385,6 +1393,38 @@ bool E2Model::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(33)) goto parse_time;
+        break;
+      }
+      
+      // required double time = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+         parse_time:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &time_)));
+          set_has_time();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(40)) goto parse_steps;
+        break;
+      }
+      
+      // required uint32 steps = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_steps:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &steps_)));
+          set_has_steps();
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1425,6 +1465,16 @@ void E2Model::SerializeWithCachedSizes(
       3, this->sconfig(), output);
   }
   
+  // required double time = 4;
+  if (has_time()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(4, this->time(), output);
+  }
+  
+  // required uint32 steps = 5;
+  if (has_steps()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(5, this->steps(), output);
+  }
+  
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1454,6 +1504,16 @@ void E2Model::SerializeWithCachedSizes(
         3, this->sconfig(), target);
   }
   
+  // required double time = 4;
+  if (has_time()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(4, this->time(), target);
+  }
+  
+  // required uint32 steps = 5;
+  if (has_steps()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(5, this->steps(), target);
+  }
+  
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -1465,6 +1525,18 @@ int E2Model::ByteSize() const {
   int total_size = 0;
   
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required double time = 4;
+    if (has_time()) {
+      total_size += 1 + 8;
+    }
+    
+    // required uint32 steps = 5;
+    if (has_steps()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->steps());
+    }
+    
     // required .pb.E2Config pconfig = 1;
     if (has_pconfig()) {
       total_size += 1 +
@@ -1513,6 +1585,12 @@ void E2Model::MergeFrom(const ::google::protobuf::Message& from) {
 void E2Model::MergeFrom(const E2Model& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_time()) {
+      set_time(from.time());
+    }
+    if (from.has_steps()) {
+      set_steps(from.steps());
+    }
     if (from.has_pconfig()) {
       mutable_pconfig()->::pb::E2Config::MergeFrom(from.pconfig());
     }
@@ -1539,7 +1617,7 @@ void E2Model::CopyFrom(const E2Model& from) {
 }
 
 bool E2Model::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
+  if ((_has_bits_[0] & 0x0000001f) != 0x0000001f) return false;
   
   if (has_pconfig()) {
     if (!this->pconfig().IsInitialized()) return false;
@@ -1552,6 +1630,8 @@ bool E2Model::IsInitialized() const {
 
 void E2Model::Swap(E2Model* other) {
   if (other != this) {
+    std::swap(time_, other->time_);
+    std::swap(steps_, other->steps_);
     std::swap(pconfig_, other->pconfig_);
     std::swap(state_, other->state_);
     std::swap(sconfig_, other->sconfig_);

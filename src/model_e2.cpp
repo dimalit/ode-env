@@ -22,19 +22,19 @@ E2State::E2State(const E2Config* config){
 }
 
 E2PetscSolver::E2PetscSolver(const E2PetscSolverConfig* scfg, const E2Config* pcfg, const E2State* init_state){
+	time_passed = 0;
+	steps_passed = 0;
+
 	pconfig = new E2Config(*pcfg);
 	sconfig = new E2PetscSolverConfig(*scfg);
 	state = new E2State(*init_state);
 }
 
 double E2PetscSolver::getTime() const {
-	// TODO: stub
-	return 0.0;
+	return time_passed;
 }
-
-const OdeState* E2PetscSolver::getCurrentState() const{
-	// TODO: stub
-	return state;
+double E2PetscSolver::getSteps() const {
+	return steps_passed;
 }
 
 E2PetscSolver::~E2PetscSolver(){
@@ -43,7 +43,7 @@ E2PetscSolver::~E2PetscSolver(){
 	delete pconfig;
 }
 
-void E2PetscSolver::run(){
+const OdeState* E2PetscSolver::run(double time_or_steps, bool as_steps){
 	int rf, wf;
 	pid_t child = rpc_call("../ts/Debug/ts", &rf, &wf);
 
@@ -54,6 +54,13 @@ void E2PetscSolver::run(){
 	all.mutable_pconfig()->CopyFrom(*pconfig);
 	all.mutable_state()->CopyFrom(*state);
 
+	all.set_time(time_or_steps);
+	all.set_steps((unsigned long long)time_or_steps);
+	if(as_steps)
+		all.set_time(1e+30);
+	else
+		all.set_steps(INT_MAX);
+
 	all.SerializeToFileDescriptor(wf);
 	close(wf);		// need EOF for protobuf to catch the end of the message
 
@@ -63,8 +70,13 @@ void E2PetscSolver::run(){
 //	while(read(rf, &buf, 1) > 0);
 	waitpid(child, 0, 0);
 
+	read(rf, &steps_passed, sizeof(steps_passed));
+	read(rf, &time_passed, sizeof(time_passed));
+
 	state->ParseFromFileDescriptor(rf);
 	state->set_simulated(true);
 
 	close(rf);
+
+	return state;
 }
