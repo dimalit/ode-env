@@ -118,6 +118,10 @@ public:
 };
 
 class E1PetscSolver: public OdeSolver{
+public:
+	typedef E1PetscSolverConfig SConfig;
+	typedef E1Config PConfig;
+	typedef E1State State;
 
 public:
 	E1PetscSolver(const E1PetscSolverConfig*, const E1Config*, const E1State*);
@@ -125,6 +129,11 @@ public:
 	virtual const OdeState* run(double time_or_steps, bool as_steps = false);
 	virtual double getTime() const;
 	virtual double getSteps() const;
+
+	static std::string getDisplayName(){
+		return "PETSc RK solver for e1";
+	}
+
 private:
 	E1Config* pconfig;				// problem config
 	E1PetscSolverConfig* sconfig;	// solver config
@@ -142,7 +151,7 @@ private:
 
 /////////////////// factories //////////////////
 
-REGISTER_INSTANCE_FACTORY(E1InstanceFactory, E1Config, E1State)
-REGISTER_SOLVER_FACTORY(E1SolverFactory, E1InstanceFactory, E1PetscSolver, E1PetscSolverConfig, E1Config, E1State)
+REGISTER_INSTANCE_CLASS(E1Config, E1State)
+REGISTER_SOLVER_CLASS(E1PetscSolver)
 
 #endif /* MODEL_E1_H_ */

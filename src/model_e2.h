@@ -38,6 +38,10 @@ public:
 
 class E2PetscSolver: public OdeSolver{
 public:
+	typedef E2PetscSolverConfig SConfig;
+	typedef E2Config PConfig;
+	typedef E2State State;
+public:
 	E2PetscSolver(const E2PetscSolverConfig*, const E2Config*, const E2State*);
 	virtual ~E2PetscSolver();
 	virtual const OdeState* run(double time_or_steps, bool as_steps = false);
@@ -57,7 +61,7 @@ private:
 
 /////////////////// factories //////////////////
 
-REGISTER_INSTANCE_FACTORY(E2InstanceFactory, E2Config, E2State)
-REGISTER_SOLVER_FACTORY(E2SolverFactory, E2InstanceFactory, E2PetscSolver, E2PetscSolverConfig, E2Config, E2State)
+REGISTER_INSTANCE_CLASS(E2Config, E2State)
+REGISTER_SOLVER_CLASS(E2PetscSolver)
 
 #endif /* MODEL_E2_H_ */

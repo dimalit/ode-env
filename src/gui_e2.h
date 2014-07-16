@@ -19,6 +19,8 @@
 #include <iostream>
 
 class E2ConfigWidget: public OdeConfigWidget{
+public:
+	typedef E2Config Config;
 private:
 	E2Config* config;
 
@@ -40,6 +42,8 @@ private:
 };
 
 class E2StateWidget: public OdeStateWidget{
+public:
+	typedef E2State State;
 private:
 	E2State* state;
 	E2Config* config;
@@ -69,6 +73,8 @@ private:
 };
 
 class E2PetscSolverConfigWidget: public OdeSolverConfigWidget{
+public:
+	typedef E2PetscSolver Solver;
 private:
 	E2PetscSolverConfig* config;
 
@@ -89,7 +95,7 @@ private:
 
 /////////////////////////////////////////////////////////////////////
 
-REGISTER_INSTANCE_WIDGET_FACTORY(E2InstanceWidgetFactory, E2InstanceFactory, E2ConfigWidget, E2StateWidget, E2Config, E2State)
-REGISTER_SOLVER_CONFIG_WIDGET_FACTORY(E2PetscSolverConfigWidgetFactory, E2SolverFactory, E2PetscSolverConfig, E2PetscSolverConfigWidget)
+REGISTER_INSTANCE_WIDGET_CLASSES(E2ConfigWidget, E2StateWidget)
+REGISTER_SOLVER_CONFIG_WIDGET_CLASS(E2PetscSolverConfigWidget)
 
 #endif /* GUI_E2_H_ */

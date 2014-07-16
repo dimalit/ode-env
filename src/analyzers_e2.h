@@ -12,6 +12,9 @@
 #include "gui_factories.h"
 
 class E2FieldAnalyzer: public OdeAnalyzerWidget{
+public:
+	typedef E2Config Config;
+	typedef E2State State;
 private:
 	E2Config* config;
 	int states_count;
@@ -28,6 +31,6 @@ public:
 	}
 };
 
-REGISTER_ANALYZER_WIDGET_FACTORY(E2AnalyzerFactory, E2InstanceFactory, E2FieldAnalyzer, E2Config)
+REGISTER_ANALYZER_WIDGET_CLASS(E2FieldAnalyzer)
 
 #endif /* ANALYZERS_E2_H_ */

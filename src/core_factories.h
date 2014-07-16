@@ -80,7 +80,7 @@ private:
 	TemplateInstanceFactory();
 };
 
-template<class IF, class SO, class SC, class PC, class ST>
+template<class IF, class SOLVER>
 class TemplateSolverFactory: public OdeSolverFactory{
 public:
 	static TemplateSolverFactory* getInstance(){
@@ -88,20 +88,20 @@ public:
 	}
 
 	virtual OdeSolver* createSolver(const OdeSolverConfig* scfg, const OdeConfig* pcfg, const OdeState* initial_state) const {
-		const SC* e1_scfg = dynamic_cast<const SC*>(scfg);
+		const typename SOLVER::SConfig* e1_scfg = dynamic_cast<const typename SOLVER::SConfig*>(scfg);
 			assert(e1_scfg);
-		const PC* e1_pcfg = dynamic_cast<const PC*>(pcfg);
+		const typename SOLVER::PConfig* e1_pcfg = dynamic_cast<const typename SOLVER::PConfig*>(pcfg);
 			assert(e1_pcfg);
-		const ST* e1_state = dynamic_cast<const ST*>(initial_state);
+		const typename SOLVER::State* e1_state = dynamic_cast<const typename SOLVER::State*>(initial_state);
 			assert(e1_state);
-		return new SO(e1_scfg, e1_pcfg, e1_state);
+		return new SOLVER(e1_scfg, e1_pcfg, e1_state);
 	}
 	virtual OdeSolverConfig* createSolverConfg() const {
-		return new SC();
+		return new typename SOLVER::SConfig();
 	}
 
 	virtual std::string getDisplayName() const {
-		return "PETSc RK solver for e1";
+		return SOLVER::getDisplayName();
 	}
 private:
 	static TemplateSolverFactory instance;
@@ -109,8 +109,8 @@ private:
 	}
 };
 
-template<class IF, class SO, class SC, class PC, class ST>
-TemplateSolverFactory<IF, SO, SC, PC, ST> TemplateSolverFactory<IF, SO, SC, PC, ST>::instance;
+template<class IF, class SOLVER>
+TemplateSolverFactory<IF, SOLVER> TemplateSolverFactory<IF, SOLVER>::instance;
 
 //////////////////////////// FACTORY MANAGERS ///////////////////////////////
 class OdeInstanceFactoryManager{
@@ -231,12 +231,10 @@ template class AuxFactoryManager<OdeSolverFactory, OdeInstanceFactory>;
 
 // TODO: investigate if I could move ctor of AuxFactoryManaget into cpp-file
 
-#define REGISTER_INSTANCE_FACTORY(NAME, T1, T2) \
-typedef TemplateInstanceFactory<T1, T2> NAME;   \
-template class TemplateInstanceFactory<T1, T2>;
+#define REGISTER_INSTANCE_CLASS(C, S) \
+template class TemplateInstanceFactory<C, S>;
 
-#define REGISTER_SOLVER_FACTORY(NAME, T1, T2, T3, T4, T5) \
-typedef TemplateSolverFactory<T1, T2, T3, T4, T5> NAME;   \
-template class TemplateSolverFactory<T1, T2, T3, T4, T5>;
+#define REGISTER_SOLVER_CLASS(SOLVER) \
+template class TemplateSolverFactory<TemplateInstanceFactory<SOLVER::PConfig, SOLVER::State>, SOLVER>;
 
 #endif /* CORE_FACTORIES_H_ */
