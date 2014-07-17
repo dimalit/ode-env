@@ -32,14 +32,18 @@ E2ConfigWidget::E2ConfigWidget(const E2Config* cfg){
 	b->get_widget("entry_delta", entry_delta);
 	b->get_widget("entry_f", entry_f);
 
+	b->get_widget("button_apply", button_apply);
+
 	this->add(*root);
 
 	config_to_widget();
 
-	entry_n->signal_changed().connect(this->signal_changed());
-	entry_a->signal_changed().connect(this->signal_changed());
-	entry_delta->signal_changed().connect(this->signal_changed());
-	entry_f->signal_changed().connect(this->signal_changed());
+	entry_n->signal_changed().connect(sigc::mem_fun(*this, &E2ConfigWidget::edit_anything_cb));
+	entry_a->signal_changed().connect(sigc::mem_fun(*this, &E2ConfigWidget::edit_anything_cb));
+	entry_delta->signal_changed().connect(sigc::mem_fun(*this, &E2ConfigWidget::edit_anything_cb));
+	entry_f->signal_changed().connect(sigc::mem_fun(*this, &E2ConfigWidget::edit_anything_cb));
+
+	button_apply->signal_clicked().connect(sigc::mem_fun(*this, &E2ConfigWidget::on_apply_cb));
 }
 
 void E2ConfigWidget::widget_to_config(){
@@ -47,6 +51,8 @@ void E2ConfigWidget::widget_to_config(){
 	config->set_a(atoi(entry_a->get_text().c_str()));
 	config->set_delta(atoi(entry_delta->get_text().c_str()));
 	config->set_f(atoi(entry_f->get_text().c_str()));
+
+	button_apply->set_sensitive(false);
 }
 void E2ConfigWidget::config_to_widget(){
 	std::ostringstream buf;
@@ -64,6 +70,17 @@ void E2ConfigWidget::config_to_widget(){
 	buf.str("");
 	buf << config->f();
 	entry_f->set_text(buf.str());
+
+	button_apply->set_sensitive(false);
+}
+
+void E2ConfigWidget::edit_anything_cb(){
+	button_apply->set_sensitive(true);
+}
+
+void E2ConfigWidget::on_apply_cb(){
+	widget_to_config();
+	m_signal_changed.emit();
 }
 
 void E2ConfigWidget::loadConfig(const OdeConfig* cfg){
@@ -72,6 +89,8 @@ void E2ConfigWidget::loadConfig(const OdeConfig* cfg){
 	delete this->config;
 	this->config = new E2Config(*ecfg);
 	config_to_widget();
+
+	m_signal_changed.emit();
 }
 
 const OdeConfig* E2ConfigWidget::getConfig() {
@@ -112,6 +131,8 @@ E2StateWidget::E2StateWidget(const E2Config* _config, const E2State* _state){
 	b->get_widget("label_phi_left", label_phi_left);
 	b->get_widget("label_e", label_e);
 
+	b->get_widget("button_apply", button_apply);
+
 	this->add(*root);
 
 	state_to_widget();
@@ -121,70 +142,16 @@ E2StateWidget::E2StateWidget(const E2Config* _config, const E2State* _state){
 	// signals
 	this->signal_realize().connect(sigc::mem_fun(this, &E2StateWidget::on_realize_cb));
 
-	entry_left->signal_changed().connect(this->signal_changed());
-	entry_right->signal_changed().connect(this->signal_changed());
-	radio_rand->signal_toggled().connect(this->signal_changed());
+	entry_left->signal_changed().connect(sigc::mem_fun(*this, &E2StateWidget::edit_anything_cb));
+	entry_right->signal_changed().connect(sigc::mem_fun(*this, &E2StateWidget::edit_anything_cb));
+	radio_rand->signal_toggled().connect(sigc::mem_fun(*this, &E2StateWidget::edit_anything_cb));
+
+	button_apply->signal_clicked().connect(sigc::mem_fun(*this, &E2StateWidget::on_apply_cb));
 }
 
 E2StateWidget::~E2StateWidget(){
 	if(to_gnuplot)
 		fclose(to_gnuplot);
-}
-
-void E2StateWidget::loadState(const OdeState* state){
-	const E2State* estate = dynamic_cast<const E2State*>(state);
-		assert(estate);
-	delete this->state;
-	this->state = new E2State(*estate);
-
-	state_to_widget();
-	if(!this->state->simulated())
-		generateState();
-}
-const OdeState* E2StateWidget::getState(){
-	widget_to_state();
-	return state;
-}
-
-void E2StateWidget::loadConfig(const OdeConfig* cfg){
-	const E2Config* ecfg = dynamic_cast<const E2Config*>(cfg);
-		assert(ecfg);
-	delete this->config;
-	this->config = new E2Config(*ecfg);
-
-	delete this->state;
-	this->state = new E2State(ecfg);
-
-	state_to_widget();
-	widget_to_state();
-}
-const OdeConfig* E2StateWidget::getConfig(){
-	return config;
-}
-
-void E2StateWidget::generateState(){
-	double left = atof(entry_left->get_text().c_str());
-	double right = atof(entry_right->get_text().c_str());
-
-	bool use_rand = this->radio_rand->get_active();
-
-	int n = config->n();
-	for(int i=0; i<n; i++){
-		double ksi;
-		if(use_rand)
-			ksi = rand() / (double)RAND_MAX * (right-left) + left;
-		else
-			ksi = i / (double)n * (right-left) + left;
-
-		pb::E2State::Particles p;
-		p.set_ksi(ksi); p.set_v(0.0);
-
-		state->mutable_particles(i)->CopyFrom(p);
-	}
-
-	state->set_simulated(false);
-
-	update_chart();
 }
 
 void E2StateWidget::widget_to_state(){
@@ -219,8 +186,80 @@ void E2StateWidget::state_to_widget(){
 	}
 }
 
+void E2StateWidget::edit_anything_cb(){
+	button_apply->set_sensitive(true);
+}
+void E2StateWidget::on_apply_cb(){
+	generateState();
+	m_signal_changed.emit();
+}
+
+
+void E2StateWidget::loadConfig(const OdeConfig* cfg){
+	const E2Config* ecfg = dynamic_cast<const E2Config*>(cfg);
+		assert(ecfg);
+	delete this->config;
+	this->config = new E2Config(*ecfg);
+
+	delete this->state;
+	this->state = new E2State(ecfg);
+
+	state_to_widget();
+	widget_to_state();
+
+	m_signal_changed.emit();
+}
+const OdeConfig* E2StateWidget::getConfig(){
+	return config;
+}
+
+void E2StateWidget::loadState(const OdeState* state){
+	const E2State* estate = dynamic_cast<const E2State*>(state);
+		assert(estate);
+	delete this->state;
+	this->state = new E2State(*estate);
+
+	state_to_widget();
+	widget_to_state();
+
+	m_signal_changed.emit();
+}
+const OdeState* E2StateWidget::getState(){
+	widget_to_state();
+	return state;
+}
+
+void E2StateWidget::generateState(){
+	double left = atof(entry_left->get_text().c_str());
+	double right = atof(entry_right->get_text().c_str());
+
+	bool use_rand = this->radio_rand->get_active();
+
+	int n = config->n();
+	for(int i=0; i<n; i++){
+		double ksi;
+		if(use_rand)
+			ksi = rand() / (double)RAND_MAX * (right-left) + left;
+		else
+			ksi = i / (double)n * (right-left) + left;
+
+		pb::E2State::Particles p;
+		p.set_ksi(ksi); p.set_v(0.0);
+
+		state->mutable_particles(i)->CopyFrom(p);
+	}
+
+	state->set_simulated(false);
+
+	update_chart();
+}
+
+
 void E2StateWidget::update_chart(){
 	// TODO: Написать как направлять команды gnuplot'у и вставлять его вывод в окно!
+
+	if(!this->is_realized())
+		return;
 
 	if(to_gnuplot == NULL){
 		int rf, wf;
@@ -235,10 +274,7 @@ void E2StateWidget::update_chart(){
 	}
 
 	unsigned id = x11_socket.get_id();
-
-	// if not added to window yet
-	if(id==0)
-		return;
+		assert(id != 0);
 
 	fprintf(to_gnuplot, "set terminal x11 window \"%x\"\n", id);
 	fprintf(to_gnuplot, "plot '-' using 1:2 with points\n");

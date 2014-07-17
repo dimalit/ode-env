@@ -25,6 +25,7 @@ private:
 	E2Config* config;
 
 	Gtk::Entry *entry_n, *entry_a, *entry_delta, *entry_f;
+	Gtk::Button *button_apply;
 
 public:
 	E2ConfigWidget(const E2Config* config = NULL);
@@ -39,6 +40,8 @@ public:
 private:
 	void widget_to_config();
 	void config_to_widget();
+	void edit_anything_cb();
+	void on_apply_cb();
 };
 
 class E2StateWidget: public OdeStateWidget{
@@ -54,6 +57,7 @@ private:
 	Gtk::CheckButton *radio_rand, *radio_linear;
 
 	Gtk::Label *label_i_left, *label_phi_left, *label_e;
+	Gtk::Button *button_apply;
 
 	FILE* to_gnuplot;
 public:
@@ -68,6 +72,8 @@ public:
 private:
 	void widget_to_state();
 	void state_to_widget();
+	void edit_anything_cb();
+	void on_apply_cb();
 	void update_chart();
 	void on_realize_cb();
 };

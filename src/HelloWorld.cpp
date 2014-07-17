@@ -20,14 +20,13 @@
 #define UI_FILE_RUN "sim_params.glade"
 
 HelloWorld::HelloWorld()
-:config_apply_button("Apply Config"), state_apply_button("Apply State"), launch_button("Launch"), cancel_button("Cancel")
+:launch_button("Launch"), cancel_button("Cancel")
 {
   problem_name = "model e2";
 
-  set_border_width(10);
+  this->set_title(problem_name);
 
-  config_apply_button.set_sensitive(false);
-  state_apply_button.set_sensitive(false);
+  set_border_width(10);
 
   button_box.pack_end(launch_button, false, false, 0);
   button_box.pack_end(cancel_button, false, false, 0);
@@ -37,7 +36,6 @@ HelloWorld::HelloWorld()
   OdeInstanceWidgetFactory* inst_widget_fact = *OdeInstanceWidgetFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
   this->config_widget = inst_widget_fact->createConfigWidget();
   vbox.pack_start(*this->config_widget, false, false, 0);
-  vbox.pack_start(config_apply_button, false, false, 0);
 
   OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
   this->solver_config_widget = OdeSolverConfigWidgetFactoryManager::getInstance()->getFactoriesFor(solver_fact).first->createConfigWidget();
@@ -68,11 +66,13 @@ HelloWorld::HelloWorld()
   add(vbox);
 
   // win state //
-  win_state.add(win_state_vbox);
-
   this->state_widget = inst_widget_fact->createStateWidget(this->config_widget->getConfig());
-  win_state_vbox.pack_start(*this->state_widget, false, false, 0);
-  win_state_vbox.pack_start(state_apply_button, false, false, 0);
+  win_state.add(*this->state_widget);
+
+  // analyzers //
+  OdeAnalyzerWidgetFactory* analyzer_fact = *OdeAnalyzerWidgetFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
+  this->analyzer_widget = analyzer_fact->createAnalyzerWidget(config_widget->getConfig());
+  this->analyzer_widget->processState(state_widget->getState(), 0.0);
 
   // signals //
 
@@ -80,11 +80,6 @@ HelloWorld::HelloWorld()
               &HelloWorld::on_config_changed));
   state_widget->signal_changed().connect(sigc::mem_fun(*this,
               &HelloWorld::on_state_changed));
-
-  config_apply_button.signal_clicked().connect(sigc::mem_fun(*this,
-              &HelloWorld::on_config_apply));
-  state_apply_button.signal_clicked().connect(sigc::mem_fun(*this,
-              &HelloWorld::on_state_apply));
 
   launch_button.signal_clicked().connect(sigc::mem_fun(*this,
               &HelloWorld::on_launch_clicked));
@@ -101,36 +96,31 @@ HelloWorld::~HelloWorld()
 
 void HelloWorld::on_config_changed()
 {
-	config_apply_button.set_sensitive(true);
+	state_widget->loadConfig(config_widget->getConfig());
 }
 void HelloWorld::on_state_changed()
 {
-	state_apply_button.set_sensitive(true);
+	analyzer_widget->loadConfig(config_widget->getConfig());
+	analyzer_widget->processState(state_widget->getState(), 0.0);
 }
 
-void HelloWorld::on_config_apply()
-{
-	state_widget->loadConfig(config_widget->getConfig());
-	config_apply_button.set_sensitive(false);
+const OdeConfig* HelloWorld::extract_config(){
+	return config_widget->getConfig();
 }
-void HelloWorld::on_state_apply()
-{
-	state_widget->generateState();
-	state_apply_button.set_sensitive(false);
+const OdeState* HelloWorld::extract_state(){
+	return state_widget->getState();
+}
+const OdeSolverConfig* HelloWorld::extract_solver_config(){
+	return solver_config_widget->getConfig();
 }
 
 void HelloWorld::on_launch_clicked()
 {
-  const OdeConfig* config = config_widget->getConfig();
-  const OdeState* init_state = state_widget->getState();
-  const OdeSolverConfig* solver_config = solver_config_widget->getConfig();
+  const OdeConfig* config = extract_config();
+  const OdeState* init_state = extract_state();
+  const OdeSolverConfig* solver_config = extract_solver_config();
 
   OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory(problem_name);
-
-  // TODO: think where to create this - with config!
-  OdeAnalyzerWidgetFactory* analyzer_fact = *OdeAnalyzerWidgetFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
-  this->analyzer_widget = analyzer_fact->createAnalyzerWidget(config);
-  this->analyzer_widget->processState(init_state, 0.0);
 
   bool as_steps = radio_steps->get_active();
   double time_or_steps;

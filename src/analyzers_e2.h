@@ -21,6 +21,7 @@ private:
 	FILE* to_gnuplot;
 public:
 	E2FieldAnalyzer(const E2Config* config);
+	virtual void loadConfig(const OdeConfig* config);
 	virtual void reset();
 	virtual void processState(const OdeState* state, double time);
 	virtual int getStatesCount();
