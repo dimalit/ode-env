@@ -8,15 +8,55 @@
 #include <gtkmm/box.h>
 #include <gtkmm/buttonbox.h>
 
+#include <glibmm/main.h>
+#include <glibmm/threads.h>
+
+// TODO: how to use sigc::trackable right?
+class RunThread: public sigc::trackable{
+private:
+	OdeSolver* solver;
+	Glib::Threads::Thread* thread;
+	sigc::signal<void, const OdeState*> m_signal_finished;
+
+public:
+	RunThread(OdeSolver*);
+	virtual ~RunThread();
+	void run(double time_or_steps, bool as_steps = false);
+	sigc::signal<void, const OdeState*> getSignalFinished() const {
+		return m_signal_finished;
+	}
+
+private:
+	double time_or_steps;
+	bool as_steps;
+	const OdeState* final_state;
+
+	int fd[2];
+	Glib::RefPtr<Glib::IOSource> iosource;
+
+	void thread_func();
+	bool on_event(Glib::IOCondition);
+};
+
 class HelloWorld : public Gtk::Window
 {
-	std::string problem_name;
+private:
+  std::string problem_name;
+  OdeSolver* solver;
+  RunThread* run_thread;
 
 public:
   HelloWorld();
   virtual ~HelloWorld();
 
-protected:
+private:
+  bool computing;
+  double time_or_steps;
+  bool as_steps;
+  void run_computing();
+  void one_run_completed_cb(const OdeState* final_state);
+  void stop_computing();
+
   // Signal handlers:
   void on_config_changed();
   void on_state_changed();

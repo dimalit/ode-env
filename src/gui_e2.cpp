@@ -162,27 +162,7 @@ void E2StateWidget::widget_to_state(){
 void E2StateWidget::state_to_widget(){
 
 	if(state->simulated()){
-		double left =   std::numeric_limits<double>::infinity();
-		double right = -std::numeric_limits<double>::infinity();
-
-		for(int i=0; i<state->particles_size(); i++){
-			double ksi = state->particles(i).ksi();
-			if(ksi < left)
-				left = ksi;
-			if(ksi > right)
-				right = ksi;
-		}
-
-		std::ostringstream buf;
-		buf << left;
-		entry_left->set_text(buf.str());
-
-		buf.str("");
-		buf << right;
-		entry_right->set_text(buf.str());
-
 		update_chart();
-
 	}
 }
 
