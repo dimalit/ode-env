@@ -257,6 +257,7 @@ void E2StateWidget::update_chart(){
 		assert(id != 0);
 
 	fprintf(to_gnuplot, "set terminal x11 window \"%x\"\n", id);
+	fprintf(to_gnuplot, "set yrange [-1:2]\n");
 	fprintf(to_gnuplot, "plot '-' using 1:2 with points\n");
 //	fprintf(wff, "plot [-3.14:3.14] sin(x)\n");
 

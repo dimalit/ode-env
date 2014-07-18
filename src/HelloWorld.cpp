@@ -55,13 +55,13 @@ HelloWorld::HelloWorld()
   b->get_widget("radio_steps", radio_steps);
 
   b->get_widget("entry_time", entry_time);
-  	  entry_time->set_text("1");
+  	  entry_time->set_text("");
   b->get_widget("entry_steps", entry_steps);
-  	  entry_steps->set_text("100");
+  	  entry_steps->set_text("1");
   b->get_widget("label_time", label_time);
   b->get_widget("label_steps", label_steps);
-  label_time->set_text("sim time: 0");
-  label_steps->set_text("sim steps: 0");
+
+  set_steps_and_time(0, 0.0);
 
   vbox.pack_start(*root, false, false);
 
@@ -72,6 +72,7 @@ HelloWorld::HelloWorld()
   // win state //
   this->state_widget = inst_widget_fact->createStateWidget(this->config_widget->getConfig());
   win_state.add(*this->state_widget);
+  win_state.set_title(inst_widget_fact->getDisplayName() + " state");
 
   // analyzers //
   OdeAnalyzerWidgetFactory* analyzer_fact = *OdeAnalyzerWidgetFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
@@ -139,6 +140,22 @@ void HelloWorld::on_cancel_clicked()
   Gtk::Main::quit();
 }
 
+void HelloWorld::set_steps_and_time(int steps, double time){
+	total_steps = steps;
+	total_time = time;
+
+	std::ostringstream buf;
+	buf << "sim time: " << total_time;
+	label_time->set_text(buf.str());
+
+	buf.str("");
+	buf << "sim steps: " << total_steps;
+	label_steps->set_text(buf.str());
+}
+void HelloWorld::add_steps_and_time(int steps, double time){
+	set_steps_and_time(total_steps + steps, total_time + time);
+}
+
 void HelloWorld::run_computing(){
   assert(!computing);
   assert(!run_thread);
@@ -150,11 +167,11 @@ void HelloWorld::run_computing(){
 
   OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory(problem_name);
 
-  as_steps = radio_steps->get_active();
-  if(as_steps)
-	  time_or_steps = atof(entry_steps->get_text().c_str());
-  else
-	  time_or_steps = atof(entry_time->get_text().c_str());
+  set_steps_and_time(0, 0.0);
+
+//  as_steps = radio_steps->get_active();
+  steps = atoi(entry_steps->get_text().c_str());
+  time = atof(entry_time->get_text().c_str());
 
   solver = OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first->createSolver(solver_config, config, init_state);
 
@@ -162,7 +179,7 @@ void HelloWorld::run_computing(){
   run_thread->getSignalFinished().connect(sigc::mem_fun(*this, &HelloWorld::one_run_completed_cb));
 
   computing = true;
-  run_thread->run(time_or_steps, as_steps);
+  run_thread->run(steps, time);
 }
 
 void HelloWorld::one_run_completed_cb(const OdeState* final_state){
@@ -170,17 +187,11 @@ void HelloWorld::one_run_completed_cb(const OdeState* final_state){
 
 	  // Ноаписать: упражнение с запуском счета параллельно GUI для студентов
 
-	  std::ostringstream buf;
-	  buf << "sim time: " << solver->getTime();
-	  label_time->set_text(buf.str());
-
-	  buf.str("");
-	  buf << "sim steps: " << solver->getSteps();
-	  label_steps->set_text(buf.str());
+	  add_steps_and_time(solver->getSteps(), solver->getTime());
 
 	  // one more iteration if needed
 	  if(computing){
-		  run_thread->run(time_or_steps, as_steps);
+		  run_thread->run(steps, time);
 	  }// if
 	  else{
 			delete run_thread;	run_thread = NULL;
@@ -215,9 +226,9 @@ RunThread::~RunThread(){
 	close(fd[1]);
 }
 
-void RunThread::run(double time_or_steps, bool as_steps){
-	this->time_or_steps = time_or_steps;
-	this->as_steps = as_steps;
+void RunThread::run(int steps, double time){
+	this->steps = steps;
+	this->time = time;
 	if(thread)
 		thread->join();
 	thread = Glib::Threads::Thread::create(sigc::mem_fun(*this, &RunThread::thread_func));
@@ -225,7 +236,7 @@ void RunThread::run(double time_or_steps, bool as_steps){
 
 void RunThread::thread_func(){
 	// 1 make long computing
-	final_state = solver->run(time_or_steps, as_steps);
+	final_state = solver->run(steps, time);
 	// 2 after computing is finished - fire IOSource
 	char c = 0;
 	write(fd[1], &c, 1);

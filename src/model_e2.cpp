@@ -43,7 +43,7 @@ E2PetscSolver::~E2PetscSolver(){
 	delete pconfig;
 }
 
-const OdeState* E2PetscSolver::run(double time_or_steps, bool as_steps){
+const OdeState* E2PetscSolver::run(int steps, double time){
 	int rf, wf;
 	pid_t child = rpc_call("../ts/Debug/ts", &rf, &wf);
 
@@ -54,12 +54,8 @@ const OdeState* E2PetscSolver::run(double time_or_steps, bool as_steps){
 	all.mutable_pconfig()->CopyFrom(*pconfig);
 	all.mutable_state()->CopyFrom(*state);
 
-	all.set_time(time_or_steps);
-	all.set_steps((unsigned long long)time_or_steps);
-	if(as_steps)
-		all.set_time(1e+30);
-	else
-		all.set_steps(INT_MAX);
+	all.set_time(time);
+	all.set_steps(steps);
 
 	all.SerializeToFileDescriptor(wf);
 	close(wf);		// need EOF for protobuf to catch the end of the message

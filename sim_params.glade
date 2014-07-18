@@ -11,10 +11,10 @@
       <object class="GtkRadioButton" id="radio_time">
         <property name="label" translatable="yes">Simulation Time</property>
         <property name="visible">True</property>
+        <property name="sensitive">False</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="use_action_appearance">False</property>
-        <property name="active">True</property>
         <property name="draw_indicator">True</property>
       </object>
     </child>
@@ -22,9 +22,11 @@
       <object class="GtkRadioButton" id="radio_steps">
         <property name="label" translatable="yes">Simulation Steps</property>
         <property name="visible">True</property>
+        <property name="sensitive">False</property>
         <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="use_action_appearance">False</property>
+        <property name="active">True</property>
         <property name="draw_indicator">True</property>
         <property name="group">radio_time</property>
       </object>

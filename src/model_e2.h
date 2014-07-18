@@ -32,7 +32,7 @@ class E2PetscSolverConfig: public pb::E2PetscSolverConfig, public OdeSolverConfi
 public:
 	E2PetscSolverConfig(){
 		this->set_tolerance(0.001);
-		this->set_init_step(0.001);
+		this->set_init_step(0.1);
 	}
 };
 
@@ -44,7 +44,7 @@ public:
 public:
 	E2PetscSolver(const E2PetscSolverConfig*, const E2Config*, const E2State*);
 	virtual ~E2PetscSolver();
-	virtual const OdeState* run(double time_or_steps, bool as_steps = false);
+	virtual const OdeState* run(int steps, double time);
 	virtual double getTime() const;
 	virtual double getSteps() const;
 

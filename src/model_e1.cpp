@@ -72,7 +72,7 @@ E1PetscSolver::~E1PetscSolver(){
 	delete ksi;
 }
 
-const OdeState* E1PetscSolver::run(double time_or_steps, bool as_steps){
+const OdeState* E1PetscSolver::run(int steps, double time){
 //	PetscErrorCode ierr;
 //	ierr = TSSolve(ts, NULL);assert(!ierr);
 	// get all data

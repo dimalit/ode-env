@@ -21,14 +21,14 @@ private:
 public:
 	RunThread(OdeSolver*);
 	virtual ~RunThread();
-	void run(double time_or_steps, bool as_steps = false);
+	void run(int steps, double time);
 	sigc::signal<void, const OdeState*> getSignalFinished() const {
 		return m_signal_finished;
 	}
 
 private:
-	double time_or_steps;
-	bool as_steps;
+	int steps;
+	double time;
 	const OdeState* final_state;
 
 	int fd[2];
@@ -50,9 +50,14 @@ public:
   virtual ~HelloWorld();
 
 private:
+  int total_steps;
+  double total_time;
+  void set_steps_and_time(int steps, double time);
+  void add_steps_and_time(int steps, double time);
+
   bool computing;
-  double time_or_steps;
-  bool as_steps;
+  int steps;
+  double time;
   void run_computing();
   void one_run_completed_cb(const OdeState* final_state);
   void stop_computing();
