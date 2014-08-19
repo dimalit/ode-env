@@ -20,7 +20,7 @@
 #define UI_FILE_RUN "sim_params.glade"
 
 HelloWorld::HelloWorld()
-:launch_button("Launch"), cancel_button("Cancel")
+:launch_button("Launch"), cancel_button("Cancel"), step_button("Step")
 {
   problem_name = "model e2";
 
@@ -33,6 +33,7 @@ HelloWorld::HelloWorld()
   set_border_width(10);
 
   button_box.pack_end(launch_button, false, false, 0);
+  button_box.pack_end(step_button, false, false, 0);
   button_box.pack_end(cancel_button, false, false, 0);
 
   OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
@@ -55,7 +56,7 @@ HelloWorld::HelloWorld()
   b->get_widget("radio_steps", radio_steps);
 
   b->get_widget("entry_time", entry_time);
-  	  entry_time->set_text("");
+  	  entry_time->set_text("1.0");
   b->get_widget("entry_steps", entry_steps);
   	  entry_steps->set_text("1");
   b->get_widget("label_time", label_time);
@@ -88,6 +89,8 @@ HelloWorld::HelloWorld()
 
   launch_button.signal_clicked().connect(sigc::mem_fun(*this,
               &HelloWorld::on_launch_clicked));
+  step_button.signal_clicked().connect(sigc::mem_fun(*this,
+              &HelloWorld::on_step_clicked));
   cancel_button.signal_clicked().connect(sigc::mem_fun(*this,
               &HelloWorld::on_cancel_clicked));
 
@@ -135,6 +138,14 @@ void HelloWorld::on_launch_clicked()
   launch_button.set_label("Stop");
 }
 
+void HelloWorld::on_step_clicked()
+{
+	if(computing)
+		return;
+	run_computing();
+	stop_computing();
+}
+
 void HelloWorld::on_cancel_clicked()
 {
   Gtk::Main::quit();
@@ -169,9 +180,14 @@ void HelloWorld::run_computing(){
 
   set_steps_and_time(0, 0.0);
 
-//  as_steps = radio_steps->get_active();
+  bool use_steps = radio_steps->get_active();
   steps = atoi(entry_steps->get_text().c_str());
   time = atof(entry_time->get_text().c_str());
+
+  if(use_steps)
+	  time = 100;	// XXX: Why doesn't work 1e+6 or even 1000?
+  else
+	  steps = 1000000000;
 
   solver = OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first->createSolver(solver_config, config, init_state);
 

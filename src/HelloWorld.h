@@ -67,6 +67,7 @@ private:
   void on_state_changed();
 
   void on_launch_clicked();
+  void on_step_clicked();
   void on_cancel_clicked();
 
   const OdeConfig* extract_config();
@@ -85,7 +86,7 @@ private:
   Gtk::Entry *entry_time, *entry_steps;
   Gtk::Label *label_time, *label_steps;
 
-  Gtk::Button launch_button, cancel_button;
+  Gtk::Button launch_button, cancel_button, step_button;
 
   Gtk::VBox vbox;
   Gtk::HButtonBox button_box;

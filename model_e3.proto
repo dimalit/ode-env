@@ -1,0 +1,34 @@
+syntax = "proto2";
+
+package pb;
+
+message E3Config{
+	required uint32 m = 1;
+	optional double n = 2;
+	optional double theta_e = 3;
+	optional double gamma_0_2 = 4;
+	optional double delta_e = 5;
+	optional double r_e = 6;
+}
+
+message E3State{
+	optional bool simulated = 1;
+	repeated group Particles = 2{
+		required double a = 3;
+		required double ksi = 4;
+		required double eta = 5;
+	}
+}
+
+message E3PetscSolverConfig{
+	optional double tolerance = 1;
+	optional double init_step = 2;
+}
+
+message E3Model{
+	required double time = 4;
+	required uint32 steps = 5;
+	required E3Config pconfig = 1;
+	required E3State state = 2;
+	required E3PetscSolverConfig sconfig = 3;
+}
