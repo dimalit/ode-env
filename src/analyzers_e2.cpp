@@ -86,5 +86,3 @@ E2FieldAnalyzer::~E2FieldAnalyzer(){
 	fclose(to_gnuplot);
 	delete config;
 }
-
-

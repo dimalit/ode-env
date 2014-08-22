@@ -16,7 +16,11 @@ E3State::E3State(const E3Config* config){
 	int m = config->m();
 	for(int i=0; i<m; i++){
 		this->add_particles();
+		this->mutable_particles(i)->set_a(1.0);
+		this->mutable_particles(i)->set_ksi(0.0);
 	}
+	set_e(1.0);
+	set_phi(0.0);
 	set_simulated(false);
 }
 
@@ -49,6 +53,7 @@ const OdeState* E3PetscSolver::run(int steps, double time){
 	pid_t child = rpc_call("../ts3/Debug/ts3", &rf, &wf);
 
 //	int tmp = open("tmp", O_WRONLY | O_CREAT, 0664);
+	state->PrintDebugString();
 
 	pb::E3Model all;
 	all.mutable_sconfig()->CopyFrom(*sconfig);
@@ -58,7 +63,9 @@ const OdeState* E3PetscSolver::run(int steps, double time){
 	all.set_time(time);
 	all.set_steps(steps);
 
+//	int ftmp = open("all.tmp", O_CREAT | O_WRONLY);
 	all.SerializeToFileDescriptor(wf);
+//	close(ftmp);
 	close(wf);		// need EOF for protobuf to catch the end of the message
 
 //	close(tmp);
@@ -72,6 +79,8 @@ const OdeState* E3PetscSolver::run(int steps, double time){
 
 	state->ParseFromFileDescriptor(rf);
 	state->set_simulated(true);
+
+	state->PrintDebugString();
 
 	close(rf);
 

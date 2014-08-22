@@ -20,7 +20,7 @@ public:
 		set_theta_e(0);
 		set_gamma_0_2(1);
 		set_delta_e(0);
-		set_r_e(0);
+		set_r_e(1.0);
 	}
 	static std::string getDisplayName(){
 		return "model e3";

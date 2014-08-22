@@ -154,7 +154,8 @@ public:
 		// 1 Как искать через std::find в multimap'е
 		// 2 вложенный класс внутри шаблонного (AuxFactory)
 		// 3 статические поля в шаблонных классах (там же)
-		// 4: for cross-table: explicit template instantiation for static members (template class MyClass<type>;)
+		// 4 for cross-table: explicit template instantiation for static members (template class MyClass<type>;)
+		// 5 Управление gnuplot через pipe'ы
 		typename inst_to_aux_map::iterator found = std::find(ilow, ihi, std::pair<const BaseFactory *const, AuxFactory*>(ifact, f));
 			assert(found != aux_map.end());
 		aux_map.erase(found);

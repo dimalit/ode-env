@@ -79,6 +79,7 @@ private:
   OdeStateWidget* state_widget;
   OdeSolverConfigWidget* solver_config_widget;
 
+  Gtk::Window win_analyzer;
   OdeAnalyzerWidget* analyzer_widget;
 
   Gtk::Window win_state;

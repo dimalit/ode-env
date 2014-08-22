@@ -22,7 +22,7 @@
 HelloWorld::HelloWorld()
 :launch_button("Launch"), cancel_button("Cancel"), step_button("Step")
 {
-  problem_name = "model e2";
+  problem_name = "model e3";
 
   computing = false;
   run_thread = NULL;
@@ -79,6 +79,8 @@ HelloWorld::HelloWorld()
   OdeAnalyzerWidgetFactory* analyzer_fact = *OdeAnalyzerWidgetFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
   this->analyzer_widget = analyzer_fact->createAnalyzerWidget(config_widget->getConfig());
   this->analyzer_widget->processState(state_widget->getState(), 0.0);
+  win_analyzer.add(*analyzer_widget);
+  win_analyzer.set_title(inst_widget_fact->getDisplayName() + " analyzers");
 
   // signals //
 
@@ -96,6 +98,7 @@ HelloWorld::HelloWorld()
 
   this->show_all();
   win_state.show_all();
+  win_analyzer.show_all();
 }
 
 HelloWorld::~HelloWorld()
