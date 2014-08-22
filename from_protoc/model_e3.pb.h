@@ -337,6 +337,20 @@ class E3State : public ::google::protobuf::Message {
   inline bool simulated() const;
   inline void set_simulated(bool value);
   
+  // required double E = 3;
+  inline bool has_e() const;
+  inline void clear_e();
+  static const int kEFieldNumber = 3;
+  inline double e() const;
+  inline void set_e(double value);
+  
+  // required double phi = 4;
+  inline bool has_phi() const;
+  inline void clear_phi();
+  static const int kPhiFieldNumber = 4;
+  inline double phi() const;
+  inline void set_phi(double value);
+  
   // repeated group Particles = 2 {
   inline int particles_size() const;
   inline void clear_particles();
@@ -353,14 +367,20 @@ class E3State : public ::google::protobuf::Message {
  private:
   inline void set_has_simulated();
   inline void clear_has_simulated();
+  inline void set_has_e();
+  inline void clear_has_e();
+  inline void set_has_phi();
+  inline void clear_has_phi();
   
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
   
+  double e_;
+  double phi_;
   ::google::protobuf::RepeatedPtrField< ::pb::E3State_Particles > particles_;
   bool simulated_;
   
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
   
   friend void  protobuf_AddDesc_model_5fe3_2eproto();
   friend void protobuf_AssignDesc_model_5fe3_2eproto();
@@ -819,6 +839,50 @@ inline bool E3State::simulated() const {
 inline void E3State::set_simulated(bool value) {
   set_has_simulated();
   simulated_ = value;
+}
+
+// required double E = 3;
+inline bool E3State::has_e() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void E3State::set_has_e() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void E3State::clear_has_e() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void E3State::clear_e() {
+  e_ = 0;
+  clear_has_e();
+}
+inline double E3State::e() const {
+  return e_;
+}
+inline void E3State::set_e(double value) {
+  set_has_e();
+  e_ = value;
+}
+
+// required double phi = 4;
+inline bool E3State::has_phi() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void E3State::set_has_phi() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void E3State::clear_has_phi() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void E3State::clear_phi() {
+  phi_ = 0;
+  clear_has_phi();
+}
+inline double E3State::phi() const {
+  return phi_;
+}
+inline void E3State::set_phi(double value) {
+  set_has_phi();
+  phi_ = value;
 }
 
 // repeated group Particles = 2 {

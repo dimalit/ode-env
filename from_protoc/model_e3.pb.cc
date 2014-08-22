@@ -63,8 +63,10 @@ void protobuf_AssignDesc_model_5fe3_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E3Config));
   E3State_descriptor_ = file->message_type(1);
-  static const int E3State_offsets_[2] = {
+  static const int E3State_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3State, simulated_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3State, e_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3State, phi_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3State, particles_),
   };
   E3State_reflection_ =
@@ -179,15 +181,15 @@ void protobuf_AddDesc_model_5fe3_2eproto() {
     "\n\016model_e3.proto\022\002pb\"b\n\010E3Config\022\t\n\001m\030\001 "
     "\002(\r\022\t\n\001n\030\002 \001(\001\022\017\n\007theta_e\030\003 \001(\001\022\021\n\tgamma"
     "_0_2\030\004 \001(\001\022\017\n\007delta_e\030\005 \001(\001\022\013\n\003r_e\030\006 \001(\001"
-    "\"x\n\007E3State\022\021\n\tsimulated\030\001 \001(\010\022(\n\tpartic"
-    "les\030\002 \003(\n2\025.pb.E3State.Particles\0320\n\tPart"
-    "icles\022\t\n\001a\030\003 \002(\001\022\013\n\003ksi\030\004 \002(\001\022\013\n\003eta\030\005 \002"
-    "(\001\";\n\023E3PetscSolverConfig\022\021\n\ttolerance\030\001"
-    " \001(\001\022\021\n\tinit_step\030\002 \001(\001\"\213\001\n\007E3Model\022\014\n\004t"
-    "ime\030\004 \002(\001\022\r\n\005steps\030\005 \002(\r\022\035\n\007pconfig\030\001 \002("
-    "\0132\014.pb.E3Config\022\032\n\005state\030\002 \002(\0132\013.pb.E3St"
-    "ate\022(\n\007sconfig\030\003 \002(\0132\027.pb.E3PetscSolverC"
-    "onfig", 445);
+    "\"\220\001\n\007E3State\022\021\n\tsimulated\030\001 \001(\010\022\t\n\001E\030\003 \002"
+    "(\001\022\013\n\003phi\030\004 \002(\001\022(\n\tparticles\030\002 \003(\n2\025.pb."
+    "E3State.Particles\0320\n\tParticles\022\t\n\001a\030\003 \002("
+    "\001\022\013\n\003ksi\030\004 \002(\001\022\013\n\003eta\030\005 \002(\001\";\n\023E3PetscSo"
+    "lverConfig\022\021\n\ttolerance\030\001 \001(\001\022\021\n\tinit_st"
+    "ep\030\002 \001(\001\"\213\001\n\007E3Model\022\014\n\004time\030\004 \002(\001\022\r\n\005st"
+    "eps\030\005 \002(\r\022\035\n\007pconfig\030\001 \002(\0132\014.pb.E3Config"
+    "\022\032\n\005state\030\002 \002(\0132\013.pb.E3State\022(\n\007sconfig\030"
+    "\003 \002(\0132\027.pb.E3PetscSolverConfig", 470);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e3.proto", &protobuf_RegisterTypes);
   E3Config::default_instance_ = new E3Config();
@@ -895,6 +897,8 @@ void E3State_Particles::Swap(E3State_Particles* other) {
 
 #ifndef _MSC_VER
 const int E3State::kSimulatedFieldNumber;
+const int E3State::kEFieldNumber;
+const int E3State::kPhiFieldNumber;
 const int E3State::kParticlesFieldNumber;
 #endif  // !_MSC_VER
 
@@ -915,6 +919,8 @@ E3State::E3State(const E3State& from)
 void E3State::SharedCtor() {
   _cached_size_ = 0;
   simulated_ = false;
+  e_ = 0;
+  phi_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -950,6 +956,8 @@ E3State* E3State::New() const {
 void E3State::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     simulated_ = false;
+    e_ = 0;
+    phi_ = 0;
   }
   particles_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -988,6 +996,38 @@ bool E3State::MergePartialFromCodedStream(
           goto handle_uninterpreted;
         }
         if (input->ExpectTag(19)) goto parse_particles;
+        if (input->ExpectTag(25)) goto parse_E;
+        break;
+      }
+      
+      // required double E = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+         parse_E:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &e_)));
+          set_has_e();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(33)) goto parse_phi;
+        break;
+      }
+      
+      // required double phi = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+         parse_phi:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &phi_)));
+          set_has_phi();
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1021,6 +1061,16 @@ void E3State::SerializeWithCachedSizes(
       2, this->particles(i), output);
   }
   
+  // required double E = 3;
+  if (has_e()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->e(), output);
+  }
+  
+  // required double phi = 4;
+  if (has_phi()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(4, this->phi(), output);
+  }
+  
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1041,6 +1091,16 @@ void E3State::SerializeWithCachedSizes(
         2, this->particles(i), target);
   }
   
+  // required double E = 3;
+  if (has_e()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->e(), target);
+  }
+  
+  // required double phi = 4;
+  if (has_phi()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(4, this->phi(), target);
+  }
+  
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -1055,6 +1115,16 @@ int E3State::ByteSize() const {
     // optional bool simulated = 1;
     if (has_simulated()) {
       total_size += 1 + 1;
+    }
+    
+    // required double E = 3;
+    if (has_e()) {
+      total_size += 1 + 8;
+    }
+    
+    // required double phi = 4;
+    if (has_phi()) {
+      total_size += 1 + 8;
     }
     
   }
@@ -1096,6 +1166,12 @@ void E3State::MergeFrom(const E3State& from) {
     if (from.has_simulated()) {
       set_simulated(from.simulated());
     }
+    if (from.has_e()) {
+      set_e(from.e());
+    }
+    if (from.has_phi()) {
+      set_phi(from.phi());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1113,6 +1189,7 @@ void E3State::CopyFrom(const E3State& from) {
 }
 
 bool E3State::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000006) != 0x00000006) return false;
   
   for (int i = 0; i < particles_size(); i++) {
     if (!this->particles(i).IsInitialized()) return false;
@@ -1123,6 +1200,8 @@ bool E3State::IsInitialized() const {
 void E3State::Swap(E3State* other) {
   if (other != this) {
     std::swap(simulated_, other->simulated_);
+    std::swap(e_, other->e_);
+    std::swap(phi_, other->phi_);
     particles_.Swap(&other->particles_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
