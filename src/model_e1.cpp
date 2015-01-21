@@ -14,6 +14,8 @@
 #include <cstring>
 #include <cstdio>
 
+#include <unistd.h>
+
 void E1State::sort_arrays(){
 	// TODO: Do it better then copy many times:(
 

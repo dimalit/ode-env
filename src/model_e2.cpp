@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <fcntl.h>
+#include <unistd.h>
 #include <sys/wait.h>
 
 E2State::E2State(const E2Config* config){

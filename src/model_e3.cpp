@@ -10,6 +10,7 @@
 #include "rpc.h"
 
 #include <fcntl.h>
+#include <unistd.h>
 #include <sys/wait.h>
 
 E3State::E3State(const E3Config* config){
@@ -53,7 +54,7 @@ const OdeState* E3PetscSolver::run(int steps, double time){
 	pid_t child = rpc_call("../ts3/Debug/ts3", &rf, &wf);
 
 //	int tmp = open("tmp", O_WRONLY | O_CREAT, 0664);
-	state->PrintDebugString();
+//	state->PrintDebugString();
 
 	pb::E3Model all;
 	all.mutable_sconfig()->CopyFrom(*sconfig);
@@ -80,7 +81,7 @@ const OdeState* E3PetscSolver::run(int steps, double time){
 	state->ParseFromFileDescriptor(rf);
 	state->set_simulated(true);
 
-	state->PrintDebugString();
+//	state->PrintDebugString();
 
 	close(rf);
 
