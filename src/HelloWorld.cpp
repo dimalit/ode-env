@@ -20,7 +20,7 @@
 #define UI_FILE_RUN "sim_params.glade"
 
 HelloWorld::HelloWorld()
-:launch_button("Launch"), cancel_button("Cancel"), step_button("Step")
+:forever_button("Forever"), cancel_button("Cancel"), step_button("Step")
 {
   problem_name = "model e3";
 
@@ -32,7 +32,7 @@ HelloWorld::HelloWorld()
 
   set_border_width(10);
 
-  button_box.pack_end(launch_button, false, false, 0);
+  button_box.pack_end(forever_button, false, false, 0);
   button_box.pack_end(step_button, false, false, 0);
   button_box.pack_end(cancel_button, false, false, 0);
 
@@ -89,8 +89,8 @@ HelloWorld::HelloWorld()
   state_widget->signal_changed().connect(sigc::mem_fun(*this,
               &HelloWorld::on_state_changed));
 
-  launch_button.signal_clicked().connect(sigc::mem_fun(*this,
-              &HelloWorld::on_launch_clicked));
+  forever_button.signal_clicked().connect(sigc::mem_fun(*this,
+              &HelloWorld::on_forever_clicked));
   step_button.signal_clicked().connect(sigc::mem_fun(*this,
               &HelloWorld::on_step_clicked));
   cancel_button.signal_clicked().connect(sigc::mem_fun(*this,
@@ -125,12 +125,12 @@ const OdeSolverConfig* HelloWorld::extract_solver_config(){
 	return solver_config_widget->getConfig();
 }
 
-void HelloWorld::on_launch_clicked()
+void HelloWorld::on_forever_clicked()
 {
   if(computing){
 	  stop_computing();
-	  launch_button.set_label("Launch");
-	  launch_button.set_sensitive(false);		// user cannot press it until last iteration ends
+	  forever_button.set_label("Forever");
+	  forever_button.set_sensitive(false);		// user cannot press it until last iteration ends
 	  return;
   }
 
@@ -138,7 +138,7 @@ void HelloWorld::on_launch_clicked()
   run_computing();
 
   // show that iteration is running
-  launch_button.set_label("Stop");
+  forever_button.set_label("Stop");
 }
 
 void HelloWorld::on_step_clicked()
@@ -198,6 +198,7 @@ void HelloWorld::run_computing(){
   run_thread->getSignalFinished().connect(sigc::mem_fun(*this, &HelloWorld::one_run_completed_cb));
 
   computing = true;
+  step_button.set_sensitive(false);
   run_thread->run(steps, time);
 }
 
@@ -215,7 +216,8 @@ void HelloWorld::one_run_completed_cb(const OdeState* final_state){
 	  else{
 			delete run_thread;	run_thread = NULL;
 			delete solver;		solver = NULL;
-			launch_button.set_sensitive(true);		// it was disabled in on_launch_clicked()
+			forever_button.set_sensitive(true);		// enable it back after last iteration
+			step_button.set_sensitive(true);
 	  }// else
 }
 

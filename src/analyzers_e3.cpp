@@ -72,7 +72,7 @@ void E3ConservationAnalyzer::processState(const OdeState* state, double time){
 	entry_i2->set_text(buf.str());
 
 	buf.str("");
-	buf << estate->e()*estate->e()-2.0/config->n()/config->m()*sum_a_2;
+	buf << estate->e()*estate->e()+1.0/config->n()/config->m()*sum_a_2;
 	entry_i3->set_text(buf.str());
 
 	++states_count;

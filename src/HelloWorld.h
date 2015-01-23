@@ -66,7 +66,7 @@ private:
   void on_config_changed();
   void on_state_changed();
 
-  void on_launch_clicked();
+  void on_forever_clicked();
   void on_step_clicked();
   void on_cancel_clicked();
 
@@ -87,7 +87,7 @@ private:
   Gtk::Entry *entry_time, *entry_steps;
   Gtk::Label *label_time, *label_steps;
 
-  Gtk::Button launch_button, cancel_button, step_button;
+  Gtk::Button forever_button, cancel_button, step_button;
 
   Gtk::VBox vbox;
   Gtk::HButtonBox button_box;
