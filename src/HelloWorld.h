@@ -2,6 +2,7 @@
 #define GTKMM_EXAMPLE_HELLOWORLD_H
 
 #include "gui_e1.h"
+#include "ChartAnalyzer.h"
 
 #include <gtkmm/button.h>
 #include <gtkmm/window.h>
@@ -81,6 +82,8 @@ private:
 
   Gtk::Window win_analyzer;
   OdeAnalyzerWidget* analyzer_widget;
+  ChartAnalyzer* chart_analyzer;
+  Gtk::Window win_chart_anayzer;
 
   Gtk::Window win_state;
   Gtk::RadioButton *radio_time, *radio_steps;

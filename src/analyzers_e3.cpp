@@ -77,9 +77,12 @@ void E3ConservationAnalyzer::processState(const OdeState* state, double time){
 
 	++states_count;
 }
+
 int E3ConservationAnalyzer::getStatesCount(){
 	return states_count;
 }
+
 E3ConservationAnalyzer::~E3ConservationAnalyzer(){
 	delete config;
 }
+

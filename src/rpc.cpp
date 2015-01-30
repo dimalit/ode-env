@@ -5,10 +5,11 @@
  *      Author: dimalit
  */
 
+#include <iostream>
 #include <unistd.h>
 #include <cassert>
 
-#include <iostream>
+using namespace std;
 
 // Написать: библиотеку типа RPC для запуска процесса
 pid_t rpc_call(const char* cmd, int* rf, int* wf){

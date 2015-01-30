@@ -82,6 +82,11 @@ HelloWorld::HelloWorld()
   win_analyzer.add(*analyzer_widget);
   win_analyzer.set_title(inst_widget_fact->getDisplayName() + " analyzers");
 
+  chart_analyzer = new ChartAnalyzer(config_widget->getConfig());
+  chart_analyzer->processState(state_widget->getState(), 0.0);
+  win_chart_anayzer.set_title("Charts");
+  win_chart_anayzer.add(*chart_analyzer);
+
   // signals //
 
   config_widget->signal_changed().connect(sigc::mem_fun(*this,
@@ -99,6 +104,7 @@ HelloWorld::HelloWorld()
   this->show_all();
   win_state.show_all();
   win_analyzer.show_all();
+  win_chart_anayzer.show_all();
 }
 
 HelloWorld::~HelloWorld()
@@ -113,6 +119,7 @@ void HelloWorld::on_state_changed()
 {
 	analyzer_widget->loadConfig(config_widget->getConfig());
 	analyzer_widget->processState(state_widget->getState(), 0.0);
+	chart_analyzer->processState(state_widget->getState(), 0.0);
 }
 
 const OdeConfig* HelloWorld::extract_config(){
@@ -205,7 +212,7 @@ void HelloWorld::run_computing(){
 void HelloWorld::one_run_completed_cb(const OdeState* final_state){
 	  state_widget->loadState(final_state);
 
-	  // Ноаписать: упражнение с запуском счета параллельно GUI для студентов
+	  // Написать: упражнение с запуском счета параллельно GUI для студентов
 
 	  add_steps_and_time(solver->getSteps(), solver->getTime());
 
