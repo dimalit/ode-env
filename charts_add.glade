@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="2.24"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkListStore" id="liststore1">
+    <columns>
+      <!-- column-name use -->
+      <column type="gboolean"/>
+      <!-- column-name var_name -->
+      <column type="gchararray"/>
+      <!-- column-name as_x_axis -->
+      <column type="gboolean"/>
+    </columns>
+  </object>
+  <object class="GtkVBox" id="root">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkTreeView" id="treeview1">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="model">liststore1</property>
+        <property name="headers_clickable">False</property>
+        <property name="expander_column">var_name</property>
+        <property name="rules_hint">True</property>
+        <property name="search_column">1</property>
+        <property name="enable_grid_lines">both</property>
+        <child>
+          <object class="GtkTreeViewColumn" id="use">
+            <property name="title" translatable="yes">use</property>
+            <child>
+              <object class="GtkCellRendererToggle" id="cellrenderertoggle1"/>
+              <attributes>
+                <attribute name="active">0</attribute>
+              </attributes>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkTreeViewColumn" id="var_name">
+            <property name="resizable">True</property>
+            <property name="title" translatable="yes">var name</property>
+            <property name="expand">True</property>
+            <child>
+              <object class="GtkCellRendererText" id="cellrenderertext1"/>
+              <attributes>
+                <attribute name="text">1</attribute>
+              </attributes>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkTreeViewColumn" id="as_x_axis">
+            <property name="title" translatable="yes">x</property>
+            <child>
+              <object class="GtkCellRendererToggle" id="cellrenderertoggle2">
+                <property name="radio">True</property>
+              </object>
+              <attributes>
+                <attribute name="active">2</attribute>
+              </attributes>
+            </child>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkHButtonBox" id="hbuttonbox1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="homogeneous">True</property>
+        <property name="layout_style">spread</property>
+        <child>
+          <object class="GtkButton" id="btn_ok">
+            <property name="label">gtk-ok</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_action_appearance">False</property>
+            <property name="use_stock">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_cancel">
+            <property name="label">gtk-cancel</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_action_appearance">False</property>
+            <property name="use_stock">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
+</interface>
