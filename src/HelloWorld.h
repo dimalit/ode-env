@@ -80,12 +80,10 @@ private:
   OdeStateWidget* state_widget;
   OdeSolverConfigWidget* solver_config_widget;
 
-  Gtk::Window win_analyzer;
+  Gtk::Window win_analyzers;
   OdeAnalyzerWidget* analyzer_widget;
   ChartAnalyzer* chart_analyzer;
-  Gtk::Window win_chart_anayzer;
 
-  Gtk::Window win_state;
   Gtk::RadioButton *radio_time, *radio_steps;
   Gtk::Entry *entry_time, *entry_steps;
   Gtk::Label *label_time, *label_steps;

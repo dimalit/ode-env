@@ -49,6 +49,7 @@ void E3ConservationAnalyzer::processState(const OdeState* state, double time){
 
 	double i1 = 0;
 	double sum_a_2 = 0;
+	double sum_eta = 0;
 	for(int i=0; i<estate->particles_size(); i++){
 		E3State::Particles p = estate->particles(i);
 
@@ -61,6 +62,7 @@ void E3ConservationAnalyzer::processState(const OdeState* state, double time){
 
 		i1 += integral;
 		sum_a_2 += p.a()*p.a();
+		sum_eta += p.eta();
 	}
 
 	std::ostringstream buf;
@@ -68,7 +70,7 @@ void E3ConservationAnalyzer::processState(const OdeState* state, double time){
 	entry_i1->set_text(buf.str());
 
 	buf.str("");
-	buf << estate->e()*estate->e()-2.0/config->r_e()/config->m()*sum_a_2;
+	buf << estate->e()*estate->e()+2.0/config->r_e()/config->m()*sum_eta;
 	entry_i2->set_text(buf.str());
 
 	buf.str("");

@@ -36,17 +36,23 @@ HelloWorld::HelloWorld()
   button_box.pack_end(step_button, false, false, 0);
   button_box.pack_end(cancel_button, false, false, 0);
 
+  vbox.pack_end(button_box, false, false);
+
   OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
 
   OdeInstanceWidgetFactory* inst_widget_fact = *OdeInstanceWidgetFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
   this->config_widget = inst_widget_fact->createConfigWidget();
   vbox.pack_start(*this->config_widget, false, false, 0);
 
+  // win state //
+  this->state_widget = inst_widget_fact->createStateWidget(this->config_widget->getConfig());
+  vbox.pack_start(*this->state_widget, false, false);
+
   OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
   this->solver_config_widget = OdeSolverConfigWidgetFactoryManager::getInstance()->getFactoriesFor(solver_fact).first->createConfigWidget();
   vbox.pack_start(*this->solver_config_widget, false, false, 0);
 
-  // global config //
+  // simulator config //
   Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_RUN);
 
   Gtk::Widget* root;
@@ -66,26 +72,21 @@ HelloWorld::HelloWorld()
 
   vbox.pack_start(*root, false, false);
 
-  vbox.pack_start(button_box, false, false, 0);
-
-  add(vbox);
-
-  // win state //
-  this->state_widget = inst_widget_fact->createStateWidget(this->config_widget->getConfig());
-  win_state.add(*this->state_widget);
-  win_state.set_title(inst_widget_fact->getDisplayName() + " state");
+  this->add(vbox);
 
   // analyzers //
+  Gtk::VBox *vb = Gtk::manage(new Gtk::VBox());
+  win_analyzers.add(*vb);
+  win_analyzers.set_title(inst_widget_fact->getDisplayName() + " analyzers");
+
   OdeAnalyzerWidgetFactory* analyzer_fact = *OdeAnalyzerWidgetFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
   this->analyzer_widget = analyzer_fact->createAnalyzerWidget(config_widget->getConfig());
   this->analyzer_widget->processState(state_widget->getState(), 0.0);
-  win_analyzer.add(*analyzer_widget);
-  win_analyzer.set_title(inst_widget_fact->getDisplayName() + " analyzers");
+  vb->pack_start(*analyzer_widget, false, false);
 
   chart_analyzer = new ChartAnalyzer(config_widget->getConfig());
   chart_analyzer->processState(state_widget->getState(), 0.0);
-  win_chart_anayzer.set_title("Charts");
-  win_chart_anayzer.add(*chart_analyzer);
+  vb->pack_start(*chart_analyzer, false, false);
 
   // signals //
 
@@ -102,9 +103,7 @@ HelloWorld::HelloWorld()
               &HelloWorld::on_cancel_clicked));
 
   this->show_all();
-  win_state.show_all();
-  win_analyzer.show_all();
-  win_chart_anayzer.show_all();
+  win_analyzers.show_all();
 }
 
 HelloWorld::~HelloWorld()
