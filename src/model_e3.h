@@ -29,6 +29,11 @@ public:
 
 class E3State: public pb::E3State, public OdeState{
 public:
+	E3State(){
+		set_e(1.0);
+		set_phi(0.0);
+		set_simulated(false);
+	}
 	E3State(const E3Config*);
 };
 
@@ -49,9 +54,15 @@ public:
 public:
 	E3PetscSolver(const E3PetscSolverConfig*, const E3Config*, const E3State*);
 	virtual ~E3PetscSolver();
-	virtual const OdeState* run(int steps, double time);
+	virtual void run(int steps, double time);
 	virtual double getTime() const;
 	virtual double getSteps() const;
+	virtual const OdeState* getState() const {
+		return state;
+	}
+	virtual const OdeState* getDState() const{
+		return d_state;
+	}
 
 	static std::string getDisplayName(){
 		return "PETSc RK solver for e3";
@@ -61,6 +72,7 @@ private:
 	E3Config* pconfig;				// problem config
 	E3PetscSolverConfig* sconfig;	// solver config
 	E3State* state;
+	E3State* d_state;
 
 	double time_passed;
 	int steps_passed;

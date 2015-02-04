@@ -42,7 +42,7 @@ void E2FieldAnalyzer::loadConfig(const OdeConfig* config){
 void E2FieldAnalyzer::reset(){
 	states_count = 0;
 }
-void E2FieldAnalyzer::processState(const OdeState* state, double time){
+void E2FieldAnalyzer::processState(const OdeState* state, const OdeState* d_state, double time){
 	const E2State* estate = dynamic_cast<const E2State*>(state);
 		assert(estate);
 

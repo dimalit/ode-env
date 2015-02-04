@@ -49,6 +49,7 @@ public:
 	typedef E2State State;
 private:
 	E2State* state;
+	E2State* d_state;
 	E2Config* config;
 
 	Gtk::Socket x11_socket;
@@ -63,8 +64,9 @@ private:
 public:
 	E2StateWidget(const E2Config* config, const E2State* state = NULL);
 	virtual ~E2StateWidget();
-	virtual void loadState(const OdeState* state);
+	virtual void loadState(const OdeState* state, const OdeState* d_state);
 	virtual const OdeState* getState();
+	virtual const OdeState* getDState();
 	virtual void loadConfig(const OdeConfig* config);
 	virtual const OdeConfig* getConfig();
 	virtual void generateState();

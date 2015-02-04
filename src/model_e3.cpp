@@ -32,6 +32,7 @@ E3PetscSolver::E3PetscSolver(const E3PetscSolverConfig* scfg, const E3Config* pc
 	pconfig = new E3Config(*pcfg);
 	sconfig = new E3PetscSolverConfig(*scfg);
 	state = new E3State(*init_state);
+	d_state = new E3State();
 }
 
 double E3PetscSolver::getTime() const {
@@ -49,7 +50,7 @@ E3PetscSolver::~E3PetscSolver(){
 
 // TODO: create universal base class for PETSc solvers - so not to copypaste!
 // TODO: 1 universal code from TS solving?! (not to write it again and again!?)
-const OdeState* E3PetscSolver::run(int steps, double time){
+void E3PetscSolver::run(int steps, double time){
 	int rf, wf;
 	pid_t child = rpc_call("../ts3/Debug/ts3", &rf, &wf);
 
@@ -78,12 +79,15 @@ const OdeState* E3PetscSolver::run(int steps, double time){
 	read(rf, &steps_passed, sizeof(steps_passed));
 	read(rf, &time_passed, sizeof(time_passed));
 
-	state->ParseFromFileDescriptor(rf);
-	state->set_simulated(true);
+	pb::E3Solution sol;
+	sol.ParseFromFileDescriptor(rf);
+	sol.mutable_state()->set_simulated(true);
+	sol.mutable_d_state()->set_simulated(true);
 
-//	state->PrintDebugString();
+	state->CopyFrom(sol.state());
+	d_state->CopyFrom(sol.d_state());
+
+	//sol.PrintDebugString();
 
 	close(rf);
-
-	return state;
 }

@@ -103,6 +103,8 @@ E1StateWidget::E1StateWidget(const E1Config* _config, const E1State* _state){
 		// TODO: may be state should remember its config?!
 		this->state = new E1State(this->config);
 
+	this->d_state = new E1State();
+
 	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_STATE);
 
 	Gtk::Widget* root;
@@ -141,17 +143,25 @@ E1StateWidget::E1StateWidget(const E1Config* _config, const E1State* _state){
 
 	state_to_widget();
 }
-void E1StateWidget::loadState(const OdeState* state){
+void E1StateWidget::loadState(const OdeState* state, const OdeState* d_state){
 	const E1State* estate = dynamic_cast<const E1State*>(state);
 		assert(estate);
+	const E1State* d_estate = dynamic_cast<const E1State*>(d_state);
+		assert(d_estate);
 	delete this->state;
+	delete this->d_state;
 	this->state = new E1State(*estate);
+	this->d_state = new E1State(*d_estate);
 
 	state_to_widget();
 }
 const OdeState* E1StateWidget::getState(){
 	widget_to_state();
 	return state;
+}
+
+const OdeState* E1StateWidget::getDState(){
+	return d_state;
 }
 
 void E1StateWidget::loadConfig(const OdeConfig* cfg){
@@ -162,6 +172,8 @@ void E1StateWidget::loadConfig(const OdeConfig* cfg){
 
 	delete this->state;
 	this->state = new E1State(ecfg);
+	delete this->d_state;
+	this->d_state = new E1State();
 }
 const OdeConfig* E1StateWidget::getConfig(){
 	return config;

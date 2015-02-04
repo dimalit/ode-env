@@ -26,8 +26,9 @@ class OdeStateWidget: public Gtk::Frame{
 protected:
 	sigc::signal<void> m_signal_changed;
 public:
-	virtual void loadState(const OdeState* state) = 0;
+	virtual void loadState(const OdeState* state, const OdeState* d_state) = 0;
 	virtual const OdeState* getState() = 0;
+	virtual const OdeState* getDState() = 0;
 	virtual void loadConfig(const OdeConfig* config) = 0;
 	virtual const OdeConfig* getConfig() = 0;
 	virtual void generateState() = 0;
@@ -51,7 +52,7 @@ class OdeAnalyzerWidget: public Gtk::Frame{
 public:
 	virtual void loadConfig(const OdeConfig* config) = 0;
 	virtual void reset() = 0;
-	virtual void processState(const OdeState* state, double time) = 0;
+	virtual void processState(const OdeState* state, const OdeState* d_state, double time) = 0;
 	virtual int getStatesCount() = 0;
 	virtual ~OdeAnalyzerWidget(){}
 };

@@ -29,6 +29,7 @@ E2PetscSolver::E2PetscSolver(const E2PetscSolverConfig* scfg, const E2Config* pc
 	pconfig = new E2Config(*pcfg);
 	sconfig = new E2PetscSolverConfig(*scfg);
 	state = new E2State(*init_state);
+	d_state = new E2State();
 }
 
 double E2PetscSolver::getTime() const {
@@ -44,7 +45,7 @@ E2PetscSolver::~E2PetscSolver(){
 	delete pconfig;
 }
 
-const OdeState* E2PetscSolver::run(int steps, double time){
+void E2PetscSolver::run(int steps, double time){
 	int rf, wf;
 	pid_t child = rpc_call("../ts/Debug/ts", &rf, &wf);
 
@@ -74,6 +75,4 @@ const OdeState* E2PetscSolver::run(int steps, double time){
 	state->set_simulated(true);
 
 	close(rf);
-
-	return state;
 }

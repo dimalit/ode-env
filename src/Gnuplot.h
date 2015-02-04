@@ -20,6 +20,7 @@ private:
 	struct serie{
 		std::string var_name;
 		std::vector<double> data_cache;
+		bool derivative;
 	};
 
 	FILE* to_gnuplot;
@@ -28,17 +29,20 @@ private:
 	style_enum style;
 
 	std::string x_axis;
+	bool derivative_x;
 	std::vector<serie> series;
 public:
 	Gnuplot();
 
-	void processState(const google::protobuf::Message*);
+	void processState(const google::protobuf::Message* state, const google::protobuf::Message* d_state = NULL);
 
 	void setXAxisTime(){
 		x_axis = "";
 	}
 	void setXAxisVar(std::string var){
-		x_axis = var;
+		derivative_x = var.size() > 0 && var[var.size()-1]=='\'';
+		std::string real_var = derivative_x ? var.substr(0, var.size()-1) : var;
+		x_axis = real_var;
 	}
 	bool getXAxisTime() const {
 		return x_axis.empty();

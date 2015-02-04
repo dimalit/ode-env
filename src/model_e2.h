@@ -25,6 +25,9 @@ public:
 
 class E2State: public pb::E2State, public OdeState{
 public:
+	E2State(){
+		set_simulated(false);
+	}
 	E2State(const E2Config*);
 };
 
@@ -44,9 +47,15 @@ public:
 public:
 	E2PetscSolver(const E2PetscSolverConfig*, const E2Config*, const E2State*);
 	virtual ~E2PetscSolver();
-	virtual const OdeState* run(int steps, double time);
+	virtual void run(int steps, double time);
 	virtual double getTime() const;
 	virtual double getSteps() const;
+	virtual const OdeState* getState() const {
+		return state;
+	}
+	virtual const OdeState* getDState() const{
+		return d_state;
+	}
 
 	static std::string getDisplayName(){
 		return "PETSc RK solver through protobuf for e1";
@@ -55,6 +64,7 @@ private:
 	E2Config* pconfig;				// problem config
 	E2PetscSolverConfig* sconfig;	// solver config
 	E2State* state;
+	E2State* d_state;
 	double time_passed;
 	int steps_passed;
 };

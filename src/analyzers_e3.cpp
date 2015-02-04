@@ -41,7 +41,7 @@ void E3ConservationAnalyzer::loadConfig(const OdeConfig* config){
 void E3ConservationAnalyzer::reset(){
 	states_count = 0;
 }
-void E3ConservationAnalyzer::processState(const OdeState* state, double time){
+void E3ConservationAnalyzer::processState(const OdeState* state, const OdeState* d_state, double time){
 	const E3State* estate = dynamic_cast<const E3State*>(state);
 		assert(estate);
 

@@ -121,6 +121,8 @@ E3StateWidget::E3StateWidget(const E3Config* _config, const E3State* _state){
 		// TODO: may be state should remember its config?!
 		this->state = new E3State(this->config);
 
+	this->d_state = new E3State();
+
 	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_STATE);
 
 	Gtk::Widget* root;
@@ -147,7 +149,7 @@ E3StateWidget::E3StateWidget(const E3Config* _config, const E3State* _state){
 }
 
 E3StateWidget::~E3StateWidget(){
-
+	// XXX where are deletes?
 }
 
 void E3StateWidget::widget_to_state(){
@@ -193,6 +195,8 @@ void E3StateWidget::loadConfig(const OdeConfig* cfg){
 
 	delete this->state;
 	this->state = new E3State(ecfg);
+	delete this->d_state;
+	this->d_state = new E3State();
 
 	state_to_widget();
 	widget_to_state();
@@ -203,11 +207,15 @@ const OdeConfig* E3StateWidget::getConfig(){
 	return config;
 }
 
-void E3StateWidget::loadState(const OdeState* state){
+void E3StateWidget::loadState(const OdeState* state, const OdeState* d_state){
 	const E3State* estate = dynamic_cast<const E3State*>(state);
 		assert(estate);
+	const E3State* d_estate = dynamic_cast<const E3State*>(d_state);
+		assert(d_estate);
 	delete this->state;
+	delete this->d_state;
 	this->state = new E3State(*estate);
+	this->d_state = new E3State(*d_estate);
 
 	state_to_widget();
 	widget_to_state();
@@ -217,6 +225,10 @@ void E3StateWidget::loadState(const OdeState* state){
 const OdeState* E3StateWidget::getState(){
 	widget_to_state();
 	return state;
+}
+
+const OdeState* E3StateWidget::getDState(){
+	return d_state;
 }
 
 void E3StateWidget::generateState(){

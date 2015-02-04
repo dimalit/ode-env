@@ -51,6 +51,7 @@ public:
 	typedef E1State State;
 private:
 	E1State* state;
+	E1State* d_state;
 	E1Config* config;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_E, adj_phi, adj_b;
@@ -75,8 +76,9 @@ private:
 
 public:
 	E1StateWidget(const E1Config* config, const E1State* state = NULL);
-	virtual void loadState(const OdeState* state);
+	virtual void loadState(const OdeState* state, const OdeState* d_state);
 	virtual const OdeState* getState();
+	virtual const OdeState* getDState();
 	virtual void loadConfig(const OdeConfig* config);
 	virtual const OdeConfig* getConfig();
 	virtual void generateState(){/*not implemented*/}

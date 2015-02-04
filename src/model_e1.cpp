@@ -53,6 +53,7 @@ E1PetscSolver::E1PetscSolver(const E1PetscSolverConfig* scfg, const E1Config* pc
 	pconfig = new E1Config(*pcfg);
 	sconfig = new E1PetscSolverConfig(*scfg);
 	state = new E1State(*init_state);
+	d_state = new E1State();
 
 	b = NULL;
 	ksi = NULL;
@@ -67,6 +68,7 @@ double E1PetscSolver::getSteps() const {
 }
 
 E1PetscSolver::~E1PetscSolver(){
+	delete d_state;
 	delete state;
 	delete sconfig;
 	delete pconfig;
@@ -74,7 +76,7 @@ E1PetscSolver::~E1PetscSolver(){
 	delete ksi;
 }
 
-const OdeState* E1PetscSolver::run(int steps, double time){
+void E1PetscSolver::run(int steps, double time){
 //	PetscErrorCode ierr;
 //	ierr = TSSolve(ts, NULL);assert(!ierr);
 	// get all data
@@ -166,8 +168,6 @@ const OdeState* E1PetscSolver::run(int steps, double time){
 	std::copy(this->ksi, this->ksi+pconfig->g_m, state->getKsiArray().begin());
 	std::copy(this->b, this->b+pconfig->g_m, state->getBArray().begin());
 	state->sort_arrays();
-
-	return state;
 }
 
 int E1PetscSolver::read_simulation(FILE* fp, int m){

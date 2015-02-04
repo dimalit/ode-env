@@ -47,6 +47,7 @@ public:
 	typedef E3State State;
 private:
 	E3State* state;
+	E3State* d_state;
 	E3Config* config;
 
 	Gtk::Entry *entry_e, *entry_phi, *entry_a;
@@ -55,8 +56,9 @@ private:
 public:
 	E3StateWidget(const E3Config* config, const E3State* state = NULL);
 	virtual ~E3StateWidget();
-	virtual void loadState(const OdeState* state);
+	virtual void loadState(const OdeState* state, const OdeState* d_state);
 	virtual const OdeState* getState();
+	virtual const OdeState* getDState();
 	virtual void loadConfig(const OdeConfig* config);
 	virtual const OdeConfig* getConfig();
 	virtual void generateState();

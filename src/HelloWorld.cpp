@@ -81,11 +81,11 @@ HelloWorld::HelloWorld()
 
   OdeAnalyzerWidgetFactory* analyzer_fact = *OdeAnalyzerWidgetFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
   this->analyzer_widget = analyzer_fact->createAnalyzerWidget(config_widget->getConfig());
-  this->analyzer_widget->processState(state_widget->getState(), 0.0);
+  this->analyzer_widget->processState(state_widget->getState(), state_widget->getDState(), 0.0);
   vb->pack_start(*analyzer_widget, false, false);
 
   chart_analyzer = new ChartAnalyzer(config_widget->getConfig());
-  chart_analyzer->processState(state_widget->getState(), 0.0);
+  chart_analyzer->processState(state_widget->getState(), state_widget->getDState(), 0.0);
   vb->pack_start(*chart_analyzer, false, false);
 
   // signals //
@@ -117,8 +117,8 @@ void HelloWorld::on_config_changed()
 void HelloWorld::on_state_changed()
 {
 	analyzer_widget->loadConfig(config_widget->getConfig());
-	analyzer_widget->processState(state_widget->getState(), 0.0);
-	chart_analyzer->processState(state_widget->getState(), 0.0);
+	analyzer_widget->processState(state_widget->getState(), state_widget->getDState(), 0.0);
+	chart_analyzer->processState(state_widget->getState(), state_widget->getDState(), 0.0);
 }
 
 const OdeConfig* HelloWorld::extract_config(){
@@ -208,8 +208,8 @@ void HelloWorld::run_computing(){
   run_thread->run(steps, time);
 }
 
-void HelloWorld::one_run_completed_cb(const OdeState* final_state){
-	  state_widget->loadState(final_state);
+void HelloWorld::one_run_completed_cb(const OdeState* final_state, const OdeState* final_d_state){
+	  state_widget->loadState(final_state, final_d_state);
 
 	  // Написать: упражнение с запуском счета параллельно GUI для студентов
 
@@ -263,7 +263,9 @@ void RunThread::run(int steps, double time){
 
 void RunThread::thread_func(){
 	// 1 make long computing
-	final_state = solver->run(steps, time);
+	solver->run(steps, time);
+	final_state = solver->getState();
+	final_d_state = solver->getDState();
 	// 2 after computing is finished - fire IOSource
 	char c = 0;
 	write(fd[1], &c, 1);
@@ -273,6 +275,6 @@ bool RunThread::on_event(Glib::IOCondition){
 	char c;
 	read(fd[0], &c, 1);
 
-	m_signal_finished(final_state);
+	m_signal_finished(final_state, final_d_state);
 	return 	true;
 }

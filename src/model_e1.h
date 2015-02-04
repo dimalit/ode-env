@@ -44,6 +44,15 @@ class E1State: public OdeState{
 	bool random_ksi, linear_ksi;
 
 public:
+	E1State(){
+		random_ksi = false;
+		linear_ksi = true;
+
+		E = 0.0;
+		b = 0.0;
+		phi = 0.0;
+		ksi = 0.0;
+	}
 	E1State(const E1Config* cfg):ksi_array(cfg->g_m), b_array(cfg->g_m) {
 		random_ksi = cfg->random_ksi;
 		linear_ksi = cfg->linear_ksi;
@@ -126,9 +135,15 @@ public:
 public:
 	E1PetscSolver(const E1PetscSolverConfig*, const E1Config*, const E1State*);
 	virtual ~E1PetscSolver();
-	virtual const OdeState* run(int steps, double time);
+	virtual void run(int steps, double time);
 	virtual double getTime() const;
 	virtual double getSteps() const;
+	virtual const OdeState* getState() const {
+		return state;
+	}
+	virtual const OdeState* getDState() const{
+		return d_state;
+	}
 
 	static std::string getDisplayName(){
 		return "PETSc RK solver for e1";
@@ -138,6 +153,7 @@ private:
 	E1Config* pconfig;				// problem config
 	E1PetscSolverConfig* sconfig;	// solver config
 	E1State* state;
+	E1State* d_state;
 
 	double *b;
 	double *ksi;
