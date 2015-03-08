@@ -12,6 +12,8 @@
 #include <glibmm/main.h>
 #include <glibmm/threads.h>
 
+#include <auto_ptr.h>
+
 // TODO: how to use sigc::trackable right?
 class RunThread: public sigc::trackable{
 private:
@@ -64,12 +66,15 @@ private:
   void one_run_completed_cb(const OdeState* final_state, const OdeState* final_d_state);
   void stop_computing();
 
+  std::auto_ptr<OdeState> saved_state, saved_dstate;			// for reset
+
   // Signal handlers:
   void on_config_changed();
   void on_state_changed();
 
   void on_forever_clicked();
   void on_step_clicked();
+  void on_reset_clicked();
   void on_cancel_clicked();
 
   const OdeConfig* extract_config();
@@ -89,7 +94,7 @@ private:
   Gtk::Entry *entry_time, *entry_steps;
   Gtk::Label *label_time, *label_steps;
 
-  Gtk::Button forever_button, cancel_button, step_button;
+  Gtk::Button forever_button, cancel_button, step_button, reset_button;
 
   Gtk::VBox vbox;
   Gtk::HButtonBox button_box;

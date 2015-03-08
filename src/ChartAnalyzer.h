@@ -27,6 +27,7 @@ private:
 
 	Gtk::VBox vbox;
 	Gtk::Button btn_add;
+	Gtk::Button btn_reset;
 
 	const OdeState* last_state;
 public:

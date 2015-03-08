@@ -232,6 +232,10 @@ ChartAnalyzer::ChartAnalyzer(const OdeConfig* config) {
 	vbox.pack_end(btn_add);
 	btn_add.signal_clicked().connect(sigc::mem_fun(*this, &ChartAnalyzer::on_add_clicked));
 
+	btn_reset.set_label("Reset");
+	vbox.pack_end(btn_reset);
+	btn_reset.signal_clicked().connect(sigc::mem_fun(*this, &ChartAnalyzer::reset));
+
 	this->add(vbox);
 }
 
@@ -246,6 +250,8 @@ int ChartAnalyzer::getStatesCount(){
 
 void ChartAnalyzer::reset(){
 	states_count = 0;
+	for(int i=0; i<plots.size(); i++)
+		plots[i]->reset();
 }
 
 void ChartAnalyzer::processState(const OdeState* state, const OdeState* d_state, double time){

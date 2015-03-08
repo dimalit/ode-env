@@ -17,7 +17,7 @@ E3State::E3State(const E3Config* config){
 	int m = config->m();
 	for(int i=0; i<m; i++){
 		this->add_particles();
-		this->mutable_particles(i)->set_a(1.0);
+		this->mutable_particles(i)->set_a(0.01);
 		this->mutable_particles(i)->set_ksi(0.0);
 	}
 	set_e(1.0);
@@ -33,6 +33,8 @@ E3PetscSolver::E3PetscSolver(const E3PetscSolverConfig* scfg, const E3Config* pc
 	sconfig = new E3PetscSolverConfig(*scfg);
 	state = new E3State(*init_state);
 	d_state = new E3State();
+
+	sconfig->set_model("tm");
 }
 
 double E3PetscSolver::getTime() const {
@@ -51,6 +53,9 @@ E3PetscSolver::~E3PetscSolver(){
 // TODO: create universal base class for PETSc solvers - so not to copypaste!
 // TODO: 1 universal code from TS solving?! (not to write it again and again!?)
 void E3PetscSolver::run(int steps, double time){
+//	printf("run started\n");
+//	fflush(stdout);
+
 	int rf, wf;
 	pid_t child = rpc_call("../ts3/Debug/ts3", &rf, &wf);
 
@@ -74,10 +79,11 @@ void E3PetscSolver::run(int steps, double time){
 
 //	char buf;
 //	while(read(rf, &buf, 1) > 0);
-	waitpid(child, 0, 0);
 
 	read(rf, &steps_passed, sizeof(steps_passed));
 	read(rf, &time_passed, sizeof(time_passed));
+
+	waitpid(child, 0, 0);		// was before read - here for tests
 
 	pb::E3Solution sol;
 	sol.ParseFromFileDescriptor(rf);
@@ -90,4 +96,7 @@ void E3PetscSolver::run(int steps, double time){
 	//sol.PrintDebugString();
 
 	close(rf);
+
+//	printf("run finished\n");
+//	fflush(stdout);
 }

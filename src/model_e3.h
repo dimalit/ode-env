@@ -15,7 +15,7 @@
 class E3Config: public pb::E3Config, public OdeConfig{
 public:
 	E3Config(){
-		set_m(100);
+		set_m(200);
 		set_n(1.0);
 		set_theta_e(0);
 		set_gamma_0_2(1);
@@ -35,6 +35,9 @@ public:
 		set_simulated(false);
 	}
 	E3State(const E3Config*);
+	virtual OdeState* clone() const {
+		return new E3State(*this);
+	}
 };
 
 class E3PetscSolverConfig: public pb::E3PetscSolverConfig, public OdeSolverConfig{
@@ -42,6 +45,7 @@ public:
 	E3PetscSolverConfig(){
 		set_tolerance(0.001);
 		set_init_step(0.1);
+		set_model("te");
 	}
 };
 

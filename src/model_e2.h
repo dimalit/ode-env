@@ -29,6 +29,9 @@ public:
 		set_simulated(false);
 	}
 	E2State(const E2Config*);
+	virtual OdeState* clone() const {
+		return new E2State(*this);
+	}
 };
 
 class E2PetscSolverConfig: public pb::E2PetscSolverConfig, public OdeSolverConfig{

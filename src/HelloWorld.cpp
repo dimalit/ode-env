@@ -20,7 +20,7 @@
 #define UI_FILE_RUN "sim_params.glade"
 
 HelloWorld::HelloWorld()
-:forever_button("Forever"), cancel_button("Cancel"), step_button("Step")
+:forever_button("Forever"), cancel_button("Cancel"), step_button("Step"), reset_button("Reset")
 {
   problem_name = "model e3";
 
@@ -34,6 +34,7 @@ HelloWorld::HelloWorld()
 
   button_box.pack_end(forever_button, false, false, 0);
   button_box.pack_end(step_button, false, false, 0);
+  button_box.pack_end(reset_button, false, false, 0);
   button_box.pack_end(cancel_button, false, false, 0);
 
   vbox.pack_end(button_box, false, false);
@@ -62,7 +63,7 @@ HelloWorld::HelloWorld()
   b->get_widget("radio_steps", radio_steps);
 
   b->get_widget("entry_time", entry_time);
-  	  entry_time->set_text("1.0");
+  	  entry_time->set_text("0.5");
   b->get_widget("entry_steps", entry_steps);
   	  entry_steps->set_text("1");
   b->get_widget("label_time", label_time);
@@ -99,6 +100,8 @@ HelloWorld::HelloWorld()
               &HelloWorld::on_forever_clicked));
   step_button.signal_clicked().connect(sigc::mem_fun(*this,
               &HelloWorld::on_step_clicked));
+  reset_button.signal_clicked().connect(sigc::mem_fun(*this,
+              &HelloWorld::on_reset_clicked));
   cancel_button.signal_clicked().connect(sigc::mem_fun(*this,
               &HelloWorld::on_cancel_clicked));
 
@@ -155,6 +158,17 @@ void HelloWorld::on_step_clicked()
 	stop_computing();
 }
 
+void HelloWorld::on_reset_clicked()
+{
+	assert(!computing);
+
+	if(saved_state.get())
+		this->state_widget->loadState(saved_state.get(), saved_dstate.get());
+
+	set_steps_and_time(0, 0.0);
+	this->chart_analyzer->reset();
+}
+
 void HelloWorld::on_cancel_clicked()
 {
   Gtk::Main::quit();
@@ -187,14 +201,12 @@ void HelloWorld::run_computing(){
 
   OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory(problem_name);
 
-  set_steps_and_time(0, 0.0);
-
   bool use_steps = radio_steps->get_active();
   steps = atoi(entry_steps->get_text().c_str());
   time = atof(entry_time->get_text().c_str());
 
   if(use_steps)
-	  time = 100;	// XXX: Why doesn't work 1e+6 or even 1000?
+	  time = 1000000000.0;	// XXX: Why doesn't work 1e+6 or even 1000?
   else
 	  steps = 1000000000;
 
@@ -205,26 +217,33 @@ void HelloWorld::run_computing(){
 
   computing = true;
   step_button.set_sensitive(false);
+  reset_button.set_sensitive(false);
   run_thread->run(steps, time);
 }
 
 void HelloWorld::one_run_completed_cb(const OdeState* final_state, const OdeState* final_d_state){
-	  state_widget->loadState(final_state, final_d_state);
 
-	  // Написать: упражнение с запуском счета параллельно GUI для студентов
+	if(total_steps == 0){			// save original state before
+		this->saved_state = std::auto_ptr<OdeState>(state_widget->getState()->clone());
+		this->saved_dstate = std::auto_ptr<OdeState>(state_widget->getDState()->clone());
+	}
+	state_widget->loadState(final_state, final_d_state);
 
-	  add_steps_and_time(solver->getSteps(), solver->getTime());
+	// Написать: упражнение с запуском счета параллельно GUI для студентов
 
-	  // one more iteration if needed
-	  if(computing){
-		  run_thread->run(steps, time);
-	  }// if
-	  else{
-			delete run_thread;	run_thread = NULL;
-			delete solver;		solver = NULL;
-			forever_button.set_sensitive(true);		// enable it back after last iteration
-			step_button.set_sensitive(true);
-	  }// else
+	add_steps_and_time(solver->getSteps(), solver->getTime());
+
+	// one more iteration if needed
+	if(computing){
+	  run_thread->run(steps, time);
+	}// if
+	else{
+		delete run_thread;	run_thread = NULL;
+		delete solver;		solver = NULL;
+		forever_button.set_sensitive(true);		// enable it back after last iteration
+		step_button.set_sensitive(true);
+		reset_button.set_sensitive(true);
+	}// else
 }
 
 void HelloWorld::stop_computing(){
@@ -251,6 +270,7 @@ RunThread::~RunThread(){
 		thread->join();
 	close(fd[0]);
 	close(fd[1]);
+	iosource->unreference();
 }
 
 void RunThread::run(int steps, double time){

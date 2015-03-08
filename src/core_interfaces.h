@@ -15,6 +15,7 @@ public:
 
 class OdeState{
 public:
+	virtual OdeState* clone() const = 0;
 	virtual ~OdeState(){}	// make it polymorphic
 };
 

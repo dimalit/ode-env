@@ -65,6 +65,11 @@ public:
 		generate_arrays();
 	}
 
+	virtual OdeState* clone() const {
+		assert(false && "Not implemented");
+		return NULL;
+	}
+
 	void sort_arrays();
 
 	double getE() const {

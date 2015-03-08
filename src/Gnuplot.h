@@ -55,6 +55,11 @@ public:
 		return series.size();
 	}
 
+	void reset(){
+		for(int i=0; i<series.size(); i++)
+			series[i].data_cache.clear();
+	}
+
 	virtual ~Gnuplot();
 
 	//TODO: update on each change
