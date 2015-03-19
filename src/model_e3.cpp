@@ -9,6 +9,7 @@
 
 #include "rpc.h"
 
+#include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/wait.h>
@@ -17,7 +18,7 @@ E3State::E3State(const E3Config* config){
 	int m = config->m();
 	for(int i=0; i<m; i++){
 		this->add_particles();
-		this->mutable_particles(i)->set_a(0.01);
+		this->mutable_particles(i)->set_a(2);
 		this->mutable_particles(i)->set_ksi(0.0);
 	}
 	set_e(1.0);
@@ -56,6 +57,9 @@ void E3PetscSolver::run(int steps, double time){
 //	printf("run started\n");
 //	fflush(stdout);
 
+	static int run_cnt = 0;
+	run_cnt++;
+
 	int rf, wf;
 	pid_t child = rpc_call("../ts3/Debug/ts3", &rf, &wf);
 
@@ -70,6 +74,8 @@ void E3PetscSolver::run(int steps, double time){
 	all.set_time(time);
 	all.set_steps(steps);
 
+//	all.PrintDebugString();
+
 //	int ftmp = open("all.tmp", O_CREAT | O_WRONLY);
 	all.SerializeToFileDescriptor(wf);
 //	close(ftmp);
@@ -80,8 +86,19 @@ void E3PetscSolver::run(int steps, double time){
 //	char buf;
 //	while(read(rf, &buf, 1) > 0);
 
-	read(rf, &steps_passed, sizeof(steps_passed));
-	read(rf, &time_passed, sizeof(time_passed));
+	assert(read(rf, &steps_passed, sizeof(steps_passed)) == sizeof(steps_passed));
+	assert(read(rf, &time_passed, sizeof(time_passed)) == sizeof(time_passed));
+
+	printf("%d %lf\n", steps_passed, time_passed);
+	fflush(stdout);
+
+	if(steps_passed > 1000 || steps_passed <= 0){		// for error output
+		char c;
+		while(read(rf, &c, 1)){
+			putchar(c);
+		}
+		fflush(stdout);
+	}
 
 	waitpid(child, 0, 0);		// was before read - here for tests
 

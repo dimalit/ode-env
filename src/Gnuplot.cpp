@@ -33,7 +33,7 @@ Gnuplot::Gnuplot() {
 	update_view();
 }
 
-void Gnuplot::processState(const google::protobuf::Message* msg, const google::protobuf::Message* d_msg){
+void Gnuplot::processState(const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time){
 	assert(msg);
 
 	const Descriptor* desc = msg->GetDescriptor();
@@ -80,10 +80,10 @@ void Gnuplot::processState(const google::protobuf::Message* msg, const google::p
 				const FieldDescriptor* fd = s.derivative ? d_desc->FindFieldByName(s.var_name) : desc->FindFieldByName(s.var_name);
 				assert(fd);
 				double val = s.derivative ? d_refl->GetDouble(*d_msg, fd) : refl->GetDouble(*msg, fd);
-				s.data_cache.push_back(val);
+				s.data_cache.push_back(make_pair(time, val));
 
 				for(int i=0; i<s.data_cache.size(); i++){
-					fprintf(to_gnuplot, "%lf %lf\n", (double)i, s.data_cache[i]);
+					fprintf(to_gnuplot, "%.10lf %.10lf\n", s.data_cache[i].first, s.data_cache[i].second);
 				}// for
 			}// if need time
 			else{
@@ -93,7 +93,7 @@ void Gnuplot::processState(const google::protobuf::Message* msg, const google::p
 					assert(xfd);
 				double yval = s.derivative ? d_refl->GetDouble(*d_msg, yfd) : refl->GetDouble(*msg, yfd);
 				double xval = derivative_x ? d_refl->GetDouble(*d_msg, xfd) : refl->GetDouble(*msg, xfd);
-				fprintf(to_gnuplot, "%lf %lf\n", xval, yval);
+				fprintf(to_gnuplot, "%.10lf %.10lf\n", xval, yval);
 			}// not need time
 		}// if simple field
 		else{	// repeated field
@@ -132,13 +132,22 @@ void Gnuplot::processState(const google::protobuf::Message* msg, const google::p
 					x = r2->GetDouble(m2, xfd);
 				}// if not time :(
 
-				fprintf(to_gnuplot, "%lf %lf\n", x, y);
+				fprintf(to_gnuplot, "%.10lf %.10lf\n", x, y);
 			}// for
 		}// if repeated field
 
 		fprintf(to_gnuplot, "e\n");
 		fflush(to_gnuplot);
 	}// for
+}
+
+void Gnuplot::processToFile(const std::string& file, const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time){
+	fprintf(to_gnuplot, "set terminal png\n");
+	fprintf(to_gnuplot, "set output \"%s\"\n", file.c_str());
+	processState(msg, d_msg, time);
+	fprintf(to_gnuplot, "set terminal x11\n");
+	fflush(to_gnuplot);
+
 }
 
 void Gnuplot::addVar(std::string var){
@@ -150,6 +159,17 @@ void Gnuplot::addVar(std::string var){
 void Gnuplot::eraseVar(int idx){
 	assert(idx >= 0 && idx <series.size());
 	series.erase(series.begin()+idx);
+}
+
+void Gnuplot::writeback() const {
+	fprintf(to_gnuplot, "set xrange [*:*] writeback\n");
+	fprintf(to_gnuplot, "set yrange [*:*] writeback\n");
+	fflush(to_gnuplot);
+}
+void Gnuplot::restore() const {
+	fprintf(to_gnuplot, "set xrange restore\n");
+	fprintf(to_gnuplot, "set yrange restore\n");
+	fflush(to_gnuplot);
 }
 
 Gnuplot::~Gnuplot() {

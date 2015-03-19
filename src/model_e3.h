@@ -44,7 +44,7 @@ class E3PetscSolverConfig: public pb::E3PetscSolverConfig, public OdeSolverConfi
 public:
 	E3PetscSolverConfig(){
 		set_tolerance(0.001);
-		set_init_step(0.1);
+		set_init_step(0.01);
 		set_model("te");
 	}
 };

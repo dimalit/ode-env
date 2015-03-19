@@ -19,7 +19,7 @@ public:
 private:
 	struct serie{
 		std::string var_name;
-		std::vector<double> data_cache;
+		std::vector<std::pair<double, double>> data_cache;
 		bool derivative;
 	};
 
@@ -34,7 +34,8 @@ private:
 public:
 	Gnuplot();
 
-	void processState(const google::protobuf::Message* state, const google::protobuf::Message* d_state = NULL);
+	void processState(const google::protobuf::Message* state, const google::protobuf::Message* d_state = NULL, double time = 0.0);
+	void processToFile(const std::string& file, const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time);
 
 	void setXAxisTime(){
 		x_axis = "";
@@ -84,6 +85,9 @@ public:
 	}
 	style_enum getStyle() const {return style;}
 	void setStyle(style_enum s) {this->style = s;}
+
+	void writeback() const;
+	void restore() const;
 
 private:
 	void update_view();

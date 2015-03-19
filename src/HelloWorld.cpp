@@ -63,7 +63,7 @@ HelloWorld::HelloWorld()
   b->get_widget("radio_steps", radio_steps);
 
   b->get_widget("entry_time", entry_time);
-  	  entry_time->set_text("0.5");
+  	  entry_time->set_text("0.1");
   b->get_widget("entry_steps", entry_steps);
   	  entry_steps->set_text("1");
   b->get_widget("label_time", label_time);
@@ -120,8 +120,8 @@ void HelloWorld::on_config_changed()
 void HelloWorld::on_state_changed()
 {
 	analyzer_widget->loadConfig(config_widget->getConfig());
-	analyzer_widget->processState(state_widget->getState(), state_widget->getDState(), 0.0);
-	chart_analyzer->processState(state_widget->getState(), state_widget->getDState(), 0.0);
+	analyzer_widget->processState(state_widget->getState(), state_widget->getDState(), this->total_time);
+	chart_analyzer->processState(state_widget->getState(), state_widget->getDState(), this->total_time);
 }
 
 const OdeConfig* HelloWorld::extract_config(){

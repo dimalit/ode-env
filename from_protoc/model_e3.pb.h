@@ -38,6 +38,7 @@ class E3State;
 class E3State_Particles;
 class E3PetscSolverConfig;
 class E3Model;
+class E3Solution;
 
 // ===================================================================
 
@@ -460,20 +461,35 @@ class E3PetscSolverConfig : public ::google::protobuf::Message {
   inline double init_step() const;
   inline void set_init_step(double value);
 
+  // required string model = 3;
+  inline bool has_model() const;
+  inline void clear_model();
+  static const int kModelFieldNumber = 3;
+  inline const ::std::string& model() const;
+  inline void set_model(const ::std::string& value);
+  inline void set_model(const char* value);
+  inline void set_model(const char* value, size_t size);
+  inline ::std::string* mutable_model();
+  inline ::std::string* release_model();
+  inline void set_allocated_model(::std::string* model);
+
   // @@protoc_insertion_point(class_scope:pb.E3PetscSolverConfig)
  private:
   inline void set_has_tolerance();
   inline void clear_has_tolerance();
   inline void set_has_init_step();
   inline void clear_has_init_step();
+  inline void set_has_model();
+  inline void clear_has_model();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   double tolerance_;
   double init_step_;
+  ::std::string* model_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
 
   friend void  protobuf_AddDesc_model_5fe3_2eproto();
   friend void protobuf_AssignDesc_model_5fe3_2eproto();
@@ -609,6 +625,102 @@ class E3Model : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static E3Model* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class E3Solution : public ::google::protobuf::Message {
+ public:
+  E3Solution();
+  virtual ~E3Solution();
+
+  E3Solution(const E3Solution& from);
+
+  inline E3Solution& operator=(const E3Solution& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const E3Solution& default_instance();
+
+  void Swap(E3Solution* other);
+
+  // implements Message ----------------------------------------------
+
+  E3Solution* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const E3Solution& from);
+  void MergeFrom(const E3Solution& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required .pb.E3State state = 1;
+  inline bool has_state() const;
+  inline void clear_state();
+  static const int kStateFieldNumber = 1;
+  inline const ::pb::E3State& state() const;
+  inline ::pb::E3State* mutable_state();
+  inline ::pb::E3State* release_state();
+  inline void set_allocated_state(::pb::E3State* state);
+
+  // optional .pb.E3State d_state = 2;
+  inline bool has_d_state() const;
+  inline void clear_d_state();
+  static const int kDStateFieldNumber = 2;
+  inline const ::pb::E3State& d_state() const;
+  inline ::pb::E3State* mutable_d_state();
+  inline ::pb::E3State* release_d_state();
+  inline void set_allocated_d_state(::pb::E3State* d_state);
+
+  // @@protoc_insertion_point(class_scope:pb.E3Solution)
+ private:
+  inline void set_has_state();
+  inline void clear_has_state();
+  inline void set_has_d_state();
+  inline void clear_has_d_state();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::pb::E3State* state_;
+  ::pb::E3State* d_state_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_model_5fe3_2eproto();
+  friend void protobuf_AssignDesc_model_5fe3_2eproto();
+  friend void protobuf_ShutdownFile_model_5fe3_2eproto();
+
+  void InitAsDefaultInstance();
+  static E3Solution* default_instance_;
 };
 // ===================================================================
 
@@ -962,6 +1074,76 @@ inline void E3PetscSolverConfig::set_init_step(double value) {
   init_step_ = value;
 }
 
+// required string model = 3;
+inline bool E3PetscSolverConfig::has_model() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void E3PetscSolverConfig::set_has_model() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void E3PetscSolverConfig::clear_has_model() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void E3PetscSolverConfig::clear_model() {
+  if (model_ != &::google::protobuf::internal::kEmptyString) {
+    model_->clear();
+  }
+  clear_has_model();
+}
+inline const ::std::string& E3PetscSolverConfig::model() const {
+  return *model_;
+}
+inline void E3PetscSolverConfig::set_model(const ::std::string& value) {
+  set_has_model();
+  if (model_ == &::google::protobuf::internal::kEmptyString) {
+    model_ = new ::std::string;
+  }
+  model_->assign(value);
+}
+inline void E3PetscSolverConfig::set_model(const char* value) {
+  set_has_model();
+  if (model_ == &::google::protobuf::internal::kEmptyString) {
+    model_ = new ::std::string;
+  }
+  model_->assign(value);
+}
+inline void E3PetscSolverConfig::set_model(const char* value, size_t size) {
+  set_has_model();
+  if (model_ == &::google::protobuf::internal::kEmptyString) {
+    model_ = new ::std::string;
+  }
+  model_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* E3PetscSolverConfig::mutable_model() {
+  set_has_model();
+  if (model_ == &::google::protobuf::internal::kEmptyString) {
+    model_ = new ::std::string;
+  }
+  return model_;
+}
+inline ::std::string* E3PetscSolverConfig::release_model() {
+  clear_has_model();
+  if (model_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = model_;
+    model_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void E3PetscSolverConfig::set_allocated_model(::std::string* model) {
+  if (model_ != &::google::protobuf::internal::kEmptyString) {
+    delete model_;
+  }
+  if (model) {
+    set_has_model();
+    model_ = model;
+  } else {
+    clear_has_model();
+    model_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
 // -------------------------------------------------------------------
 
 // E3Model
@@ -1121,6 +1303,86 @@ inline void E3Model::set_allocated_sconfig(::pb::E3PetscSolverConfig* sconfig) {
     set_has_sconfig();
   } else {
     clear_has_sconfig();
+  }
+}
+
+// -------------------------------------------------------------------
+
+// E3Solution
+
+// required .pb.E3State state = 1;
+inline bool E3Solution::has_state() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void E3Solution::set_has_state() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void E3Solution::clear_has_state() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void E3Solution::clear_state() {
+  if (state_ != NULL) state_->::pb::E3State::Clear();
+  clear_has_state();
+}
+inline const ::pb::E3State& E3Solution::state() const {
+  return state_ != NULL ? *state_ : *default_instance_->state_;
+}
+inline ::pb::E3State* E3Solution::mutable_state() {
+  set_has_state();
+  if (state_ == NULL) state_ = new ::pb::E3State;
+  return state_;
+}
+inline ::pb::E3State* E3Solution::release_state() {
+  clear_has_state();
+  ::pb::E3State* temp = state_;
+  state_ = NULL;
+  return temp;
+}
+inline void E3Solution::set_allocated_state(::pb::E3State* state) {
+  delete state_;
+  state_ = state;
+  if (state) {
+    set_has_state();
+  } else {
+    clear_has_state();
+  }
+}
+
+// optional .pb.E3State d_state = 2;
+inline bool E3Solution::has_d_state() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void E3Solution::set_has_d_state() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void E3Solution::clear_has_d_state() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void E3Solution::clear_d_state() {
+  if (d_state_ != NULL) d_state_->::pb::E3State::Clear();
+  clear_has_d_state();
+}
+inline const ::pb::E3State& E3Solution::d_state() const {
+  return d_state_ != NULL ? *d_state_ : *default_instance_->d_state_;
+}
+inline ::pb::E3State* E3Solution::mutable_d_state() {
+  set_has_d_state();
+  if (d_state_ == NULL) d_state_ = new ::pb::E3State;
+  return d_state_;
+}
+inline ::pb::E3State* E3Solution::release_d_state() {
+  clear_has_d_state();
+  ::pb::E3State* temp = d_state_;
+  d_state_ = NULL;
+  return temp;
+}
+inline void E3Solution::set_allocated_d_state(::pb::E3State* d_state) {
+  delete d_state_;
+  d_state_ = d_state;
+  if (d_state) {
+    set_has_d_state();
+  } else {
+    clear_has_d_state();
   }
 }
 

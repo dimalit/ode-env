@@ -29,7 +29,8 @@ private:
 	Gtk::Button btn_add;
 	Gtk::Button btn_reset;
 
-	const OdeState* last_state;
+	const OdeState *last_state, *last_d_state;
+	double last_time;
 public:
 	ChartAnalyzer(const OdeConfig* config);
 	virtual void loadConfig(const OdeConfig* config){}
@@ -44,8 +45,11 @@ public:
 		return "customizable chart";
 	}
 private:
+	void on_save_clicked(Gnuplot* ptr);
 	void on_add_clicked();
 	void on_del_chart_clicked(Gtk::Widget* w, const Gnuplot* ptr);
+	void on_writeback_clicked(const Gnuplot* ptr);
+	void on_restore_clicked(const Gnuplot* ptr);
 };
 
 //REGISTER_ANALYZER_WIDGET_CLASS(ChartAnalyzer)

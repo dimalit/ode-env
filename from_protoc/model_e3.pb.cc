@@ -35,6 +35,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* E3Model_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   E3Model_reflection_ = NULL;
+const ::google::protobuf::Descriptor* E3Solution_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  E3Solution_reflection_ = NULL;
 
 }  // namespace
 
@@ -101,9 +104,10 @@ void protobuf_AssignDesc_model_5fe3_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E3State_Particles));
   E3PetscSolverConfig_descriptor_ = file->message_type(2);
-  static const int E3PetscSolverConfig_offsets_[2] = {
+  static const int E3PetscSolverConfig_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, tolerance_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, init_step_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, model_),
   };
   E3PetscSolverConfig_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -135,6 +139,22 @@ void protobuf_AssignDesc_model_5fe3_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E3Model));
+  E3Solution_descriptor_ = file->message_type(4);
+  static const int E3Solution_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3Solution, state_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3Solution, d_state_),
+  };
+  E3Solution_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      E3Solution_descriptor_,
+      E3Solution::default_instance_,
+      E3Solution_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3Solution, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3Solution, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(E3Solution));
 }
 
 namespace {
@@ -157,6 +177,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
     E3PetscSolverConfig_descriptor_, &E3PetscSolverConfig::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     E3Model_descriptor_, &E3Model::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    E3Solution_descriptor_, &E3Solution::default_instance());
 }
 
 }  // namespace
@@ -172,6 +194,8 @@ void protobuf_ShutdownFile_model_5fe3_2eproto() {
   delete E3PetscSolverConfig_reflection_;
   delete E3Model::default_instance_;
   delete E3Model_reflection_;
+  delete E3Solution::default_instance_;
+  delete E3Solution_reflection_;
 }
 
 void protobuf_AddDesc_model_5fe3_2eproto() {
@@ -187,12 +211,14 @@ void protobuf_AddDesc_model_5fe3_2eproto() {
     "\"\220\001\n\007E3State\022\021\n\tsimulated\030\001 \001(\010\022\t\n\001E\030\003 \002"
     "(\001\022\013\n\003phi\030\004 \002(\001\022(\n\tparticles\030\002 \003(\n2\025.pb."
     "E3State.Particles\0320\n\tParticles\022\t\n\001a\030\003 \002("
-    "\001\022\013\n\003ksi\030\004 \002(\001\022\013\n\003eta\030\005 \002(\001\";\n\023E3PetscSo"
+    "\001\022\013\n\003ksi\030\004 \002(\001\022\013\n\003eta\030\005 \002(\001\"J\n\023E3PetscSo"
     "lverConfig\022\021\n\ttolerance\030\001 \001(\001\022\021\n\tinit_st"
-    "ep\030\002 \001(\001\"\213\001\n\007E3Model\022\014\n\004time\030\004 \002(\001\022\r\n\005st"
-    "eps\030\005 \002(\r\022\035\n\007pconfig\030\001 \002(\0132\014.pb.E3Config"
-    "\022\032\n\005state\030\002 \002(\0132\013.pb.E3State\022(\n\007sconfig\030"
-    "\003 \002(\0132\027.pb.E3PetscSolverConfig", 470);
+    "ep\030\002 \001(\001\022\r\n\005model\030\003 \002(\t\"\213\001\n\007E3Model\022\014\n\004t"
+    "ime\030\004 \002(\001\022\r\n\005steps\030\005 \002(\r\022\035\n\007pconfig\030\001 \002("
+    "\0132\014.pb.E3Config\022\032\n\005state\030\002 \002(\0132\013.pb.E3St"
+    "ate\022(\n\007sconfig\030\003 \002(\0132\027.pb.E3PetscSolverC"
+    "onfig\"F\n\nE3Solution\022\032\n\005state\030\001 \002(\0132\013.pb."
+    "E3State\022\034\n\007d_state\030\002 \001(\0132\013.pb.E3State", 557);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e3.proto", &protobuf_RegisterTypes);
   E3Config::default_instance_ = new E3Config();
@@ -200,11 +226,13 @@ void protobuf_AddDesc_model_5fe3_2eproto() {
   E3State_Particles::default_instance_ = new E3State_Particles();
   E3PetscSolverConfig::default_instance_ = new E3PetscSolverConfig();
   E3Model::default_instance_ = new E3Model();
+  E3Solution::default_instance_ = new E3Solution();
   E3Config::default_instance_->InitAsDefaultInstance();
   E3State::default_instance_->InitAsDefaultInstance();
   E3State_Particles::default_instance_->InitAsDefaultInstance();
   E3PetscSolverConfig::default_instance_->InitAsDefaultInstance();
   E3Model::default_instance_->InitAsDefaultInstance();
+  E3Solution::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_model_5fe3_2eproto);
 }
 
@@ -1228,6 +1256,7 @@ void E3State::Swap(E3State* other) {
 #ifndef _MSC_VER
 const int E3PetscSolverConfig::kToleranceFieldNumber;
 const int E3PetscSolverConfig::kInitStepFieldNumber;
+const int E3PetscSolverConfig::kModelFieldNumber;
 #endif  // !_MSC_VER
 
 E3PetscSolverConfig::E3PetscSolverConfig()
@@ -1248,6 +1277,7 @@ void E3PetscSolverConfig::SharedCtor() {
   _cached_size_ = 0;
   tolerance_ = 0;
   init_step_ = 0;
+  model_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1256,6 +1286,9 @@ E3PetscSolverConfig::~E3PetscSolverConfig() {
 }
 
 void E3PetscSolverConfig::SharedDtor() {
+  if (model_ != &::google::protobuf::internal::kEmptyString) {
+    delete model_;
+  }
   if (this != default_instance_) {
   }
 }
@@ -1285,6 +1318,11 @@ void E3PetscSolverConfig::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     tolerance_ = 0;
     init_step_ = 0;
+    if (has_model()) {
+      if (model_ != &::google::protobuf::internal::kEmptyString) {
+        model_->clear();
+      }
+    }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -1323,6 +1361,23 @@ bool E3PetscSolverConfig::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(26)) goto parse_model;
+        break;
+      }
+
+      // required string model = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_model:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_model()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->model().data(), this->model().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1355,6 +1410,15 @@ void E3PetscSolverConfig::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->init_step(), output);
   }
 
+  // required string model = 3;
+  if (has_model()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->model().data(), this->model().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      3, this->model(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1371,6 +1435,16 @@ void E3PetscSolverConfig::SerializeWithCachedSizes(
   // optional double init_step = 2;
   if (has_init_step()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(2, this->init_step(), target);
+  }
+
+  // required string model = 3;
+  if (has_model()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->model().data(), this->model().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->model(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1392,6 +1466,13 @@ int E3PetscSolverConfig::ByteSize() const {
     // optional double init_step = 2;
     if (has_init_step()) {
       total_size += 1 + 8;
+    }
+
+    // required string model = 3;
+    if (has_model()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->model());
     }
 
   }
@@ -1427,6 +1508,9 @@ void E3PetscSolverConfig::MergeFrom(const E3PetscSolverConfig& from) {
     if (from.has_init_step()) {
       set_init_step(from.init_step());
     }
+    if (from.has_model()) {
+      set_model(from.model());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1444,6 +1528,7 @@ void E3PetscSolverConfig::CopyFrom(const E3PetscSolverConfig& from) {
 }
 
 bool E3PetscSolverConfig::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000004) != 0x00000004) return false;
 
   return true;
 }
@@ -1452,6 +1537,7 @@ void E3PetscSolverConfig::Swap(E3PetscSolverConfig* other) {
   if (other != this) {
     std::swap(tolerance_, other->tolerance_);
     std::swap(init_step_, other->init_step_);
+    std::swap(model_, other->model_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -1830,6 +1916,9 @@ bool E3Model::IsInitialized() const {
   if (has_state()) {
     if (!this->state().IsInitialized()) return false;
   }
+  if (has_sconfig()) {
+    if (!this->sconfig().IsInitialized()) return false;
+  }
   return true;
 }
 
@@ -1851,6 +1940,271 @@ void E3Model::Swap(E3Model* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = E3Model_descriptor_;
   metadata.reflection = E3Model_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int E3Solution::kStateFieldNumber;
+const int E3Solution::kDStateFieldNumber;
+#endif  // !_MSC_VER
+
+E3Solution::E3Solution()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void E3Solution::InitAsDefaultInstance() {
+  state_ = const_cast< ::pb::E3State*>(&::pb::E3State::default_instance());
+  d_state_ = const_cast< ::pb::E3State*>(&::pb::E3State::default_instance());
+}
+
+E3Solution::E3Solution(const E3Solution& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void E3Solution::SharedCtor() {
+  _cached_size_ = 0;
+  state_ = NULL;
+  d_state_ = NULL;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+E3Solution::~E3Solution() {
+  SharedDtor();
+}
+
+void E3Solution::SharedDtor() {
+  if (this != default_instance_) {
+    delete state_;
+    delete d_state_;
+  }
+}
+
+void E3Solution::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* E3Solution::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return E3Solution_descriptor_;
+}
+
+const E3Solution& E3Solution::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_model_5fe3_2eproto();
+  return *default_instance_;
+}
+
+E3Solution* E3Solution::default_instance_ = NULL;
+
+E3Solution* E3Solution::New() const {
+  return new E3Solution;
+}
+
+void E3Solution::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (has_state()) {
+      if (state_ != NULL) state_->::pb::E3State::Clear();
+    }
+    if (has_d_state()) {
+      if (d_state_ != NULL) d_state_->::pb::E3State::Clear();
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool E3Solution::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required .pb.E3State state = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_state()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_d_state;
+        break;
+      }
+
+      // optional .pb.E3State d_state = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_d_state:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_d_state()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void E3Solution::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required .pb.E3State state = 1;
+  if (has_state()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->state(), output);
+  }
+
+  // optional .pb.E3State d_state = 2;
+  if (has_d_state()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      2, this->d_state(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* E3Solution::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required .pb.E3State state = 1;
+  if (has_state()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        1, this->state(), target);
+  }
+
+  // optional .pb.E3State d_state = 2;
+  if (has_d_state()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        2, this->d_state(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int E3Solution::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required .pb.E3State state = 1;
+    if (has_state()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->state());
+    }
+
+    // optional .pb.E3State d_state = 2;
+    if (has_d_state()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->d_state());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void E3Solution::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const E3Solution* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const E3Solution*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void E3Solution::MergeFrom(const E3Solution& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_state()) {
+      mutable_state()->::pb::E3State::MergeFrom(from.state());
+    }
+    if (from.has_d_state()) {
+      mutable_d_state()->::pb::E3State::MergeFrom(from.d_state());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void E3Solution::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void E3Solution::CopyFrom(const E3Solution& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool E3Solution::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+
+  if (has_state()) {
+    if (!this->state().IsInitialized()) return false;
+  }
+  if (has_d_state()) {
+    if (!this->d_state().IsInitialized()) return false;
+  }
+  return true;
+}
+
+void E3Solution::Swap(E3Solution* other) {
+  if (other != this) {
+    std::swap(state_, other->state_);
+    std::swap(d_state_, other->d_state_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata E3Solution::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = E3Solution_descriptor_;
+  metadata.reflection = E3Solution_reflection_;
   return metadata;
 }
 

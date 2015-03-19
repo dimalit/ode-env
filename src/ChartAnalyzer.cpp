@@ -256,13 +256,30 @@ void ChartAnalyzer::reset(){
 
 void ChartAnalyzer::processState(const OdeState* state, const OdeState* d_state, double time){
 	this->last_state = state;
+	this->last_d_state = d_state;
+	last_time = time;
+
 	const google::protobuf::Message* msg = dynamic_cast<const google::protobuf::Message*>(state);
 		assert(msg);
 	const google::protobuf::Message* d_msg = dynamic_cast<const google::protobuf::Message*>(d_state);
 		assert(d_msg);
 
 	for(int i=0; i<plots.size(); i++)
-		plots[i]->processState(msg, d_msg);
+		plots[i]->processState(msg, d_msg, time);
+}
+
+void ChartAnalyzer::on_save_clicked(Gnuplot* ptr){
+	assert(last_state);
+	assert(last_d_state);
+
+	std::string file = ptr->getTitle()+".png";
+
+	const google::protobuf::Message* msg = dynamic_cast<const google::protobuf::Message*>(last_state);
+		assert(msg);
+	const google::protobuf::Message* d_msg = dynamic_cast<const google::protobuf::Message*>(last_d_state);
+		assert(d_msg);
+
+	ptr->processToFile(file, msg, d_msg, last_time);
 }
 
 void ChartAnalyzer::on_add_clicked(){
@@ -291,13 +308,23 @@ void ChartAnalyzer::addChart(std::vector<std::string> vars, std::string x_axis_v
 	plots.push_back(p);	// XXX: not very copyable - but with no copies it will work...
 
 	// add widget for it //
-	Gtk::Button* btn = new Gtk::Button("del");
+	Gtk::Button* del = new Gtk::Button("del");
+	Gtk::Button* writeback = new Gtk::Button("auto");
+	Gtk::Button* restore = new Gtk::Button("fixed");
+	Gtk::Button* save = new Gtk::Button("save");
 	Gtk::Label* l = new Gtk::Label(full_title.str());
-	Gtk::HBox* hbox = new Gtk::HBox();
-	hbox->pack_end(*Gtk::manage(btn), false, false);
-	hbox->pack_end(*Gtk::manage(l), true, true);
 
-	btn->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this, &ChartAnalyzer::on_del_chart_clicked), (Gtk::Widget*)hbox, p));
+	Gtk::HBox* hbox = new Gtk::HBox();
+	hbox->pack_end(*Gtk::manage(del), false, false);
+	hbox->pack_end(*Gtk::manage(writeback), false, false);
+	hbox->pack_end(*Gtk::manage(restore), false, false);
+	hbox->pack_end(*Gtk::manage(save), false, false);
+	hbox->pack_start(*Gtk::manage(l), true, true);
+
+	del->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this, &ChartAnalyzer::on_del_chart_clicked), (Gtk::Widget*)hbox, p));
+	writeback->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this, &ChartAnalyzer::on_writeback_clicked), p));
+	restore->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this, &ChartAnalyzer::on_restore_clicked), p));
+	save->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this, &ChartAnalyzer::on_save_clicked), p));
 	vbox.pack_start(*Gtk::manage(hbox), false, false);
 	hbox->show_all();
 
@@ -315,3 +342,12 @@ void ChartAnalyzer::on_del_chart_clicked(Gtk::Widget* w, const Gnuplot* ptr){
 		}// if
 	}// for
 }
+
+void ChartAnalyzer::on_writeback_clicked(const Gnuplot* ptr){
+	ptr->writeback();
+}
+
+void ChartAnalyzer::on_restore_clicked(const Gnuplot* ptr){
+	ptr->restore();
+}
+

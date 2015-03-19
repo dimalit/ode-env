@@ -25,6 +25,7 @@ message E3State{
 message E3PetscSolverConfig{
 	optional double tolerance = 1;
 	optional double init_step = 2;
+	required string model = 3;
 }
 
 message E3Model{
@@ -33,4 +34,9 @@ message E3Model{
 	required E3Config pconfig = 1;
 	required E3State state = 2;
 	required E3PetscSolverConfig sconfig = 3;
+}
+
+message E3Solution{
+	required E3State state = 1;
+	optional E3State d_state = 2;
 }
