@@ -36,6 +36,7 @@ public:
 
 	void processState(const google::protobuf::Message* state, const google::protobuf::Message* d_state = NULL, double time = 0.0);
 	void processToFile(const std::string& file, const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time);
+	void saveToCsv(const std::string& file, const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time);
 
 	void setXAxisTime(){
 		x_axis = "";
@@ -86,11 +87,12 @@ public:
 	style_enum getStyle() const {return style;}
 	void setStyle(style_enum s) {this->style = s;}
 
-	void writeback() const;
-	void restore() const;
+	void writeback();
+	void restore();
 
 private:
 	void update_view();
+	void printPlotCommand(FILE* fp, const google::protobuf::Message* state, const google::protobuf::Message* d_state = NULL, double time = 0.0);
 };
 
 #endif /* GNUPLOT_H_ */

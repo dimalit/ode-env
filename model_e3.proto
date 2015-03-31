@@ -15,6 +15,7 @@ message E3State{
 	optional bool simulated = 1;
 	required double E = 3;
 	required double phi = 4;
+	optional double a0 = 5;
 	repeated group Particles = 2{
 		required double a = 3;
 		required double ksi = 4;

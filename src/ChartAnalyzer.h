@@ -48,8 +48,8 @@ private:
 	void on_save_clicked(Gnuplot* ptr);
 	void on_add_clicked();
 	void on_del_chart_clicked(Gtk::Widget* w, const Gnuplot* ptr);
-	void on_writeback_clicked(const Gnuplot* ptr);
-	void on_restore_clicked(const Gnuplot* ptr);
+	void on_writeback_clicked(Gnuplot* ptr);
+	void on_restore_clicked(Gnuplot* ptr);
 };
 
 //REGISTER_ANALYZER_WIDGET_CLASS(ChartAnalyzer)

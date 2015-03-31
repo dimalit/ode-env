@@ -272,19 +272,32 @@ void ChartAnalyzer::on_save_clicked(Gnuplot* ptr){
 	assert(last_state);
 	assert(last_d_state);
 
-	std::string file = ptr->getTitle()+".png";
+	std::string file = ptr->getTitle()+".csv";
 
 	const google::protobuf::Message* msg = dynamic_cast<const google::protobuf::Message*>(last_state);
 		assert(msg);
 	const google::protobuf::Message* d_msg = dynamic_cast<const google::protobuf::Message*>(last_d_state);
 		assert(d_msg);
 
-	ptr->processToFile(file, msg, d_msg, last_time);
+	ptr->saveToCsv(file, msg, d_msg, last_time);
 }
 
 void ChartAnalyzer::on_add_clicked(){
 	assert(last_state);
 	(new ChartAddDialog(this, last_state))->show_all();
+}
+
+std::string trim(const std::string& str,
+                 const std::string& whitespace = " \t")
+{
+    const auto strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return ""; // no content
+
+    const auto strEnd = str.find_last_not_of(whitespace);
+    const auto strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
 }
 
 void ChartAnalyzer::addChart(std::vector<std::string> vars, std::string x_axis_var){
@@ -304,7 +317,8 @@ void ChartAnalyzer::addChart(std::vector<std::string> vars, std::string x_axis_v
 	if(!x_axis_var.empty())
 		p->setStyle(Gnuplot::STYLE_POINTS);
 
-	p->setTitle(full_title.str());
+
+	p->setTitle(trim(full_title.str()));
 	plots.push_back(p);	// XXX: not very copyable - but with no copies it will work...
 
 	// add widget for it //
@@ -343,11 +357,12 @@ void ChartAnalyzer::on_del_chart_clicked(Gtk::Widget* w, const Gnuplot* ptr){
 	}// for
 }
 
-void ChartAnalyzer::on_writeback_clicked(const Gnuplot* ptr){
+void ChartAnalyzer::on_writeback_clicked(Gnuplot* ptr){
 	ptr->writeback();
+	ptr->processState(dynamic_cast<const Message*>(last_state), dynamic_cast<const Message*>(last_d_state), last_time);
 }
 
-void ChartAnalyzer::on_restore_clicked(const Gnuplot* ptr){
+void ChartAnalyzer::on_restore_clicked(Gnuplot* ptr){
 	ptr->restore();
 }
 

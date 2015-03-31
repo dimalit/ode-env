@@ -353,6 +353,13 @@ class E3State : public ::google::protobuf::Message {
   inline double phi() const;
   inline void set_phi(double value);
 
+  // optional double a0 = 5;
+  inline bool has_a0() const;
+  inline void clear_a0();
+  static const int kA0FieldNumber = 5;
+  inline double a0() const;
+  inline void set_a0(double value);
+
   // repeated group Particles = 2 {
   inline int particles_size() const;
   inline void clear_particles();
@@ -373,16 +380,19 @@ class E3State : public ::google::protobuf::Message {
   inline void clear_has_e();
   inline void set_has_phi();
   inline void clear_has_phi();
+  inline void set_has_a0();
+  inline void clear_has_a0();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   double e_;
   double phi_;
+  double a0_;
   ::google::protobuf::RepeatedPtrField< ::pb::E3State_Particles > particles_;
   bool simulated_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_model_5fe3_2eproto();
   friend void protobuf_AssignDesc_model_5fe3_2eproto();
@@ -999,6 +1009,28 @@ inline double E3State::phi() const {
 inline void E3State::set_phi(double value) {
   set_has_phi();
   phi_ = value;
+}
+
+// optional double a0 = 5;
+inline bool E3State::has_a0() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void E3State::set_has_a0() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void E3State::clear_has_a0() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void E3State::clear_a0() {
+  a0_ = 0;
+  clear_has_a0();
+}
+inline double E3State::a0() const {
+  return a0_;
+}
+inline void E3State::set_a0(double value) {
+  set_has_a0();
+  a0_ = value;
 }
 
 // repeated group Particles = 2 {

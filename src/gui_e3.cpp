@@ -257,6 +257,7 @@ void E3StateWidget::generateState(){
 
 	state->set_e(e);
 	state->set_phi(phi);
+	state->set_a0(a);
 	state->set_simulated(false);
 }
 
