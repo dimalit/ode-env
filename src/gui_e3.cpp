@@ -236,7 +236,7 @@ void E3StateWidget::generateState(){
 	double phi = atof(entry_phi->get_text().c_str());
 	double a = atof(entry_a->get_text().c_str());
 
-	bool use_rand = true;
+	bool use_rand = false;
 	double right = 0.5;
 	double left = -0.5;
 
@@ -251,6 +251,10 @@ void E3StateWidget::generateState(){
 		pb::E3State::Particles p;
 		p.set_ksi(ksi); p.set_a(a);
 		p.set_eta(0.0);
+
+		// XXX: special case for 1 particle!
+		if(m==1)
+			p.set_ksi(0.0);
 
 		state->mutable_particles(i)->CopyFrom(p);
 	}

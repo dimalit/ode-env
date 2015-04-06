@@ -18,10 +18,10 @@ E3State::E3State(const E3Config* config){
 	int m = config->m();
 	for(int i=0; i<m; i++){
 		this->add_particles();
-		this->mutable_particles(i)->set_a(0.1);
+		this->mutable_particles(i)->set_a(0.01);
 		this->mutable_particles(i)->set_ksi(0.0);
 	}
-	set_e(1.0);
+	set_e(0.004);
 	set_phi(0.0);
 	set_simulated(false);
 }
@@ -35,7 +35,7 @@ E3PetscSolver::E3PetscSolver(const E3PetscSolverConfig* scfg, const E3Config* pc
 	state = new E3State(*init_state);
 	d_state = new E3State();
 
-	sconfig->set_model("te");
+	sconfig->set_model("tm");
 }
 
 double E3PetscSolver::getTime() const {
