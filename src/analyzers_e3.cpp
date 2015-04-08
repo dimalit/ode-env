@@ -72,11 +72,11 @@ void E3ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 	buf << i1;
 	entry_i1->set_text(buf.str());
 
-	buf.str("");
+	buf.str("");		// 4.0 for alternate formula
 	buf << estate->e()*estate->e()+2.0/config->r_e()/config->m()*sum_eta;
 	entry_i2->set_text(buf.str());
 
-	buf.str("");
+	buf.str("");		// 2.0 for alternate formula
 	buf << estate->e()*estate->e()+1.0/config->n()/config->m()*sum_a_2;
 	entry_i3->set_text(buf.str());
 

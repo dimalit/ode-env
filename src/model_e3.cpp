@@ -14,14 +14,20 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+E3State::E3State(){
+	set_e(0.01);
+	set_phi(0.0);
+	set_simulated(false);
+}
+
 E3State::E3State(const E3Config* config){
 	int m = config->m();
 	for(int i=0; i<m; i++){
 		this->add_particles();
-		this->mutable_particles(i)->set_a(0.01);
+		this->mutable_particles(i)->set_a(1.0);
 		this->mutable_particles(i)->set_ksi(0.0);
 	}
-	set_e(0.004);
+	set_e(0.01);
 	set_phi(0.0);
 	set_simulated(false);
 }
@@ -35,7 +41,7 @@ E3PetscSolver::E3PetscSolver(const E3PetscSolverConfig* scfg, const E3Config* pc
 	state = new E3State(*init_state);
 	d_state = new E3State();
 
-	sconfig->set_model("tm");
+	sconfig->set_model("te");
 }
 
 double E3PetscSolver::getTime() const {
@@ -92,13 +98,13 @@ void E3PetscSolver::run(int steps, double time){
 	printf("%d %lf\n", steps_passed, time_passed);
 	fflush(stdout);
 
-	if(steps_passed > 1000 || steps_passed <= 0){		// for error output
-		char c;
-		while(read(rf, &c, 1)){
-			putchar(c);
-		}
-		fflush(stdout);
-	}
+//	if(steps_passed > 1000 || steps_passed <= 0){		// for error output
+//		char c;
+//		while(read(rf, &c, 1)){
+//			putchar(c);
+//		}
+//		fflush(stdout);
+//	}
 
 	waitpid(child, 0, 0);		// was before read - here for tests
 

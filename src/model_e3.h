@@ -16,9 +16,9 @@ class E3Config: public pb::E3Config, public OdeConfig{
 public:
 	E3Config(){
 		set_m(250);
-		set_n(-1.0);
+		set_n(1.0);
 		set_theta_e(0);
-		set_gamma_0_2(0);
+		set_gamma_0_2(0.1);
 		set_delta_e(0);
 		set_r_e(20.0);
 	}
@@ -29,11 +29,7 @@ public:
 
 class E3State: public pb::E3State, public OdeState{
 public:
-	E3State(){
-		set_e(0.004);
-		set_phi(0.0);
-		set_simulated(false);
-	}
+	E3State();
 	E3State(const E3Config*);
 	virtual OdeState* clone() const {
 		return new E3State(*this);
