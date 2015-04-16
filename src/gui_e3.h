@@ -12,6 +12,7 @@
 #include "model_e3.h"
 
 #include "gtkmm/entry.h"
+#include "gtkmm/comboboxtext.h"
 
 #include <cassert>
 #include <iostream>
@@ -77,6 +78,7 @@ private:
 	E3PetscSolverConfig* config;
 
 	Gtk::Entry *entry_tol, *entry_step;
+	Gtk::ComboBoxText *combo_type;
 
 public:
 	E3PetscSolverConfigWidget(const E3PetscSolverConfig* config = NULL);

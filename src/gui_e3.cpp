@@ -8,6 +8,7 @@
 #include "gui_e3.h"
 
 #include <gtkmm/builder.h>
+#include <gtkmm/table.h>
 
 #define UI_FILE_CONF "e3_config.glade"
 #define UI_FILE_STATE "e3_state.glade"
@@ -236,7 +237,7 @@ void E3StateWidget::generateState(){
 	double phi = atof(entry_phi->get_text().c_str());
 	double a = atof(entry_a->get_text().c_str());
 
-	bool use_rand = false;
+	bool use_rand = true;
 	double right = 0.5;
 	double left = -0.5;
 
@@ -279,6 +280,11 @@ E3PetscSolverConfigWidget::E3PetscSolverConfigWidget(const E3PetscSolverConfig* 
 	b->get_widget("entry_tol", entry_tol);
 	b->get_widget("entry_step", entry_step);
 
+	combo_type = Gtk::manage( new Gtk::ComboBoxText() );
+	combo_type->append("te");
+	combo_type->append("tm");
+	(dynamic_cast<Gtk::Table*>(root))->attach(*combo_type, 1, 2, 2, 3);
+
 	this->add(*root);
 
 	config_to_widget();
@@ -298,6 +304,7 @@ void E3PetscSolverConfigWidget::loadConfig(const OdeSolverConfig* config){
 void E3PetscSolverConfigWidget::widget_to_config(){
 	config->set_init_step(atof(entry_step->get_text().c_str()));
 	config->set_tolerance(atof(entry_tol->get_text().c_str()));
+	config->set_model(combo_type->get_active_text());
 }
 void E3PetscSolverConfigWidget::config_to_widget(){
 	std::ostringstream buf;
@@ -307,4 +314,6 @@ void E3PetscSolverConfigWidget::config_to_widget(){
 	buf.str("");
 	buf << config->tolerance();
 	entry_tol->set_text(buf.str());
+
+	combo_type->set_active_text(config->model());
 }

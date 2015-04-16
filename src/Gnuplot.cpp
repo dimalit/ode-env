@@ -46,9 +46,9 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 	const Reflection* d_refl = d_msg ? d_msg->GetReflection() : NULL;
 
 	// exit if we need derivatives but don't have them
-	if(d_msg == NULL || d_msg->ByteSize() <= 32){	// XXX: means it is "nearly empty"
-		return;
-	}
+//	if(d_msg == NULL || d_msg->ByteSize() <= 32){	// XXX: means it is "nearly empty"
+//		return;
+//	}
 
 //	msg->PrintDebugString();
 //	d_msg->PrintDebugString();
@@ -63,7 +63,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 		if(i!=0)
 			plot_command << ", ";
 
-		std::string style = this->style == STYLE_LINES ? "lines" : "points ps 2";
+		std::string style = this->style == STYLE_LINES ? "lines" : "points ps 0.2";
 		string title = s.var_name;
 		if(s.derivative)
 			title += '\'';
@@ -107,10 +107,10 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 				assert(f2.size());
 
 			const FieldDescriptor* fd1 = desc->FindFieldByName(f1);
-			const FieldDescriptor* d_fd1 = d_desc->FindFieldByName(f1);
-				assert(fd1);
+			const FieldDescriptor* d_fd1 = d_desc ? d_desc->FindFieldByName(f1) : NULL;
+				assert(!d_desc || fd1);
 			int n = refl->FieldSize(*msg, fd1);
-				assert(refl->FieldSize(*msg, fd1) == d_refl->FieldSize(*msg, d_fd1));
+				assert(!d_fd1 || refl->FieldSize(*msg, fd1) == d_refl->FieldSize(*msg, d_fd1));
 
 			for(int i=0; i<n; i++){
 				const Message& m2 = s.derivative ? d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : refl->GetRepeatedMessage(*msg, fd1, i);
@@ -157,6 +157,7 @@ void Gnuplot::processToFile(const std::string& file, const google::protobuf::Mes
 void Gnuplot::saveToCsv(const std::string& file, const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time){
 	FILE* fp = fopen(file.c_str(), "wb");
 	assert(fp);		// TODO: exception
+	fprintf(fp, "set label \"t = %.2lf\" at graph 0.02, graph 0.95\n", time);
 	printPlotCommand(fp, msg, d_msg, time);
 	fclose(fp);
 }

@@ -40,8 +40,6 @@ E3PetscSolver::E3PetscSolver(const E3PetscSolverConfig* scfg, const E3Config* pc
 	sconfig = new E3PetscSolverConfig(*scfg);
 	state = new E3State(*init_state);
 	d_state = new E3State();
-
-	sconfig->set_model("te");
 }
 
 double E3PetscSolver::getTime() const {
@@ -82,10 +80,15 @@ void E3PetscSolver::run(int steps, double time){
 
 //	all.PrintDebugString();
 
-//	int ftmp = open("all.tmp", O_CREAT | O_WRONLY);
+	//int ftmp = open("all.tmp", O_CREAT | O_WRONLY);
+	//FILE* fp = fopen("all.tmp", "w");
 	all.SerializeToFileDescriptor(wf);
-//	close(ftmp);
+	//std::string s = all.DebugString()
+	//fwrite(s.c_str(), 1, s.size(), fp);
+	//fclose(fp);
+	//close(ftmp);
 	close(wf);		// need EOF for protobuf to catch the end of the message
+	//exit(1);
 
 //	close(tmp);
 
@@ -95,7 +98,7 @@ void E3PetscSolver::run(int steps, double time){
 	assert(read(rf, &steps_passed, sizeof(steps_passed)) == sizeof(steps_passed));
 	assert(read(rf, &time_passed, sizeof(time_passed)) == sizeof(time_passed));
 
-	printf("%d %lf\n", steps_passed, time_passed);
+	printf("%d %lf %s\n", steps_passed, time_passed, sconfig->model().c_str());
 	fflush(stdout);
 
 //	if(steps_passed > 1000 || steps_passed <= 0){		// for error output

@@ -4,20 +4,25 @@
 
 #include <gtkmm/main.h>
 
+extern void exp_6_images();
+
 int main (int argc, char *argv[])
 {
+	srand(time(NULL));
+
 	Gtk::Main kit(argc, argv);
 	libgoffice_init();
 	go_plugins_init (NULL, NULL, NULL, NULL, TRUE, GO_TYPE_PLUGIN_LOADER_MODULE);
 
-	HelloWorld helloworld;
+//	HelloWorld helloworld;
+//	kit.run(helloworld);
 
-	kit.run(helloworld);
+	exp_6_images();
 
 /*
 	E1InstanceFactory* eif = E1InstanceFactory::getInstance();
 	E1SolverFactory* esf = E1SolverFactory::getInstance();
-
+1
 	E1Config* conf = (E1Config*) eif->createConfig();
 	E1State* state = (E1State*) eif->createState(conf);
 
