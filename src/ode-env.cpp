@@ -5,6 +5,7 @@
 #include <gtkmm/main.h>
 
 extern void exp_6_images();
+extern void exp_random_init_R3();
 
 int main (int argc, char *argv[])
 {
@@ -14,10 +15,11 @@ int main (int argc, char *argv[])
 	libgoffice_init();
 	go_plugins_init (NULL, NULL, NULL, NULL, TRUE, GO_TYPE_PLUGIN_LOADER_MODULE);
 
-//	HelloWorld helloworld;
-//	kit.run(helloworld);
+	HelloWorld helloworld;
+	kit.run(helloworld);
 
-	exp_6_images();
+//	exp_6_images();
+//	exp_random_init_R3();
 
 /*
 	E1InstanceFactory* eif = E1InstanceFactory::getInstance();

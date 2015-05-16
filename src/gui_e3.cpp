@@ -257,6 +257,11 @@ void E3StateWidget::generateState(){
 		if(m==1)
 			p.set_ksi(0.0);
 
+//		if(i==0)
+//			p.set_ksi(0.3);
+//		if(i==1)
+//			p.set_ksi(0.4);
+
 		state->mutable_particles(i)->CopyFrom(p);
 	}
 
@@ -277,13 +282,21 @@ E3PetscSolverConfigWidget::E3PetscSolverConfigWidget(const E3PetscSolverConfig* 
 	Gtk::Widget* root;
 	b->get_widget("root", root);
 
-	b->get_widget("entry_tol", entry_tol);
+	b->get_widget("entry_atol", entry_atol);
+	b->get_widget("entry_rtol", entry_rtol);
 	b->get_widget("entry_step", entry_step);
 
 	combo_type = Gtk::manage( new Gtk::ComboBoxText() );
 	combo_type->append("te");
 	combo_type->append("tm");
-	(dynamic_cast<Gtk::Table*>(root))->attach(*combo_type, 1, 2, 2, 3);
+	(dynamic_cast<Gtk::Table*>(root))->attach(*combo_type, 1, 2, 3, 4);
+
+	combo_solver = Gtk::manage( new Gtk::ComboBoxText() );
+	for(int i=E3PetscSolverConfig::Solver_MIN; i<=E3PetscSolverConfig::Solver_MAX; ++i){
+		std::string name = E3PetscSolverConfig::Solver_Name((E3PetscSolverConfig::Solver)i);
+		combo_solver->append(name);
+	}
+	(dynamic_cast<Gtk::Table*>(root))->attach(*combo_solver, 1, 2, 4, 5);
 
 	this->add(*root);
 
@@ -303,8 +316,15 @@ void E3PetscSolverConfigWidget::loadConfig(const OdeSolverConfig* config){
 
 void E3PetscSolverConfigWidget::widget_to_config(){
 	config->set_init_step(atof(entry_step->get_text().c_str()));
-	config->set_tolerance(atof(entry_tol->get_text().c_str()));
+	config->set_atol(atof(entry_atol->get_text().c_str()));
+	config->set_rtol(atof(entry_rtol->get_text().c_str()));
 	config->set_model(combo_type->get_active_text());
+
+	std::string solver_name = combo_solver->get_active_text();
+	E3PetscSolverConfig::Solver s_enum;
+	bool ok = E3PetscSolverConfig::Solver_Parse(solver_name, &s_enum);
+	assert(ok);
+	config->set_solver(s_enum);
 }
 void E3PetscSolverConfigWidget::config_to_widget(){
 	std::ostringstream buf;
@@ -312,8 +332,13 @@ void E3PetscSolverConfigWidget::config_to_widget(){
 	entry_step->set_text(buf.str());
 
 	buf.str("");
-	buf << config->tolerance();
-	entry_tol->set_text(buf.str());
+	buf << config->atol();
+	entry_atol->set_text(buf.str());
+
+	buf.str("");
+	buf << config->rtol();
+	entry_rtol->set_text(buf.str());
 
 	combo_type->set_active_text(config->model());
+	combo_solver->set_active_text( E3PetscSolverConfig::Solver_Name(config->solver()));
 }

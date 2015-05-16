@@ -14,14 +14,7 @@
 
 class E3Config: public pb::E3Config, public OdeConfig{
 public:
-	E3Config(){
-		set_m(250);
-		set_n(1.0);
-		set_theta_e(0);
-		set_gamma_0_2(0.1);
-		set_delta_e(0);
-		set_r_e(20.0);
-	}
+	E3Config();
 	static std::string getDisplayName(){
 		return "model e3";
 	}
@@ -38,11 +31,7 @@ public:
 
 class E3PetscSolverConfig: public pb::E3PetscSolverConfig, public OdeSolverConfig{
 public:
-	E3PetscSolverConfig(){
-		set_tolerance(0.001);
-		set_init_step(0.01);
-		set_model("tm");
-	}
+	E3PetscSolverConfig();
 };
 
 class E3PetscSolver: public OdeSolver{

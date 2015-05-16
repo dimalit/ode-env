@@ -24,9 +24,16 @@ message E3State{
 }
 
 message E3PetscSolverConfig{
-	optional double tolerance = 1;
+	optional double atol = 1;
+	optional double rtol = 4;
 	optional double init_step = 2;
 	required string model = 3;
+	enum Solver{
+		rhs = 0;
+		ifunction_only = 1;
+		ijacobian = 2;
+	}
+	optional Solver solver = 5;
 }
 
 message E3Model{

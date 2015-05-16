@@ -58,6 +58,7 @@ void E3ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 		it->set_value(1, p.a());
 		it->set_value(2, p.ksi());
 		double integral = config->r_e()*p.a()*p.a() - 2*config->n()*p.eta();
+		//double delta = sin(2*M_PI*p.ksi() + estate->phi());
 		it->set_value(3, integral);
 
 		i1 += integral;
@@ -73,11 +74,11 @@ void E3ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 	entry_i1->set_text(buf.str());
 
 	buf.str("");		// 4.0 for alternate formula
-	buf << estate->e()*estate->e()+2.0/config->r_e()/config->m()*sum_eta;
+	buf << estate->e()*estate->e()+4.0/config->r_e()/config->m()*sum_eta;
 	entry_i2->set_text(buf.str());
 
 	buf.str("");		// 2.0 for alternate formula
-	buf << estate->e()*estate->e()+1.0/config->n()/config->m()*sum_a_2;
+	buf << estate->e()*estate->e()+2.0/config->n()/config->m()*sum_a_2;
 	entry_i3->set_text(buf.str());
 
 	++states_count;

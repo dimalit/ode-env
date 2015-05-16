@@ -35,7 +35,7 @@ pid_t rpc_call(const char* cmd, int* rf, int* wf){
 		close(ends_from_child[0]);
 
 //		close(ends[0]);		// XXX Strange it gives SIGPIPE when uncommented...
-		execlp(cmd, "-",(char*) NULL);
+		execlp(cmd, "-", (char*) NULL);
 		perror(NULL);
 	}
 

@@ -60,6 +60,10 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 
 	for(int i=0; i<series.size(); i++){
 		const serie& s = series[i];
+
+		if(s.derivative && !d_msg)
+			continue;
+
 		if(i!=0)
 			plot_command << ", ";
 
@@ -76,6 +80,9 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 	//////////// 2 give series ////////////////////
 	for(int i=0; i<series.size(); i++){
 		serie& s = series[i];
+
+		if(s.derivative && !d_msg)
+			continue;
 
 		// simple field
 		if(s.var_name.find('.') == std::string::npos){
@@ -192,7 +199,8 @@ Gnuplot::~Gnuplot() {
 
 void Gnuplot::update_view(){
 	fprintf(to_gnuplot, "set terminal x11 size %d, %d title \"%s\"\n", width, height, title.c_str());
-	fprintf(to_gnuplot, "set xrange [*:*] writeback\n");
-	fprintf(to_gnuplot, "set yrange [*:*] writeback\n");
+	//fprintf(to_gnuplot, "set xrange [*:*] writeback\n");
+//	fprintf(to_gnuplot, "set xrange [-0.25:-0.05] writeback\n");
+//	fprintf(to_gnuplot, "set yrange [0:0.01] writeback\n");
 	fflush(to_gnuplot);
 }

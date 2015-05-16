@@ -14,8 +14,17 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+E3Config::E3Config(){
+	set_m(250);
+	set_n(-1.0);
+	set_theta_e(0);
+	set_gamma_0_2(0.0);
+	set_delta_e(0);
+	set_r_e(25.0);
+}
+
 E3State::E3State(){
-	set_e(0.01);
+	set_e(1);
 	set_phi(0.0);
 	set_simulated(false);
 }
@@ -24,12 +33,20 @@ E3State::E3State(const E3Config* config){
 	int m = config->m();
 	for(int i=0; i<m; i++){
 		this->add_particles();
-		this->mutable_particles(i)->set_a(1.0);
+		this->mutable_particles(i)->set_a(0.001);
 		this->mutable_particles(i)->set_ksi(0.0);
 	}
-	set_e(0.01);
+	set_e(0.0008);
 	set_phi(0.0);
 	set_simulated(false);
+}
+
+E3PetscSolverConfig::E3PetscSolverConfig(){
+	set_atol(1e-6);
+	set_rtol(1e-6);
+	set_init_step(0.01);
+	set_solver(E3PetscSolverConfig::rhs);
+	set_model("tm");
 }
 
 E3PetscSolver::E3PetscSolver(const E3PetscSolverConfig* scfg, const E3Config* pcfg, const E3State* init_state){

@@ -29,7 +29,8 @@ void exp_6_images(){
 		pcfg->set_n(1.0);
 	E3PetscSolverConfig* scfg = dynamic_cast<E3PetscSolverConfig*>(solver_fact->createSolverConfg());
 		scfg->set_init_step(0.01);
-		scfg->set_tolerance(0.001);
+		scfg->set_atol(0.001);
+		scfg->set_rtol(0.001);
 
 	ChartAnalyzer chart_analyzer(pcfg);
 	Gtk::Window win;
@@ -154,3 +155,93 @@ void exp_6_images(){
 	delete pcfg;
 }// exp_6_images
 
+void exp_random_init_R3(){
+	string problem_name = "model e3";
+
+	OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
+	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
+
+	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
+		pcfg->set_theta_e(0.0);
+		pcfg->set_delta_e(0.0);
+		pcfg->set_m(250);
+		pcfg->set_n(1.0);
+	E3PetscSolverConfig* scfg = dynamic_cast<E3PetscSolverConfig*>(solver_fact->createSolverConfg());
+		scfg->set_init_step(0.01);
+		scfg->set_atol(0.001);
+		scfg->set_rtol(0.001);
+
+	ChartAnalyzer chart_analyzer(pcfg);
+	Gtk::Window win;
+	win.add(chart_analyzer);
+	win.show_all();
+
+	Gnuplot E_plot;
+		E_plot.addVar("E");
+		E_plot.setXAxisTime();
+		E_plot.setStyle(Gnuplot::STYLE_LINES);
+	Gnuplot phi_plot;
+		phi_plot.addVar("phi");
+		phi_plot.setXAxisTime();
+		phi_plot.setStyle(Gnuplot::STYLE_LINES);
+	Gnuplot field_plot;
+		field_plot.addVar("particles.a");
+		field_plot.setXAxisVar("particles.ksi");
+		field_plot.setStyle(Gnuplot::STYLE_POINTS);
+
+		double gamma = 1.0;
+			pcfg->set_gamma_0_2(gamma);
+		string model = "te";
+			scfg->set_model(model);
+		double r = 3.0;
+			pcfg->set_r_e(r);
+		for(int exp=0; exp < 10; exp++){
+	////////////////////////////////////////////////////
+		std::ostringstream fname_ostr;
+		fname_ostr << exp;
+		string fname = fname_ostr.str();
+
+		E3State* init_state = dynamic_cast<E3State*>(inst_fact->createState(pcfg));
+		init_state->set_e(0.01);
+		init_state->set_phi(0);
+		init_state->set_a0(1.0);
+		double eta0 = 0.0;
+		double right = 0.5, left = -0.5;
+			for(int i=0; i<pcfg->m(); i++){
+				init_state->mutable_particles(i)->set_a(init_state->a0());
+				init_state->mutable_particles(i)->set_eta(eta0);
+				double ksi = rand() / (double)RAND_MAX * (right-left) + left;
+				init_state->mutable_particles(i)->set_ksi(ksi);
+			}
+		E3PetscSolver* solver = dynamic_cast<E3PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
+
+		E_plot.reset();
+		phi_plot.reset();
+		field_plot.reset();
+
+		double time = 0.0;
+		for(;;){
+			const google::protobuf::Message* state_msg = dynamic_cast<const google::protobuf::Message*>(solver->getState());
+			const google::protobuf::Message* dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
+			time += solver->getTime();
+
+			chart_analyzer.processState(solver->getState(), solver->getDState(), time);
+			E_plot.processState(state_msg, dstate_msg, time);
+			phi_plot.processState(state_msg, dstate_msg, time);
+			field_plot.processState(state_msg, dstate_msg, time);
+
+			if(time > 60.0){
+				E_plot.saveToCsv(fname+"_E.gnuplot", state_msg, dstate_msg, time);
+				break;
+			}// if exit
+
+			solver->run(1000000, 0.5);
+		}// infinite loop
+
+		delete solver;
+		delete init_state;
+	////////////////////////////////////////////////////
+		}// for
+	delete scfg;
+	delete pcfg;
+}// exp_6_images

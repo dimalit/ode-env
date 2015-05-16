@@ -77,8 +77,8 @@ public:
 private:
 	E3PetscSolverConfig* config;
 
-	Gtk::Entry *entry_tol, *entry_step;
-	Gtk::ComboBoxText *combo_type;
+	Gtk::Entry *entry_atol, *entry_rtol, *entry_step;
+	Gtk::ComboBoxText *combo_type, *combo_solver;
 
 public:
 	E3PetscSolverConfigWidget(const E3PetscSolverConfig* config = NULL);
