@@ -23,6 +23,7 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>
 #include <google/protobuf/extension_set.h>
+#include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 
@@ -40,6 +41,26 @@ class E3PetscSolverConfig;
 class E3Model;
 class E3Solution;
 
+enum E3PetscSolverConfig_Solver {
+  E3PetscSolverConfig_Solver_rhs = 0,
+  E3PetscSolverConfig_Solver_ifunction_only = 1,
+  E3PetscSolverConfig_Solver_ijacobian = 2
+};
+bool E3PetscSolverConfig_Solver_IsValid(int value);
+const E3PetscSolverConfig_Solver E3PetscSolverConfig_Solver_Solver_MIN = E3PetscSolverConfig_Solver_rhs;
+const E3PetscSolverConfig_Solver E3PetscSolverConfig_Solver_Solver_MAX = E3PetscSolverConfig_Solver_ijacobian;
+const int E3PetscSolverConfig_Solver_Solver_ARRAYSIZE = E3PetscSolverConfig_Solver_Solver_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* E3PetscSolverConfig_Solver_descriptor();
+inline const ::std::string& E3PetscSolverConfig_Solver_Name(E3PetscSolverConfig_Solver value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    E3PetscSolverConfig_Solver_descriptor(), value);
+}
+inline bool E3PetscSolverConfig_Solver_Parse(
+    const ::std::string& name, E3PetscSolverConfig_Solver* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<E3PetscSolverConfig_Solver>(
+    E3PetscSolverConfig_Solver_descriptor(), name, value);
+}
 // ===================================================================
 
 class E3Config : public ::google::protobuf::Message {
@@ -455,14 +476,46 @@ class E3PetscSolverConfig : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
+  typedef E3PetscSolverConfig_Solver Solver;
+  static const Solver rhs = E3PetscSolverConfig_Solver_rhs;
+  static const Solver ifunction_only = E3PetscSolverConfig_Solver_ifunction_only;
+  static const Solver ijacobian = E3PetscSolverConfig_Solver_ijacobian;
+  static inline bool Solver_IsValid(int value) {
+    return E3PetscSolverConfig_Solver_IsValid(value);
+  }
+  static const Solver Solver_MIN =
+    E3PetscSolverConfig_Solver_Solver_MIN;
+  static const Solver Solver_MAX =
+    E3PetscSolverConfig_Solver_Solver_MAX;
+  static const int Solver_ARRAYSIZE =
+    E3PetscSolverConfig_Solver_Solver_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Solver_descriptor() {
+    return E3PetscSolverConfig_Solver_descriptor();
+  }
+  static inline const ::std::string& Solver_Name(Solver value) {
+    return E3PetscSolverConfig_Solver_Name(value);
+  }
+  static inline bool Solver_Parse(const ::std::string& name,
+      Solver* value) {
+    return E3PetscSolverConfig_Solver_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
 
-  // optional double tolerance = 1;
-  inline bool has_tolerance() const;
-  inline void clear_tolerance();
-  static const int kToleranceFieldNumber = 1;
-  inline double tolerance() const;
-  inline void set_tolerance(double value);
+  // optional double atol = 1;
+  inline bool has_atol() const;
+  inline void clear_atol();
+  static const int kAtolFieldNumber = 1;
+  inline double atol() const;
+  inline void set_atol(double value);
+
+  // optional double rtol = 4;
+  inline bool has_rtol() const;
+  inline void clear_rtol();
+  static const int kRtolFieldNumber = 4;
+  inline double rtol() const;
+  inline void set_rtol(double value);
 
   // optional double init_step = 2;
   inline bool has_init_step() const;
@@ -483,23 +536,36 @@ class E3PetscSolverConfig : public ::google::protobuf::Message {
   inline ::std::string* release_model();
   inline void set_allocated_model(::std::string* model);
 
+  // optional .pb.E3PetscSolverConfig.Solver solver = 5;
+  inline bool has_solver() const;
+  inline void clear_solver();
+  static const int kSolverFieldNumber = 5;
+  inline ::pb::E3PetscSolverConfig_Solver solver() const;
+  inline void set_solver(::pb::E3PetscSolverConfig_Solver value);
+
   // @@protoc_insertion_point(class_scope:pb.E3PetscSolverConfig)
  private:
-  inline void set_has_tolerance();
-  inline void clear_has_tolerance();
+  inline void set_has_atol();
+  inline void clear_has_atol();
+  inline void set_has_rtol();
+  inline void clear_has_rtol();
   inline void set_has_init_step();
   inline void clear_has_init_step();
   inline void set_has_model();
   inline void clear_has_model();
+  inline void set_has_solver();
+  inline void clear_has_solver();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  double tolerance_;
+  double atol_;
+  double rtol_;
   double init_step_;
   ::std::string* model_;
+  int solver_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_model_5fe3_2eproto();
   friend void protobuf_AssignDesc_model_5fe3_2eproto();
@@ -1062,37 +1128,59 @@ E3State::mutable_particles() {
 
 // E3PetscSolverConfig
 
-// optional double tolerance = 1;
-inline bool E3PetscSolverConfig::has_tolerance() const {
+// optional double atol = 1;
+inline bool E3PetscSolverConfig::has_atol() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void E3PetscSolverConfig::set_has_tolerance() {
+inline void E3PetscSolverConfig::set_has_atol() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void E3PetscSolverConfig::clear_has_tolerance() {
+inline void E3PetscSolverConfig::clear_has_atol() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void E3PetscSolverConfig::clear_tolerance() {
-  tolerance_ = 0;
-  clear_has_tolerance();
+inline void E3PetscSolverConfig::clear_atol() {
+  atol_ = 0;
+  clear_has_atol();
 }
-inline double E3PetscSolverConfig::tolerance() const {
-  return tolerance_;
+inline double E3PetscSolverConfig::atol() const {
+  return atol_;
 }
-inline void E3PetscSolverConfig::set_tolerance(double value) {
-  set_has_tolerance();
-  tolerance_ = value;
+inline void E3PetscSolverConfig::set_atol(double value) {
+  set_has_atol();
+  atol_ = value;
+}
+
+// optional double rtol = 4;
+inline bool E3PetscSolverConfig::has_rtol() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void E3PetscSolverConfig::set_has_rtol() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void E3PetscSolverConfig::clear_has_rtol() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void E3PetscSolverConfig::clear_rtol() {
+  rtol_ = 0;
+  clear_has_rtol();
+}
+inline double E3PetscSolverConfig::rtol() const {
+  return rtol_;
+}
+inline void E3PetscSolverConfig::set_rtol(double value) {
+  set_has_rtol();
+  rtol_ = value;
 }
 
 // optional double init_step = 2;
 inline bool E3PetscSolverConfig::has_init_step() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
 inline void E3PetscSolverConfig::set_has_init_step() {
-  _has_bits_[0] |= 0x00000002u;
+  _has_bits_[0] |= 0x00000004u;
 }
 inline void E3PetscSolverConfig::clear_has_init_step() {
-  _has_bits_[0] &= ~0x00000002u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void E3PetscSolverConfig::clear_init_step() {
   init_step_ = 0;
@@ -1108,13 +1196,13 @@ inline void E3PetscSolverConfig::set_init_step(double value) {
 
 // required string model = 3;
 inline bool E3PetscSolverConfig::has_model() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
 inline void E3PetscSolverConfig::set_has_model() {
-  _has_bits_[0] |= 0x00000004u;
+  _has_bits_[0] |= 0x00000008u;
 }
 inline void E3PetscSolverConfig::clear_has_model() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void E3PetscSolverConfig::clear_model() {
   if (model_ != &::google::protobuf::internal::kEmptyString) {
@@ -1174,6 +1262,29 @@ inline void E3PetscSolverConfig::set_allocated_model(::std::string* model) {
     clear_has_model();
     model_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
+}
+
+// optional .pb.E3PetscSolverConfig.Solver solver = 5;
+inline bool E3PetscSolverConfig::has_solver() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void E3PetscSolverConfig::set_has_solver() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void E3PetscSolverConfig::clear_has_solver() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void E3PetscSolverConfig::clear_solver() {
+  solver_ = 0;
+  clear_has_solver();
+}
+inline ::pb::E3PetscSolverConfig_Solver E3PetscSolverConfig::solver() const {
+  return static_cast< ::pb::E3PetscSolverConfig_Solver >(solver_);
+}
+inline void E3PetscSolverConfig::set_solver(::pb::E3PetscSolverConfig_Solver value) {
+  assert(::pb::E3PetscSolverConfig_Solver_IsValid(value));
+  set_has_solver();
+  solver_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -1427,6 +1538,10 @@ inline void E3Solution::set_allocated_d_state(::pb::E3State* d_state) {
 namespace google {
 namespace protobuf {
 
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::pb::E3PetscSolverConfig_Solver>() {
+  return ::pb::E3PetscSolverConfig_Solver_descriptor();
+}
 
 }  // namespace google
 }  // namespace protobuf

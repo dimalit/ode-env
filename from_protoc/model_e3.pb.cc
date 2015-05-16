@@ -32,6 +32,7 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* E3PetscSolverConfig_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   E3PetscSolverConfig_reflection_ = NULL;
+const ::google::protobuf::EnumDescriptor* E3PetscSolverConfig_Solver_descriptor_ = NULL;
 const ::google::protobuf::Descriptor* E3Model_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   E3Model_reflection_ = NULL;
@@ -105,10 +106,12 @@ void protobuf_AssignDesc_model_5fe3_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E3State_Particles));
   E3PetscSolverConfig_descriptor_ = file->message_type(2);
-  static const int E3PetscSolverConfig_offsets_[3] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, tolerance_),
+  static const int E3PetscSolverConfig_offsets_[5] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, atol_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, rtol_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, init_step_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, model_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, solver_),
   };
   E3PetscSolverConfig_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -121,6 +124,7 @@ void protobuf_AssignDesc_model_5fe3_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E3PetscSolverConfig));
+  E3PetscSolverConfig_Solver_descriptor_ = E3PetscSolverConfig_descriptor_->enum_type(0);
   E3Model_descriptor_ = file->message_type(3);
   static const int E3Model_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3Model, time_),
@@ -213,14 +217,17 @@ void protobuf_AddDesc_model_5fe3_2eproto() {
     "(\001\022\013\n\003phi\030\004 \002(\001\022\n\n\002a0\030\005 \001(\001\022(\n\tparticles"
     "\030\002 \003(\n2\025.pb.E3State.Particles\0320\n\tParticl"
     "es\022\t\n\001a\030\003 \002(\001\022\013\n\003ksi\030\004 \002(\001\022\013\n\003eta\030\005 \002(\001\""
-    "J\n\023E3PetscSolverConfig\022\021\n\ttolerance\030\001 \001("
-    "\001\022\021\n\tinit_step\030\002 \001(\001\022\r\n\005model\030\003 \002(\t\"\213\001\n\007"
-    "E3Model\022\014\n\004time\030\004 \002(\001\022\r\n\005steps\030\005 \002(\r\022\035\n\007"
-    "pconfig\030\001 \002(\0132\014.pb.E3Config\022\032\n\005state\030\002 \002"
-    "(\0132\013.pb.E3State\022(\n\007sconfig\030\003 \002(\0132\027.pb.E3"
-    "PetscSolverConfig\"F\n\nE3Solution\022\032\n\005state"
-    "\030\001 \002(\0132\013.pb.E3State\022\034\n\007d_state\030\002 \001(\0132\013.p"
-    "b.E3State", 569);
+    "\271\001\n\023E3PetscSolverConfig\022\014\n\004atol\030\001 \001(\001\022\014\n"
+    "\004rtol\030\004 \001(\001\022\021\n\tinit_step\030\002 \001(\001\022\r\n\005model\030"
+    "\003 \002(\t\022.\n\006solver\030\005 \001(\0162\036.pb.E3PetscSolver"
+    "Config.Solver\"4\n\006Solver\022\007\n\003rhs\020\000\022\022\n\016ifun"
+    "ction_only\020\001\022\r\n\tijacobian\020\002\"\213\001\n\007E3Model\022"
+    "\014\n\004time\030\004 \002(\001\022\r\n\005steps\030\005 \002(\r\022\035\n\007pconfig\030"
+    "\001 \002(\0132\014.pb.E3Config\022\032\n\005state\030\002 \002(\0132\013.pb."
+    "E3State\022(\n\007sconfig\030\003 \002(\0132\027.pb.E3PetscSol"
+    "verConfig\"F\n\nE3Solution\022\032\n\005state\030\001 \002(\0132\013"
+    ".pb.E3State\022\034\n\007d_state\030\002 \001(\0132\013.pb.E3Stat"
+    "e", 681);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e3.proto", &protobuf_RegisterTypes);
   E3Config::default_instance_ = new E3Config();
@@ -1293,10 +1300,35 @@ void E3State::Swap(E3State* other) {
 
 // ===================================================================
 
+const ::google::protobuf::EnumDescriptor* E3PetscSolverConfig_Solver_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return E3PetscSolverConfig_Solver_descriptor_;
+}
+bool E3PetscSolverConfig_Solver_IsValid(int value) {
+  switch(value) {
+    case 0:
+    case 1:
+    case 2:
+      return true;
+    default:
+      return false;
+  }
+}
+
 #ifndef _MSC_VER
-const int E3PetscSolverConfig::kToleranceFieldNumber;
+const E3PetscSolverConfig_Solver E3PetscSolverConfig::rhs;
+const E3PetscSolverConfig_Solver E3PetscSolverConfig::ifunction_only;
+const E3PetscSolverConfig_Solver E3PetscSolverConfig::ijacobian;
+const E3PetscSolverConfig_Solver E3PetscSolverConfig::Solver_MIN;
+const E3PetscSolverConfig_Solver E3PetscSolverConfig::Solver_MAX;
+const int E3PetscSolverConfig::Solver_ARRAYSIZE;
+#endif  // _MSC_VER
+#ifndef _MSC_VER
+const int E3PetscSolverConfig::kAtolFieldNumber;
+const int E3PetscSolverConfig::kRtolFieldNumber;
 const int E3PetscSolverConfig::kInitStepFieldNumber;
 const int E3PetscSolverConfig::kModelFieldNumber;
+const int E3PetscSolverConfig::kSolverFieldNumber;
 #endif  // !_MSC_VER
 
 E3PetscSolverConfig::E3PetscSolverConfig()
@@ -1315,9 +1347,11 @@ E3PetscSolverConfig::E3PetscSolverConfig(const E3PetscSolverConfig& from)
 
 void E3PetscSolverConfig::SharedCtor() {
   _cached_size_ = 0;
-  tolerance_ = 0;
+  atol_ = 0;
+  rtol_ = 0;
   init_step_ = 0;
   model_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  solver_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1356,13 +1390,15 @@ E3PetscSolverConfig* E3PetscSolverConfig::New() const {
 
 void E3PetscSolverConfig::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    tolerance_ = 0;
+    atol_ = 0;
+    rtol_ = 0;
     init_step_ = 0;
     if (has_model()) {
       if (model_ != &::google::protobuf::internal::kEmptyString) {
         model_->clear();
       }
     }
+    solver_ = 0;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -1374,14 +1410,14 @@ bool E3PetscSolverConfig::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional double tolerance = 1;
+      // optional double atol = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 input, &tolerance_)));
-          set_has_tolerance();
+                 input, &atol_)));
+          set_has_atol();
         } else {
           goto handle_uninterpreted;
         }
@@ -1418,6 +1454,43 @@ bool E3PetscSolverConfig::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(33)) goto parse_rtol;
+        break;
+      }
+
+      // optional double rtol = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+         parse_rtol:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &rtol_)));
+          set_has_rtol();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(40)) goto parse_solver;
+        break;
+      }
+
+      // optional .pb.E3PetscSolverConfig.Solver solver = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_solver:
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::pb::E3PetscSolverConfig_Solver_IsValid(value)) {
+            set_solver(static_cast< ::pb::E3PetscSolverConfig_Solver >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(5, value);
+          }
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1440,9 +1513,9 @@ bool E3PetscSolverConfig::MergePartialFromCodedStream(
 
 void E3PetscSolverConfig::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // optional double tolerance = 1;
-  if (has_tolerance()) {
-    ::google::protobuf::internal::WireFormatLite::WriteDouble(1, this->tolerance(), output);
+  // optional double atol = 1;
+  if (has_atol()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(1, this->atol(), output);
   }
 
   // optional double init_step = 2;
@@ -1459,6 +1532,17 @@ void E3PetscSolverConfig::SerializeWithCachedSizes(
       3, this->model(), output);
   }
 
+  // optional double rtol = 4;
+  if (has_rtol()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(4, this->rtol(), output);
+  }
+
+  // optional .pb.E3PetscSolverConfig.Solver solver = 5;
+  if (has_solver()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      5, this->solver(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1467,9 +1551,9 @@ void E3PetscSolverConfig::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* E3PetscSolverConfig::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // optional double tolerance = 1;
-  if (has_tolerance()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(1, this->tolerance(), target);
+  // optional double atol = 1;
+  if (has_atol()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(1, this->atol(), target);
   }
 
   // optional double init_step = 2;
@@ -1487,6 +1571,17 @@ void E3PetscSolverConfig::SerializeWithCachedSizes(
         3, this->model(), target);
   }
 
+  // optional double rtol = 4;
+  if (has_rtol()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(4, this->rtol(), target);
+  }
+
+  // optional .pb.E3PetscSolverConfig.Solver solver = 5;
+  if (has_solver()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      5, this->solver(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -1498,8 +1593,13 @@ int E3PetscSolverConfig::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional double tolerance = 1;
-    if (has_tolerance()) {
+    // optional double atol = 1;
+    if (has_atol()) {
+      total_size += 1 + 8;
+    }
+
+    // optional double rtol = 4;
+    if (has_rtol()) {
       total_size += 1 + 8;
     }
 
@@ -1513,6 +1613,12 @@ int E3PetscSolverConfig::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->model());
+    }
+
+    // optional .pb.E3PetscSolverConfig.Solver solver = 5;
+    if (has_solver()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->solver());
     }
 
   }
@@ -1542,14 +1648,20 @@ void E3PetscSolverConfig::MergeFrom(const ::google::protobuf::Message& from) {
 void E3PetscSolverConfig::MergeFrom(const E3PetscSolverConfig& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_tolerance()) {
-      set_tolerance(from.tolerance());
+    if (from.has_atol()) {
+      set_atol(from.atol());
+    }
+    if (from.has_rtol()) {
+      set_rtol(from.rtol());
     }
     if (from.has_init_step()) {
       set_init_step(from.init_step());
     }
     if (from.has_model()) {
       set_model(from.model());
+    }
+    if (from.has_solver()) {
+      set_solver(from.solver());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -1568,16 +1680,18 @@ void E3PetscSolverConfig::CopyFrom(const E3PetscSolverConfig& from) {
 }
 
 bool E3PetscSolverConfig::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000004) != 0x00000004) return false;
+  if ((_has_bits_[0] & 0x00000008) != 0x00000008) return false;
 
   return true;
 }
 
 void E3PetscSolverConfig::Swap(E3PetscSolverConfig* other) {
   if (other != this) {
-    std::swap(tolerance_, other->tolerance_);
+    std::swap(atol_, other->atol_);
+    std::swap(rtol_, other->rtol_);
     std::swap(init_step_, other->init_step_);
     std::swap(model_, other->model_);
+    std::swap(solver_, other->solver_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

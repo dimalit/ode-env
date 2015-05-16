@@ -237,7 +237,7 @@ void E3StateWidget::generateState(){
 	double phi = atof(entry_phi->get_text().c_str());
 	double a = atof(entry_a->get_text().c_str());
 
-	bool use_rand = true;
+	bool use_rand = false;
 	double right = 0.5;
 	double left = -0.5;
 
