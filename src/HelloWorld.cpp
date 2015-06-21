@@ -227,11 +227,10 @@ void HelloWorld::one_run_completed_cb(const OdeState* final_state, const OdeStat
 		this->saved_state = std::auto_ptr<OdeState>(state_widget->getState()->clone());
 		this->saved_dstate = std::auto_ptr<OdeState>(state_widget->getDState()->clone());
 	}
-	state_widget->loadState(final_state, final_d_state);
+	add_steps_and_time(solver->getSteps(), solver->getTime());
 
 	// Написать: упражнение с запуском счета параллельно GUI для студентов
-
-	add_steps_and_time(solver->getSteps(), solver->getTime());
+	state_widget->loadState(final_state, final_d_state);
 
 	// one more iteration if needed
 	if(computing){

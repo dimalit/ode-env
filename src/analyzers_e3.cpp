@@ -68,12 +68,10 @@ void E3ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 
 	std::ostringstream buf;
 	buf.setf( std::ios::fixed, std:: ios::floatfield );
-	buf.precision(6);
-
-	buf << i1;
-	entry_i1->set_text(buf.str());
-
 	buf.precision(10);
+
+	buf << i1/estate->particles_size();
+	entry_i1->set_text(buf.str());
 
 	buf.str("");		// 4.0 for alternate formula
 	buf << estate->e()*estate->e()+2.0/config->r_e()/config->m()*sum_eta;
