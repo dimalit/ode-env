@@ -368,7 +368,7 @@ void exp_gamma2e(){
 					double e = dynamic_cast<const E3State*>(solver->getState())->e();
 
 					// if peak
-					if(dE < 0 && prev_dE > 0 && e>0.09){
+					if(dE < 0 && prev_dE > 0){
 						csv << gamma << "\t" << e << endl;
 						break;
 					}
