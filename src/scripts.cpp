@@ -303,11 +303,11 @@ void exp_gamma2e(){
 		E_plot.setStyle(Gnuplot::STYLE_LINES);
 
 	vector<string> models;
-//	models.push_back("te");
+	models.push_back("te");
 	models.push_back("tm");
 
 	vector<double> rs;
-	rs.push_back(1.0);
+//	rs.push_back(1.0);
 	rs.push_back(2.0);
 	rs.push_back(3.0);
 
@@ -349,6 +349,8 @@ void exp_gamma2e(){
 
 				int dE = 0;
 				int prev_dE = 0;
+				double max_E=0.0;
+				double max_time = 0.0;
 
 				double time = 0.0;
 				for(bool first=true;;first=false){
@@ -362,19 +364,31 @@ void exp_gamma2e(){
 	//				double int1, int2, int3;
 	//				compute_integrals(pcfg, dynamic_cast<const E3State*>(solver->getState()), &int1, &int2, &int3);
 
-					if(!first)
-						dE = dynamic_cast<const E3State*>(solver->getDState())->e() > 0 ? 1 : -1;
-
 					double e = dynamic_cast<const E3State*>(solver->getState())->e();
 
-					// if peak
-					if(dE < 0 && prev_dE > 0){
-						csv << gamma << "\t" << e << endl;
-						break;
+					if(max_E < e){
+						max_E=e;
+						max_time = time;
 					}
+					if(time > 120.0){
+							csv << gamma << "\t" << e << "\t" << max_time << endl;
+							std::ostringstream imgname;
+							imgname << model << "_r" << r << "_g" << gamma << ".png";
+							E_plot.processToFile(imgname.str(), state_msg, dstate_msg, time);
+							break;
+					}
+//					if(!first)
+//						dE = dynamic_cast<const E3State*>(solver->getDState())->e() > 0 ? 1 : -1;
+//
+//					// if peak
+//					if(dE < 0 && prev_dE > 0){
+//						csv << gamma << "\t" << e << endl;
+//						break;
+//					}
+//
+//					if(dE != 0.0)
+//							prev_dE = dE;
 
-					if(dE != 0.0)
-							prev_dE = dE;
 					solver->run(1000000, 0.5);
 				}// infinite loop
 
