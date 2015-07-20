@@ -8,6 +8,8 @@
 #include <iostream>
 #include <unistd.h>
 #include <cassert>
+#include <cstring>
+#include <vector>
 
 using namespace std;
 
@@ -20,7 +22,7 @@ pid_t rpc_call(const char* cmd, int* rf, int* wf){
 
 //	sprintf(cmd, "../e1/Debug/e1 -M %d -E %f -phi %f -b %f -ksi %s -tol %f -step %f", m, E, phi, b, buf_ksi, tol, step);
 //	system(cmd);
-	pid_t pid;
+	pid_t pid=0;
 	pid = fork();
 	if(pid == 0){		// child
 
@@ -35,7 +37,17 @@ pid_t rpc_call(const char* cmd, int* rf, int* wf){
 		close(ends_from_child[0]);
 
 //		close(ends[0]);		// XXX Strange it gives SIGPIPE when uncommented...
-		execlp(cmd, "-", (char*) NULL);
+
+		char* buf = strdup(cmd);
+		std::vector<char*> argv;
+		char* tok = strtok(buf, " ");
+		while(tok){
+			argv.push_back(tok);
+			tok = strtok(NULL, " ");
+		}
+		argv.push_back(NULL);
+
+		execvp(argv[0], &(argv[0]));
 		perror(NULL);
 	}
 
