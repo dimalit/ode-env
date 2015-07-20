@@ -45,7 +45,7 @@ E2PetscSolver::~E2PetscSolver(){
 	delete pconfig;
 }
 
-void E2PetscSolver::run(int steps, double time){
+void E2PetscSolver::run(int steps, double time, bool use_step){
 	int rf, wf;
 	pid_t child = rpc_call("../ts/Debug/ts", &rf, &wf);
 

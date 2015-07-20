@@ -50,7 +50,8 @@ public:
 public:
 	E2PetscSolver(const E2PetscSolverConfig*, const E2Config*, const E2State*);
 	virtual ~E2PetscSolver();
-	virtual void run(int steps, double time);
+	virtual void run(int steps, double time, bool use_step = false);
+	virtual bool step(){assert(false);return false;}
 	virtual double getTime() const;
 	virtual double getSteps() const;
 	virtual const OdeState* getState() const {

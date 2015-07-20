@@ -140,7 +140,8 @@ public:
 public:
 	E1PetscSolver(const E1PetscSolverConfig*, const E1Config*, const E1State*);
 	virtual ~E1PetscSolver();
-	virtual void run(int steps, double time);
+	virtual void run(int steps, double time, bool use_step = false);
+	virtual bool step(){assert(false);return false;}
 	virtual double getTime() const;
 	virtual double getSteps() const;
 	virtual const OdeState* getState() const {

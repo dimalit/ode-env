@@ -630,20 +630,6 @@ class E3Model : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required double time = 4;
-  inline bool has_time() const;
-  inline void clear_time();
-  static const int kTimeFieldNumber = 4;
-  inline double time() const;
-  inline void set_time(double value);
-
-  // required uint32 steps = 5;
-  inline bool has_steps() const;
-  inline void clear_steps();
-  static const int kStepsFieldNumber = 5;
-  inline ::google::protobuf::uint32 steps() const;
-  inline void set_steps(::google::protobuf::uint32 value);
-
   // required .pb.E3Config pconfig = 1;
   inline bool has_pconfig() const;
   inline void clear_pconfig();
@@ -673,10 +659,6 @@ class E3Model : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:pb.E3Model)
  private:
-  inline void set_has_time();
-  inline void clear_has_time();
-  inline void set_has_steps();
-  inline void clear_has_steps();
   inline void set_has_pconfig();
   inline void clear_has_pconfig();
   inline void set_has_state();
@@ -686,14 +668,12 @@ class E3Model : public ::google::protobuf::Message {
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  double time_;
   ::pb::E3Config* pconfig_;
   ::pb::E3State* state_;
   ::pb::E3PetscSolverConfig* sconfig_;
-  ::google::protobuf::uint32 steps_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
 
   friend void  protobuf_AddDesc_model_5fe3_2eproto();
   friend void protobuf_AssignDesc_model_5fe3_2eproto();
@@ -1291,59 +1271,15 @@ inline void E3PetscSolverConfig::set_solver(::pb::E3PetscSolverConfig_Solver val
 
 // E3Model
 
-// required double time = 4;
-inline bool E3Model::has_time() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void E3Model::set_has_time() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void E3Model::clear_has_time() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void E3Model::clear_time() {
-  time_ = 0;
-  clear_has_time();
-}
-inline double E3Model::time() const {
-  return time_;
-}
-inline void E3Model::set_time(double value) {
-  set_has_time();
-  time_ = value;
-}
-
-// required uint32 steps = 5;
-inline bool E3Model::has_steps() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void E3Model::set_has_steps() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void E3Model::clear_has_steps() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void E3Model::clear_steps() {
-  steps_ = 0u;
-  clear_has_steps();
-}
-inline ::google::protobuf::uint32 E3Model::steps() const {
-  return steps_;
-}
-inline void E3Model::set_steps(::google::protobuf::uint32 value) {
-  set_has_steps();
-  steps_ = value;
-}
-
 // required .pb.E3Config pconfig = 1;
 inline bool E3Model::has_pconfig() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
+  return (_has_bits_[0] & 0x00000001u) != 0;
 }
 inline void E3Model::set_has_pconfig() {
-  _has_bits_[0] |= 0x00000004u;
+  _has_bits_[0] |= 0x00000001u;
 }
 inline void E3Model::clear_has_pconfig() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000001u;
 }
 inline void E3Model::clear_pconfig() {
   if (pconfig_ != NULL) pconfig_->::pb::E3Config::Clear();
@@ -1375,13 +1311,13 @@ inline void E3Model::set_allocated_pconfig(::pb::E3Config* pconfig) {
 
 // required .pb.E3State state = 2;
 inline bool E3Model::has_state() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+  return (_has_bits_[0] & 0x00000002u) != 0;
 }
 inline void E3Model::set_has_state() {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000002u;
 }
 inline void E3Model::clear_has_state() {
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline void E3Model::clear_state() {
   if (state_ != NULL) state_->::pb::E3State::Clear();
@@ -1413,13 +1349,13 @@ inline void E3Model::set_allocated_state(::pb::E3State* state) {
 
 // required .pb.E3PetscSolverConfig sconfig = 3;
 inline bool E3Model::has_sconfig() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
 inline void E3Model::set_has_sconfig() {
-  _has_bits_[0] |= 0x00000010u;
+  _has_bits_[0] |= 0x00000004u;
 }
 inline void E3Model::clear_has_sconfig() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void E3Model::clear_sconfig() {
   if (sconfig_ != NULL) sconfig_->::pb::E3PetscSolverConfig::Clear();

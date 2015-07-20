@@ -144,7 +144,7 @@ void HelloWorld::on_forever_clicked()
   }
 
   // run iteration asynchronously
-  run_computing();
+  run_computing(true);
 
   // show that iteration is running
   forever_button.set_label("Stop");
@@ -154,7 +154,7 @@ void HelloWorld::on_step_clicked()
 {
 	if(computing)
 		return;
-	run_computing();
+	run_computing(false);
 	stop_computing();
 }
 
@@ -190,7 +190,7 @@ void HelloWorld::add_steps_and_time(int steps, double time){
 	set_steps_and_time(total_steps + steps, total_time + time);
 }
 
-void HelloWorld::run_computing(){
+void HelloWorld::run_computing(bool use_step){
   assert(!computing);
   assert(!run_thread);
   assert(!solver);
@@ -201,11 +201,11 @@ void HelloWorld::run_computing(){
 
   OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory(problem_name);
 
-  bool use_steps = radio_steps->get_active();
+  bool use_max_steps = radio_steps->get_active();
   steps = atoi(entry_steps->get_text().c_str());
   time = atof(entry_time->get_text().c_str());
 
-  if(use_steps)
+  if(use_max_steps)
 	  time = 1000000000.0;	// XXX: Why doesn't work 1e+6 or even 1000?
   else
 	  steps = 1000000000;
@@ -213,36 +213,37 @@ void HelloWorld::run_computing(){
   solver = OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first->createSolver(solver_config, config, init_state);
 
   run_thread = new RunThread(solver);
-  run_thread->getSignalFinished().connect(sigc::mem_fun(*this, &HelloWorld::one_run_completed_cb));
+  run_thread->getSignalFinished().connect(sigc::mem_fun(*this, &HelloWorld::run_finished_cb));
+  run_thread->getSignalStepped().connect(sigc::mem_fun(*this, &HelloWorld::run_stepped_cb));
 
   computing = true;
   step_button.set_sensitive(false);
   reset_button.set_sensitive(false);
-  run_thread->run(steps, time);
+  run_thread->run(steps, time, use_step);
 }
 
-void HelloWorld::one_run_completed_cb(const OdeState* final_state, const OdeState* final_d_state){
+void HelloWorld::run_stepped_cb(){
 
 	if(total_steps == 0){			// save original state before
 		this->saved_state = std::auto_ptr<OdeState>(state_widget->getState()->clone());
 		this->saved_dstate = std::auto_ptr<OdeState>(state_widget->getDState()->clone());
 	}
-	add_steps_and_time(solver->getSteps(), solver->getTime());
+	set_steps_and_time(solver->getSteps(), solver->getTime());
 
 	// Написать: упражнение с запуском счета параллельно GUI для студентов
+	const OdeState* final_state = solver->getState();
+	const OdeState* final_d_state = solver->getDState();
 	state_widget->loadState(final_state, final_d_state);
+}
 
-	// one more iteration if needed
-	if(computing){
-	  run_thread->run(steps, time);
-	}// if
-	else{
-		delete run_thread;	run_thread = NULL;
-		delete solver;		solver = NULL;
-		forever_button.set_sensitive(true);		// enable it back after last iteration
-		step_button.set_sensitive(true);
-		reset_button.set_sensitive(true);
-	}// else
+void HelloWorld::run_finished_cb(){
+	delete run_thread;	run_thread = NULL;
+	delete solver;		solver = NULL;
+	computing = false;
+	forever_button.set_label("Forever");
+	forever_button.set_sensitive(true);		// enable it back after last iteration
+	step_button.set_sensitive(true);
+	reset_button.set_sensitive(true);
 }
 
 void HelloWorld::stop_computing(){
@@ -272,9 +273,10 @@ RunThread::~RunThread(){
 	iosource->unreference();
 }
 
-void RunThread::run(int steps, double time){
+void RunThread::run(int steps, double time, bool use_step){
 	this->steps = steps;
 	this->time = time;
+	this->use_step = use_step;
 	if(thread)
 		thread->join();
 	thread = Glib::Threads::Thread::create(sigc::mem_fun(*this, &RunThread::thread_func));
@@ -282,18 +284,35 @@ void RunThread::run(int steps, double time){
 
 void RunThread::thread_func(){
 	// 1 make long computing
-	solver->run(steps, time);
-	final_state = solver->getState();
-	final_d_state = solver->getDState();
-	// 2 after computing is finished - fire IOSource
-	char c = 0;
-	write(fd[1], &c, 1);
+	mutex.lock();
+	solver->run(steps, time, use_step);
+	mutex.unlock();
+
+	bool step_ok = true;
+	for(;;){
+		mutex.lock();
+		step_ok = solver->step();
+		mutex.unlock();
+		if(!step_ok)
+			break;
+		char c = 's';
+		write(fd[1], &c, 1);		// fire 's'
+	}
+
+	// 2 after computing is finished - fire 'f' (if use_step==false => step fires exactly once)
+	char c = 'f';
+	write(fd[1], &c, 1);			// see below:
 }
 
 bool RunThread::on_event(Glib::IOCondition){
 	char c;
 	read(fd[0], &c, 1);
 
-	m_signal_finished(final_state, final_d_state);
+	mutex.lock();
+	if(c=='f')
+		m_signal_finished();
+	else if(c=='s')
+		m_signal_step();
+	mutex.unlock();
 	return 	true;
 }

@@ -76,7 +76,7 @@ E1PetscSolver::~E1PetscSolver(){
 	delete ksi;
 }
 
-void E1PetscSolver::run(int steps, double time){
+void E1PetscSolver::run(int steps, double time, bool use_step){
 //	PetscErrorCode ierr;
 //	ierr = TSSolve(ts, NULL);assert(!ierr);
 	// get all data

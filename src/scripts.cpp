@@ -307,7 +307,7 @@ void exp_gamma2e(){
 	models.push_back("tm");
 
 	vector<double> rs;
-//	rs.push_back(1.0);
+	rs.push_back(1.0);
 	rs.push_back(2.0);
 	rs.push_back(3.0);
 
@@ -351,12 +351,18 @@ void exp_gamma2e(){
 				int prev_dE = 0;
 				double max_E=0.0;
 				double max_time = 0.0;
+				double e;
+				const google::protobuf::Message *state_msg, *dstate_msg;
 
 				double time = 0.0;
+				solver->run(1000000, 120, true);
+
 				for(bool first=true;;first=false){
-					const google::protobuf::Message* state_msg = dynamic_cast<const google::protobuf::Message*>(solver->getState());
-					const google::protobuf::Message* dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
-					time += solver->getTime();
+					if(!solver->step())
+						break;
+					state_msg = dynamic_cast<const google::protobuf::Message*>(solver->getState());
+					dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
+					time = solver->getTime();
 
 					chart_analyzer.processState(solver->getState(), solver->getDState(), time);
 					E_plot.processState(state_msg, dstate_msg, time);
@@ -364,18 +370,11 @@ void exp_gamma2e(){
 	//				double int1, int2, int3;
 	//				compute_integrals(pcfg, dynamic_cast<const E3State*>(solver->getState()), &int1, &int2, &int3);
 
-					double e = dynamic_cast<const E3State*>(solver->getState())->e();
+					e = dynamic_cast<const E3State*>(solver->getState())->e();
 
 					if(max_E < e){
 						max_E=e;
 						max_time = time;
-					}
-					if(time > 120.0){
-							csv << gamma << "\t" << e << "\t" << max_time << endl;
-							std::ostringstream imgname;
-							imgname << model << "_r" << r << "_g" << gamma << ".png";
-							E_plot.processToFile(imgname.str(), state_msg, dstate_msg, time);
-							break;
 					}
 //					if(!first)
 //						dE = dynamic_cast<const E3State*>(solver->getDState())->e() > 0 ? 1 : -1;
@@ -388,9 +387,12 @@ void exp_gamma2e(){
 //
 //					if(dE != 0.0)
 //							prev_dE = dE;
-
-					solver->run(1000000, 0.5);
 				}// infinite loop
+
+				csv << gamma << "\t" << e << "\t" << max_time << endl;
+				std::ostringstream imgname;
+				imgname << model << "_r" << r << "_g" << gamma << ".png";
+				E_plot.processToFile(imgname.str(), state_msg, dstate_msg, time);
 
 				delete solver;
 				delete init_state;

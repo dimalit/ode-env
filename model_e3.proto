@@ -37,8 +37,6 @@ message E3PetscSolverConfig{
 }
 
 message E3Model{
-	required double time = 4;
-	required uint32 steps = 5;
 	required E3Config pconfig = 1;
 	required E3State state = 2;
 	required E3PetscSolverConfig sconfig = 3;

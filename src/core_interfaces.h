@@ -42,7 +42,8 @@ public:
 // TODO: Virtual destructor here and elsewhere!
 class OdeSolver{
 public:
-	virtual void run(int steps, double time) = 0;
+	virtual void run(int steps, double time, bool use_step = false) = 0;
+	virtual bool step() = 0;
 	virtual ~OdeSolver(){}
 	virtual double getTime() const = 0;
 	virtual double getSteps() const = 0;

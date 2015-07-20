@@ -19,21 +19,25 @@ class RunThread: public sigc::trackable{
 private:
 	OdeSolver* solver;
 	Glib::Threads::Thread* thread;
-	sigc::signal<void, const OdeState*, const OdeState*> m_signal_finished;
+	Glib::Threads::Mutex mutex;			// protect solver from multithreaded access!!
+	sigc::signal<void> m_signal_finished;
+	sigc::signal<void> m_signal_step;
 
 public:
 	RunThread(OdeSolver*);
 	virtual ~RunThread();
-	void run(int steps, double time);
-	sigc::signal<void, const OdeState*, const OdeState*> getSignalFinished() const {
+	void run(int steps, double time, bool use_step = false);
+	sigc::signal<void> getSignalFinished() const {
 		return m_signal_finished;
+	}
+	sigc::signal<void> getSignalStepped() const {
+		return m_signal_step;
 	}
 
 private:
 	int steps;
 	double time;
-	const OdeState* final_state;
-	const OdeState* final_d_state;
+	bool use_step;
 
 	int fd[2];
 	Glib::RefPtr<Glib::IOSource> iosource;
@@ -62,8 +66,9 @@ private:
   bool computing;
   int steps;
   double time;
-  void run_computing();
-  void one_run_completed_cb(const OdeState* final_state, const OdeState* final_d_state);
+  void run_computing(bool use_step);
+  void run_finished_cb();
+  void run_stepped_cb();
   void stop_computing();
 
   std::auto_ptr<OdeState> saved_state, saved_dstate;			// for reset

@@ -43,7 +43,8 @@ public:
 public:
 	E3PetscSolver(const E3PetscSolverConfig*, const E3Config*, const E3State*);
 	virtual ~E3PetscSolver();
-	virtual void run(int steps, double time);
+	virtual void run(int steps, double time, bool use_steps = false);
+	virtual bool step();
 	virtual double getTime() const;
 	virtual double getSteps() const;
 	virtual const OdeState* getState() const {
@@ -62,6 +63,9 @@ private:
 	E3PetscSolverConfig* sconfig;	// solver config
 	E3State* state;
 	E3State* d_state;
+
+	int rf, wf;
+	pid_t child;
 
 	double time_passed;
 	int steps_passed;

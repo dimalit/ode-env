@@ -14,6 +14,23 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+void parse_with_prefix(google::protobuf::Message& msg, int fd){
+	int size;
+	int ok = read(fd, &size, sizeof(size));
+	assert(ok == sizeof(size));
+
+	//TODO:without buffer cannot read later bytes
+	char *buf = (char*)malloc(size);
+	int read_size = 0;
+	while(read_size != size){
+		ok = read(fd, buf+read_size, size-read_size);
+		read_size+=ok;
+		assert(ok > 0 || read_size==size);
+	}
+	msg.ParseFromArray(buf, size);
+	free(buf);
+}
+
 E3Config::E3Config(){
 	set_m(250);
 	set_n(1.0);
@@ -74,15 +91,17 @@ E3PetscSolver::~E3PetscSolver(){
 
 // TODO: create universal base class for PETSc solvers - so not to copypaste!
 // TODO: 1 universal code from TS solving?! (not to write it again and again!?)
-void E3PetscSolver::run(int steps, double time){
+void E3PetscSolver::run(int steps, double time, bool use_step){
 //	printf("run started\n");
 //	fflush(stdout);
 
 	static int run_cnt = 0;
 	run_cnt++;
 
-	int rf, wf;
-	pid_t child = rpc_call("../ts3/Debug/ts3", &rf, &wf);
+	std::string cmd = "../ts3/Debug/ts3";
+	if(use_step)
+		cmd += " use_step";
+	child = rpc_call(cmd.c_str(), &rf, &wf);
 
 //	int tmp = open("tmp", O_WRONLY | O_CREAT, 0664);
 //	state->PrintDebugString();
@@ -92,54 +111,43 @@ void E3PetscSolver::run(int steps, double time){
 	all.mutable_pconfig()->CopyFrom(*pconfig);
 	all.mutable_state()->CopyFrom(*state);
 
-	all.set_time(time);
-	all.set_steps(steps);
+	int size = all.ByteSize();
 
-//	all.PrintDebugString();
+	int ok;
+	ok = write(wf, &size, sizeof(size));
+		assert(ok == sizeof(size));
 
-	//int ftmp = open("all.tmp", O_CREAT | O_WRONLY);
-	//FILE* fp = fopen("all.tmp", "w");
 	all.SerializeToFileDescriptor(wf);
-	//std::string s = all.DebugString()
-	//fwrite(s.c_str(), 1, s.size(), fp);
-	//fclose(fp);
-	//close(ftmp);
-	close(wf);		// need EOF for protobuf to catch the end of the message
-	//exit(1);
 
-//	close(tmp);
+	ok = write(wf, &steps, sizeof(steps));
+		assert(ok == sizeof(steps));
+	ok = write(wf, &time, sizeof(time));
+		assert(ok == sizeof(time));
+	close(wf);
+}
 
-//	char buf;
-//	while(read(rf, &buf, 1) > 0);
-
-	assert(read(rf, &steps_passed, sizeof(steps_passed)) == sizeof(steps_passed));
-	assert(read(rf, &time_passed, sizeof(time_passed)) == sizeof(time_passed));
+bool E3PetscSolver::step(){
+	int ok;
+	ok = read(rf, &steps_passed, sizeof(steps_passed));
+	if(ok==0){
+		waitpid(child, 0, 0);		// was before read - here for tests
+		close(rf);
+		return false;
+	}
+	else
+		assert(ok == sizeof(steps_passed));
+	ok = read(rf, &time_passed, sizeof(time_passed));
+		assert(ok == sizeof(time_passed));
 
 	printf("%d %lf %s\n", steps_passed, time_passed, sconfig->model().c_str());
 	fflush(stdout);
 
-//	if(steps_passed > 1000 || steps_passed <= 0){		// for error output
-//		char c;
-//		while(read(rf, &c, 1)){
-//			putchar(c);
-//		}
-//		fflush(stdout);
-//	}
-
-	waitpid(child, 0, 0);		// was before read - here for tests
-
 	pb::E3Solution sol;
-	sol.ParseFromFileDescriptor(rf);
+	parse_with_prefix(sol, rf);
 	sol.mutable_state()->set_simulated(true);
 	sol.mutable_d_state()->set_simulated(true);
 
 	state->CopyFrom(sol.state());
 	d_state->CopyFrom(sol.d_state());
-
-	//sol.PrintDebugString();
-
-	close(rf);
-
-//	printf("run finished\n");
-//	fflush(stdout);
+	return true;
 }
