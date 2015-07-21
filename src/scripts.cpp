@@ -391,7 +391,7 @@ void exp_gamma2e(){
 //							prev_dE = dE;
 				}// infinite loop
 
-				csv << gamma << "\t" << e << "\t" << max_time << endl;
+				csv << gamma << "\t" << max_E << "\t" << max_time << endl;
 				std::ostringstream imgname;
 				imgname << model << "_r" << r << "_g" << gamma << ".png";
 				E_plot.processToFile(imgname.str(), state_msg, dstate_msg, time);
@@ -403,6 +403,131 @@ void exp_gamma2e(){
 			csv.close();
 		}// for models
 	}// for r
+	delete scfg;
+	delete pcfg;
+}
+
+void exp_r2e(){
+	string problem_name = "model e3";
+
+	OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
+	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
+
+	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
+		pcfg->set_theta_e(0.0);
+		pcfg->set_delta_e(0.0);
+		pcfg->set_m(250);
+		pcfg->set_n(1.0);
+	E3PetscSolverConfig* scfg = dynamic_cast<E3PetscSolverConfig*>(solver_fact->createSolverConfg());
+		scfg->set_init_step(0.01);
+		scfg->set_atol(1e-6);
+		scfg->set_rtol(1e-6);
+		scfg->set_solver(E3PetscSolverConfig::rhs);
+
+	ChartAnalyzer chart_analyzer(pcfg);
+	Gtk::Window win;
+	win.add(chart_analyzer);
+	win.show_all();
+
+	Gnuplot E_plot;
+		E_plot.addVar("E");
+		E_plot.setXAxisTime();
+		E_plot.setStyle(Gnuplot::STYLE_LINES);
+
+	vector<string> models;
+	models.push_back("te");
+	models.push_back("tm");
+
+	pcfg->set_gamma_0_2(0);
+
+	for(int j=0; j<models.size(); j++){
+		string model = models[j];
+		scfg->set_model(model);
+
+		std::ostringstream fname_ostr;
+		fname_ostr << "r2e_" << model << ".csv";
+		string fname = fname_ostr.str();
+		std::ofstream csv(fname, ios::out | ios::binary);
+		csv.precision(10);
+
+		for(double r=0.05;r<5.06; r+=0.25){
+			pcfg->set_r_e(r);
+
+
+	////////////////////////////////////////////////////
+
+			E3State* init_state = dynamic_cast<E3State*>(inst_fact->createState(pcfg));
+			init_state->set_e(0.01);
+			init_state->set_phi(0);
+			init_state->set_a0(1.0);
+			double eta0 = 0.0;
+			double right = 0.5, left = -0.5;
+				for(int i=0; i<pcfg->m(); i++){
+					init_state->mutable_particles(i)->set_a(init_state->a0());
+					init_state->mutable_particles(i)->set_eta(eta0);
+					//double ksi = rand() / (double)RAND_MAX * (right-left) + left;
+					double ksi = i / (double)pcfg->m() * (right-left) + left;
+					init_state->mutable_particles(i)->set_ksi(ksi);
+				}
+			E3PetscSolver* solver = dynamic_cast<E3PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
+
+			E_plot.reset();
+
+			int dE = 0;
+			int prev_dE = 0;
+			double max_E=0.0;
+			double max_time = 0.0;
+			double e;
+			const google::protobuf::Message *state_msg, *dstate_msg;
+
+			double time = 0.0;
+			solver->run(1000000, 120, true);
+
+			for(int i=0;;i++){
+				if(!solver->step())
+					break;
+				state_msg = dynamic_cast<const google::protobuf::Message*>(solver->getState());
+				dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
+				time = solver->getTime();
+
+				if(i%10==0){
+					chart_analyzer.processState(solver->getState(), solver->getDState(), time);
+					E_plot.processState(state_msg, dstate_msg, time);
+				}
+
+//				double int1, int2, int3;
+//				compute_integrals(pcfg, dynamic_cast<const E3State*>(solver->getState()), &int1, &int2, &int3);
+
+				e = dynamic_cast<const E3State*>(solver->getState())->e();
+
+				if(max_E < e){
+					max_E=e;
+					max_time = time;
+				}
+//					if(i!=0)
+//						dE = dynamic_cast<const E3State*>(solver->getDState())->e() > 0 ? 1 : -1;
+//
+//					// if peak
+//					if(dE < 0 && prev_dE > 0){
+//						csv << gamma << "\t" << e << endl;
+//						break;
+//					}
+//
+//					if(dE != 0.0)
+//							prev_dE = dE;
+			}// infinite loop
+
+			csv << r << "\t" << max_E << "\t" << max_time << endl;
+			std::ostringstream imgname;
+			imgname << "r2e_" << model << "_r" << r << ".png";
+			E_plot.processToFile(imgname.str(), state_msg, dstate_msg, time);
+
+			delete solver;
+			delete init_state;
+	////////////////////////////////////////////////////
+		}// for r
+		csv.close();
+	}// for models
 	delete scfg;
 	delete pcfg;
 }
