@@ -64,7 +64,7 @@ private:
 	E3State* state;
 	E3State* d_state;
 
-	int rf, wf;
+	FILE  *rf, *wf;
 	pid_t child;
 
 	double time_passed;

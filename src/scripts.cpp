@@ -303,11 +303,11 @@ void exp_gamma2e(){
 		E_plot.setStyle(Gnuplot::STYLE_LINES);
 
 	vector<string> models;
-	models.push_back("te");
+//	models.push_back("te");
 	models.push_back("tm");
 
 	vector<double> rs;
-	rs.push_back(1.0);
+//	rs.push_back(1.0);
 	rs.push_back(2.0);
 	rs.push_back(3.0);
 
@@ -357,15 +357,17 @@ void exp_gamma2e(){
 				double time = 0.0;
 				solver->run(1000000, 120, true);
 
-				for(bool first=true;;first=false){
+				for(int i=0;;i++){
 					if(!solver->step())
 						break;
 					state_msg = dynamic_cast<const google::protobuf::Message*>(solver->getState());
 					dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
 					time = solver->getTime();
 
-					chart_analyzer.processState(solver->getState(), solver->getDState(), time);
-					E_plot.processState(state_msg, dstate_msg, time);
+					if(i%10==0){
+						chart_analyzer.processState(solver->getState(), solver->getDState(), time);
+						E_plot.processState(state_msg, dstate_msg, time);
+					}
 
 	//				double int1, int2, int3;
 	//				compute_integrals(pcfg, dynamic_cast<const E3State*>(solver->getState()), &int1, &int2, &int3);
@@ -376,7 +378,7 @@ void exp_gamma2e(){
 						max_E=e;
 						max_time = time;
 					}
-//					if(!first)
+//					if(i!=0)
 //						dE = dynamic_cast<const E3State*>(solver->getDState())->e() > 0 ? 1 : -1;
 //
 //					// if peak

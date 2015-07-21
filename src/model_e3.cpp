@@ -14,19 +14,15 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-void parse_with_prefix(google::protobuf::Message& msg, int fd){
+void parse_with_prefix(google::protobuf::Message& msg, FILE* fp){
 	int size;
-	int ok = read(fd, &size, sizeof(size));
-	assert(ok == sizeof(size));
+	int ok = fread(&size, sizeof(size), 1, fp);
+	assert(ok == 1);
 
 	//TODO:without buffer cannot read later bytes
 	char *buf = (char*)malloc(size);
-	int read_size = 0;
-	while(read_size != size){
-		ok = read(fd, buf+read_size, size-read_size);
-		read_size+=ok;
-		assert(ok > 0 || read_size==size);
-	}
+	ok = fread(buf, 1, size, fp);
+		assert(ok==size);
 	msg.ParseFromArray(buf, size);
 	free(buf);
 }
@@ -98,10 +94,14 @@ void E3PetscSolver::run(int steps, double time, bool use_step){
 	static int run_cnt = 0;
 	run_cnt++;
 
-	std::string cmd = "../ts3/Debug/ts3";
+//	std::string cmd = "../ts3/Debug/ts3";
+	std::string cmd = "mpiexec -n 1 --host 192.168.0.101 ./Debug/ts3";
 	if(use_step)
 		cmd += " use_step";
-	child = rpc_call(cmd.c_str(), &rf, &wf);
+	int rfd, wfd;
+	child = rpc_call(cmd.c_str(), &rfd, &wfd);
+	rf = fdopen(rfd, "rb");
+	wf = fdopen(wfd, "wb");
 
 //	int tmp = open("tmp", O_WRONLY | O_CREAT, 0664);
 //	state->PrintDebugString();
@@ -114,30 +114,31 @@ void E3PetscSolver::run(int steps, double time, bool use_step){
 	int size = all.ByteSize();
 
 	int ok;
-	ok = write(wf, &size, sizeof(size));
-		assert(ok == sizeof(size));
+	ok = fwrite(&size, sizeof(size), 1, wf);
+		assert(ok == 1);
 
-	all.SerializeToFileDescriptor(wf);
+	fflush(wf);
+	all.SerializeToFileDescriptor(fileno(wf));
 
-	ok = write(wf, &steps, sizeof(steps));
-		assert(ok == sizeof(steps));
-	ok = write(wf, &time, sizeof(time));
-		assert(ok == sizeof(time));
-	close(wf);
+	ok = fwrite(&steps, sizeof(steps), 1, wf);
+		assert(ok == 1);
+	ok = fwrite(&time, sizeof(time), 1, wf);
+		assert(ok == 1);
+	fclose(wf);
 }
 
 bool E3PetscSolver::step(){
 	int ok;
-	ok = read(rf, &steps_passed, sizeof(steps_passed));
+	ok = fread(&steps_passed, sizeof(steps_passed), 1, rf);
 	if(ok==0){
 		waitpid(child, 0, 0);		// was before read - here for tests
-		close(rf);
+		fclose(rf);
 		return false;
 	}
 	else
-		assert(ok == sizeof(steps_passed));
-	ok = read(rf, &time_passed, sizeof(time_passed));
-		assert(ok == sizeof(time_passed));
+		assert(ok == 1);
+	ok = fread(&time_passed, sizeof(time_passed), 1, rf);
+		assert(ok == 1);
 
 	printf("%d %lf %s\n", steps_passed, time_passed, sconfig->model().c_str());
 	fflush(stdout);
