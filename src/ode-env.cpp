@@ -22,8 +22,8 @@ int main (int argc, char *argv[])
 
 //	exp_6_images();
 //	exp_random_init_R3();
-	exp_r2e();
-//	exp_gamma2e();
+//	exp_r2e();
+	exp_gamma2e();
 
 /*
 	E1InstanceFactory* eif = E1InstanceFactory::getInstance();

@@ -17,6 +17,8 @@
 
 #include <cstdlib>
 
+#include <fcntl.h>
+
 #define UI_FILE_RUN "sim_params.glade"
 
 HelloWorld::HelloWorld()
@@ -259,8 +261,9 @@ RunThread::RunThread(OdeSolver* solver){
 	this->solver = solver;
 	thread = NULL;
 
-	assert(pipe(fd) == 0);
+	assert(pipe2(fd, O_NONBLOCK) == 0);			// read will return 0 when no data available
 	iosource = Glib::IOSource::create(fd[0], Glib::IO_IN);
+	iosource->set_can_recurse(false);
 	iosource->connect(sigc::mem_fun(*this, &RunThread::on_event));
 	iosource->attach();
 }
@@ -305,14 +308,22 @@ void RunThread::thread_func(){
 }
 
 bool RunThread::on_event(Glib::IOCondition){
-	char c;
-	read(fd[0], &c, 1);
+
+	// read last bytes and ignore all previous
+	char c=0;
+	while(read(fd[0], &c, 1) > 0);
+
+	fprintf(stderr, "%c\n", c);
 
 	mutex.lock();
-	if(c=='f')
-		m_signal_finished();
-	else if(c=='s')
+	if(c=='s'){
 		m_signal_step();
-	mutex.unlock();
+		mutex.unlock();
+	}
+	else if(c=='f'){
+		// XXX: signal handler DELETES this object! so we do unlock before. but how to implement this right?!
+		mutex.unlock();
+		m_signal_finished();
+	}
 	return 	true;
 }

@@ -288,8 +288,8 @@ void exp_gamma2e(){
 		pcfg->set_n(1.0);
 	E3PetscSolverConfig* scfg = dynamic_cast<E3PetscSolverConfig*>(solver_fact->createSolverConfg());
 		scfg->set_init_step(0.01);
-		scfg->set_atol(1e-6);
-		scfg->set_rtol(1e-6);
+		scfg->set_atol(1e-7);
+		scfg->set_rtol(1e-7);
 		scfg->set_solver(E3PetscSolverConfig::rhs);
 
 	ChartAnalyzer chart_analyzer(pcfg);
@@ -303,11 +303,11 @@ void exp_gamma2e(){
 		E_plot.setStyle(Gnuplot::STYLE_LINES);
 
 	vector<string> models;
-//	models.push_back("te");
+	models.push_back("te");
 	models.push_back("tm");
 
 	vector<double> rs;
-//	rs.push_back(1.0);
+	rs.push_back(1.0);
 	rs.push_back(2.0);
 	rs.push_back(3.0);
 
@@ -339,8 +339,8 @@ void exp_gamma2e(){
 					for(int i=0; i<pcfg->m(); i++){
 						init_state->mutable_particles(i)->set_a(init_state->a0());
 						init_state->mutable_particles(i)->set_eta(eta0);
-						//double ksi = rand() / (double)RAND_MAX * (right-left) + left;
-						double ksi = i / (double)pcfg->m() * (right-left) + left;
+						double ksi = rand() / (double)RAND_MAX * (right-left) + left;
+						//double ksi = i / (double)pcfg->m() * (right-left) + left;
 						init_state->mutable_particles(i)->set_ksi(ksi);
 					}
 				E3PetscSolver* solver = dynamic_cast<E3PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
