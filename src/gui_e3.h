@@ -13,6 +13,7 @@
 
 #include "gtkmm/entry.h"
 #include "gtkmm/comboboxtext.h"
+#include "gtkmm/adjustment.h"
 
 #include <cassert>
 #include <iostream>
@@ -78,6 +79,7 @@ private:
 	E3PetscSolverConfig* config;
 
 	Gtk::Entry *entry_atol, *entry_rtol, *entry_step;
+	Glib::RefPtr<Gtk::Adjustment> adj_n_cores;
 	Gtk::ComboBoxText *combo_type, *combo_solver;
 
 public:

@@ -34,6 +34,7 @@ message E3PetscSolverConfig{
 		ijacobian = 2;
 	}
 	optional Solver solver = 5;
+	optional int32 n_cores = 6;
 }
 
 message E3Model{

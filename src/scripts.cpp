@@ -304,12 +304,12 @@ void exp_gamma2e(){
 
 	vector<string> models;
 	models.push_back("te");
-	models.push_back("tm");
+//	models.push_back("tm");
 
 	vector<double> rs;
 	rs.push_back(1.0);
-	rs.push_back(2.0);
-	rs.push_back(3.0);
+//	rs.push_back(2.0);
+//	rs.push_back(3.0);
 
 	for(int i=0; i<rs.size(); i++){
 		double r = rs[i];

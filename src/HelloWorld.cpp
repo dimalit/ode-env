@@ -29,6 +29,8 @@ HelloWorld::HelloWorld()
   computing = false;
   run_thread = NULL;
   solver = NULL;
+  total_steps = run_steps = 0;
+  total_time = run_time = 0.0;
 
   this->set_title(problem_name);
 
@@ -65,13 +67,13 @@ HelloWorld::HelloWorld()
   b->get_widget("radio_steps", radio_steps);
 
   b->get_widget("entry_time", entry_time);
-  	  entry_time->set_text("0.1");
+  	  entry_time->set_text("120");
   b->get_widget("entry_steps", entry_steps);
   	  entry_steps->set_text("1");
   b->get_widget("label_time", label_time);
   b->get_widget("label_steps", label_steps);
 
-  set_steps_and_time(0, 0.0);
+  show_steps_and_time();
 
   vbox.pack_start(*root, false, false);
 
@@ -167,7 +169,9 @@ void HelloWorld::on_reset_clicked()
 	if(saved_state.get())
 		this->state_widget->loadState(saved_state.get(), saved_dstate.get());
 
-	set_steps_and_time(0, 0.0);
+	total_steps = 0;
+	total_time = 0.0;
+	show_steps_and_time();
 	this->chart_analyzer->reset();
 }
 
@@ -176,10 +180,7 @@ void HelloWorld::on_cancel_clicked()
   Gtk::Main::quit();
 }
 
-void HelloWorld::set_steps_and_time(int steps, double time){
-	total_steps = steps;
-	total_time = time;
-
+void HelloWorld::show_steps_and_time(){
 	std::ostringstream buf;
 	buf << "sim time: " << total_time;
 	label_time->set_text(buf.str());
@@ -187,9 +188,6 @@ void HelloWorld::set_steps_and_time(int steps, double time){
 	buf.str("");
 	buf << "sim steps: " << total_steps;
 	label_steps->set_text(buf.str());
-}
-void HelloWorld::add_steps_and_time(int steps, double time){
-	set_steps_and_time(total_steps + steps, total_time + time);
 }
 
 void HelloWorld::run_computing(bool use_step){
@@ -221,6 +219,10 @@ void HelloWorld::run_computing(bool use_step){
   computing = true;
   step_button.set_sensitive(false);
   reset_button.set_sensitive(false);
+
+  run_steps = 0;
+  run_time = 0.0;
+
   run_thread->run(steps, time, use_step);
 }
 
@@ -230,15 +232,22 @@ void HelloWorld::run_stepped_cb(){
 		this->saved_state = std::auto_ptr<OdeState>(state_widget->getState()->clone());
 		this->saved_dstate = std::auto_ptr<OdeState>(state_widget->getDState()->clone());
 	}
-	set_steps_and_time(solver->getSteps(), solver->getTime());
+	total_steps += solver->getSteps() - run_steps;
+	total_time  += solver->getTime()  - run_time;
+	run_steps = solver->getSteps();
+	run_time  = solver->getTime();
+	show_steps_and_time();
 
 	// Написать: упражнение с запуском счета параллельно GUI для студентов
 	const OdeState* final_state = solver->getState();
 	const OdeState* final_d_state = solver->getDState();
+
+//	if(total_steps % 8 ==0)
 	state_widget->loadState(final_state, final_d_state);
 }
 
 void HelloWorld::run_finished_cb(){
+
 	delete run_thread;	run_thread = NULL;
 	delete solver;		solver = NULL;
 	computing = false;
@@ -250,6 +259,7 @@ void HelloWorld::run_finished_cb(){
 
 void HelloWorld::stop_computing(){
 	assert(computing);
+	run_thread->finish();
 	computing = false;
 	// all deletions will be done in one_run_completed_cb
 }
@@ -285,22 +295,34 @@ void RunThread::run(int steps, double time, bool use_step){
 	thread = Glib::Threads::Thread::create(sigc::mem_fun(*this, &RunThread::thread_func));
 }
 
+void RunThread::finish(){
+	mutex.lock();
+	if(this->use_step)
+		solver->finish();
+	mutex.unlock();
+}
+
 void RunThread::thread_func(){
 	// 1 make long computing
 	mutex.lock();
 	solver->run(steps, time, use_step);
 	mutex.unlock();
 
-	bool step_ok = true;
-	for(;;){
-		mutex.lock();
-		step_ok = solver->step();
-		mutex.unlock();
-		if(!step_ok)
-			break;
-		char c = 's';
-		write(fd[1], &c, 1);		// fire 's'
-	}
+	if(use_step){
+		for(;;){
+			mutex.lock();
+			bool step_ok = solver->step();
+	//		mutex.unlock();
+			if(!step_ok){
+				mutex.unlock();
+				break;
+			}
+			char c = 's';
+			write(fd[1], &c, 1);		// fire 's'
+			cond.wait(mutex);
+			mutex.unlock();
+		}
+	}// use_step
 
 	// 2 after computing is finished - fire 'f' (if use_step==false => step fires exactly once)
 	char c = 'f';
@@ -311,7 +333,8 @@ bool RunThread::on_event(Glib::IOCondition){
 
 	// read last bytes and ignore all previous
 	char c=0;
-	while(read(fd[0], &c, 1) > 0);
+	read(fd[0], &c, 1);								// buffer all 's' - but not all states!
+	//while(read(fd[0], &c, 1) > 0);				// show what I can
 
 	fprintf(stderr, "%c\n", c);
 
@@ -319,10 +342,12 @@ bool RunThread::on_event(Glib::IOCondition){
 	if(c=='s'){
 		m_signal_step();
 		mutex.unlock();
+		cond.signal();
 	}
 	else if(c=='f'){
 		// XXX: signal handler DELETES this object! so we do unlock before. but how to implement this right?!
 		mutex.unlock();
+		m_signal_step();
 		m_signal_finished();
 	}
 	return 	true;

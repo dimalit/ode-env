@@ -45,6 +45,7 @@ public:
 	virtual ~E3PetscSolver();
 	virtual void run(int steps, double time, bool use_steps = false);
 	virtual bool step();
+	virtual void finish();
 	virtual double getTime() const;
 	virtual double getSteps() const;
 	virtual const OdeState* getState() const {
@@ -71,7 +72,8 @@ private:
 	int steps_passed;
 
 private:
-	int read_simulation(FILE* fp, int m);
+//	int read_simulation(FILE* fp, int m);
+	bool read_results();
 };
 
 REGISTER_INSTANCE_CLASS(E3Config, E3State)

@@ -20,6 +20,7 @@ private:
 	OdeSolver* solver;
 	Glib::Threads::Thread* thread;
 	Glib::Threads::Mutex mutex;			// protect solver from multithreaded access!!
+	Glib::Threads::Cond  cond;			// for synchronization
 	sigc::signal<void> m_signal_finished;
 	sigc::signal<void> m_signal_step;
 
@@ -27,6 +28,7 @@ public:
 	RunThread(OdeSolver*);
 	virtual ~RunThread();
 	void run(int steps, double time, bool use_step = false);
+	void finish();
 	sigc::signal<void> getSignalFinished() const {
 		return m_signal_finished;
 	}
@@ -60,8 +62,9 @@ public:
 private:
   int total_steps;
   double total_time;
-  void set_steps_and_time(int steps, double time);
-  void add_steps_and_time(int steps, double time);
+  int run_steps;
+  double run_time;
+  void show_steps_and_time();
 
   bool computing;
   int steps;

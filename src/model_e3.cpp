@@ -9,6 +9,8 @@
 
 #include "rpc.h"
 
+#include <sstream>
+
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -28,12 +30,12 @@ void parse_with_prefix(google::protobuf::Message& msg, FILE* fp){
 }
 
 E3Config::E3Config(){
-	set_m(250);
+	set_m(240);
 	set_n(1.0);
 	set_theta_e(0);
 	set_gamma_0_2(0.0);
 	set_delta_e(0);
-	set_r_e(3.0);
+	set_r_e(0.05);
 }
 
 E3State::E3State(){
@@ -60,6 +62,7 @@ E3PetscSolverConfig::E3PetscSolverConfig(){
 	set_init_step(0.01);
 	set_solver(E3PetscSolverConfig::rhs);
 	set_model("te");
+	set_n_cores(1);
 }
 
 E3PetscSolver::E3PetscSolver(const E3PetscSolverConfig* scfg, const E3Config* pcfg, const E3State* init_state){
@@ -80,6 +83,10 @@ double E3PetscSolver::getSteps() const {
 }
 
 E3PetscSolver::~E3PetscSolver(){
+	if(wf){
+		fputc('f', wf);
+		fflush(wf);
+	}
 	delete state;
 	delete sconfig;
 	delete pconfig;
@@ -94,8 +101,15 @@ void E3PetscSolver::run(int steps, double time, bool use_step){
 	static int run_cnt = 0;
 	run_cnt++;
 
-//	std::string cmd = "../ts3/Debug/ts3";
-	std::string cmd = "mpiexec -n 1 --host 192.168.0.101 ./Debug/ts3";
+	int n_cores = 1;
+	if(this->sconfig->has_n_cores())
+		n_cores = this->sconfig->n_cores();
+	std::ostringstream cmd_stream;
+//	cmd_stream << "mpiexec -n "<< n_cores << " --host 192.168.0.101 ./Debug/ts3";
+//	cmd_stream << "mpiexec -n "<< n_cores << " --host 10.0.0.205 /home/dimalit/workspace/ts3/Debug/ts3";
+	cmd_stream << "mpiexec -n "<< n_cores << " ../ts3/Debug/ts3";
+
+	std::string cmd = cmd_stream.str();
 	if(use_step)
 		cmd += " use_step";
 	int rfd, wfd;
@@ -124,17 +138,36 @@ void E3PetscSolver::run(int steps, double time, bool use_step){
 		assert(ok == 1);
 	ok = fwrite(&time, sizeof(time), 1, wf);
 		assert(ok == 1);
-	fclose(wf);
+	fflush(wf);
+
+	if(!use_step){		// just final step
+		bool res = read_results();
+			assert(res==true);		// last
+		waitpid(child, 0, 0);
+		fclose(rf); rf = NULL;
+		fclose(wf); wf = NULL;
+	}
 }
 
 bool E3PetscSolver::step(){
-	int ok;
-	ok = fread(&steps_passed, sizeof(steps_passed), 1, rf);
-	if(ok==0){
+	fputc('s', wf);
+	fflush(wf);
+
+	if(!read_results()){
 		waitpid(child, 0, 0);		// was before read - here for tests
-		fclose(rf);
+		fclose(rf); rf = NULL;
+		fclose(wf); wf = NULL;
 		return false;
 	}
+	return true;
+}
+
+bool E3PetscSolver::read_results(){
+	int ok;
+	ok = fread(&steps_passed, sizeof(steps_passed), 1, rf);
+	// TODO: read=0 no longer works with mpiexec (process isn't zombie)
+	if(ok==0)
+		return false;
 	else
 		assert(ok == 1);
 	ok = fread(&time_passed, sizeof(time_passed), 1, rf);
@@ -151,4 +184,9 @@ bool E3PetscSolver::step(){
 	state->CopyFrom(sol.state());
 	d_state->CopyFrom(sol.d_state());
 	return true;
+}
+
+void E3PetscSolver::finish(){
+	fputc('f', wf);
+	fflush(wf);
 }

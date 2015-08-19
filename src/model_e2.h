@@ -52,6 +52,7 @@ public:
 	virtual ~E2PetscSolver();
 	virtual void run(int steps, double time, bool use_step = false);
 	virtual bool step(){assert(false);return false;}
+	virtual void finish(){assert(false);}
 	virtual double getTime() const;
 	virtual double getSteps() const;
 	virtual const OdeState* getState() const {

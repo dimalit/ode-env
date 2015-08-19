@@ -543,6 +543,13 @@ class E3PetscSolverConfig : public ::google::protobuf::Message {
   inline ::pb::E3PetscSolverConfig_Solver solver() const;
   inline void set_solver(::pb::E3PetscSolverConfig_Solver value);
 
+  // optional int32 n_cores = 6;
+  inline bool has_n_cores() const;
+  inline void clear_n_cores();
+  static const int kNCoresFieldNumber = 6;
+  inline ::google::protobuf::int32 n_cores() const;
+  inline void set_n_cores(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:pb.E3PetscSolverConfig)
  private:
   inline void set_has_atol();
@@ -555,6 +562,8 @@ class E3PetscSolverConfig : public ::google::protobuf::Message {
   inline void clear_has_model();
   inline void set_has_solver();
   inline void clear_has_solver();
+  inline void set_has_n_cores();
+  inline void clear_has_n_cores();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -563,9 +572,10 @@ class E3PetscSolverConfig : public ::google::protobuf::Message {
   double init_step_;
   ::std::string* model_;
   int solver_;
+  ::google::protobuf::int32 n_cores_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
 
   friend void  protobuf_AddDesc_model_5fe3_2eproto();
   friend void protobuf_AssignDesc_model_5fe3_2eproto();
@@ -1265,6 +1275,28 @@ inline void E3PetscSolverConfig::set_solver(::pb::E3PetscSolverConfig_Solver val
   assert(::pb::E3PetscSolverConfig_Solver_IsValid(value));
   set_has_solver();
   solver_ = value;
+}
+
+// optional int32 n_cores = 6;
+inline bool E3PetscSolverConfig::has_n_cores() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void E3PetscSolverConfig::set_has_n_cores() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void E3PetscSolverConfig::clear_has_n_cores() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void E3PetscSolverConfig::clear_n_cores() {
+  n_cores_ = 0;
+  clear_has_n_cores();
+}
+inline ::google::protobuf::int32 E3PetscSolverConfig::n_cores() const {
+  return n_cores_;
+}
+inline void E3PetscSolverConfig::set_n_cores(::google::protobuf::int32 value) {
+  set_has_n_cores();
+  n_cores_ = value;
 }
 
 // -------------------------------------------------------------------

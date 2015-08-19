@@ -106,12 +106,13 @@ void protobuf_AssignDesc_model_5fe3_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E3State_Particles));
   E3PetscSolverConfig_descriptor_ = file->message_type(2);
-  static const int E3PetscSolverConfig_offsets_[5] = {
+  static const int E3PetscSolverConfig_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, atol_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, rtol_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, init_step_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, model_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, solver_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3PetscSolverConfig, n_cores_),
   };
   E3PetscSolverConfig_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -215,16 +216,16 @@ void protobuf_AddDesc_model_5fe3_2eproto() {
     "(\001\022\013\n\003phi\030\004 \002(\001\022\n\n\002a0\030\005 \001(\001\022(\n\tparticles"
     "\030\002 \003(\n2\025.pb.E3State.Particles\0320\n\tParticl"
     "es\022\t\n\001a\030\003 \002(\001\022\013\n\003ksi\030\004 \002(\001\022\013\n\003eta\030\005 \002(\001\""
-    "\271\001\n\023E3PetscSolverConfig\022\014\n\004atol\030\001 \001(\001\022\014\n"
+    "\312\001\n\023E3PetscSolverConfig\022\014\n\004atol\030\001 \001(\001\022\014\n"
     "\004rtol\030\004 \001(\001\022\021\n\tinit_step\030\002 \001(\001\022\r\n\005model\030"
     "\003 \002(\t\022.\n\006solver\030\005 \001(\0162\036.pb.E3PetscSolver"
-    "Config.Solver\"4\n\006Solver\022\007\n\003rhs\020\000\022\022\n\016ifun"
-    "ction_only\020\001\022\r\n\tijacobian\020\002\"n\n\007E3Model\022\035"
-    "\n\007pconfig\030\001 \002(\0132\014.pb.E3Config\022\032\n\005state\030\002"
-    " \002(\0132\013.pb.E3State\022(\n\007sconfig\030\003 \002(\0132\027.pb."
-    "E3PetscSolverConfig\"F\n\nE3Solution\022\032\n\005sta"
-    "te\030\001 \002(\0132\013.pb.E3State\022\034\n\007d_state\030\002 \001(\0132\013"
-    ".pb.E3State", 651);
+    "Config.Solver\022\017\n\007n_cores\030\006 \001(\005\"4\n\006Solver"
+    "\022\007\n\003rhs\020\000\022\022\n\016ifunction_only\020\001\022\r\n\tijacobi"
+    "an\020\002\"n\n\007E3Model\022\035\n\007pconfig\030\001 \002(\0132\014.pb.E3"
+    "Config\022\032\n\005state\030\002 \002(\0132\013.pb.E3State\022(\n\007sc"
+    "onfig\030\003 \002(\0132\027.pb.E3PetscSolverConfig\"F\n\n"
+    "E3Solution\022\032\n\005state\030\001 \002(\0132\013.pb.E3State\022\034"
+    "\n\007d_state\030\002 \001(\0132\013.pb.E3State", 668);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e3.proto", &protobuf_RegisterTypes);
   E3Config::default_instance_ = new E3Config();
@@ -1326,6 +1327,7 @@ const int E3PetscSolverConfig::kRtolFieldNumber;
 const int E3PetscSolverConfig::kInitStepFieldNumber;
 const int E3PetscSolverConfig::kModelFieldNumber;
 const int E3PetscSolverConfig::kSolverFieldNumber;
+const int E3PetscSolverConfig::kNCoresFieldNumber;
 #endif  // !_MSC_VER
 
 E3PetscSolverConfig::E3PetscSolverConfig()
@@ -1349,6 +1351,7 @@ void E3PetscSolverConfig::SharedCtor() {
   init_step_ = 0;
   model_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   solver_ = 0;
+  n_cores_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1396,6 +1399,7 @@ void E3PetscSolverConfig::Clear() {
       }
     }
     solver_ = 0;
+    n_cores_ = 0;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -1488,6 +1492,22 @@ bool E3PetscSolverConfig::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(48)) goto parse_n_cores;
+        break;
+      }
+
+      // optional int32 n_cores = 6;
+      case 6: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_n_cores:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &n_cores_)));
+          set_has_n_cores();
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1540,6 +1560,11 @@ void E3PetscSolverConfig::SerializeWithCachedSizes(
       5, this->solver(), output);
   }
 
+  // optional int32 n_cores = 6;
+  if (has_n_cores()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->n_cores(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1579,6 +1604,11 @@ void E3PetscSolverConfig::SerializeWithCachedSizes(
       5, this->solver(), target);
   }
 
+  // optional int32 n_cores = 6;
+  if (has_n_cores()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(6, this->n_cores(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -1616,6 +1646,13 @@ int E3PetscSolverConfig::ByteSize() const {
     if (has_solver()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->solver());
+    }
+
+    // optional int32 n_cores = 6;
+    if (has_n_cores()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->n_cores());
     }
 
   }
@@ -1660,6 +1697,9 @@ void E3PetscSolverConfig::MergeFrom(const E3PetscSolverConfig& from) {
     if (from.has_solver()) {
       set_solver(from.solver());
     }
+    if (from.has_n_cores()) {
+      set_n_cores(from.n_cores());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1689,6 +1729,7 @@ void E3PetscSolverConfig::Swap(E3PetscSolverConfig* other) {
     std::swap(init_step_, other->init_step_);
     std::swap(model_, other->model_);
     std::swap(solver_, other->solver_);
+    std::swap(n_cores_, other->n_cores_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

@@ -285,6 +285,7 @@ E3PetscSolverConfigWidget::E3PetscSolverConfigWidget(const E3PetscSolverConfig* 
 	b->get_widget("entry_atol", entry_atol);
 	b->get_widget("entry_rtol", entry_rtol);
 	b->get_widget("entry_step", entry_step);
+	adj_n_cores = Glib::RefPtr<Gtk::Adjustment>::cast_dynamic(b->get_object("adj_n_cores"));
 
 	combo_type = Gtk::manage( new Gtk::ComboBoxText() );
 	combo_type->append("te");
@@ -319,6 +320,7 @@ void E3PetscSolverConfigWidget::widget_to_config(){
 	config->set_atol(atof(entry_atol->get_text().c_str()));
 	config->set_rtol(atof(entry_rtol->get_text().c_str()));
 	config->set_model(combo_type->get_active_text());
+	config->set_n_cores(adj_n_cores->get_value());
 
 	std::string solver_name = combo_solver->get_active_text();
 	E3PetscSolverConfig::Solver s_enum;
@@ -341,4 +343,5 @@ void E3PetscSolverConfigWidget::config_to_widget(){
 
 	combo_type->set_active_text(config->model());
 	combo_solver->set_active_text( E3PetscSolverConfig::Solver_Name(config->solver()));
+	adj_n_cores->set_value(config->n_cores());
 }
