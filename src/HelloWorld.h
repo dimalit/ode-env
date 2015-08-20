@@ -64,6 +64,7 @@ private:
   double total_time;
   int run_steps;
   double run_time;
+  double last_refresh_time;
   void show_steps_and_time();
 
   bool computing;

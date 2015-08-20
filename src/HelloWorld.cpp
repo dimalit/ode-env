@@ -67,7 +67,7 @@ HelloWorld::HelloWorld()
   b->get_widget("radio_steps", radio_steps);
 
   b->get_widget("entry_time", entry_time);
-  	  entry_time->set_text("120");
+  	  entry_time->set_text("1");
   b->get_widget("entry_steps", entry_steps);
   	  entry_steps->set_text("1");
   b->get_widget("label_time", label_time);
@@ -223,7 +223,10 @@ void HelloWorld::run_computing(bool use_step){
   run_steps = 0;
   run_time = 0.0;
 
-  run_thread->run(steps, time, use_step);
+  if(use_step)
+	  run_thread->run(1000000000, 1000000000.0, use_step);
+  else
+	  run_thread->run(steps, time, use_step);
 }
 
 void HelloWorld::run_stepped_cb(){
@@ -231,6 +234,7 @@ void HelloWorld::run_stepped_cb(){
 	if(total_steps == 0){			// save original state before
 		this->saved_state = std::auto_ptr<OdeState>(state_widget->getState()->clone());
 		this->saved_dstate = std::auto_ptr<OdeState>(state_widget->getDState()->clone());
+		last_refresh_time = 0.0;
 	}
 	total_steps += solver->getSteps() - run_steps;
 	total_time  += solver->getTime()  - run_time;
@@ -242,8 +246,10 @@ void HelloWorld::run_stepped_cb(){
 	const OdeState* final_state = solver->getState();
 	const OdeState* final_d_state = solver->getDState();
 
-//	if(total_steps % 8 ==0)
-	state_widget->loadState(final_state, final_d_state);
+	if(total_steps % steps == 0 || total_time-last_refresh_time >= time){
+		state_widget->loadState(final_state, final_d_state);
+		last_refresh_time = total_time;
+	}
 }
 
 void HelloWorld::run_finished_cb(){
