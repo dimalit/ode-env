@@ -44,7 +44,7 @@ void exp_6_images(){
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
 		pcfg->set_theta_e(0.0);
 		pcfg->set_delta_e(0.0);
-		pcfg->set_m(250);
+		pcfg->set_m(240);
 		pcfg->set_n(1.0);
 	E3PetscSolverConfig* scfg = dynamic_cast<E3PetscSolverConfig*>(solver_fact->createSolverConfg());
 		scfg->set_init_step(0.01);
@@ -193,7 +193,7 @@ void exp_random_init_R3(){
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
 		pcfg->set_theta_e(0.0);
 		pcfg->set_delta_e(0.0);
-		pcfg->set_m(250);
+		pcfg->set_m(240);
 		pcfg->set_n(1.0);
 	E3PetscSolverConfig* scfg = dynamic_cast<E3PetscSolverConfig*>(solver_fact->createSolverConfg());
 		scfg->set_init_step(0.01);
@@ -284,7 +284,7 @@ void exp_gamma2e(){
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
 		pcfg->set_theta_e(0.0);
 		pcfg->set_delta_e(0.0);
-		pcfg->set_m(250);
+		pcfg->set_m(240);
 		pcfg->set_n(1.0);
 	E3PetscSolverConfig* scfg = dynamic_cast<E3PetscSolverConfig*>(solver_fact->createSolverConfg());
 		scfg->set_init_step(0.01);
@@ -416,7 +416,7 @@ void exp_r2e(){
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
 		pcfg->set_theta_e(0.0);
 		pcfg->set_delta_e(0.0);
-		pcfg->set_m(250);
+		pcfg->set_m(240);
 		pcfg->set_n(1.0);
 	E3PetscSolverConfig* scfg = dynamic_cast<E3PetscSolverConfig*>(solver_fact->createSolverConfg());
 		scfg->set_init_step(0.01);
@@ -528,6 +528,93 @@ void exp_r2e(){
 		}// for r
 		csv.close();
 	}// for models
+	delete scfg;
+	delete pcfg;
+}
+
+// n = -1
+// R=25
+// E0 = 4e-3 / dqrt(R) = 0.0008
+// a0 = E0 (match old integral)
+// phi0 should be -PI/4 but 0 is OK too
+
+// THEN:
+// T = 27
+// maxE = 0.39
+// (if we set 2.0 coefs in 1 and 2 eqns of ts3 - will get T=20 maxE*5=3.2 (as in book))
+
+void as_in_book(){
+	string problem_name = "model e3";
+
+	OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
+	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
+
+	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
+		pcfg->set_theta_e(0.0);
+		pcfg->set_delta_e(0.0);
+		pcfg->set_m(240);
+		pcfg->set_n(-1.0);
+		pcfg->set_gamma_0_2(0);
+		pcfg->set_r_e(25.0);
+	E3PetscSolverConfig* scfg = dynamic_cast<E3PetscSolverConfig*>(solver_fact->createSolverConfg());
+		scfg->set_init_step(0.01);
+		scfg->set_atol(1e-7);
+		scfg->set_rtol(1e-7);
+		scfg->set_solver(E3PetscSolverConfig::rhs);
+		scfg->set_model("tm");
+
+	ChartAnalyzer chart_analyzer(pcfg);
+	Gtk::Window win;
+	win.add(chart_analyzer);
+	win.show_all();
+
+	Gnuplot E_plot;
+		E_plot.addVar("E");
+		E_plot.setXAxisTime();
+		E_plot.setStyle(Gnuplot::STYLE_LINES);
+
+	////////////////////////////////////////////////////
+
+			E3State* init_state = dynamic_cast<E3State*>(inst_fact->createState(pcfg));
+			init_state->set_e(0.0008);
+			init_state->set_phi(0.0);
+			init_state->set_a0(0.0008);
+			double eta0 = 0.0;
+			double right = 0.5, left = -0.5;
+				for(int i=0; i<pcfg->m(); i++){
+					init_state->mutable_particles(i)->set_a(init_state->a0());
+					init_state->mutable_particles(i)->set_eta(eta0);
+					//double ksi = rand() / (double)RAND_MAX * (right-left) + left;
+					double ksi = i / (double)pcfg->m() * (right-left) + left;
+					init_state->mutable_particles(i)->set_ksi(ksi);
+				}
+			E3PetscSolver* solver = dynamic_cast<E3PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
+
+			E_plot.reset();
+
+			const google::protobuf::Message *state_msg, *dstate_msg;
+
+			solver->run(1000000, 100, true);
+
+			for(int i=0;;i++){
+				if(!solver->step())
+					break;
+				state_msg = dynamic_cast<const google::protobuf::Message*>(solver->getState());
+				dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
+				double time = solver->getTime();
+
+				chart_analyzer.processState(solver->getState(), solver->getDState(), time);
+				E_plot.processState(state_msg, dstate_msg, time);
+
+				double int1, int2, int3;
+				compute_integrals(pcfg, dynamic_cast<const E3State*>(solver->getState()), &int1, &int2, &int3);
+				fprintf(stderr, "%.10lf\t%.10lf\t%.10lf\n", int1, int2, int3);
+
+			}// infinite loop
+
+			delete solver;
+			delete init_state;
+	////////////////////////////////////////////////////
 	delete scfg;
 	delete pcfg;
 }

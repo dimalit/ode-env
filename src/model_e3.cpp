@@ -61,7 +61,7 @@ E3PetscSolverConfig::E3PetscSolverConfig(){
 	set_rtol(1e-6);
 	set_init_step(0.01);
 	set_solver(E3PetscSolverConfig::rhs);
-	set_model("te");
+	set_model("tm");
 	set_n_cores(1);
 }
 

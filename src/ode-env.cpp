@@ -8,6 +8,7 @@ extern void exp_6_images();
 extern void exp_random_init_R3();
 extern void exp_gamma2e();
 extern void exp_r2e();
+extern void as_in_book();
 
 int main (int argc, char *argv[])
 {
@@ -24,6 +25,7 @@ int main (int argc, char *argv[])
 //	exp_random_init_R3();
 //	exp_r2e();
 //	exp_gamma2e();
+//	as_in_book();
 
 /*
 	E1InstanceFactory* eif = E1InstanceFactory::getInstance();
