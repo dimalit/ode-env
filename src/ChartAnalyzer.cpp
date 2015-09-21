@@ -27,6 +27,7 @@ private:
 	Gtk::TreeView *treeview1, *treeview2;		// for vars and derivatives
 	Glib::RefPtr<Gtk::ListStore> store1, store2;
 	Gtk::Button *btn_ok, *btn_cancel;
+	Gtk::CheckButton *check_polar;
 	ChartAnalyzer* parent;
 
 public:
@@ -44,6 +45,8 @@ public:
 		b->get_widget("treeview2", treeview2);
 		b->get_widget("btn_ok", btn_ok);
 		b->get_widget("btn_cancel", btn_cancel);
+		b->get_widget("check_polar", check_polar);
+
 		store1 = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b->get_object("liststore1"));
 		store2 = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b->get_object("liststore2"));
 
@@ -114,6 +117,8 @@ private:
 
 		// check all repeated or all non-repeated
 		bool has_repeated = false, has_non_repeated = false;
+
+		bool polar = check_polar->get_active();
 
 		// list1
 		Gtk::ListStore::Children children = store1->children();
@@ -186,7 +191,7 @@ private:
 			return;
 		}
 
-		parent->addChart(vars, x_axis_var);
+		parent->addChart(vars, x_axis_var, polar);
 
 		this->hide();
 		delete this;
@@ -300,10 +305,13 @@ std::string trim(const std::string& str,
     return str.substr(strBegin, strRange);
 }
 
-void ChartAnalyzer::addChart(std::vector<std::string> vars, std::string x_axis_var){
+void ChartAnalyzer::addChart(std::vector<std::string> vars, std::string x_axis_var, bool polar){
 	std::ostringstream full_title;
 
 	Gnuplot* p = new Gnuplot();
+
+	p->setPolar(polar);
+
 	for(int i=0; i<vars.size(); i++){
 		p->addVar(vars[i]);
 		full_title << vars[i] << ' ';
@@ -314,8 +322,8 @@ void ChartAnalyzer::addChart(std::vector<std::string> vars, std::string x_axis_v
 	}
 
 	// set dots if plot is scatter
-	if(!x_axis_var.empty())
-		p->setStyle(Gnuplot::STYLE_POINTS);
+	//if(!x_axis_var.empty())
+	//	p->setStyle(Gnuplot::STYLE_POINTS);
 
 
 	p->setTitle(trim(full_title.str()));

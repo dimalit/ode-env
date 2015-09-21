@@ -105,9 +105,9 @@ void E3PetscSolver::run(int steps, double time, bool use_step){
 	if(this->sconfig->has_n_cores())
 		n_cores = this->sconfig->n_cores();
 	std::ostringstream cmd_stream;
-	cmd_stream << "mpiexec -n "<< n_cores << " --host 192.168.0.101 ./Debug/ts3";
+//	cmd_stream << "mpiexec -n "<< n_cores << " --host 192.168.0.101 ./Debug/ts3";
 //	cmd_stream << "mpiexec -n "<< n_cores << " --host 10.0.0.205 /home/dimalit/workspace/ts3/Debug/ts3";
-//	cmd_stream << "mpiexec -n "<< n_cores << " ../ts3/Debug/ts3";
+	cmd_stream << "mpiexec -n "<< n_cores << " ../ts3/Debug/ts3";
 
 	std::string cmd = cmd_stream.str();
 	if(use_step)
@@ -173,8 +173,8 @@ bool E3PetscSolver::read_results(){
 	ok = fread(&time_passed, sizeof(time_passed), 1, rf);
 		assert(ok == 1);
 
-	printf("%d %lf %s\n", steps_passed, time_passed, sconfig->model().c_str());
-	fflush(stdout);
+//	printf("%d %lf %s\n", steps_passed, time_passed, sconfig->model().c_str());
+//	fflush(stdout);
 
 	pb::E3Solution sol;
 	parse_with_prefix(sol, rf);

@@ -342,7 +342,7 @@ bool RunThread::on_event(Glib::IOCondition){
 	read(fd[0], &c, 1);								// buffer all 's' - but not all states!
 	//while(read(fd[0], &c, 1) > 0);				// show what I can
 
-	fprintf(stderr, "%c\n", c);
+//	fprintf(stderr, "%c\n", c);
 
 	mutex.lock();
 	if(c=='s'){

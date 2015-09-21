@@ -8,18 +8,23 @@
 #include "Gnuplot.h"
 #include "rpc.h"
 
+#include <vector>
+#include <algorithm>
+
 #include <sstream>
+#include <iostream>
 #include <cstdio>
 
 using namespace google::protobuf;
 
 Gnuplot::Gnuplot() {
-	width = 300;
-	height = 300;
+	width = 400;
+	height = 400;
 	title = "";
 	x_axis = "";			// time/index
 	derivative_x = false;
 	style = STYLE_LINES;
+	polar = 0;
 
 	int rf, wf;
 	rpc_call("gnuplot", &rf, &wf);
@@ -53,13 +58,18 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 //	msg->PrintDebugString();
 //	d_msg->PrintDebugString();
 
-	//////////////// 1 plot xxx with xxx, yyy with yyy /////////////////
+	std::ostringstream plot_command;			// command
+	std::ostringstream super_buffer;			// data
+		super_buffer.precision(10);
 
-	std::ostringstream plot_command;
+	if(polar){
+		plot_command << "set polar\n";
+//		plot_command << "set object circle at 0,0 size 1\n";
+	}
 	plot_command << "plot ";
 
 	for(int i=0; i<series.size(); i++){
-		const serie& s = series[i];
+		serie& s = series[i];
 
 		if(s.derivative && !d_msg)
 			continue;
@@ -67,22 +77,11 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 		if(i!=0)
 			plot_command << ", ";
 
-		std::string style = this->style == STYLE_LINES ? "lines" : "points ps 0.2";
+		std::string style = this->style == STYLE_LINES ? "linespoints" : "points ps 0.2";
 		string title = s.var_name;
 		if(s.derivative)
 			title += '\'';
 		plot_command << "'-' with " << style << " title '" << title <<"'";
-	}// for
-	plot_command << "\n";
-	fprintf(fp, plot_command.str().c_str());
-	fflush(fp);
-
-	//////////// 2 give series ////////////////////
-	for(int i=0; i<series.size(); i++){
-		serie& s = series[i];
-
-		if(s.derivative && !d_msg)
-			continue;
 
 		// simple field
 		if(s.var_name.find('.') == std::string::npos){
@@ -94,7 +93,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 				s.data_cache.push_back(make_pair(time, val));
 
 				for(int i=0; i<s.data_cache.size(); i++){
-					fprintf(fp, "%.10lf %.10lf\n", s.data_cache[i].first, s.data_cache[i].second);
+					super_buffer << s.data_cache[i].first << " " << s.data_cache[i].second << "\n";
 				}// for
 			}// if need time
 			else{
@@ -104,7 +103,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 					assert(xfd);
 				double yval = s.derivative ? d_refl->GetDouble(*d_msg, yfd) : refl->GetDouble(*msg, yfd);
 				double xval = derivative_x ? d_refl->GetDouble(*d_msg, xfd) : refl->GetDouble(*msg, xfd);
-				fprintf(fp, "%.10lf %.10lf\n", xval, yval);
+				super_buffer << xval << " " << yval << "\n";
 			}// not need time
 		}// if simple field
 		else{	// repeated field
@@ -118,6 +117,8 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 				assert(!d_desc || fd1);
 			int n = refl->FieldSize(*msg, fd1);
 				assert(!d_fd1 || refl->FieldSize(*msg, fd1) == d_refl->FieldSize(*msg, d_fd1));
+
+			double prev_x = -100;
 
 			for(int i=0; i<n; i++){
 				const Message& m2 = s.derivative ? d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : refl->GetRepeatedMessage(*msg, fd1, i);
@@ -143,13 +144,29 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 					x = r2->GetDouble(m2, xfd);
 				}// if not time :(
 
-				fprintf(fp, "%.10lf %.10lf\n", x, y);
-			}// for
-		}// if repeated field
+				// start new series if needed
+				if(!polar && prev_x>-99 && abs(x-prev_x)>0.5){
+					super_buffer << "e\n";
+					plot_command << ", '-' with " << style << " title '" << title <<"'";
+				}
 
-		fprintf(fp, "e\n");
-		fflush(fp);
-	}// for
+				if(polar)
+					super_buffer << x/0.5*M_PI << " " << y << "\n";
+				else
+					super_buffer << x << " " << y << "\n";
+
+				prev_x = x;
+			}// for points
+		}// if repeated field
+		super_buffer << "e\n";
+	}// for series
+
+	// print all!
+	plot_command << "\n";
+	fprintf(fp, plot_command.str().c_str());
+	fprintf(fp, super_buffer.str().c_str());
+	fflush(fp);
+
 }
 
 void Gnuplot::processToFile(const std::string& file, const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time){

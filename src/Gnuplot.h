@@ -30,6 +30,7 @@ private:
 
 	std::string x_axis;
 	bool derivative_x;
+	bool polar;
 	std::vector<serie> series;
 public:
 	Gnuplot();
@@ -50,6 +51,12 @@ public:
 		return x_axis.empty();
 	}
 	std::string getXAxisVar() const;
+	bool getPolar() const {
+		return polar;
+	}
+	void setPolar(bool p){
+		polar = p;
+	}
 
 	void addVar(std::string var);
 	void eraseVar(int idx);

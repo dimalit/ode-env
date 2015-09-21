@@ -42,6 +42,9 @@ void E3ConservationAnalyzer::reset(){
 	states_count = 0;
 }
 void E3ConservationAnalyzer::processState(const OdeState* state, const OdeState* d_state, double time){
+	if(states_count > 0 && ::time(NULL)-last_update<2)
+		return;
+
 	const E3State* estate = dynamic_cast<const E3State*>(state);
 		assert(estate);
 
@@ -82,6 +85,7 @@ void E3ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 	entry_i3->set_text(buf.str());
 
 	++states_count;
+	last_update = ::time(NULL);
 }
 
 int E3ConservationAnalyzer::getStatesCount(){

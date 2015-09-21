@@ -23,6 +23,7 @@ public:
 private:
 	E3Config* config;
 	int states_count;
+	time_t last_update;
 
 	Gtk::TreeView *treeview1;
 	Glib::RefPtr<Gtk::ListStore> liststore1;

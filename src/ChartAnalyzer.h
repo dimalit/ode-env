@@ -39,7 +39,7 @@ public:
 	virtual int getStatesCount();
 	virtual ~ChartAnalyzer();
 
-	void addChart(std::vector<std::string> vars, std::string x_axis_var);
+	void addChart(std::vector<std::string> vars, std::string x_axis_var, bool polar);
 
 	static std::string getDisplayName(){
 		return "customizable chart";
