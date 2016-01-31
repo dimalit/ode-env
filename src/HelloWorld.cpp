@@ -67,7 +67,7 @@ HelloWorld::HelloWorld()
   b->get_widget("radio_steps", radio_steps);
 
   b->get_widget("entry_time", entry_time);
-  	  entry_time->set_text("1");
+  	  entry_time->set_text("0.25");
   b->get_widget("entry_steps", entry_steps);
   	  entry_steps->set_text("1");
   b->get_widget("label_time", label_time);

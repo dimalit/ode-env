@@ -119,6 +119,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 				assert(!d_fd1 || refl->FieldSize(*msg, fd1) == d_refl->FieldSize(*msg, d_fd1));
 
 			double prev_x = -100;
+			bool need_series_wrap = !getXAxisTime() && !polar && this->x_axis.find("ksi") != std::string::npos;
 
 			for(int i=0; i<n; i++){
 				const Message& m2 = s.derivative ? d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : refl->GetRepeatedMessage(*msg, fd1, i);
@@ -133,7 +134,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 				// set x to value of specific x variable if needed
 				if(!getXAxisTime()){
 					std::string xname = this->x_axis;
-					// remove all vefore dot
+					// remove all before dot
 					if(this->x_axis.find('.') != std::string::npos)
 						xname = x_axis.substr(x_axis.find('.')+1);
 
@@ -145,7 +146,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 				}// if not time :(
 
 				// start new series if needed
-				if(!polar && prev_x>-99 && abs(x-prev_x)>0.5){
+				if(need_series_wrap && prev_x>-99 && abs(x-prev_x)>0.5){
 					super_buffer << "e\n";
 					plot_command << ", '-' with " << style << " title '" << title <<"'";
 				}

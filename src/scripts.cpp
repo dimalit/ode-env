@@ -596,6 +596,9 @@ void as_in_book(){
 
 			solver->run(1000000, 100, true);
 
+			double prev_e = 0.0;
+			double prev_time = 0.0;
+
 			for(int i=0;;i++){
 				if(!solver->step())
 					break;
@@ -606,10 +609,20 @@ void as_in_book(){
 				chart_analyzer.processState(solver->getState(), solver->getDState(), time);
 				E_plot.processState(state_msg, dstate_msg, time);
 
+				double b = 0;
+				if(prev_e > 0.0){
+					double e = dynamic_cast<const E3State*>(solver->getState())->e();
+					b = pow(e/prev_e, 1.0/(time-prev_time));
+				}
+
 				double int1, int2, int3;
 				compute_integrals(pcfg, dynamic_cast<const E3State*>(solver->getState()), &int1, &int2, &int3);
-				fprintf(stderr, "%.10lf\t%.10lf\t%.10lf\n", int1, int2, int3);
+				fprintf(stderr, "%.10lf\t%.10lf\t%.10lf\t%.10lf\n", int1, int2, int3, b);
 
+				if(time-prev_time > 1.0){
+					prev_e = dynamic_cast<const E3State*>(solver->getState())->e();
+					prev_time = time;
+				}
 			}// infinite loop
 
 			delete solver;

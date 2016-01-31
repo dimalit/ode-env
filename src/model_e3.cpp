@@ -48,7 +48,7 @@ E3State::E3State(const E3Config* config){
 	int m = config->m();
 	for(int i=0; i<m; i++){
 		this->add_particles();
-		this->mutable_particles(i)->set_a(1.0);
+		this->mutable_particles(i)->set_a(0.5);
 		this->mutable_particles(i)->set_ksi(0.0);
 	}
 	set_e(0.01);
