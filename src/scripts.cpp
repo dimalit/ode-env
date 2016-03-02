@@ -435,8 +435,17 @@ void exp_r2e(){
 		E_plot.setStyle(Gnuplot::STYLE_LINES);
 
 	vector<string> models;
-	models.push_back("te");
+	//models.push_back("te");
 	models.push_back("tm");
+
+	vector<double> a0s;
+//	a0s.push_back(0.1);
+	a0s.push_back(0.5);
+	a0s.push_back(1.0);
+	a0s.push_back(1.79);
+	a0s.push_back(1.85);
+	a0s.push_back(3.0);
+	a0s.push_back(3.8);
 
 	pcfg->set_gamma_0_2(0);
 
@@ -444,14 +453,17 @@ void exp_r2e(){
 		string model = models[j];
 		scfg->set_model(model);
 
-		std::ostringstream fname_ostr;
-		fname_ostr << "r2e_" << model << ".csv";
-		string fname = fname_ostr.str();
-		std::ofstream csv(fname, ios::out | ios::binary);
-		csv.precision(10);
+		for(int k=0; k<a0s.size(); k++){
+			double a0 = a0s[k];
 
-		for(double r=0.05;r<5.06; r+=0.25){
-			pcfg->set_r_e(r);
+			std::ostringstream fname_ostr;
+			fname_ostr << "r2e_" << model << "_a0_" << a0 << ".csv";
+			string fname = fname_ostr.str();
+			std::ofstream csv(fname, ios::out | ios::binary);
+			csv.precision(10);
+
+			for(double r=0.05;r<10.06; r+=0.25){
+				pcfg->set_r_e(r);
 
 
 	////////////////////////////////////////////////////
@@ -459,7 +471,7 @@ void exp_r2e(){
 			E3State* init_state = dynamic_cast<E3State*>(inst_fact->createState(pcfg));
 			init_state->set_e(0.01);
 			init_state->set_phi(0);
-			init_state->set_a0(1.0);
+			init_state->set_a0(a0);
 			double eta0 = 0.0;
 			double right = 0.5, left = -0.5;
 				for(int i=0; i<pcfg->m(); i++){
@@ -481,7 +493,7 @@ void exp_r2e(){
 			const google::protobuf::Message *state_msg, *dstate_msg;
 
 			double time = 0.0;
-			solver->run(1000000, 120, true);
+			solver->run(1000000, 100, true);
 
 			for(int i=0;;i++){
 				if(!solver->step())
@@ -490,10 +502,10 @@ void exp_r2e(){
 				dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
 				time = solver->getTime();
 
-				if(i%10==0){
+//				if(i%10==0){
 					chart_analyzer.processState(solver->getState(), solver->getDState(), time);
 					E_plot.processState(state_msg, dstate_msg, time);
-				}
+//				}
 
 //				double int1, int2, int3;
 //				compute_integrals(pcfg, dynamic_cast<const E3State*>(solver->getState()), &int1, &int2, &int3);
@@ -519,7 +531,7 @@ void exp_r2e(){
 
 			csv << r << "\t" << max_E << "\t" << max_time << endl;
 			std::ostringstream imgname;
-			imgname << "r2e_" << model << "_r" << r << ".png";
+			imgname << "r2e_" << model << "_a0_" << a0 << "_r" << r << ".png";
 			E_plot.processToFile(imgname.str(), state_msg, dstate_msg, time);
 
 			delete solver;
@@ -527,6 +539,7 @@ void exp_r2e(){
 	////////////////////////////////////////////////////
 		}// for r
 		csv.close();
+		}// for a0
 	}// for models
 	delete scfg;
 	delete pcfg;

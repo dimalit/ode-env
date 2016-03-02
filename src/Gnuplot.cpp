@@ -64,7 +64,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 
 	if(polar){
 		plot_command << "set polar\n";
-//		plot_command << "set object circle at 0,0 size 1\n";
+//		plot_command << draw_bells(msg, desc, refl);
 	}
 	plot_command << "plot ";
 
@@ -81,7 +81,9 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 		string title = s.var_name;
 		if(s.derivative)
 			title += '\'';
-		plot_command << "'-' with " << style << " title '" << title <<"'";
+//		if(polar)
+//			plot_command << "0.5, ";
+		plot_command << "'-' with " << style << " title \"" << title <<"\"";
 
 		// simple field
 		if(s.var_name.find('.') == std::string::npos){
@@ -221,4 +223,18 @@ void Gnuplot::update_view(){
 //	fprintf(to_gnuplot, "set xrange [-0.25:-0.05] writeback\n");
 //	fprintf(to_gnuplot, "set yrange [0:0.01] writeback\n");
 	fflush(to_gnuplot);
+}
+
+std::string Gnuplot::draw_bells(const google::protobuf::Message* msg, const google::protobuf::Descriptor* desc, const google::protobuf::Reflection* refl){
+	std::stringstream plot_command;
+
+	const google::protobuf::FieldDescriptor *a0_fd = desc->FindFieldByName("a0");
+	double a0 = refl->GetDouble(*msg,a0_fd);
+	plot_command << "set object circle at 0,0 size "<< a0 <<"\n";
+
+	const google::protobuf::FieldDescriptor *phi_fd = desc->FindFieldByName("phi");
+	double phi = refl->GetDouble(*msg,phi_fd);
+
+	//plot_command << "set arrow 1 from " << a0*cos(phi) << "," << a0*sin(phi) << " to " << -a0*cos(phi) << "," << -a0*sin(phi) << "\n";
+	return plot_command.str();
 }

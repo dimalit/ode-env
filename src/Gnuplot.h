@@ -41,11 +41,13 @@ public:
 
 	void setXAxisTime(){
 		x_axis = "";
+		style = STYLE_LINES;
 	}
 	void setXAxisVar(std::string var){
 		derivative_x = var.size() > 0 && var[var.size()-1]=='\'';
 		std::string real_var = derivative_x ? var.substr(0, var.size()-1) : var;
 		x_axis = real_var;
+		style = STYLE_POINTS;
 	}
 	bool getXAxisTime() const {
 		return x_axis.empty();
@@ -100,6 +102,7 @@ public:
 private:
 	void update_view();
 	void printPlotCommand(FILE* fp, const google::protobuf::Message* state, const google::protobuf::Message* d_state = NULL, double time = 0.0);
+	std::string draw_bells(const google::protobuf::Message*, const google::protobuf::Descriptor*, const google::protobuf::Reflection*);
 };
 
 #endif /* GNUPLOT_H_ */

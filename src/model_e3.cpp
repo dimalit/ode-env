@@ -39,7 +39,7 @@ E3Config::E3Config(){
 }
 
 E3State::E3State(){
-	set_e(0.01);
+	set_e(0.001);
 	set_phi(0.0);
 	set_simulated(false);
 }
@@ -48,10 +48,10 @@ E3State::E3State(const E3Config* config){
 	int m = config->m();
 	for(int i=0; i<m; i++){
 		this->add_particles();
-		this->mutable_particles(i)->set_a(0.5);
+		this->mutable_particles(i)->set_a(0.1);
 		this->mutable_particles(i)->set_ksi(0.0);
 	}
-	set_e(0.01);
+	set_e(0.001);
 	set_phi(0.0);
 	set_simulated(false);
 }
