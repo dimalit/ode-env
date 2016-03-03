@@ -40,6 +40,7 @@ class E3State_Particles;
 class E3PetscSolverConfig;
 class E3Model;
 class E3Solution;
+class E3Special;
 
 enum E3PetscSolverConfig_Solver {
   E3PetscSolverConfig_Solver_rhs = 0,
@@ -788,6 +789,108 @@ class E3Solution : public ::google::protobuf::Message {
   void InitAsDefaultInstance();
   static E3Solution* default_instance_;
 };
+// -------------------------------------------------------------------
+
+class E3Special : public ::google::protobuf::Message {
+ public:
+  E3Special();
+  virtual ~E3Special();
+
+  E3Special(const E3Special& from);
+
+  inline E3Special& operator=(const E3Special& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const E3Special& default_instance();
+
+  void Swap(E3Special* other);
+
+  // implements Message ----------------------------------------------
+
+  E3Special* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const E3Special& from);
+  void MergeFrom(const E3Special& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional double e_2 = 1;
+  inline bool has_e_2() const;
+  inline void clear_e_2();
+  static const int kE2FieldNumber = 1;
+  inline double e_2() const;
+  inline void set_e_2(double value);
+
+  // optional double aver_a_2 = 2;
+  inline bool has_aver_a_2() const;
+  inline void clear_aver_a_2();
+  static const int kAverA2FieldNumber = 2;
+  inline double aver_a_2() const;
+  inline void set_aver_a_2(double value);
+
+  // optional double aver_eta = 3;
+  inline bool has_aver_eta() const;
+  inline void clear_aver_eta();
+  static const int kAverEtaFieldNumber = 3;
+  inline double aver_eta() const;
+  inline void set_aver_eta(double value);
+
+  // @@protoc_insertion_point(class_scope:pb.E3Special)
+ private:
+  inline void set_has_e_2();
+  inline void clear_has_e_2();
+  inline void set_has_aver_a_2();
+  inline void clear_has_aver_a_2();
+  inline void set_has_aver_eta();
+  inline void clear_has_aver_eta();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  double e_2_;
+  double aver_a_2_;
+  double aver_eta_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+
+  friend void  protobuf_AddDesc_model_5fe3_2eproto();
+  friend void protobuf_AssignDesc_model_5fe3_2eproto();
+  friend void protobuf_ShutdownFile_model_5fe3_2eproto();
+
+  void InitAsDefaultInstance();
+  static E3Special* default_instance_;
+};
 // ===================================================================
 
 
@@ -1495,6 +1598,76 @@ inline void E3Solution::set_allocated_d_state(::pb::E3State* d_state) {
   } else {
     clear_has_d_state();
   }
+}
+
+// -------------------------------------------------------------------
+
+// E3Special
+
+// optional double e_2 = 1;
+inline bool E3Special::has_e_2() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void E3Special::set_has_e_2() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void E3Special::clear_has_e_2() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void E3Special::clear_e_2() {
+  e_2_ = 0;
+  clear_has_e_2();
+}
+inline double E3Special::e_2() const {
+  return e_2_;
+}
+inline void E3Special::set_e_2(double value) {
+  set_has_e_2();
+  e_2_ = value;
+}
+
+// optional double aver_a_2 = 2;
+inline bool E3Special::has_aver_a_2() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void E3Special::set_has_aver_a_2() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void E3Special::clear_has_aver_a_2() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void E3Special::clear_aver_a_2() {
+  aver_a_2_ = 0;
+  clear_has_aver_a_2();
+}
+inline double E3Special::aver_a_2() const {
+  return aver_a_2_;
+}
+inline void E3Special::set_aver_a_2(double value) {
+  set_has_aver_a_2();
+  aver_a_2_ = value;
+}
+
+// optional double aver_eta = 3;
+inline bool E3Special::has_aver_eta() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void E3Special::set_has_aver_eta() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void E3Special::clear_has_aver_eta() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void E3Special::clear_aver_eta() {
+  aver_eta_ = 0;
+  clear_has_aver_eta();
+}
+inline double E3Special::aver_eta() const {
+  return aver_eta_;
+}
+inline void E3Special::set_aver_eta(double value) {
+  set_has_aver_eta();
+  aver_eta_ = value;
 }
 
 

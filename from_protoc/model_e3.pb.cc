@@ -39,6 +39,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* E3Solution_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   E3Solution_reflection_ = NULL;
+const ::google::protobuf::Descriptor* E3Special_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  E3Special_reflection_ = NULL;
 
 }  // namespace
 
@@ -159,6 +162,23 @@ void protobuf_AssignDesc_model_5fe3_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E3Solution));
+  E3Special_descriptor_ = file->message_type(5);
+  static const int E3Special_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3Special, e_2_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3Special, aver_a_2_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3Special, aver_eta_),
+  };
+  E3Special_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      E3Special_descriptor_,
+      E3Special::default_instance_,
+      E3Special_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3Special, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E3Special, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(E3Special));
 }
 
 namespace {
@@ -183,6 +203,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
     E3Model_descriptor_, &E3Model::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     E3Solution_descriptor_, &E3Solution::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    E3Special_descriptor_, &E3Special::default_instance());
 }
 
 }  // namespace
@@ -200,6 +222,8 @@ void protobuf_ShutdownFile_model_5fe3_2eproto() {
   delete E3Model_reflection_;
   delete E3Solution::default_instance_;
   delete E3Solution_reflection_;
+  delete E3Special::default_instance_;
+  delete E3Special_reflection_;
 }
 
 void protobuf_AddDesc_model_5fe3_2eproto() {
@@ -225,7 +249,9 @@ void protobuf_AddDesc_model_5fe3_2eproto() {
     "Config\022\032\n\005state\030\002 \002(\0132\013.pb.E3State\022(\n\007sc"
     "onfig\030\003 \002(\0132\027.pb.E3PetscSolverConfig\"F\n\n"
     "E3Solution\022\032\n\005state\030\001 \002(\0132\013.pb.E3State\022\034"
-    "\n\007d_state\030\002 \001(\0132\013.pb.E3State", 668);
+    "\n\007d_state\030\002 \001(\0132\013.pb.E3State\"<\n\tE3Specia"
+    "l\022\013\n\003e_2\030\001 \001(\001\022\020\n\010aver_a_2\030\002 \001(\001\022\020\n\010aver"
+    "_eta\030\003 \001(\001", 730);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e3.proto", &protobuf_RegisterTypes);
   E3Config::default_instance_ = new E3Config();
@@ -234,12 +260,14 @@ void protobuf_AddDesc_model_5fe3_2eproto() {
   E3PetscSolverConfig::default_instance_ = new E3PetscSolverConfig();
   E3Model::default_instance_ = new E3Model();
   E3Solution::default_instance_ = new E3Solution();
+  E3Special::default_instance_ = new E3Special();
   E3Config::default_instance_->InitAsDefaultInstance();
   E3State::default_instance_->InitAsDefaultInstance();
   E3State_Particles::default_instance_->InitAsDefaultInstance();
   E3PetscSolverConfig::default_instance_->InitAsDefaultInstance();
   E3Model::default_instance_->InitAsDefaultInstance();
   E3Solution::default_instance_->InitAsDefaultInstance();
+  E3Special::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_model_5fe3_2eproto);
 }
 
@@ -2319,6 +2347,288 @@ void E3Solution::Swap(E3Solution* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = E3Solution_descriptor_;
   metadata.reflection = E3Solution_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int E3Special::kE2FieldNumber;
+const int E3Special::kAverA2FieldNumber;
+const int E3Special::kAverEtaFieldNumber;
+#endif  // !_MSC_VER
+
+E3Special::E3Special()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void E3Special::InitAsDefaultInstance() {
+}
+
+E3Special::E3Special(const E3Special& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void E3Special::SharedCtor() {
+  _cached_size_ = 0;
+  e_2_ = 0;
+  aver_a_2_ = 0;
+  aver_eta_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+E3Special::~E3Special() {
+  SharedDtor();
+}
+
+void E3Special::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void E3Special::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* E3Special::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return E3Special_descriptor_;
+}
+
+const E3Special& E3Special::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_model_5fe3_2eproto();
+  return *default_instance_;
+}
+
+E3Special* E3Special::default_instance_ = NULL;
+
+E3Special* E3Special::New() const {
+  return new E3Special;
+}
+
+void E3Special::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    e_2_ = 0;
+    aver_a_2_ = 0;
+    aver_eta_ = 0;
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool E3Special::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional double e_2 = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &e_2_)));
+          set_has_e_2();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(17)) goto parse_aver_a_2;
+        break;
+      }
+
+      // optional double aver_a_2 = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+         parse_aver_a_2:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &aver_a_2_)));
+          set_has_aver_a_2();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(25)) goto parse_aver_eta;
+        break;
+      }
+
+      // optional double aver_eta = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+         parse_aver_eta:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &aver_eta_)));
+          set_has_aver_eta();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void E3Special::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // optional double e_2 = 1;
+  if (has_e_2()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(1, this->e_2(), output);
+  }
+
+  // optional double aver_a_2 = 2;
+  if (has_aver_a_2()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->aver_a_2(), output);
+  }
+
+  // optional double aver_eta = 3;
+  if (has_aver_eta()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->aver_eta(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* E3Special::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // optional double e_2 = 1;
+  if (has_e_2()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(1, this->e_2(), target);
+  }
+
+  // optional double aver_a_2 = 2;
+  if (has_aver_a_2()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(2, this->aver_a_2(), target);
+  }
+
+  // optional double aver_eta = 3;
+  if (has_aver_eta()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->aver_eta(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int E3Special::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional double e_2 = 1;
+    if (has_e_2()) {
+      total_size += 1 + 8;
+    }
+
+    // optional double aver_a_2 = 2;
+    if (has_aver_a_2()) {
+      total_size += 1 + 8;
+    }
+
+    // optional double aver_eta = 3;
+    if (has_aver_eta()) {
+      total_size += 1 + 8;
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void E3Special::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const E3Special* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const E3Special*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void E3Special::MergeFrom(const E3Special& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_e_2()) {
+      set_e_2(from.e_2());
+    }
+    if (from.has_aver_a_2()) {
+      set_aver_a_2(from.aver_a_2());
+    }
+    if (from.has_aver_eta()) {
+      set_aver_eta(from.aver_eta());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void E3Special::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void E3Special::CopyFrom(const E3Special& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool E3Special::IsInitialized() const {
+
+  return true;
+}
+
+void E3Special::Swap(E3Special* other) {
+  if (other != this) {
+    std::swap(e_2_, other->e_2_);
+    std::swap(aver_a_2_, other->aver_a_2_);
+    std::swap(aver_eta_, other->aver_eta_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata E3Special::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = E3Special_descriptor_;
+  metadata.reflection = E3Special_reflection_;
   return metadata;
 }
 

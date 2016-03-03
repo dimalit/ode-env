@@ -91,6 +91,8 @@ HelloWorld::HelloWorld()
 
   chart_analyzer = new ChartAnalyzer(config_widget->getConfig());
   chart_analyzer->processState(state_widget->getState(), state_widget->getDState(), 0.0);
+  pb::E3Special* spec_msg = new pb::E3Special();
+  chart_analyzer->addSpecial(spec_msg);
   vb->pack_start(*chart_analyzer, false, false);
 
   // signals //
@@ -126,6 +128,23 @@ void HelloWorld::on_state_changed()
 	analyzer_widget->loadConfig(config_widget->getConfig());
 	analyzer_widget->processState(state_widget->getState(), state_widget->getDState(), this->total_time);
 	chart_analyzer->processState(state_widget->getState(), state_widget->getDState(), this->total_time);
+
+	const E3State* estate = dynamic_cast<const E3State*>(state_widget->getState());
+	const E3Config* config = dynamic_cast<const E3Config*>(config_widget->getConfig());
+
+	// draw energies
+	double sum_a_2 = 0;
+	double sum_eta = 0;
+	for(int i=0; i<estate->particles_size(); i++){
+		E3State::Particles p = estate->particles(i);
+		sum_a_2 += p.a()*p.a();
+		sum_eta += p.eta();
+	}
+	pb::E3Special spec_msg;
+	spec_msg.set_e_2(estate->e()*estate->e());
+	spec_msg.set_aver_a_2(sum_a_2/estate->particles_size());
+	spec_msg.set_aver_eta(2.0/config->r_e()/config->m()*sum_eta);
+	chart_analyzer->processSpecial(&spec_msg, this->total_time);
 }
 
 const OdeConfig* HelloWorld::extract_config(){

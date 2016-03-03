@@ -11,6 +11,7 @@
 
 #define UI_FILE "e3_conservation.glade"
 
+// TODO: make Gnuplotting" functionality apart and use it to draw energy chars!
 E3ConservationAnalyzer::E3ConservationAnalyzer(const E3Config* config){
 	states_count = 0;
 

@@ -30,10 +30,12 @@ private:
 	Gtk::CheckButton *check_polar;
 	ChartAnalyzer* parent;
 
+	const google::protobuf::Message* msg;
 public:
-	ChartAddDialog(ChartAnalyzer* parent, const OdeState* state){
-		assert(parent && state);
+	ChartAddDialog(ChartAnalyzer* parent, const google::protobuf::Message* msg){
+		assert(parent && msg);
 		this->parent = parent;
+		this->msg = msg;
 		this->set_modal(true);
 
 		Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE);
@@ -68,7 +70,6 @@ public:
 		// now add state's variables to the table
 		store1->clear();
 		store2->clear();
-		const google::protobuf::Message* msg = dynamic_cast<const google::protobuf::Message*>(state);
 		const Descriptor* desc = msg->GetDescriptor();
 		const Reflection* refl = msg->GetReflection();
 
@@ -191,7 +192,7 @@ private:
 			return;
 		}
 
-		parent->addChart(vars, x_axis_var, polar);
+		parent->addChart(msg, vars, x_axis_var, polar);
 
 		this->hide();
 		delete this;
@@ -234,19 +235,30 @@ ChartAnalyzer::ChartAnalyzer(const OdeConfig* config) {
 	last_state = NULL;
 
 	btn_add.set_label("Add chart");
-	vbox.pack_end(btn_add);
+	vbox.pack_start(btn_add);
 	btn_add.signal_clicked().connect(sigc::mem_fun(*this, &ChartAnalyzer::on_add_clicked));
 
 	btn_reset.set_label("Reset");
-	vbox.pack_end(btn_reset);
+	vbox.pack_start(btn_reset);
 	btn_reset.signal_clicked().connect(sigc::mem_fun(*this, &ChartAnalyzer::reset));
 
 	this->add(vbox);
 }
 
+void ChartAnalyzer::addSpecial(const google::protobuf::Message* msg){
+	assert(!this->special_msg);
+
+	this->special_msg = msg;
+
+	btn_add_special.set_label("Add special");
+	vbox.pack_end(btn_add_special);
+	btn_add_special.signal_clicked().connect(sigc::mem_fun(*this, &ChartAnalyzer::on_add_special_clicked));
+}
+
 ChartAnalyzer::~ChartAnalyzer() {
 	for(int i=0; i<plots.size(); i++)
 		delete plots[i];
+	delete special_msg;
 }
 
 int ChartAnalyzer::getStatesCount(){
@@ -269,8 +281,17 @@ void ChartAnalyzer::processState(const OdeState* state, const OdeState* d_state,
 	const google::protobuf::Message* d_msg = dynamic_cast<const google::protobuf::Message*>(d_state);
 		assert(d_msg);
 
-	for(int i=0; i<plots.size(); i++)
-		plots[i]->processState(msg, d_msg, time);
+	for(int i=0; i<plots.size(); i++){
+		if(!plot_special_flags[i])
+			plots[i]->processState(msg, d_msg, time);
+	}
+}
+
+void ChartAnalyzer::processSpecial(const google::protobuf::Message* msg, double time){
+	for(int i=0; i<plots.size(); i++){
+		if(plot_special_flags[i])
+			plots[i]->processState(msg, NULL, time);
+	}
 }
 
 void ChartAnalyzer::on_save_clicked(Gnuplot* ptr){
@@ -288,8 +309,14 @@ void ChartAnalyzer::on_save_clicked(Gnuplot* ptr){
 }
 
 void ChartAnalyzer::on_add_clicked(){
-	assert(last_state);
-	(new ChartAddDialog(this, last_state))->show_all();
+	const google::protobuf::Message* msg = dynamic_cast<const google::protobuf::Message*>(last_state);
+	assert(msg);
+	(new ChartAddDialog(this, msg))->show_all();
+}
+
+void ChartAnalyzer::on_add_special_clicked(){
+	assert(special_msg);
+	(new ChartAddDialog(this, special_msg))->show_all();
 }
 
 std::string trim(const std::string& str,
@@ -305,7 +332,7 @@ std::string trim(const std::string& str,
     return str.substr(strBegin, strRange);
 }
 
-void ChartAnalyzer::addChart(std::vector<std::string> vars, std::string x_axis_var, bool polar){
+void ChartAnalyzer::addChart(const google::protobuf::Message* msg, std::vector<std::string> vars, std::string x_axis_var, bool polar){
 	std::ostringstream full_title;
 
 	Gnuplot* p = new Gnuplot();
@@ -328,6 +355,7 @@ void ChartAnalyzer::addChart(std::vector<std::string> vars, std::string x_axis_v
 
 	p->setTitle(trim(full_title.str()));
 	plots.push_back(p);	// XXX: not very copyable - but with no copies it will work...
+	plot_special_flags.push_back(msg==this->special_msg);
 
 	// add widget for it //
 	Gtk::Button* del = new Gtk::Button("del");
@@ -350,7 +378,7 @@ void ChartAnalyzer::addChart(std::vector<std::string> vars, std::string x_axis_v
 	vbox.pack_start(*Gtk::manage(hbox), false, false);
 	hbox->show_all();
 
-	p->processState(dynamic_cast<const Message*>(this->last_state));
+	p->processState(msg);
 }
 
 void ChartAnalyzer::on_del_chart_clicked(Gtk::Widget* w, const Gnuplot* ptr){
