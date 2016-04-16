@@ -186,8 +186,7 @@ void HelloWorld::on_reset_clicked()
 {
 	assert(!computing);
 
-	if(saved_state.get())
-		this->state_widget->loadState(saved_state.get(), saved_dstate.get());
+	this->state_widget->generateState();
 
 	total_steps = 0;
 	total_time = 0.0;
@@ -251,11 +250,6 @@ void HelloWorld::run_computing(bool use_step){
 
 void HelloWorld::run_stepped_cb(){
 
-	if(total_steps == 0){			// save original state before
-		this->saved_state = std::auto_ptr<OdeState>(state_widget->getState()->clone());
-		this->saved_dstate = std::auto_ptr<OdeState>(state_widget->getDState()->clone());
-		last_refresh_time = 0.0;
-	}
 	total_steps += solver->getSteps() - run_steps;
 	total_time  += solver->getTime()  - run_time;
 	run_steps = solver->getSteps();

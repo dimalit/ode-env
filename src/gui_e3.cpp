@@ -111,18 +111,20 @@ const OdeConfig* E3ConfigWidget::getConfig() {
 }
 
 E3StateWidget::E3StateWidget(const E3Config* _config, const E3State* _state){
+	this->state = NULL;
+	this->d_state = NULL;
+
 	if(_config)
 		this->config = new E3Config(*_config);
 	else
 		this->config = new E3Config();
 
-	if(_state)
+	if(_state){
 		this->state = new E3State(*_state);
-	else
-		// TODO: may be state should remember its config?!
-		this->state = new E3State(this->config);
-
-	this->d_state = new E3State();
+		this->d_state = new E3State();
+	}
+	else{}//NULL
+	// TODO: may be state should remember its config?!
 
 	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_STATE);
 
@@ -132,19 +134,35 @@ E3StateWidget::E3StateWidget(const E3Config* _config, const E3State* _state){
 	b->get_widget("entry_e", entry_e);
 	b->get_widget("entry_phi", entry_phi);
 	b->get_widget("entry_a", entry_a);
+	b->get_widget("entry_a2", entry_a2);
+
+	b->get_widget("entry_eta", entry_eta);
+	b->get_widget("entry_eta2", entry_eta2);
+	b->get_widget("entry_n1", entry_n1);
 
 	b->get_widget("button_apply", button_apply);
 
 	this->add(*root);
 
-	state_to_widget();
-	if(!this->state->simulated())
-		generateState();
+	if(this->state)
+		state_to_widget();
+
+	entry_e->set_text("0.001");
+	entry_phi->set_text("0.0");
+	entry_a->set_text("1.0");
+	entry_a2->set_text("0.01");
+	entry_eta->set_text("0.0");
+	entry_eta2->set_text("0.0");
+	entry_n1->set_text("1.0");
 
 	// signals
 	entry_e->signal_changed().connect(sigc::mem_fun(*this, &E3StateWidget::edit_anything_cb));
 	entry_phi->signal_changed().connect(sigc::mem_fun(*this, &E3StateWidget::edit_anything_cb));
 	entry_a->signal_changed().connect(sigc::mem_fun(*this, &E3StateWidget::edit_anything_cb));
+	entry_a2->signal_changed().connect(sigc::mem_fun(*this, &E3StateWidget::edit_anything_cb));
+	entry_eta->signal_changed().connect(sigc::mem_fun(*this, &E3StateWidget::edit_anything_cb));
+	entry_eta2->signal_changed().connect(sigc::mem_fun(*this, &E3StateWidget::edit_anything_cb));
+	entry_n1->signal_changed().connect(sigc::mem_fun(*this, &E3StateWidget::edit_anything_cb));
 
 	button_apply->signal_clicked().connect(sigc::mem_fun(*this, &E3StateWidget::on_apply_cb));
 }
@@ -153,11 +171,11 @@ E3StateWidget::~E3StateWidget(){
 	// XXX where are deletes?
 }
 
-void E3StateWidget::widget_to_state(){
-	if(!state->simulated()){
-		generateState();
-	}
-}
+//void E3StateWidget::widget_to_state(){
+//	if(!state->simulated()){
+//		generateState();
+//	}
+//}
 void E3StateWidget::state_to_widget(){
 	std::ostringstream buf;
 
@@ -169,14 +187,30 @@ void E3StateWidget::state_to_widget(){
 	buf << state->phi();
 	entry_phi->set_text(buf.str());
 
-	if(state->simulated()){
-		entry_a->set_text("");
-	}
-	else{
-		buf.str("");
-		buf << state->particles(0).a();
-		entry_a->set_text(buf.str());
-	}
+//	if(state->simulated()){
+//		entry_a->set_text("");
+//		entry_a2->set_text("");
+//		entry_eta->set_text("");
+//		entry_eta2->set_text("");
+//		entry_n1->set_text("");
+//	}
+//	else{
+//		buf.str("");
+//		buf << state->particles(0).a();
+//		entry_a->set_text(buf.str());
+//
+//		buf.str("");
+//		buf << state->particles(state->particles_size()-1).a();
+//		entry_a2->set_text(buf.str());
+//
+//		buf.str("");
+//		buf << state->particles(0).eta();
+//		entry_eta->set_text(buf.str());
+//
+//		buf.str("");
+//		buf << state->particles(state->particles_size()-1).eta();
+//		entry_eta2->set_text(buf.str());
+//	}
 }
 
 void E3StateWidget::edit_anything_cb(){
@@ -184,7 +218,6 @@ void E3StateWidget::edit_anything_cb(){
 }
 void E3StateWidget::on_apply_cb(){
 	generateState();
-	m_signal_changed.emit();
 }
 
 
@@ -195,12 +228,9 @@ void E3StateWidget::loadConfig(const OdeConfig* cfg){
 	this->config = new E3Config(*ecfg);
 
 	delete this->state;
-	this->state = new E3State(ecfg);
+	this->state = NULL;
 	delete this->d_state;
-	this->d_state = new E3State();
-
-	state_to_widget();
-	widget_to_state();
+	this->d_state = NULL;
 
 	m_signal_changed.emit();
 }
@@ -219,29 +249,44 @@ void E3StateWidget::loadState(const OdeState* state, const OdeState* d_state){
 	this->d_state = new E3State(*d_estate);
 
 	state_to_widget();
-	widget_to_state();
 
 	m_signal_changed.emit();
 }
 const OdeState* E3StateWidget::getState(){
-	widget_to_state();
+	assert(config);
+	if(state==NULL){
+		state = new E3State(config);
+		d_state = new E3State(config);
+		generateState(false);
+	}
 	return state;
 }
 
 const OdeState* E3StateWidget::getDState(){
+	assert(config);
+	if(state==NULL){
+		state = new E3State(config);
+		d_state = new E3State(config);
+		generateState(false);
+	}
 	return d_state;
 }
 
-void E3StateWidget::generateState(){
+void E3StateWidget::generateState(bool emit){
 	double e = atof(entry_e->get_text().c_str());
 	double phi = atof(entry_phi->get_text().c_str());
 	double a = atof(entry_a->get_text().c_str());
+	double a2 = atof(entry_a2->get_text().c_str());
+	double eta = atof(entry_eta->get_text().c_str());
+	double eta2 = atof(entry_eta2->get_text().c_str());
+	double n1 = atof(entry_n1->get_text().c_str());
 
-	bool use_rand = false;
+	bool use_rand = true;
 	double right = 0.5;
 	double left = -0.5;
 
 	int m = config->m();
+	int m1 = config->m()*n1;
 	for(int i=0; i<m; i++){
 		double ksi;
 		if(use_rand)
@@ -250,8 +295,16 @@ void E3StateWidget::generateState(){
 			ksi = i / (double)m * (right-left) + left;
 
 		pb::E3State::Particles p;
-		p.set_ksi(ksi); p.set_a(a);
-		p.set_eta(0.0);
+		p.set_ksi(ksi);
+
+		if(i<m1){
+			p.set_a(a);
+			p.set_eta(eta);
+		}
+		else{
+			p.set_a(a2);
+			p.set_eta(eta2);
+		}
 
 		// XXX: special case for 1 particle!
 		if(m==1)
@@ -269,6 +322,9 @@ void E3StateWidget::generateState(){
 	state->set_phi(phi);
 	state->set_a0(a);
 	state->set_simulated(false);
+
+	if(emit)
+		m_signal_changed.emit();
 }
 
 E3PetscSolverConfigWidget::E3PetscSolverConfigWidget(const E3PetscSolverConfig* config){

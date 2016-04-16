@@ -75,8 +75,6 @@ private:
   void run_stepped_cb();
   void stop_computing();
 
-  std::auto_ptr<OdeState> saved_state, saved_dstate;			// for reset
-
   // Signal handlers:
   void on_config_changed();
   void on_state_changed();

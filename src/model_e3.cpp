@@ -29,12 +29,12 @@ void parse_with_prefix(google::protobuf::Message& msg, FILE* fp){
 }
 
 E3Config::E3Config(){
-	set_m(240);
+	set_m(1000);
 	set_n(1.0);
 	set_theta_e(0);
 	set_gamma_0_2(0.0);
 	set_delta_e(0);
-	set_r_e(0.05);
+	set_r_e(0.0);
 }
 
 E3State::E3State(){
@@ -47,7 +47,7 @@ E3State::E3State(const E3Config* config){
 	int m = config->m();
 	for(int i=0; i<m; i++){
 		this->add_particles();
-		this->mutable_particles(i)->set_a(0.1);
+		this->mutable_particles(i)->set_a(1);
 		this->mutable_particles(i)->set_ksi(0.0);
 	}
 	set_e(0.001);

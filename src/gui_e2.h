@@ -69,7 +69,7 @@ public:
 	virtual const OdeState* getDState();
 	virtual void loadConfig(const OdeConfig* config);
 	virtual const OdeConfig* getConfig();
-	virtual void generateState();
+	virtual void generateState(bool emit=true);
 
 private:
 	void widget_to_state();

@@ -220,7 +220,7 @@ const OdeState* E2StateWidget::getDState(){
 	return d_state;
 }
 
-void E2StateWidget::generateState(){
+void E2StateWidget::generateState(bool emit){
 	double left = atof(entry_left->get_text().c_str());
 	double right = atof(entry_right->get_text().c_str());
 

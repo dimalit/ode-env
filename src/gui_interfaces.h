@@ -31,7 +31,7 @@ public:
 	virtual const OdeState* getDState() = 0;
 	virtual void loadConfig(const OdeConfig* config) = 0;
 	virtual const OdeConfig* getConfig() = 0;
-	virtual void generateState() = 0;
+	virtual void generateState(bool emit=true) = 0;
 	sigc::signal<void> signal_changed(){
 		return m_signal_changed;
 	}

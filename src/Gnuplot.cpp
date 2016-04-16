@@ -120,7 +120,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 				assert(!d_fd1 || refl->FieldSize(*msg, fd1) == d_refl->FieldSize(*msg, d_fd1));
 
 			double prev_x = -100;
-			bool need_series_wrap = !getXAxisTime() && !polar && this->x_axis.find("ksi") != std::string::npos;
+			bool need_series_wrap = false;//!!getXAxisTime() && !polar && this->x_axis.find("ksi") != std::string::npos;
 
 			for(int i=0; i<n; i++){
 				const Message& m2 = s.derivative ? d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : refl->GetRepeatedMessage(*msg, fd1, i);
