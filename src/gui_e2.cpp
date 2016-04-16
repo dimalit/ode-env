@@ -7,9 +7,8 @@
 
 #include "gui_e2.h"
 
-#include "rpc.h"
-
 #include <gtkmm/builder.h>
+#include "rpc.h"
 
 #define UI_FILE_CONF "e2_config.glade"
 #define UI_FILE_STATE "e2_state.glade"

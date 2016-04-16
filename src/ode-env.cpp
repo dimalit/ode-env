@@ -1,7 +1,7 @@
 #include "HelloWorld.h"
-
 #include "model_e1.h"
 
+#include <goffice/goffice.h>
 #include <gtkmm/main.h>
 
 extern void exp_6_images();

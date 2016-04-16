@@ -7,10 +7,9 @@
 
 #include "analyzers_e2.h"
 
-#include "rpc.h"
-
 #include <cassert>
 #include <cstdlib>
+#include "rpc.h"
 
 E2FieldAnalyzer::E2FieldAnalyzer(const E2Config* config){
 	states_count = 0;

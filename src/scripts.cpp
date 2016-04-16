@@ -8,6 +8,7 @@
 #include "model_e3.h"
 #include "Gnuplot.h"
 #include "ChartAnalyzer.h"
+#include "MaxDetector.h"
 
 #include <gtkmm/window.h>
 #include <string>
@@ -420,8 +421,8 @@ void exp_r2e(){
 		pcfg->set_n(1.0);
 	E3PetscSolverConfig* scfg = dynamic_cast<E3PetscSolverConfig*>(solver_fact->createSolverConfg());
 		scfg->set_init_step(0.01);
-		scfg->set_atol(1e-6);
-		scfg->set_rtol(1e-6);
+		scfg->set_atol(1e-10);
+		scfg->set_rtol(1e-10);
 		scfg->set_solver(E3PetscSolverConfig::rhs);
 
 	ChartAnalyzer chart_analyzer(pcfg);
@@ -434,18 +435,26 @@ void exp_r2e(){
 		E_plot.setXAxisTime();
 		E_plot.setStyle(Gnuplot::STYLE_LINES);
 
+	Gnuplot a_plot;
+		a_plot.addVar("particles.a");
+		a_plot.setXAxisVar("particles.ksi");
+		a_plot.setPolar(true);
+
 	vector<string> models;
 	//models.push_back("te");
 	models.push_back("tm");
 
 	vector<double> a0s;
 //	a0s.push_back(0.1);
-	a0s.push_back(0.5);
-	a0s.push_back(1.0);
-	a0s.push_back(1.79);
-	a0s.push_back(1.85);
-	a0s.push_back(3.0);
-	a0s.push_back(3.8);
+//	a0s.push_back(0.3);
+	a0s.push_back(0.6);
+//	a0s.push_back(1.0);
+//	a0s.push_back(1.79);
+//	a0s.push_back(1.85);
+//	a0s.push_back(2.0);
+//	a0s.push_back(2.5);
+//	a0s.push_back(3.0);
+	a0s.push_back(3.5);
 
 	pcfg->set_gamma_0_2(0);
 
@@ -462,7 +471,7 @@ void exp_r2e(){
 			std::ofstream csv(fname, ios::out | ios::binary);
 			csv.precision(10);
 
-			for(double r=0.05;r<10.06; r+=0.25){
+			for(double r=0.0002;r<17.0; r*=2){
 				pcfg->set_r_e(r);
 
 
@@ -484,6 +493,7 @@ void exp_r2e(){
 			E3PetscSolver* solver = dynamic_cast<E3PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
 
 			E_plot.reset();
+			a_plot.reset();
 
 			int dE = 0;
 			int prev_dE = 0;
@@ -493,7 +503,10 @@ void exp_r2e(){
 			const google::protobuf::Message *state_msg, *dstate_msg;
 
 			double time = 0.0;
-			solver->run(1000000, 100, true);
+			solver->run(1000000, 1000, true);
+
+			MaxDetector d1, d2;
+			d2.push(0.0);
 
 			for(int i=0;;i++){
 				if(!solver->step())
@@ -502,20 +515,25 @@ void exp_r2e(){
 				dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
 				time = solver->getTime();
 
-//				if(i%10==0){
+				if(i%10==0){
 					chart_analyzer.processState(solver->getState(), solver->getDState(), time);
 					E_plot.processState(state_msg, dstate_msg, time);
-//				}
+					a_plot.processState(state_msg, dstate_msg, time);
+				}
 
 //				double int1, int2, int3;
 //				compute_integrals(pcfg, dynamic_cast<const E3State*>(solver->getState()), &int1, &int2, &int3);
 
 				e = dynamic_cast<const E3State*>(solver->getState())->e();
 
-				if(max_E < e){
-					max_E=e;
-					max_time = time;
-				}
+				if(d1.push(e) && d2.push(d1.get(1)))
+						break;
+				// if almost equal
+				if(d2.getSize()==3 && abs(d2.get(2)/d2.get(1)-1) < 0.05)
+					break;
+				// 4 decreasing
+				if(d2.getProcessed() >= 4 && d2.isDecreasing())
+					break;
 //					if(i!=0)
 //						dE = dynamic_cast<const E3State*>(solver->getDState())->e() > 0 ? 1 : -1;
 //
@@ -529,7 +547,7 @@ void exp_r2e(){
 //							prev_dE = dE;
 			}// infinite loop
 
-			csv << r << "\t" << max_E << "\t" << max_time << endl;
+			csv << r << "\t" << d2.get(1) << endl;
 			std::ostringstream imgname;
 			imgname << "r2e_" << model << "_a0_" << a0 << "_r" << r << ".png";
 			E_plot.processToFile(imgname.str(), state_msg, dstate_msg, time);

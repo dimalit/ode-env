@@ -35,6 +35,7 @@
     </child>
     <child>
       <object class="GtkEntry" id="entry_time">
+        <property name="width_request">30</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="invisible_char">•</property>
@@ -51,6 +52,7 @@
     </child>
     <child>
       <object class="GtkEntry" id="entry_steps">
+        <property name="width_request">30</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="invisible_char">•</property>

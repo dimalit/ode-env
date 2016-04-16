@@ -233,6 +233,7 @@ private:
 ChartAnalyzer::ChartAnalyzer(const OdeConfig* config) {
 	states_count = 0;
 	last_state = NULL;
+	special_msg = NULL;
 
 	btn_add.set_label("Add chart");
 	vbox.pack_start(btn_add);

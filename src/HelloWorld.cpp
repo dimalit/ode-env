@@ -144,6 +144,7 @@ void HelloWorld::on_state_changed()
 	spec_msg.set_e_2(estate->e()*estate->e());
 	spec_msg.set_aver_a_2(sum_a_2/estate->particles_size());
 	spec_msg.set_aver_eta(2.0/config->r_e()/config->m()*sum_eta);
+	spec_msg.set_int_e_a(estate->e()*estate->e()+1.0/config->n()/estate->particles_size()*sum_a_2);
 	chart_analyzer->processSpecial(&spec_msg, this->total_time);
 }
 

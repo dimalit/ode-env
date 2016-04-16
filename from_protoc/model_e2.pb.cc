@@ -220,6 +220,7 @@ const int E2Config::kFFieldNumber;
 E2Config::E2Config()
   : ::google::protobuf::Message() {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:pb.E2Config)
 }
 
 void E2Config::InitAsDefaultInstance() {
@@ -229,6 +230,7 @@ E2Config::E2Config(const E2Config& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:pb.E2Config)
 }
 
 void E2Config::SharedCtor() {
@@ -241,6 +243,7 @@ void E2Config::SharedCtor() {
 }
 
 E2Config::~E2Config() {
+  // @@protoc_insertion_point(destructor:pb.E2Config)
   SharedDtor();
 }
 
@@ -271,32 +274,44 @@ E2Config* E2Config::New() const {
 }
 
 void E2Config::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    n_ = 0u;
-    a_ = 0;
-    delta_ = 0;
-    f_ = 0;
-  }
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<E2Config*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  ZR_(a_, n_);
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
 
 bool E2Config::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:pb.E2Config)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // required uint32 N = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &n_)));
           set_has_n();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(17)) goto parse_A;
         break;
@@ -304,15 +319,14 @@ bool E2Config::MergePartialFromCodedStream(
 
       // optional double A = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+        if (tag == 17) {
          parse_A:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, &a_)));
           set_has_a();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(25)) goto parse_delta;
         break;
@@ -320,15 +334,14 @@ bool E2Config::MergePartialFromCodedStream(
 
       // optional double delta = 3;
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+        if (tag == 25) {
          parse_delta:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, &delta_)));
           set_has_delta();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(33)) goto parse_f;
         break;
@@ -336,25 +349,25 @@ bool E2Config::MergePartialFromCodedStream(
 
       // optional double f = 4;
       case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+        if (tag == 33) {
          parse_f:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, &f_)));
           set_has_f();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -362,12 +375,18 @@ bool E2Config::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:pb.E2Config)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:pb.E2Config)
+  return false;
 #undef DO_
 }
 
 void E2Config::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:pb.E2Config)
   // required uint32 N = 1;
   if (has_n()) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->n(), output);
@@ -392,10 +411,12 @@ void E2Config::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:pb.E2Config)
 }
 
 ::google::protobuf::uint8* E2Config::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:pb.E2Config)
   // required uint32 N = 1;
   if (has_n()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->n(), target);
@@ -420,6 +441,7 @@ void E2Config::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:pb.E2Config)
   return target;
 }
 
@@ -541,6 +563,7 @@ const int E2State_Particles::kVFieldNumber;
 E2State_Particles::E2State_Particles()
   : ::google::protobuf::Message() {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:pb.E2State.Particles)
 }
 
 void E2State_Particles::InitAsDefaultInstance() {
@@ -550,6 +573,7 @@ E2State_Particles::E2State_Particles(const E2State_Particles& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:pb.E2State.Particles)
 }
 
 void E2State_Particles::SharedCtor() {
@@ -560,6 +584,7 @@ void E2State_Particles::SharedCtor() {
 }
 
 E2State_Particles::~E2State_Particles() {
+  // @@protoc_insertion_point(destructor:pb.E2State.Particles)
   SharedDtor();
 }
 
@@ -590,30 +615,44 @@ E2State_Particles* E2State_Particles::New() const {
 }
 
 void E2State_Particles::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    ksi_ = 0;
-    v_ = 0;
-  }
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<E2State_Particles*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  ZR_(ksi_, v_);
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
 
 bool E2State_Particles::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:pb.E2State.Particles)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // required double ksi = 3;
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+        if (tag == 25) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, &ksi_)));
           set_has_ksi();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(33)) goto parse_v;
         break;
@@ -621,25 +660,25 @@ bool E2State_Particles::MergePartialFromCodedStream(
 
       // required double v = 4;
       case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+        if (tag == 33) {
          parse_v:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, &v_)));
           set_has_v();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -647,12 +686,18 @@ bool E2State_Particles::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:pb.E2State.Particles)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:pb.E2State.Particles)
+  return false;
 #undef DO_
 }
 
 void E2State_Particles::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:pb.E2State.Particles)
   // required double ksi = 3;
   if (has_ksi()) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->ksi(), output);
@@ -667,10 +712,12 @@ void E2State_Particles::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:pb.E2State.Particles)
 }
 
 ::google::protobuf::uint8* E2State_Particles::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:pb.E2State.Particles)
   // required double ksi = 3;
   if (has_ksi()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->ksi(), target);
@@ -685,6 +732,7 @@ void E2State_Particles::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:pb.E2State.Particles)
   return target;
 }
 
@@ -786,6 +834,7 @@ const int E2State::kParticlesFieldNumber;
 E2State::E2State()
   : ::google::protobuf::Message() {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:pb.E2State)
 }
 
 void E2State::InitAsDefaultInstance() {
@@ -795,6 +844,7 @@ E2State::E2State(const E2State& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:pb.E2State)
 }
 
 void E2State::SharedCtor() {
@@ -804,6 +854,7 @@ void E2State::SharedCtor() {
 }
 
 E2State::~E2State() {
+  // @@protoc_insertion_point(destructor:pb.E2State)
   SharedDtor();
 }
 
@@ -834,9 +885,7 @@ E2State* E2State::New() const {
 }
 
 void E2State::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    simulated_ = false;
-  }
+  simulated_ = false;
   particles_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -844,20 +893,23 @@ void E2State::Clear() {
 
 bool E2State::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:pb.E2State)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional bool simulated = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
                  input, &simulated_)));
           set_has_simulated();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(19)) goto parse_particles;
         break;
@@ -865,24 +917,24 @@ bool E2State::MergePartialFromCodedStream(
 
       // repeated group Particles = 2 {
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_START_GROUP) {
+        if (tag == 19) {
          parse_particles:
           DO_(::google::protobuf::internal::WireFormatLite::ReadGroupNoVirtual(
                 2, input, add_particles()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(19)) goto parse_particles;
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -890,12 +942,18 @@ bool E2State::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:pb.E2State)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:pb.E2State)
+  return false;
 #undef DO_
 }
 
 void E2State::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:pb.E2State)
   // optional bool simulated = 1;
   if (has_simulated()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->simulated(), output);
@@ -911,10 +969,12 @@ void E2State::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:pb.E2State)
 }
 
 ::google::protobuf::uint8* E2State::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:pb.E2State)
   // optional bool simulated = 1;
   if (has_simulated()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->simulated(), target);
@@ -931,6 +991,7 @@ void E2State::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:pb.E2State)
   return target;
 }
 
@@ -1000,9 +1061,7 @@ void E2State::CopyFrom(const E2State& from) {
 
 bool E2State::IsInitialized() const {
 
-  for (int i = 0; i < particles_size(); i++) {
-    if (!this->particles(i).IsInitialized()) return false;
-  }
+  if (!::google::protobuf::internal::AllAreInitialized(this->particles())) return false;
   return true;
 }
 
@@ -1035,6 +1094,7 @@ const int E2PetscSolverConfig::kInitStepFieldNumber;
 E2PetscSolverConfig::E2PetscSolverConfig()
   : ::google::protobuf::Message() {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:pb.E2PetscSolverConfig)
 }
 
 void E2PetscSolverConfig::InitAsDefaultInstance() {
@@ -1044,6 +1104,7 @@ E2PetscSolverConfig::E2PetscSolverConfig(const E2PetscSolverConfig& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:pb.E2PetscSolverConfig)
 }
 
 void E2PetscSolverConfig::SharedCtor() {
@@ -1054,6 +1115,7 @@ void E2PetscSolverConfig::SharedCtor() {
 }
 
 E2PetscSolverConfig::~E2PetscSolverConfig() {
+  // @@protoc_insertion_point(destructor:pb.E2PetscSolverConfig)
   SharedDtor();
 }
 
@@ -1084,30 +1146,44 @@ E2PetscSolverConfig* E2PetscSolverConfig::New() const {
 }
 
 void E2PetscSolverConfig::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    tolerance_ = 0;
-    init_step_ = 0;
-  }
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<E2PetscSolverConfig*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  ZR_(tolerance_, init_step_);
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
 
 bool E2PetscSolverConfig::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:pb.E2PetscSolverConfig)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // optional double tolerance = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+        if (tag == 9) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, &tolerance_)));
           set_has_tolerance();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(17)) goto parse_init_step;
         break;
@@ -1115,25 +1191,25 @@ bool E2PetscSolverConfig::MergePartialFromCodedStream(
 
       // optional double init_step = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+        if (tag == 17) {
          parse_init_step:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, &init_step_)));
           set_has_init_step();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -1141,12 +1217,18 @@ bool E2PetscSolverConfig::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:pb.E2PetscSolverConfig)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:pb.E2PetscSolverConfig)
+  return false;
 #undef DO_
 }
 
 void E2PetscSolverConfig::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:pb.E2PetscSolverConfig)
   // optional double tolerance = 1;
   if (has_tolerance()) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(1, this->tolerance(), output);
@@ -1161,10 +1243,12 @@ void E2PetscSolverConfig::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:pb.E2PetscSolverConfig)
 }
 
 ::google::protobuf::uint8* E2PetscSolverConfig::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:pb.E2PetscSolverConfig)
   // optional double tolerance = 1;
   if (has_tolerance()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(1, this->tolerance(), target);
@@ -1179,6 +1263,7 @@ void E2PetscSolverConfig::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:pb.E2PetscSolverConfig)
   return target;
 }
 
@@ -1282,6 +1367,7 @@ const int E2Model::kSconfigFieldNumber;
 E2Model::E2Model()
   : ::google::protobuf::Message() {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:pb.E2Model)
 }
 
 void E2Model::InitAsDefaultInstance() {
@@ -1294,6 +1380,7 @@ E2Model::E2Model(const E2Model& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:pb.E2Model)
 }
 
 void E2Model::SharedCtor() {
@@ -1307,6 +1394,7 @@ void E2Model::SharedCtor() {
 }
 
 E2Model::~E2Model() {
+  // @@protoc_insertion_point(destructor:pb.E2Model)
   SharedDtor();
 }
 
@@ -1340,7 +1428,7 @@ E2Model* E2Model::New() const {
 }
 
 void E2Model::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+  if (_has_bits_[0 / 32] & 31) {
     time_ = 0;
     steps_ = 0u;
     if (has_pconfig()) {
@@ -1359,18 +1447,21 @@ void E2Model::Clear() {
 
 bool E2Model::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:pb.E2Model)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // required .pb.E2Config pconfig = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 10) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_pconfig()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(18)) goto parse_state;
         break;
@@ -1378,13 +1469,12 @@ bool E2Model::MergePartialFromCodedStream(
 
       // required .pb.E2State state = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 18) {
          parse_state:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_state()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(26)) goto parse_sconfig;
         break;
@@ -1392,13 +1482,12 @@ bool E2Model::MergePartialFromCodedStream(
 
       // required .pb.E2PetscSolverConfig sconfig = 3;
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 26) {
          parse_sconfig:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_sconfig()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(33)) goto parse_time;
         break;
@@ -1406,15 +1495,14 @@ bool E2Model::MergePartialFromCodedStream(
 
       // required double time = 4;
       case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+        if (tag == 33) {
          parse_time:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, &time_)));
           set_has_time();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(40)) goto parse_steps;
         break;
@@ -1422,25 +1510,25 @@ bool E2Model::MergePartialFromCodedStream(
 
       // required uint32 steps = 5;
       case 5: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 40) {
          parse_steps:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &steps_)));
           set_has_steps();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -1448,12 +1536,18 @@ bool E2Model::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:pb.E2Model)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:pb.E2Model)
+  return false;
 #undef DO_
 }
 
 void E2Model::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:pb.E2Model)
   // required .pb.E2Config pconfig = 1;
   if (has_pconfig()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
@@ -1486,10 +1580,12 @@ void E2Model::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:pb.E2Model)
 }
 
 ::google::protobuf::uint8* E2Model::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:pb.E2Model)
   // required .pb.E2Config pconfig = 1;
   if (has_pconfig()) {
     target = ::google::protobuf::internal::WireFormatLite::
@@ -1525,6 +1621,7 @@ void E2Model::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:pb.E2Model)
   return target;
 }
 

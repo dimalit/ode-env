@@ -7,14 +7,13 @@
 
 #include "model_e3.h"
 
-#include "rpc.h"
-
 #include <sstream>
 
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include "rpc.h"
 
 void parse_with_prefix(google::protobuf::Message& msg, FILE* fp){
 	int size;

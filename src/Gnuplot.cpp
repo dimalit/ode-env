@@ -6,14 +6,13 @@
  */
 
 #include "Gnuplot.h"
-#include "rpc.h"
-
 #include <vector>
 #include <algorithm>
 
 #include <sstream>
 #include <iostream>
 #include <cstdio>
+#include "rpc.h"
 
 using namespace google::protobuf;
 
