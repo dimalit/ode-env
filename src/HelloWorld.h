@@ -79,6 +79,7 @@ private:
   // Signal handlers:
   void on_config_changed();
   void on_state_changed();
+  void show_new_state();
 
   void on_forever_clicked();
   void on_step_clicked();
@@ -89,9 +90,12 @@ private:
   const OdeState* extract_state();
   const OdeSolverConfig* extract_solver_config();
 
+  const OdeState* state;
+  const OdeState* d_state;
+
   // Member widgets:
   OdeConfigWidget* config_widget;
-  OdeStateWidget* state_widget;
+  OdeStateGeneratorWidget* generator_widget;
   OdeSolverConfigWidget* solver_config_widget;
 
   Gtk::Window win_analyzers;

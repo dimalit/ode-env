@@ -97,21 +97,13 @@ const OdeConfig* E2ConfigWidget::getConfig() {
 	return config;
 }
 
-E2StateWidget::E2StateWidget(const E2Config* _config, const E2State* _state){
+E2StateGeneratorWidget::E2StateGeneratorWidget(const E2Config* _config){
 	to_gnuplot = NULL;
 
 	if(_config)
 		this->config = new E2Config(*_config);
 	else
 		this->config = new E2Config();
-
-	if(_state)
-		this->state = new E2State(*_state);
-	else
-		// TODO: may be state should remember its config?!
-		this->state = new E2State(this->config);
-
-	this->d_state = new E2State();
 
 	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_STATE);
 
@@ -136,91 +128,51 @@ E2StateWidget::E2StateWidget(const E2Config* _config, const E2State* _state){
 
 	this->add(*root);
 
-	state_to_widget();
-	if(!this->state->simulated())
-		generateState();
+	newState();
 
 	// signals
-	this->signal_realize().connect(sigc::mem_fun(this, &E2StateWidget::on_realize_cb));
+	this->signal_realize().connect(sigc::mem_fun(this, &E2StateGeneratorWidget::on_realize_cb));
 
-	entry_left->signal_changed().connect(sigc::mem_fun(*this, &E2StateWidget::edit_anything_cb));
-	entry_right->signal_changed().connect(sigc::mem_fun(*this, &E2StateWidget::edit_anything_cb));
-	radio_rand->signal_toggled().connect(sigc::mem_fun(*this, &E2StateWidget::edit_anything_cb));
+	entry_left->signal_changed().connect(sigc::mem_fun(*this, &E2StateGeneratorWidget::edit_anything_cb));
+	entry_right->signal_changed().connect(sigc::mem_fun(*this, &E2StateGeneratorWidget::edit_anything_cb));
+	radio_rand->signal_toggled().connect(sigc::mem_fun(*this, &E2StateGeneratorWidget::edit_anything_cb));
 
-	button_apply->signal_clicked().connect(sigc::mem_fun(*this, &E2StateWidget::on_apply_cb));
+	button_apply->signal_clicked().connect(sigc::mem_fun(*this, &E2StateGeneratorWidget::on_apply_cb));
 }
 
-E2StateWidget::~E2StateWidget(){
+E2StateGeneratorWidget::~E2StateGeneratorWidget(){
 	if(to_gnuplot)
 		fclose(to_gnuplot);
 }
 
-void E2StateWidget::widget_to_state(){
-	if(!state->simulated()){
-		generateState();
-	}
-}
-void E2StateWidget::state_to_widget(){
-
-	if(state->simulated()){
-		update_chart();
-	}
-}
-
-void E2StateWidget::edit_anything_cb(){
+void E2StateGeneratorWidget::edit_anything_cb(){
 	button_apply->set_sensitive(true);
 }
-void E2StateWidget::on_apply_cb(){
-	generateState();
-	m_signal_changed.emit();
+void E2StateGeneratorWidget::on_apply_cb(){
+	newState();
 }
 
 
-void E2StateWidget::loadConfig(const OdeConfig* cfg){
+void E2StateGeneratorWidget::loadConfig(const OdeConfig* cfg){
 	const E2Config* ecfg = dynamic_cast<const E2Config*>(cfg);
 		assert(ecfg);
 	delete this->config;
 	this->config = new E2Config(*ecfg);
 
 	delete this->state;
-	this->state = new E2State(ecfg);
-	delete this->d_state;
-	this->d_state = new E2State();
 
-	state_to_widget();
-	widget_to_state();
-
-	m_signal_changed.emit();
+	newState();
 }
-const OdeConfig* E2StateWidget::getConfig(){
+const OdeConfig* E2StateGeneratorWidget::getConfig(){
 	return config;
 }
 
-void E2StateWidget::loadState(const OdeState* state, const OdeState* d_state){
-	const E2State* estate = dynamic_cast<const E2State*>(state);
-		assert(estate);
-	const E2State* d_estate = dynamic_cast<const E2State*>(d_state);
-		assert(d_estate);
-	delete this->state;
-	delete this->d_state;
-	this->state = new E2State(*estate);
-	this->state = new E2State(*d_estate);
-
-	state_to_widget();
-	widget_to_state();
-
-	m_signal_changed.emit();
-}
-const OdeState* E2StateWidget::getState(){
-	widget_to_state();
+const OdeState* E2StateGeneratorWidget::getState(){
+	assert(state);
 	return state;
 }
 
-const OdeState* E2StateWidget::getDState(){
-	return d_state;
-}
-
-void E2StateWidget::generateState(bool emit){
+void E2StateGeneratorWidget::newState(bool emit){
 	double left = atof(entry_left->get_text().c_str());
 	double right = atof(entry_right->get_text().c_str());
 
@@ -243,10 +195,13 @@ void E2StateWidget::generateState(bool emit){
 	state->set_simulated(false);
 
 	update_chart();
+
+	if(emit)
+		m_signal_changed();
 }
 
 
-void E2StateWidget::update_chart(){
+void E2StateGeneratorWidget::update_chart(){
 	// TODO: Написать как направлять команды gnuplot'у и вставлять его вывод в окно!
 
 	if(!this->is_realized())
@@ -281,7 +236,7 @@ void E2StateWidget::update_chart(){
 
 }
 
-void E2StateWidget::on_realize_cb(){
+void E2StateGeneratorWidget::on_realize_cb(){
 	update_chart();
 }
 

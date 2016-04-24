@@ -28,6 +28,7 @@ private:
 	Gtk::TreeView *treeview1;
 	Glib::RefPtr<Gtk::ListStore> liststore1;
 	Gtk::Entry *entry_i1, *entry_i2, *entry_i3;
+	Gtk::Entry *entry_e, *entry_phi;
 public:
 	E3ConservationAnalyzer(const E3Config* config);
 	virtual void loadConfig(const OdeConfig* config);

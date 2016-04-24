@@ -46,7 +46,7 @@ private:
 	void check_rand_toggled_cb();
 };
 
-class E1StateWidget: public OdeStateWidget{
+class E1StateGeneratorWidget: public OdeStateGeneratorWidget{
 public:
 	typedef E1State State;
 private:
@@ -75,13 +75,11 @@ private:
 	double series_phi_ys[21];
 
 public:
-	E1StateWidget(const E1Config* config, const E1State* state = NULL);
-	virtual void loadState(const OdeState* state, const OdeState* d_state);
+	E1StateGeneratorWidget(const E1Config* config);
 	virtual const OdeState* getState();
-	virtual const OdeState* getDState();
 	virtual void loadConfig(const OdeConfig* config);
 	virtual const OdeConfig* getConfig();
-	virtual void generateState(bool emit=true){/*not implemented*/}
+	virtual void newState(bool emit=true);
 
 private:
 	void widget_to_state();
@@ -114,7 +112,7 @@ private:
 
 /////////////////////////////////////////////////////////////////////
 
-REGISTER_INSTANCE_WIDGET_CLASSES(E1ConfigWidget, E1StateWidget)
+REGISTER_INSTANCE_WIDGET_CLASSES(E1ConfigWidget, E1StateGeneratorWidget)
 REGISTER_SOLVER_CONFIG_WIDGET_CLASS(E1PetscSolverConfigWidget)
 
 #endif /* GUI_E1_H_ */

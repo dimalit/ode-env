@@ -22,17 +22,15 @@ public:
 	}
 };
 
-class OdeStateWidget: public Gtk::Frame{
+class OdeStateGeneratorWidget: public Gtk::Frame{
 protected:
 	sigc::signal<void> m_signal_changed;
 public:
-	virtual void loadState(const OdeState* state, const OdeState* d_state) = 0;
 	virtual const OdeState* getState() = 0;
-	virtual const OdeState* getDState() = 0;
 	virtual void loadConfig(const OdeConfig* config) = 0;
 	virtual const OdeConfig* getConfig() = 0;
-	virtual void generateState(bool emit=true) = 0;
-	sigc::signal<void> signal_changed(){
+	virtual void newState(bool emit=true) = 0;
+	sigc::signal<void> signal_changed() const {
 		return m_signal_changed;
 	}
 };

@@ -50,12 +50,15 @@ HelloWorld::HelloWorld()
   vbox.pack_start(*this->config_widget, false, false, 0);
 
   // win state //
-  this->state_widget = inst_widget_fact->createStateWidget(this->config_widget->getConfig());
-  vbox.pack_start(*this->state_widget, false, false);
+  this->generator_widget = inst_widget_fact->createStateGeneratorWidget(this->config_widget->getConfig());
+  vbox.pack_start(*this->generator_widget, false, false);
 
   OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
   this->solver_config_widget = OdeSolverConfigWidgetFactoryManager::getInstance()->getFactoriesFor(solver_fact).first->createConfigWidget();
   vbox.pack_start(*this->solver_config_widget, false, false, 0);
+
+  state = this->generator_widget->getState();
+  d_state = new E3State(dynamic_cast<const E3Config*>(this->config_widget->getConfig()));
 
   // simulator config //
   Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_RUN);
@@ -86,11 +89,11 @@ HelloWorld::HelloWorld()
 
   OdeAnalyzerWidgetFactory* analyzer_fact = *OdeAnalyzerWidgetFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
   this->analyzer_widget = analyzer_fact->createAnalyzerWidget(config_widget->getConfig());
-  this->analyzer_widget->processState(state_widget->getState(), state_widget->getDState(), 0.0);
+  this->analyzer_widget->processState(state, d_state, 0.0);
   vb->pack_start(*analyzer_widget, false, false);
 
   chart_analyzer = new ChartAnalyzer(config_widget->getConfig());
-  chart_analyzer->processState(state_widget->getState(), state_widget->getDState(), 0.0);
+  chart_analyzer->processState(state,  d_state, 0.0);
   pb::E3Special* spec_msg = new pb::E3Special();
   chart_analyzer->addSpecial(spec_msg);
   vb->pack_start(*chart_analyzer, false, false);
@@ -99,9 +102,8 @@ HelloWorld::HelloWorld()
 
   config_widget->signal_changed().connect(sigc::mem_fun(*this,
               &HelloWorld::on_config_changed));
-  state_widget->signal_changed().connect(sigc::mem_fun(*this,
+  generator_widget->signal_changed().connect(sigc::mem_fun(*this,
               &HelloWorld::on_state_changed));
-
   forever_button.signal_clicked().connect(sigc::mem_fun(*this,
               &HelloWorld::on_forever_clicked));
   step_button.signal_clicked().connect(sigc::mem_fun(*this,
@@ -121,15 +123,20 @@ HelloWorld::~HelloWorld()
 
 void HelloWorld::on_config_changed()
 {
-	state_widget->loadConfig(config_widget->getConfig());
+	d_state = new E3State(dynamic_cast<const E3Config*>(config_widget->getConfig()));
+	generator_widget->loadConfig(config_widget->getConfig());
 }
-void HelloWorld::on_state_changed()
+void HelloWorld::on_state_changed(){
+	this->state = generator_widget->getState();
+	show_new_state();
+}
+void HelloWorld::show_new_state()
 {
 	analyzer_widget->loadConfig(config_widget->getConfig());
-	analyzer_widget->processState(state_widget->getState(), state_widget->getDState(), this->total_time);
-	chart_analyzer->processState(state_widget->getState(), state_widget->getDState(), this->total_time);
+	analyzer_widget->processState(state, d_state, this->total_time);
+	chart_analyzer->processState(state, d_state, this->total_time);
 
-	const E3State* estate = dynamic_cast<const E3State*>(state_widget->getState());
+	const E3State* estate = dynamic_cast<const E3State*>(state);
 	const E3Config* config = dynamic_cast<const E3Config*>(config_widget->getConfig());
 
 	// draw energies
@@ -152,7 +159,7 @@ const OdeConfig* HelloWorld::extract_config(){
 	return config_widget->getConfig();
 }
 const OdeState* HelloWorld::extract_state(){
-	return state_widget->getState();
+	return generator_widget->getState();
 }
 const OdeSolverConfig* HelloWorld::extract_solver_config(){
 	return solver_config_widget->getConfig();
@@ -186,8 +193,7 @@ void HelloWorld::on_reset_clicked()
 {
 	assert(!computing);
 
-	dynamic_cast<E3StateWidget*>(this->state_widget)->setInitial();
-	this->state_widget->generateState();
+	this->generator_widget->newState();
 
 	total_steps = 0;
 	total_time = 0.0;
@@ -262,8 +268,10 @@ void HelloWorld::run_stepped_cb(){
 	const OdeState* final_d_state = solver->getDState();
 
 	if(total_steps % steps == 0 || total_time-last_refresh_time >= time){
-		state_widget->loadState(final_state, final_d_state);
+		this->state = final_state;
+		this->d_state = final_d_state;
 		last_refresh_time = total_time;
+		this->show_new_state();
 	}
 }
 

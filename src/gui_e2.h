@@ -44,7 +44,7 @@ private:
 	void on_apply_cb();
 };
 
-class E2StateWidget: public OdeStateWidget{
+class E2StateGeneratorWidget: public OdeStateGeneratorWidget{
 public:
 	typedef E2State State;
 private:
@@ -62,18 +62,14 @@ private:
 
 	FILE* to_gnuplot;
 public:
-	E2StateWidget(const E2Config* config, const E2State* state = NULL);
-	virtual ~E2StateWidget();
-	virtual void loadState(const OdeState* state, const OdeState* d_state);
+	E2StateGeneratorWidget(const E2Config* config);
+	virtual ~E2StateGeneratorWidget();
 	virtual const OdeState* getState();
-	virtual const OdeState* getDState();
 	virtual void loadConfig(const OdeConfig* config);
 	virtual const OdeConfig* getConfig();
-	virtual void generateState(bool emit=true);
+	virtual void newState(bool emit=true);
 
 private:
-	void widget_to_state();
-	void state_to_widget();
 	void edit_anything_cb();
 	void on_apply_cb();
 	void update_chart();
@@ -103,7 +99,7 @@ private:
 
 /////////////////////////////////////////////////////////////////////
 
-REGISTER_INSTANCE_WIDGET_CLASSES(E2ConfigWidget, E2StateWidget)
+REGISTER_INSTANCE_WIDGET_CLASSES(E2ConfigWidget, E2StateGeneratorWidget)
 REGISTER_SOLVER_CONFIG_WIDGET_CLASS(E2PetscSolverConfigWidget)
 
 #endif /* GUI_E2_H_ */

@@ -91,19 +91,11 @@ const OdeConfig* E1ConfigWidget::getConfig() {
 	return config;
 }
 
-E1StateWidget::E1StateWidget(const E1Config* _config, const E1State* _state){
+E1StateGeneratorWidget::E1StateGeneratorWidget(const E1Config* _config){
 	if(_config)
 		this->config = new E1Config(*_config);
 	else
 		this->config = new E1Config();
-
-	if(_state)
-		this->state = new E1State(*_state);
-	else
-		// TODO: may be state should remember its config?!
-		this->state = new E1State(this->config);
-
-	this->d_state = new E1State();
 
 	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_STATE);
 
@@ -137,73 +129,45 @@ E1StateWidget::E1StateWidget(const E1Config* _config, const E1State* _state){
 	gtk_container_add(GTK_CONTAINER(place_for_chart->gobj()), ggw);
 
 	// callbacks
-	adj_E->signal_value_changed().connect(sigc::mem_fun(*this, &E1StateWidget::adj_E_value_changed_cb));
-	adj_b->signal_value_changed().connect(sigc::mem_fun(*this, &E1StateWidget::adj_b_value_changed_cb));
-	adj_phi->signal_value_changed().connect(sigc::mem_fun(*this, &E1StateWidget::adj_phi_value_changed_cb));
+	adj_E->signal_value_changed().connect(sigc::mem_fun(*this, &E1StateGeneratorWidget::adj_E_value_changed_cb));
+	adj_b->signal_value_changed().connect(sigc::mem_fun(*this, &E1StateGeneratorWidget::adj_b_value_changed_cb));
+	adj_phi->signal_value_changed().connect(sigc::mem_fun(*this, &E1StateGeneratorWidget::adj_phi_value_changed_cb));
 
-	state_to_widget();
+	newState();
 }
-void E1StateWidget::loadState(const OdeState* state, const OdeState* d_state){
-	const E1State* estate = dynamic_cast<const E1State*>(state);
-		assert(estate);
-	const E1State* d_estate = dynamic_cast<const E1State*>(d_state);
-		assert(d_estate);
-	delete this->state;
-	delete this->d_state;
-	this->state = new E1State(*estate);
-	this->d_state = new E1State(*d_estate);
 
-	state_to_widget();
-}
-const OdeState* E1StateWidget::getState(){
-	widget_to_state();
+const OdeState* E1StateGeneratorWidget::getState(){
+	assert(state);
 	return state;
 }
 
-const OdeState* E1StateWidget::getDState(){
-	return d_state;
-}
-
-void E1StateWidget::loadConfig(const OdeConfig* cfg){
+void E1StateGeneratorWidget::loadConfig(const OdeConfig* cfg){
 	const E1Config* ecfg = dynamic_cast<const E1Config*>(cfg);
 		assert(ecfg);
+
 	delete this->config;
 	this->config = new E1Config(*ecfg);
 
 	delete this->state;
-	this->state = new E1State(ecfg);
-	delete this->d_state;
-	this->d_state = new E1State();
+	newState();
 }
-const OdeConfig* E1StateWidget::getConfig(){
+const OdeConfig* E1StateGeneratorWidget::getConfig(){
 	return config;
 }
 
-void E1StateWidget::widget_to_state(){
+void E1StateGeneratorWidget::newState(bool emit){
 	state->setE(adj_E->get_value());
 	state->setPhi(adj_phi->get_value());
 
 	std::copy(this->series_b_ys, this->series_b_ys+config->g_m, state->getBArray().begin());
 	std::copy(this->series_b_xs, this->series_b_xs+config->g_m, state->getKsiArray().begin());
 	// TODO: add "dirty" field meaning that this state was already ran
-}
-void E1StateWidget::state_to_widget(){
-	adj_E->set_value(state->getE());
-	adj_b->set_value(state->getB());
-	adj_phi->set_value(state->getPhi());
 
-	// draw particles
-	for(int i=0; i<20; i++){
-		std::cout << state->getBArray()[i] << " ";
-	}
-	std::cout << std::endl;
-
-	std::copy(state->getBArray().begin(), state->getBArray().end(), this->series_b_ys);
-	std::copy(state->getKsiArray().begin(), state->getKsiArray().end(), this->series_b_xs);
-	go_data_emit_changed(series_b_data);
+	if(emit)
+		m_signal_changed();
 }
 
-void E1StateWidget::draw(GogChart* chart){
+void E1StateGeneratorWidget::draw(GogChart* chart){
 	GogPlot *plot;
 	GError *error;
 
@@ -241,14 +205,14 @@ void E1StateWidget::draw(GogChart* chart){
 	gog_object_add_by_name (GOG_OBJECT (chart), "Legend", NULL);
 }
 
-void E1StateWidget::adj_E_value_changed_cb (){
+void E1StateGeneratorWidget::adj_E_value_changed_cb (){
 	double val = adj_E->get_value();
 	series_E_ys[0] = val;
 	series_E_ys[1] = val;
 
 	go_data_emit_changed(series_E_data);
 }
-void E1StateWidget::adj_b_value_changed_cb (){
+void E1StateGeneratorWidget::adj_b_value_changed_cb (){
 	double val = adj_b->get_value();
 	for(int i=0; i<config->g_m; i++){
 		series_b_ys[i] = val;
@@ -258,7 +222,7 @@ void E1StateWidget::adj_b_value_changed_cb (){
 	// change also sine profile
 	adj_phi_value_changed_cb();
 }
-void E1StateWidget::adj_phi_value_changed_cb (){
+void E1StateGeneratorWidget::adj_phi_value_changed_cb (){
 	// change label
 	double val = adj_phi->get_value();
 	char buf[10]; sprintf(buf, "phi %.2f", val);

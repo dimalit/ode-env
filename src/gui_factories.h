@@ -18,7 +18,7 @@ public:
 	OdeInstanceWidgetFactory(OdeInstanceFactory* corresponding_instance_factory);
 	virtual ~OdeInstanceWidgetFactory();
 	virtual OdeConfigWidget* createConfigWidget(const OdeConfig* = NULL) const = 0;
-	virtual OdeStateWidget* createStateWidget(const OdeConfig* cfg, const OdeState* state = NULL) const = 0;
+	virtual OdeStateGeneratorWidget* createStateGeneratorWidget(const OdeConfig* cfg) const = 0;
 
 	virtual std::string getDisplayName() const = 0;
 
@@ -76,12 +76,10 @@ public:
 			assert(ecfg || !cfg);		// it exists or other inexists
 		return new CW(ecfg);
 	}
-	virtual OdeStateWidget* createStateWidget(const OdeConfig* cfg, const OdeState* state = NULL) const {
+	virtual OdeStateGeneratorWidget* createStateGeneratorWidget(const OdeConfig* cfg) const {
 		const typename CW::Config* ecfg = dynamic_cast<const typename CW::Config*>(cfg);
 			assert(ecfg);
-		const typename SW::State* estate = dynamic_cast<const typename SW::State*>(state);
-			assert(estate || !state);		// it exists or other inexists
-		return new SW(ecfg, estate);
+		return new SW(ecfg);
 	}
 
 	virtual std::string getDisplayName() const {

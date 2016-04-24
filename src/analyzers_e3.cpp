@@ -25,6 +25,8 @@ E3ConservationAnalyzer::E3ConservationAnalyzer(const E3Config* config){
 	b->get_widget("entry_i1", entry_i1);
 	b->get_widget("entry_i2", entry_i2);
 	b->get_widget("entry_i3", entry_i3);
+	b->get_widget("entry_e", entry_e);
+	b->get_widget("entry_phi", entry_phi);
 
 	b->get_widget("treeview1", treeview1);
 	liststore1 = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b->get_object("liststore1"));
@@ -43,9 +45,6 @@ void E3ConservationAnalyzer::reset(){
 	states_count = 0;
 }
 void E3ConservationAnalyzer::processState(const OdeState* state, const OdeState* d_state, double time){
-	if(states_count > 0 && ::time(NULL)-last_update<2)
-		return;
-
 	const E3State* estate = dynamic_cast<const E3State*>(state);
 		assert(estate);
 
@@ -84,6 +83,14 @@ void E3ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 	buf.str("");		// 2.0 for alternate formula
 	buf << estate->e()*estate->e()+1.0/config->n()/config->m()*sum_a_2;
 	entry_i3->set_text(buf.str());
+
+	buf.str("");
+	buf << estate->e();
+	entry_e->set_text(buf.str());
+
+	buf.str("");
+	buf << estate->phi();
+	entry_phi->set_text(buf.str());
 
 	++states_count;
 	last_update = ::time(NULL);
