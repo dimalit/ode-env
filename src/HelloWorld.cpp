@@ -186,6 +186,7 @@ void HelloWorld::on_reset_clicked()
 {
 	assert(!computing);
 
+	dynamic_cast<E3StateWidget*>(this->state_widget)->setInitial();
 	this->state_widget->generateState();
 
 	total_steps = 0;

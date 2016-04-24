@@ -58,6 +58,7 @@ private:
 	Gtk::Entry *entry_n1;
 	Gtk::Button *button_apply;
 
+	double E0, phi0;		//save them for generate()
 public:
 	E3StateWidget(const E3Config* config, const E3State* state = NULL);
 	virtual ~E3StateWidget();
@@ -67,6 +68,19 @@ public:
 	virtual void loadConfig(const OdeConfig* config);
 	virtual const OdeConfig* getConfig();
 	virtual void generateState(bool emit = true);
+
+	//XXX: for temporary use! - after we'll make widgts and generators!
+	void setInitial(){
+		std::ostringstream buf;
+
+		buf.str("");
+		buf<<E0;
+		this->entry_e->set_text(buf.str());
+
+		buf.str("");
+		buf<<phi0;
+		this->entry_phi->set_text(buf.str());
+	}
 
 private:
 //	void widget_to_state();

@@ -144,16 +144,18 @@ E3StateWidget::E3StateWidget(const E3Config* _config, const E3State* _state){
 
 	this->add(*root);
 
-	if(this->state)
-		state_to_widget();
-
 	entry_e->set_text("0.001");
+		E0 = 0.001;
 	entry_phi->set_text("0.0");
+		phi0 = 0.0;
 	entry_a->set_text("1.0");
 	entry_a2->set_text("0.01");
 	entry_eta->set_text("0.0");
 	entry_eta2->set_text("0.0");
 	entry_n1->set_text("1.0");
+
+	if(this->state)
+		state_to_widget();
 
 	// signals
 	entry_e->signal_changed().connect(sigc::mem_fun(*this, &E3StateWidget::edit_anything_cb));
@@ -281,6 +283,9 @@ void E3StateWidget::generateState(bool emit){
 	double eta2 = atof(entry_eta2->get_text().c_str());
 	double n1 = atof(entry_n1->get_text().c_str());
 
+	this->E0 = e;
+	this->phi0 = phi;
+
 	bool use_rand = true;
 	double right = 0.5;
 	double left = -0.5;
@@ -342,6 +347,7 @@ E3PetscSolverConfigWidget::E3PetscSolverConfigWidget(const E3PetscSolverConfig* 
 	b->get_widget("entry_rtol", entry_rtol);
 	b->get_widget("entry_step", entry_step);
 	adj_n_cores = Glib::RefPtr<Gtk::Adjustment>::cast_dynamic(b->get_object("adj_n_cores"));
+	adj_n_cores->set_value(4);
 
 	combo_type = Gtk::manage( new Gtk::ComboBoxText() );
 	combo_type->append("te");

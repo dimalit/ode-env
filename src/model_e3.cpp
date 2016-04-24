@@ -61,7 +61,7 @@ E3PetscSolverConfig::E3PetscSolverConfig(){
 	set_init_step(0.01);
 	set_solver(E3PetscSolverConfig::rhs);
 	set_model("tm");
-	set_n_cores(1);
+	set_n_cores(4);
 }
 
 E3PetscSolver::E3PetscSolver(const E3PetscSolverConfig* scfg, const E3Config* pcfg, const E3State* init_state){
@@ -106,7 +106,7 @@ void E3PetscSolver::run(int steps, double time, bool use_step){
 	std::ostringstream cmd_stream;
 //	cmd_stream << "mpiexec -n "<< n_cores << " --host 192.168.0.101 ./Debug/ts3";
 //	cmd_stream << "mpiexec -n "<< n_cores << " --host 10.0.0.205 /home/dimalit/workspace/ts3/Debug/ts3";
-	cmd_stream << "mpiexec -n "<< n_cores << " ../ts3/Debug/ts3";
+	cmd_stream << "mpiexec -n "<< n_cores << " ../ts3/Debug/ts3";// << " -info info.log";
 
 	std::string cmd = cmd_stream.str();
 	if(use_step)
@@ -179,6 +179,9 @@ bool E3PetscSolver::read_results(){
 	parse_with_prefix(sol, rf);
 	sol.mutable_state()->set_simulated(true);
 	sol.mutable_d_state()->set_simulated(true);
+
+//	sol.state().PrintDebugString();
+//	fflush(stdout);
 
 	state->CopyFrom(sol.state());
 	d_state->CopyFrom(sol.d_state());
