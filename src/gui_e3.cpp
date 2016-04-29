@@ -138,10 +138,10 @@ E3StateGeneratorWidget::E3StateGeneratorWidget(const E3Config* _config){
 
 	this->add(*root);
 
-	entry_e->set_text("0.001");
+	entry_e->set_text("0.01");
 	entry_phi->set_text("0.0");
 	entry_a->set_text("1.0");
-	entry_a2->set_text("0.01");
+	entry_a2->set_text("0.1");
 	entry_eta->set_text("0.0");
 	entry_eta2->set_text("0.0");
 	entry_n1->set_text("1.0");
@@ -195,6 +195,10 @@ const OdeState* E3StateGeneratorWidget::getState(){
 	return state;
 }
 
+double rand1(){
+	return (double)rand()/RAND_MAX;
+}
+
 void E3StateGeneratorWidget::newState(bool emit){
 	delete state;
 	state = new E3State(config);
@@ -203,45 +207,60 @@ void E3StateGeneratorWidget::newState(bool emit){
 	double phi = atof(entry_phi->get_text().c_str());
 	double a = atof(entry_a->get_text().c_str());
 	double a2 = atof(entry_a2->get_text().c_str());
-	double eta = atof(entry_eta->get_text().c_str());
+	double eta1 = atof(entry_eta->get_text().c_str());
 	double eta2 = atof(entry_eta2->get_text().c_str());
 	double n1 = atof(entry_n1->get_text().c_str());
 
-	bool use_rand = true;
+	bool use_rand = false;
 	double right = 0.5;
 	double left = -0.5;
 
 	int m = config->m();
-	int m1 = config->m()*n1;
-	for(int i=0; i<m; i++){
+	int m1 = m*n1 + 0.5;
+	int m2 = m - m1;
+
+	double h = (right-left)/240;
+	double h2 = (eta2-eta1)/m1;
+
+	// prepare shuffle
+	int* shuffle = new int[m1];
+	for(int i=0; i<m1; i++)shuffle[i] = i;
+	std::random_shuffle(shuffle, shuffle+m1);
+
+	// particles 1
+	for(int i=0; i<m1; i++){
 		double ksi;
 		if(use_rand)
 			ksi = rand() / (double)RAND_MAX * (right-left) + left;
 		else
-			ksi = i / (double)m * (right-left) + left;
+			ksi = i / (double)m1 * (right-left) + left + /*rand*/ (rand1()-0.5)*h;
 
 		pb::E3State::Particles p;
 		p.set_ksi(ksi);
 
-		if(i<m1){
-			p.set_a(a);
-			p.set_eta(eta);
-		}
-		else{
-			p.set_a(a2);
-			p.set_eta(eta2);
-		}
-
-		// XXX: special case for 1 particle!
-		if(m==1)
-			p.set_ksi(0.0);
-
-//		if(i==0)
-//			p.set_ksi(0.3);
-//		if(i==1)
-//			p.set_ksi(0.4);
+		p.set_a(a);
+		int j = shuffle[i];
+		double eta = j / (double)m1 * (eta2-eta1) + eta1 + (rand1()-0.5)*h2;	// eta1 and eta2 are now borders
+		p.set_eta(eta);
 
 		state->mutable_particles(i)->CopyFrom(p);
+	}
+
+	// particles 2
+	for(int i=0; i<m2; i++){
+		double ksi;
+		if(use_rand)
+			ksi = rand() / (double)RAND_MAX * (right-left) + left;
+		else
+			ksi = i / (double)m2 * (right-left) + left + /*rand*/ (rand1()-0.5)*h;
+
+		pb::E3State::Particles p;
+		p.set_ksi(ksi);
+
+		p.set_a(a2);
+		p.set_eta(0.0);
+
+		state->mutable_particles(m1+i)->CopyFrom(p);
 	}
 
 	state->set_e(e);

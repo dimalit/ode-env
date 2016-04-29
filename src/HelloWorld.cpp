@@ -222,7 +222,6 @@ void HelloWorld::run_computing(bool use_step){
   assert(!solver);
 
   const OdeConfig* config = extract_config();
-  const OdeState* init_state = extract_state();
   const OdeSolverConfig* solver_config = extract_solver_config();
 
   OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory(problem_name);
@@ -236,7 +235,7 @@ void HelloWorld::run_computing(bool use_step){
   else
 	  steps = 1000000000;
 
-  solver = OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first->createSolver(solver_config, config, init_state);
+  solver = OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first->createSolver(solver_config, config, state);
 
   run_thread = new RunThread(solver);
   run_thread->getSignalFinished().connect(sigc::mem_fun(*this, &HelloWorld::run_finished_cb));
@@ -276,7 +275,7 @@ void HelloWorld::run_stepped_cb(){
 }
 
 void HelloWorld::run_finished_cb(){
-
+	this->state = solver->getState()->clone();
 	delete run_thread;	run_thread = NULL;
 	delete solver;		solver = NULL;
 	computing = false;

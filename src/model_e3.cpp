@@ -149,10 +149,17 @@ void E3PetscSolver::run(int steps, double time, bool use_step){
 }
 
 bool E3PetscSolver::step(){
+	if(waitpid(child, 0, WNOHANG)!=0){
+		fclose(rf); rf = NULL;
+		fclose(wf); wf = NULL;
+		return false;
+	}
+
 	fputc('s', wf);
 	fflush(wf);
 
 	if(!read_results()){
+		// TODO: will it ever run? (see waitpid above)
 		waitpid(child, 0, 0);		// was before read - here for tests
 		fclose(rf); rf = NULL;
 		fclose(wf); wf = NULL;
