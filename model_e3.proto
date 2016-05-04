@@ -9,6 +9,7 @@ message E3Config{
 	optional double gamma_0_2 = 4;
 	optional double delta_e = 5;
 	optional double r_e = 6;
+	optional double alpha = 7;
 }
 
 message E3State{

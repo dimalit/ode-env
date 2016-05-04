@@ -35,6 +35,7 @@ E3Config::E3Config(){
 	set_gamma_0_2(0.0);
 	set_delta_e(0);
 	set_r_e(0.0);
+	set_alpha(0.0);
 }
 
 E3State::E3State(){

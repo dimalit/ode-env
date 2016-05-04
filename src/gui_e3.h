@@ -24,7 +24,7 @@ public:
 private:
 	E3Config* config;
 
-	Gtk::Entry *entry_m, *entry_n, *entry_theta, *entry_gamma, *entry_delta, *entry_r;
+	Gtk::Entry *entry_m, *entry_n, *entry_theta, *entry_gamma, *entry_delta, *entry_r, *entry_alpha;
 	Gtk::Button *button_apply;
 
 public:
@@ -54,6 +54,7 @@ private:
 	Gtk::Entry *entry_e, *entry_phi, *entry_a;
 	Gtk::Entry *entry_a2;
 	Gtk::Entry *entry_eta, *entry_eta2;
+	Gtk::CheckButton *check_use_alpha;
 	Gtk::Entry *entry_n1;
 	Gtk::Button *button_apply;
 

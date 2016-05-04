@@ -159,6 +159,13 @@ class E3Config : public ::google::protobuf::Message {
   inline double r_e() const;
   inline void set_r_e(double value);
 
+  // optional double alpha = 7;
+  inline bool has_alpha() const;
+  inline void clear_alpha();
+  static const int kAlphaFieldNumber = 7;
+  inline double alpha() const;
+  inline void set_alpha(double value);
+
   // @@protoc_insertion_point(class_scope:pb.E3Config)
  private:
   inline void set_has_m();
@@ -173,6 +180,8 @@ class E3Config : public ::google::protobuf::Message {
   inline void clear_has_delta_e();
   inline void set_has_r_e();
   inline void clear_has_r_e();
+  inline void set_has_alpha();
+  inline void clear_has_alpha();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -183,6 +192,7 @@ class E3Config : public ::google::protobuf::Message {
   double gamma_0_2_;
   double delta_e_;
   double r_e_;
+  double alpha_;
   ::google::protobuf::uint32 m_;
   friend void  protobuf_AddDesc_model_5fe3_2eproto();
   friend void protobuf_AssignDesc_model_5fe3_2eproto();
@@ -1029,6 +1039,30 @@ inline void E3Config::set_r_e(double value) {
   set_has_r_e();
   r_e_ = value;
   // @@protoc_insertion_point(field_set:pb.E3Config.r_e)
+}
+
+// optional double alpha = 7;
+inline bool E3Config::has_alpha() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void E3Config::set_has_alpha() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void E3Config::clear_has_alpha() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void E3Config::clear_alpha() {
+  alpha_ = 0;
+  clear_has_alpha();
+}
+inline double E3Config::alpha() const {
+  // @@protoc_insertion_point(field_get:pb.E3Config.alpha)
+  return alpha_;
+}
+inline void E3Config::set_alpha(double value) {
+  set_has_alpha();
+  alpha_ = value;
+  // @@protoc_insertion_point(field_set:pb.E3Config.alpha)
 }
 
 // -------------------------------------------------------------------

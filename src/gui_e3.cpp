@@ -31,6 +31,7 @@ E3ConfigWidget::E3ConfigWidget(const E3Config* cfg){
 	b->get_widget("entry_gamma", entry_gamma);
 	b->get_widget("entry_delta", entry_delta);
 	b->get_widget("entry_r", entry_r);
+	b->get_widget("entry_alpha", entry_alpha);
 
 	b->get_widget("button_apply", button_apply);
 
@@ -44,6 +45,7 @@ E3ConfigWidget::E3ConfigWidget(const E3Config* cfg){
 	entry_gamma->signal_changed().connect(sigc::mem_fun(*this, &E3ConfigWidget::edit_anything_cb));
 	entry_delta->signal_changed().connect(sigc::mem_fun(*this, &E3ConfigWidget::edit_anything_cb));
 	entry_r->signal_changed().connect(sigc::mem_fun(*this, &E3ConfigWidget::edit_anything_cb));
+	entry_alpha->signal_changed().connect(sigc::mem_fun(*this, &E3ConfigWidget::edit_anything_cb));
 
 	button_apply->signal_clicked().connect(sigc::mem_fun(*this, &E3ConfigWidget::on_apply_cb));
 }
@@ -55,6 +57,7 @@ void E3ConfigWidget::widget_to_config(){
 	config->set_delta_e(atof(entry_delta->get_text().c_str()));
 	config->set_gamma_0_2(atof(entry_gamma->get_text().c_str()));
 	config->set_r_e(atof(entry_r->get_text().c_str()));
+	config->set_alpha(atof(entry_alpha->get_text().c_str()));
 
 	button_apply->set_sensitive(false);
 }
@@ -82,6 +85,10 @@ void E3ConfigWidget::config_to_widget(){
 	buf.str("");
 	buf << config->r_e();
 	entry_r->set_text(buf.str());
+
+	buf.str("");
+	buf << config->alpha();
+	entry_alpha->set_text(buf.str());
 
 	button_apply->set_sensitive(false);
 }
@@ -132,6 +139,8 @@ E3StateGeneratorWidget::E3StateGeneratorWidget(const E3Config* _config){
 
 	b->get_widget("entry_eta", entry_eta);
 	b->get_widget("entry_eta2", entry_eta2);
+	b->get_widget("check_use_alpha", check_use_alpha);
+
 	b->get_widget("entry_n1", entry_n1);
 
 	b->get_widget("button_apply", button_apply);
@@ -153,6 +162,7 @@ E3StateGeneratorWidget::E3StateGeneratorWidget(const E3Config* _config){
 	entry_a2->signal_changed().connect(sigc::mem_fun(*this, &E3StateGeneratorWidget::edit_anything_cb));
 	entry_eta->signal_changed().connect(sigc::mem_fun(*this, &E3StateGeneratorWidget::edit_anything_cb));
 	entry_eta2->signal_changed().connect(sigc::mem_fun(*this, &E3StateGeneratorWidget::edit_anything_cb));
+	check_use_alpha->signal_toggled().connect(sigc::mem_fun(*this, &E3StateGeneratorWidget::edit_anything_cb));
 	entry_n1->signal_changed().connect(sigc::mem_fun(*this, &E3StateGeneratorWidget::edit_anything_cb));
 
 	button_apply->signal_clicked().connect(sigc::mem_fun(*this, &E3StateGeneratorWidget::on_apply_cb));
@@ -210,6 +220,7 @@ void E3StateGeneratorWidget::newState(bool emit){
 	double eta1 = atof(entry_eta->get_text().c_str());
 	double eta2 = atof(entry_eta2->get_text().c_str());
 	double n1 = atof(entry_n1->get_text().c_str());
+	bool use_alpha = check_use_alpha->get_active();
 
 	bool use_rand = false;
 	double right = 0.5;
@@ -239,9 +250,15 @@ void E3StateGeneratorWidget::newState(bool emit){
 		p.set_ksi(ksi);
 
 		p.set_a(a);
-		int j = shuffle[i];
-		double eta = j / (double)m1 * (eta2-eta1) + eta1 + (rand1()-0.5)*h2;	// eta1 and eta2 are now borders
-		p.set_eta(eta);
+
+		if(!use_alpha){
+			int j = shuffle[i];
+			double eta = j / (double)m1 * (eta2-eta1) + eta1 + (rand1()-0.5)*h2;	// eta1 and eta2 are now borders
+			p.set_eta(eta);
+		}
+		else{
+			p.set_eta(-config->alpha()*a);
+		}
 
 		state->mutable_particles(i)->CopyFrom(p);
 	}
@@ -258,7 +275,10 @@ void E3StateGeneratorWidget::newState(bool emit){
 		p.set_ksi(ksi);
 
 		p.set_a(a2);
-		p.set_eta(0.0);
+		if(!use_alpha)
+			p.set_eta(0.0);
+		else
+			p.set_eta(-config->alpha()*a2);
 
 		state->mutable_particles(m1+i)->CopyFrom(p);
 	}

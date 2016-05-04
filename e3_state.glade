@@ -5,7 +5,7 @@
   <object class="GtkTable" id="root">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="n_rows">6</property>
+    <property name="n_rows">7</property>
     <property name="n_columns">4</property>
     <child>
       <object class="GtkLabel" id="label1">
@@ -44,8 +44,8 @@
       </object>
       <packing>
         <property name="right_attach">2</property>
-        <property name="top_attach">4</property>
-        <property name="bottom_attach">5</property>
+        <property name="top_attach">5</property>
+        <property name="bottom_attach">6</property>
       </packing>
     </child>
     <child>
@@ -104,12 +104,11 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
-        <property name="use_action_appearance">False</property>
       </object>
       <packing>
         <property name="right_attach">4</property>
-        <property name="top_attach">5</property>
-        <property name="bottom_attach">6</property>
+        <property name="top_attach">6</property>
+        <property name="bottom_attach">7</property>
       </packing>
     </child>
     <child>
@@ -214,8 +213,8 @@
       <packing>
         <property name="left_attach">2</property>
         <property name="right_attach">3</property>
-        <property name="top_attach">4</property>
-        <property name="bottom_attach">5</property>
+        <property name="top_attach">5</property>
+        <property name="bottom_attach">6</property>
       </packing>
     </child>
     <child>
@@ -233,6 +232,23 @@
       <packing>
         <property name="left_attach">3</property>
         <property name="right_attach">4</property>
+        <property name="top_attach">5</property>
+        <property name="bottom_attach">6</property>
+      </packing>
+    </child>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkCheckButton" id="check_use_alpha">
+        <property name="label" translatable="yes">eta=-alpha*a</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">False</property>
+        <property name="draw_indicator">True</property>
+      </object>
+      <packing>
+        <property name="right_attach">3</property>
         <property name="top_attach">4</property>
         <property name="bottom_attach">5</property>
       </packing>
