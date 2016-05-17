@@ -133,13 +133,10 @@ HelloWorld::HelloWorld()
   	  s2->set_size_request(600,200);
   Gtk::Socket* s3 = Gtk::manage(new Gtk::Socket());
   	  s3->set_size_request(600,200);
-  Gtk::Socket* s4 = Gtk::manage(new Gtk::Socket());
-  	  s4->set_size_request(600,200);
 
   vb->pack_start(*s1, true, true, 5);
   vb->pack_start(*s2, true, true, 5);
   vb->pack_start(*s3, true, true, 5);
-  vb->pack_start(*s4, true, true, 5);
 
   win_diag->add(*vb);
   win_diag->set_title("Diagnostics");
@@ -150,15 +147,15 @@ HelloWorld::HelloWorld()
   Gnuplot::title_translation_map["Wa"] = "W_v";
   Gnuplot::title_translation_map["Wb"] = "W_n";
   Gnuplot::title_translation_map["aver_a_2"] = "a@^2_{aver}";
-  Gnuplot::title_translation_map["Na_eff"] = "N_{v}/N";
-  Gnuplot::title_translation_map["Nb_eff"] = "N_{n}/N";
+  Gnuplot::title_translation_map["Na"] = "N_{v}/N";
+  Gnuplot::title_translation_map["Nb"] = "N_{n}/N";
+  Gnuplot::title_translation_map["N"] = "Nv/N+Nn/N";
+  Gnuplot::title_translation_map["M"] = "Nv/N-Nn/N";
   Gnuplot::title_translation_map["e_2"] = "e^2";
 
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa_aver","Wb_aver"}),"",false, s1->get_id(), std::numeric_limits<double>::infinity());
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2"}),"",false, s2->get_id(), std::numeric_limits<double>::infinity());
-
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na_eff","Nb_eff", "N", "M"}),"",false, s3->get_id());
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"e_2", "aver_a_2"}),"",false, s4->get_id());
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2"}),"",false, s1->get_id(), std::numeric_limits<double>::infinity());
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na","Nb", "N", "M"}),"",false, s2->get_id());
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"e_2", "aver_a_2"}),"",false, s3->get_id());
 }
 
 HelloWorld::~HelloWorld()
@@ -196,7 +193,7 @@ void HelloWorld::fill_spec_msg(pb::E3Special* spec_msg){
 
 	double sum_a_2 = 0;
 	double sum_eta = 0;
-	int Na = 0, Nb = 0;			// da/dt>0 and <0
+	double Na = 0, Nb = 0;			// da/dt>0 and <0
 	double Ia = 0.0, Ib = 0.0;	// sum da/dt
 	double Wa = 0.0, Wb = 0.0;	// sum a^2
 	for(int i=0; i<N; i++){
@@ -218,6 +215,7 @@ void HelloWorld::fill_spec_msg(pb::E3Special* spec_msg){
 		}// Nb
 	}
 
+	Na/=N; Nb/=N;
 	Wa/=N; Wb/=N;
 
 	spec_msg->set_e_2(estate->e()*estate->e());
@@ -238,13 +236,8 @@ void HelloWorld::fill_spec_msg(pb::E3Special* spec_msg){
 
 	spec_msg->set_ia_aver(Ia/Na);
 	spec_msg->set_ib_aver(Ib/Nb);
-	spec_msg->set_wa_aver(Wa/Na);
-	spec_msg->set_wb_aver(Wb/Nb);
-
-	spec_msg->set_na_eff((double)Na/N);
-	spec_msg->set_nb_eff((double)Nb/N);
-	spec_msg->set_n(spec_msg->na_eff() + spec_msg->nb_eff());
-	spec_msg->set_m(spec_msg->na_eff() - spec_msg->nb_eff());
+	spec_msg->set_n(Na+Nb);
+	spec_msg->set_m(Na-Nb);
 }
 
 const OdeConfig* HelloWorld::extract_config(){
