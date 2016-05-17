@@ -12,6 +12,8 @@
 
 #include <gtkmm/main.h>
 #include <gtkmm/builder.h>
+#include <gtkmm/socket.h>
+#include <gtkmm/alignment.h>
 
 #include <iostream>
 
@@ -31,6 +33,10 @@ HelloWorld::HelloWorld()
   solver = NULL;
   total_steps = run_steps = 0;
   total_time = run_time = 0.0;
+  last_refresh_time = 0.0;
+
+  sum_ia = 0.0; sum_ib = 0.0;
+  sum_wa = 0.0; sum_wb = 0.0;
 
   this->set_title(problem_name);
 
@@ -115,6 +121,44 @@ HelloWorld::HelloWorld()
 
   this->show_all();
   win_analyzers.show_all();
+
+  ///////// diagnostics ///////////
+
+  Gtk::Window* win_diag = new Gtk::Window();
+  vb = Gtk::manage(new Gtk::VBox());
+
+  Gtk::Socket* s1 = Gtk::manage(new Gtk::Socket());
+  	  s1->set_size_request(600,200);
+  Gtk::Socket* s2 = Gtk::manage(new Gtk::Socket());
+  	  s2->set_size_request(600,200);
+  Gtk::Socket* s3 = Gtk::manage(new Gtk::Socket());
+  	  s3->set_size_request(600,200);
+  Gtk::Socket* s4 = Gtk::manage(new Gtk::Socket());
+  	  s4->set_size_request(600,200);
+
+  vb->pack_start(*s1, true, true, 5);
+  vb->pack_start(*s2, true, true, 5);
+  vb->pack_start(*s3, true, true, 5);
+  vb->pack_start(*s4, true, true, 5);
+
+  win_diag->add(*vb);
+  win_diag->set_title("Diagnostics");
+  win_diag->show_all();
+
+  Gnuplot::title_translation_map["Wa_aver"] = "W_{v,aver}";
+  Gnuplot::title_translation_map["Wb_aver"] = "W_{n,aver}";
+  Gnuplot::title_translation_map["Wa"] = "W_v";
+  Gnuplot::title_translation_map["Wb"] = "W_n";
+  Gnuplot::title_translation_map["aver_a_2"] = "a@^2_{aver}";
+  Gnuplot::title_translation_map["Na_eff"] = "N_{v}/N";
+  Gnuplot::title_translation_map["Nb_eff"] = "N_{n}/N";
+  Gnuplot::title_translation_map["e_2"] = "e^2";
+
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa_aver","Wb_aver"}),"",false, s1->get_id(), std::numeric_limits<double>::infinity());
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2"}),"",false, s2->get_id(), std::numeric_limits<double>::infinity());
+
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na_eff","Nb_eff", "N", "M"}),"",false, s3->get_id());
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"e_2", "aver_a_2"}),"",false, s4->get_id());
 }
 
 HelloWorld::~HelloWorld()
@@ -136,23 +180,71 @@ void HelloWorld::show_new_state()
 	analyzer_widget->processState(state, d_state, this->total_time);
 	chart_analyzer->processState(state, d_state, this->total_time);
 
+	pb::E3Special spec_msg;
+	fill_spec_msg(&spec_msg);
+	chart_analyzer->processSpecial(&spec_msg, this->total_time);
+}
+
+void HelloWorld::fill_spec_msg(pb::E3Special* spec_msg){
 	const E3State* estate = dynamic_cast<const E3State*>(state);
+	const E3State* dstate = dynamic_cast<const E3State*>(this->d_state);
 	const E3Config* config = dynamic_cast<const E3Config*>(config_widget->getConfig());
 
-	// draw energies
+	int N = estate->particles_size();
+	double T = this->total_time;
+	double dT = this->total_time - this->last_refresh_time;
+
 	double sum_a_2 = 0;
 	double sum_eta = 0;
-	for(int i=0; i<estate->particles_size(); i++){
+	int Na = 0, Nb = 0;			// da/dt>0 and <0
+	double Ia = 0.0, Ib = 0.0;	// sum da/dt
+	double Wa = 0.0, Wb = 0.0;	// sum a^2
+	for(int i=0; i<N; i++){
 		E3State::Particles p = estate->particles(i);
+		E3State::Particles dp = dstate->particles(i);
+
 		sum_a_2 += p.a()*p.a();
 		sum_eta += p.eta();
+
+		if(dp.a() > 0.0){
+			Na++;
+			Ia += dp.a();
+			Wa += p.a()*p.a();
+		}// Na
+		else{
+			Nb++;
+			Ib += dp.a();
+			Wb += p.a()*p.a();
+		}// Nb
 	}
-	pb::E3Special spec_msg;
-	spec_msg.set_e_2(estate->e()*estate->e());
-	spec_msg.set_aver_a_2(sum_a_2/estate->particles_size());
-	spec_msg.set_aver_eta(2.0/config->r_e()/config->m()*sum_eta);
-	spec_msg.set_int_e_a(estate->e()*estate->e()+1.0/config->n()/estate->particles_size()*sum_a_2);
-	chart_analyzer->processSpecial(&spec_msg, this->total_time);
+
+	Wa/=N; Wb/=N;
+
+	spec_msg->set_e_2(estate->e()*estate->e());
+	spec_msg->set_aver_a_2(sum_a_2/estate->particles_size());
+	spec_msg->set_aver_eta(2.0/config->r_e()/config->m()*sum_eta);
+	spec_msg->set_int_e_a(estate->e()*estate->e()+1.0/config->n()/estate->particles_size()*sum_a_2);
+
+	spec_msg->set_na(Na);
+	spec_msg->set_nb(Nb);
+	spec_msg->set_ia(Ia);
+	spec_msg->set_ib(Ib);
+	spec_msg->set_wa(Wa);
+	spec_msg->set_wb(Wb);
+
+	//TODO: delete sum_***
+//	sum_ia += Ia*dT; sum_ib += Ib*dT;
+//	sum_wa += Wa*dT; sum_wb += Wb*dT;
+
+	spec_msg->set_ia_aver(Ia/Na);
+	spec_msg->set_ib_aver(Ib/Nb);
+	spec_msg->set_wa_aver(Wa/Na);
+	spec_msg->set_wb_aver(Wb/Nb);
+
+	spec_msg->set_na_eff((double)Na/N);
+	spec_msg->set_nb_eff((double)Nb/N);
+	spec_msg->set_n(spec_msg->na_eff() + spec_msg->nb_eff());
+	spec_msg->set_m(spec_msg->na_eff() - spec_msg->nb_eff());
 }
 
 const OdeConfig* HelloWorld::extract_config(){
@@ -197,6 +289,11 @@ void HelloWorld::on_reset_clicked()
 
 	total_steps = 0;
 	total_time = 0.0;
+	last_refresh_time = 0.0;
+
+	sum_ia = 0.0; sum_ib = 0.0;
+	sum_wa = 0.0; sum_wb = 0.0;
+
 	show_steps_and_time();
 	this->chart_analyzer->reset();
 }
@@ -269,8 +366,8 @@ void HelloWorld::run_stepped_cb(){
 	if(total_steps % steps == 0 || total_time-last_refresh_time >= time){
 		this->state = final_state;
 		this->d_state = final_d_state;
-		last_refresh_time = total_time;
 		this->show_new_state();
+		last_refresh_time = total_time;
 	}
 }
 

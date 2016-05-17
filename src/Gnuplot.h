@@ -11,11 +11,13 @@
 #include <google/protobuf/message.h>
 
 #include <vector>
+#include <map>
 #include <string>
 
 class Gnuplot {
 public:
 	enum style_enum{STYLE_LINES, STYLE_POINTS};
+	static std::map<std::string, std::string> title_translation_map;
 private:
 	struct serie{
 		std::string var_name;
@@ -24,6 +26,7 @@ private:
 	};
 
 	FILE* to_gnuplot;
+	int x_win_id;
 	std::string  title;
 	int width, height;
 	style_enum style;
@@ -33,7 +36,7 @@ private:
 	bool polar;
 	std::vector<serie> series;
 public:
-	Gnuplot();
+	Gnuplot(int x_win_id=0);
 
 	void processState(const google::protobuf::Message* state, const google::protobuf::Message* d_state = NULL, double time = 0.0);
 	void processToFile(const std::string& file, const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time);
@@ -98,6 +101,9 @@ public:
 
 	void writeback();
 	void restore();
+
+	void setXRange(double from, double to);
+	void setYRange(double from, double to);
 
 private:
 	void update_view();

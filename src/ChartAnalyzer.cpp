@@ -233,6 +233,7 @@ private:
 ChartAnalyzer::ChartAnalyzer(const OdeConfig* config) {
 	states_count = 0;
 	last_state = NULL;
+	last_d_state = NULL;
 	special_msg = NULL;
 
 	btn_add.set_label("Add chart");
@@ -273,8 +274,16 @@ void ChartAnalyzer::reset(){
 }
 
 void ChartAnalyzer::processState(const OdeState* state, const OdeState* d_state, double time){
-	this->last_state = state;
-	this->last_d_state = d_state;
+	if(last_state){
+		delete last_state; last_state = NULL;
+	}
+	if(last_d_state){
+		delete last_d_state; last_d_state = NULL;
+	}
+
+	last_state = state->clone();
+	if(d_state)
+		last_d_state = d_state->clone();
 	last_time = time;
 
 	const google::protobuf::Message* msg = dynamic_cast<const google::protobuf::Message*>(state);
@@ -333,10 +342,14 @@ std::string trim(const std::string& str,
     return str.substr(strBegin, strRange);
 }
 
-void ChartAnalyzer::addChart(const google::protobuf::Message* msg, std::vector<std::string> vars, std::string x_axis_var, bool polar){
+// TODO: yrange param is too much %)
+void ChartAnalyzer::addChart(const google::protobuf::Message* msg, std::vector<std::string> vars, std::string x_axis_var, bool polar, int x_win_id, double yrange){
 	std::ostringstream full_title;
 
-	Gnuplot* p = new Gnuplot();
+	Gnuplot* p = new Gnuplot(x_win_id);
+	if(yrange > 0){
+			p->setYRange(0, yrange);
+	}
 
 	p->setPolar(polar);
 
@@ -396,7 +409,7 @@ void ChartAnalyzer::on_del_chart_clicked(Gtk::Widget* w, const Gnuplot* ptr){
 
 void ChartAnalyzer::on_writeback_clicked(Gnuplot* ptr){
 	ptr->writeback();
-	ptr->processState(dynamic_cast<const Message*>(last_state), dynamic_cast<const Message*>(last_d_state), last_time);
+	//ptr->processState(dynamic_cast<const Message*>(last_state), dynamic_cast<const Message*>(last_d_state), last_time);
 }
 
 void ChartAnalyzer::on_restore_clicked(Gnuplot* ptr){

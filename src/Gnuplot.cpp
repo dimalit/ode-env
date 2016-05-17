@@ -16,9 +16,20 @@
 
 using namespace google::protobuf;
 
-Gnuplot::Gnuplot() {
-	width = 400;
-	height = 400;
+std::map<std::string, std::string> Gnuplot::title_translation_map;
+
+Gnuplot::Gnuplot(int x_win_id) {
+	this->x_win_id = x_win_id;
+
+	if(x_win_id==0){
+		width = 400;
+		height = 400;
+	}
+	else{
+		width = 600;
+		height = 200;
+	}
+
 	title = "";
 	x_axis = "";			// time/index
 	derivative_x = false;
@@ -33,6 +44,10 @@ Gnuplot::Gnuplot() {
 		perror(NULL);
 		assert(false);
 	}
+
+	fprintf(to_gnuplot, "set encoding utf8\n");
+	fprintf(to_gnuplot, "symbol(z) = \"•✷+△♠□♣♥♦\"[int(z):int(z)]\n");
+	fflush(to_gnuplot);
 
 	update_view();
 }
@@ -70,16 +85,24 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 	for(int i=0; i<series.size(); i++){
 		serie& s = series[i];
 
+		bool need_series_wrap = false;//!!getXAxisTime() && !polar && this->x_axis.find("ksi") != std::string::npos;
+		bool need_coloring = s.var_name=="particles.a" && d_refl;
+
 		if(s.derivative && !d_msg)
 			continue;
 
 		if(i!=0)
 			plot_command << ", ";
 
-		std::string style = this->style == STYLE_LINES ? "linespoints" : "points ps 0.2";
+		std::string style = this->style == STYLE_LINES ? "lines" : "points ps 0.5";
+		if(need_coloring){
+			style += " lc variable";
+		}
 		string title = s.var_name;
 		if(s.derivative)
 			title += '\'';
+		if(title_translation_map.count(title))
+			title = title_translation_map[title];
 //		if(polar)
 //			plot_command << "0.5, ";
 		plot_command << "'-' with " << style << " title \"" << title <<"\"";
@@ -120,7 +143,6 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 				assert(!d_fd1 || refl->FieldSize(*msg, fd1) == d_refl->FieldSize(*msg, d_fd1));
 
 			double prev_x = -100;
-			bool need_series_wrap = false;//!!getXAxisTime() && !polar && this->x_axis.find("ksi") != std::string::npos;
 
 			for(int i=0; i<n; i++){
 				const Message& m2 = s.derivative ? d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : refl->GetRepeatedMessage(*msg, fd1, i);
@@ -153,9 +175,20 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 				}
 
 				if(polar)
-					super_buffer << x/0.5*M_PI << " " << y << "\n";
+					super_buffer << x/0.5*M_PI << " " << y;
 				else
-					super_buffer << x << " " << y << "\n";
+					super_buffer << x << " " << y;
+
+				if(need_coloring){
+					const Message& d_m2 = d_refl->GetRepeatedMessage(*d_msg, d_fd1, i);
+					double dy = d_m2.GetReflection()->GetDouble(d_m2, d_m2.GetDescriptor()->FindFieldByName(f2));
+					if(dy>0)
+						super_buffer << " 7";
+					else
+						super_buffer << " 1";
+				}
+
+				super_buffer << "\n";
 
 				prev_x = x;
 			}// for points
@@ -175,7 +208,10 @@ void Gnuplot::processToFile(const std::string& file, const google::protobuf::Mes
 	fprintf(to_gnuplot, "set terminal png\n");
 	fprintf(to_gnuplot, "set output \"%s\"\n", file.c_str());
 	processState(msg, d_msg, time);
-	fprintf(to_gnuplot, "set terminal x11\n");
+	if(x_win_id)
+		fprintf(to_gnuplot, "set terminal x11 window \"%x\"\n", x_win_id);
+	else
+		fprintf(to_gnuplot, "set terminal x11 window\n");
 	fflush(to_gnuplot);
 
 }
@@ -210,6 +246,21 @@ void Gnuplot::restore() {
 	fflush(to_gnuplot);
 }
 
+void Gnuplot::setXRange(double from, double to){
+	if(to != std::numeric_limits<double>::infinity())
+		fprintf(to_gnuplot, "set xrange [%lf:%lf]\n", from, to);
+	else
+		fprintf(to_gnuplot, "set xrange [%lf:*]\n", from);
+	fflush(to_gnuplot);
+}
+void Gnuplot::setYRange(double from, double to){
+	if(to != std::numeric_limits<double>::infinity())
+		fprintf(to_gnuplot, "set yrange [%lf:%lf]\n", from, to);
+	else
+		fprintf(to_gnuplot, "set yrange [%lf:*]\n", from);
+	fflush(to_gnuplot);
+}
+
 Gnuplot::~Gnuplot() {
 	fprintf(to_gnuplot, "exit\n");
 	fflush(to_gnuplot);
@@ -217,7 +268,10 @@ Gnuplot::~Gnuplot() {
 }
 
 void Gnuplot::update_view(){
-	fprintf(to_gnuplot, "set terminal x11 size %d, %d title \"%s\"\n", width, height, title.c_str());
+	stringstream win;
+	if(x_win_id)
+		win << "window \"0x" << std::hex << x_win_id << "\"";
+	fprintf(to_gnuplot, "set terminal x11 size %d, %d title \"%s\" %s noraise\n", width, height, title.c_str(), win.str().c_str());
 	//fprintf(to_gnuplot, "set xrange [*:*] writeback\n");
 //	fprintf(to_gnuplot, "set xrange [-0.25:-0.05] writeback\n");
 //	fprintf(to_gnuplot, "set yrange [0:0.01] writeback\n");

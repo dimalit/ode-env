@@ -89,9 +89,14 @@ private:
   const OdeConfig* extract_config();
   const OdeState* extract_state();
   const OdeSolverConfig* extract_solver_config();
+  void fill_spec_msg(pb::E3Special*);
 
   const OdeState* state;
   const OdeState* d_state;
+
+  // for diagnostics
+  double sum_ia, sum_ib;
+  double sum_wa, sum_wb;
 
   // Member widgets:
   OdeConfigWidget* config_widget;
