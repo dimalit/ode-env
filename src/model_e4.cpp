@@ -41,7 +41,7 @@ E4PetscSolverConfig::E4PetscSolverConfig(){
 	set_atol(1e-6);
 	set_rtol(1e-6);
 	set_init_step(0.01);
-	set_n_cores(4);
+	set_n_cores(1);
 }
 
 E4PetscSolver::E4PetscSolver(const E4PetscSolverConfig* scfg, const E4Config* pcfg, const E4State* init_state){

@@ -39,7 +39,6 @@ message E4Solution{
 message E4Special{
 	optional double e_2 = 1;
 	optional double aver_a_2 = 2;
-	optional double aver_eta = 3;
 	optional double int_e_a = 4;
 	optional double Na = 5;
 	optional double Nb = 6;

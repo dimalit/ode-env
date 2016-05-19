@@ -719,13 +719,6 @@ class E4Special : public ::google::protobuf::Message {
   inline double aver_a_2() const;
   inline void set_aver_a_2(double value);
 
-  // optional double aver_eta = 3;
-  inline bool has_aver_eta() const;
-  inline void clear_aver_eta();
-  static const int kAverEtaFieldNumber = 3;
-  inline double aver_eta() const;
-  inline void set_aver_eta(double value);
-
   // optional double int_e_a = 4;
   inline bool has_int_e_a() const;
   inline void clear_int_e_a();
@@ -809,8 +802,6 @@ class E4Special : public ::google::protobuf::Message {
   inline void clear_has_e_2();
   inline void set_has_aver_a_2();
   inline void clear_has_aver_a_2();
-  inline void set_has_aver_eta();
-  inline void clear_has_aver_eta();
   inline void set_has_int_e_a();
   inline void clear_has_int_e_a();
   inline void set_has_na();
@@ -840,7 +831,6 @@ class E4Special : public ::google::protobuf::Message {
   mutable int _cached_size_;
   double e_2_;
   double aver_a_2_;
-  double aver_eta_;
   double int_e_a_;
   double na_;
   double nb_;
@@ -1461,39 +1451,15 @@ inline void E4Special::set_aver_a_2(double value) {
   // @@protoc_insertion_point(field_set:pb.E4Special.aver_a_2)
 }
 
-// optional double aver_eta = 3;
-inline bool E4Special::has_aver_eta() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void E4Special::set_has_aver_eta() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void E4Special::clear_has_aver_eta() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void E4Special::clear_aver_eta() {
-  aver_eta_ = 0;
-  clear_has_aver_eta();
-}
-inline double E4Special::aver_eta() const {
-  // @@protoc_insertion_point(field_get:pb.E4Special.aver_eta)
-  return aver_eta_;
-}
-inline void E4Special::set_aver_eta(double value) {
-  set_has_aver_eta();
-  aver_eta_ = value;
-  // @@protoc_insertion_point(field_set:pb.E4Special.aver_eta)
-}
-
 // optional double int_e_a = 4;
 inline bool E4Special::has_int_e_a() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
 inline void E4Special::set_has_int_e_a() {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000004u;
 }
 inline void E4Special::clear_has_int_e_a() {
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void E4Special::clear_int_e_a() {
   int_e_a_ = 0;
@@ -1511,13 +1477,13 @@ inline void E4Special::set_int_e_a(double value) {
 
 // optional double Na = 5;
 inline bool E4Special::has_na() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
 inline void E4Special::set_has_na() {
-  _has_bits_[0] |= 0x00000010u;
+  _has_bits_[0] |= 0x00000008u;
 }
 inline void E4Special::clear_has_na() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void E4Special::clear_na() {
   na_ = 0;
@@ -1535,13 +1501,13 @@ inline void E4Special::set_na(double value) {
 
 // optional double Nb = 6;
 inline bool E4Special::has_nb() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
+  return (_has_bits_[0] & 0x00000010u) != 0;
 }
 inline void E4Special::set_has_nb() {
-  _has_bits_[0] |= 0x00000020u;
+  _has_bits_[0] |= 0x00000010u;
 }
 inline void E4Special::clear_has_nb() {
-  _has_bits_[0] &= ~0x00000020u;
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void E4Special::clear_nb() {
   nb_ = 0;
@@ -1559,13 +1525,13 @@ inline void E4Special::set_nb(double value) {
 
 // optional double M = 17;
 inline bool E4Special::has_m() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+  return (_has_bits_[0] & 0x00000020u) != 0;
 }
 inline void E4Special::set_has_m() {
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000020u;
 }
 inline void E4Special::clear_has_m() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000020u;
 }
 inline void E4Special::clear_m() {
   m_ = 0;
@@ -1583,13 +1549,13 @@ inline void E4Special::set_m(double value) {
 
 // optional double N = 18;
 inline bool E4Special::has_n() const {
-  return (_has_bits_[0] & 0x00000080u) != 0;
+  return (_has_bits_[0] & 0x00000040u) != 0;
 }
 inline void E4Special::set_has_n() {
-  _has_bits_[0] |= 0x00000080u;
+  _has_bits_[0] |= 0x00000040u;
 }
 inline void E4Special::clear_has_n() {
-  _has_bits_[0] &= ~0x00000080u;
+  _has_bits_[0] &= ~0x00000040u;
 }
 inline void E4Special::clear_n() {
   n_ = 0;
@@ -1607,13 +1573,13 @@ inline void E4Special::set_n(double value) {
 
 // optional double Ia = 7;
 inline bool E4Special::has_ia() const {
-  return (_has_bits_[0] & 0x00000100u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 inline void E4Special::set_has_ia() {
-  _has_bits_[0] |= 0x00000100u;
+  _has_bits_[0] |= 0x00000080u;
 }
 inline void E4Special::clear_has_ia() {
-  _has_bits_[0] &= ~0x00000100u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void E4Special::clear_ia() {
   ia_ = 0;
@@ -1631,13 +1597,13 @@ inline void E4Special::set_ia(double value) {
 
 // optional double Ib = 8;
 inline bool E4Special::has_ib() const {
-  return (_has_bits_[0] & 0x00000200u) != 0;
+  return (_has_bits_[0] & 0x00000100u) != 0;
 }
 inline void E4Special::set_has_ib() {
-  _has_bits_[0] |= 0x00000200u;
+  _has_bits_[0] |= 0x00000100u;
 }
 inline void E4Special::clear_has_ib() {
-  _has_bits_[0] &= ~0x00000200u;
+  _has_bits_[0] &= ~0x00000100u;
 }
 inline void E4Special::clear_ib() {
   ib_ = 0;
@@ -1655,13 +1621,13 @@ inline void E4Special::set_ib(double value) {
 
 // optional double Ia_aver = 9;
 inline bool E4Special::has_ia_aver() const {
-  return (_has_bits_[0] & 0x00000400u) != 0;
+  return (_has_bits_[0] & 0x00000200u) != 0;
 }
 inline void E4Special::set_has_ia_aver() {
-  _has_bits_[0] |= 0x00000400u;
+  _has_bits_[0] |= 0x00000200u;
 }
 inline void E4Special::clear_has_ia_aver() {
-  _has_bits_[0] &= ~0x00000400u;
+  _has_bits_[0] &= ~0x00000200u;
 }
 inline void E4Special::clear_ia_aver() {
   ia_aver_ = 0;
@@ -1679,13 +1645,13 @@ inline void E4Special::set_ia_aver(double value) {
 
 // optional double Ib_aver = 10;
 inline bool E4Special::has_ib_aver() const {
-  return (_has_bits_[0] & 0x00000800u) != 0;
+  return (_has_bits_[0] & 0x00000400u) != 0;
 }
 inline void E4Special::set_has_ib_aver() {
-  _has_bits_[0] |= 0x00000800u;
+  _has_bits_[0] |= 0x00000400u;
 }
 inline void E4Special::clear_has_ib_aver() {
-  _has_bits_[0] &= ~0x00000800u;
+  _has_bits_[0] &= ~0x00000400u;
 }
 inline void E4Special::clear_ib_aver() {
   ib_aver_ = 0;
@@ -1703,13 +1669,13 @@ inline void E4Special::set_ib_aver(double value) {
 
 // optional double Wa = 11;
 inline bool E4Special::has_wa() const {
-  return (_has_bits_[0] & 0x00001000u) != 0;
+  return (_has_bits_[0] & 0x00000800u) != 0;
 }
 inline void E4Special::set_has_wa() {
-  _has_bits_[0] |= 0x00001000u;
+  _has_bits_[0] |= 0x00000800u;
 }
 inline void E4Special::clear_has_wa() {
-  _has_bits_[0] &= ~0x00001000u;
+  _has_bits_[0] &= ~0x00000800u;
 }
 inline void E4Special::clear_wa() {
   wa_ = 0;
@@ -1727,13 +1693,13 @@ inline void E4Special::set_wa(double value) {
 
 // optional double Wb = 12;
 inline bool E4Special::has_wb() const {
-  return (_has_bits_[0] & 0x00002000u) != 0;
+  return (_has_bits_[0] & 0x00001000u) != 0;
 }
 inline void E4Special::set_has_wb() {
-  _has_bits_[0] |= 0x00002000u;
+  _has_bits_[0] |= 0x00001000u;
 }
 inline void E4Special::clear_has_wb() {
-  _has_bits_[0] &= ~0x00002000u;
+  _has_bits_[0] &= ~0x00001000u;
 }
 inline void E4Special::clear_wb() {
   wb_ = 0;

@@ -108,7 +108,7 @@ E4StateGeneratorWidget::E4StateGeneratorWidget(const E4Config* _config){
 
 	entry_e->set_text("0.01");
 	entry_phi->set_text("0.0");
-	entry_a0->set_text("0.0");
+	entry_a0->set_text("1.0");
 
 	// signals
 	entry_e->signal_changed().connect(sigc::mem_fun(*this, &E4StateGeneratorWidget::edit_anything_cb));
@@ -171,15 +171,16 @@ void E4StateGeneratorWidget::newState(bool emit){
 
 	double h = (right-left)/250;
 
-	// particles 1
 	for(int i=0; i<N; i++){
 		double psi = rand() / (double)RAND_MAX * (right-left) + left;
 		double z = i / (double)N * (right-left) + left;
+		double delta = rand() / (double)RAND_MAX * (2*config->delta_0()) - config->delta_0();
 
 		pb::E4State::Particles p;
 		p.set_a(a0);
-		p.set_a(psi);
+		p.set_psi(psi);
 		p.set_z(z);
+		p.set_delta(delta);
 
 		state->mutable_particles(i)->CopyFrom(p);
 	}

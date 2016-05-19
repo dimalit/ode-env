@@ -154,10 +154,9 @@ void protobuf_AssignDesc_model_5fe4_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E4Solution));
   E4Special_descriptor_ = file->message_type(5);
-  static const int E4Special_offsets_[14] = {
+  static const int E4Special_offsets_[13] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, e_2_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, aver_a_2_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, aver_eta_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, int_e_a_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, na_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, nb_),
@@ -246,12 +245,12 @@ void protobuf_AddDesc_model_5fe4_2eproto() {
     "b.E4Config\022\032\n\005state\030\002 \002(\0132\013.pb.E4State\022("
     "\n\007sconfig\030\003 \002(\0132\027.pb.E4PetscSolverConfig"
     "\"F\n\nE4Solution\022\032\n\005state\030\001 \002(\0132\013.pb.E4Sta"
-    "te\022\034\n\007d_state\030\002 \001(\0132\013.pb.E4State\"\315\001\n\tE4S"
-    "pecial\022\013\n\003e_2\030\001 \001(\001\022\020\n\010aver_a_2\030\002 \001(\001\022\020\n"
-    "\010aver_eta\030\003 \001(\001\022\017\n\007int_e_a\030\004 \001(\001\022\n\n\002Na\030\005"
-    " \001(\001\022\n\n\002Nb\030\006 \001(\001\022\t\n\001M\030\021 \001(\001\022\t\n\001N\030\022 \001(\001\022\n"
-    "\n\002Ia\030\007 \001(\001\022\n\n\002Ib\030\010 \001(\001\022\017\n\007Ia_aver\030\t \001(\001\022"
-    "\017\n\007Ib_aver\030\n \001(\001\022\n\n\002Wa\030\013 \001(\001\022\n\n\002Wb\030\014 \001(\001", 680);
+    "te\022\034\n\007d_state\030\002 \001(\0132\013.pb.E4State\"\273\001\n\tE4S"
+    "pecial\022\013\n\003e_2\030\001 \001(\001\022\020\n\010aver_a_2\030\002 \001(\001\022\017\n"
+    "\007int_e_a\030\004 \001(\001\022\n\n\002Na\030\005 \001(\001\022\n\n\002Nb\030\006 \001(\001\022\t"
+    "\n\001M\030\021 \001(\001\022\t\n\001N\030\022 \001(\001\022\n\n\002Ia\030\007 \001(\001\022\n\n\002Ib\030\010"
+    " \001(\001\022\017\n\007Ia_aver\030\t \001(\001\022\017\n\007Ib_aver\030\n \001(\001\022\n"
+    "\n\002Wa\030\013 \001(\001\022\n\n\002Wb\030\014 \001(\001", 662);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e4.proto", &protobuf_RegisterTypes);
   E4Config::default_instance_ = new E4Config();
@@ -2158,7 +2157,6 @@ void E4Solution::Swap(E4Solution* other) {
 #ifndef _MSC_VER
 const int E4Special::kE2FieldNumber;
 const int E4Special::kAverA2FieldNumber;
-const int E4Special::kAverEtaFieldNumber;
 const int E4Special::kIntEAFieldNumber;
 const int E4Special::kNaFieldNumber;
 const int E4Special::kNbFieldNumber;
@@ -2192,7 +2190,6 @@ void E4Special::SharedCtor() {
   _cached_size_ = 0;
   e_2_ = 0;
   aver_a_2_ = 0;
-  aver_eta_ = 0;
   int_e_a_ = 0;
   na_ = 0;
   nb_ = 0;
@@ -2250,10 +2247,10 @@ void E4Special::Clear() {
   } while (0)
 
   if (_has_bits_[0 / 32] & 255) {
-    ZR_(e_2_, n_);
+    ZR_(e_2_, ia_);
   }
-  if (_has_bits_[8 / 32] & 16128) {
-    ZR_(ia_, wb_);
+  if (_has_bits_[8 / 32] & 7936) {
+    ZR_(ib_, wb_);
   }
 
 #undef OFFSET_OF_FIELD_
@@ -2295,21 +2292,6 @@ bool E4Special::MergePartialFromCodedStream(
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
                  input, &aver_a_2_)));
           set_has_aver_a_2();
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(25)) goto parse_aver_eta;
-        break;
-      }
-
-      // optional double aver_eta = 3;
-      case 3: {
-        if (tag == 25) {
-         parse_aver_eta:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 input, &aver_eta_)));
-          set_has_aver_eta();
         } else {
           goto handle_unusual;
         }
@@ -2517,11 +2499,6 @@ void E4Special::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->aver_a_2(), output);
   }
 
-  // optional double aver_eta = 3;
-  if (has_aver_eta()) {
-    ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->aver_eta(), output);
-  }
-
   // optional double int_e_a = 4;
   if (has_int_e_a()) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(4, this->int_e_a(), output);
@@ -2595,11 +2572,6 @@ void E4Special::SerializeWithCachedSizes(
   // optional double aver_a_2 = 2;
   if (has_aver_a_2()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(2, this->aver_a_2(), target);
-  }
-
-  // optional double aver_eta = 3;
-  if (has_aver_eta()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->aver_eta(), target);
   }
 
   // optional double int_e_a = 4;
@@ -2679,11 +2651,6 @@ int E4Special::ByteSize() const {
       total_size += 1 + 8;
     }
 
-    // optional double aver_eta = 3;
-    if (has_aver_eta()) {
-      total_size += 1 + 8;
-    }
-
     // optional double int_e_a = 4;
     if (has_int_e_a()) {
       total_size += 1 + 8;
@@ -2709,13 +2676,13 @@ int E4Special::ByteSize() const {
       total_size += 2 + 8;
     }
 
-  }
-  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
     // optional double Ia = 7;
     if (has_ia()) {
       total_size += 1 + 8;
     }
 
+  }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
     // optional double Ib = 8;
     if (has_ib()) {
       total_size += 1 + 8;
@@ -2774,9 +2741,6 @@ void E4Special::MergeFrom(const E4Special& from) {
     if (from.has_aver_a_2()) {
       set_aver_a_2(from.aver_a_2());
     }
-    if (from.has_aver_eta()) {
-      set_aver_eta(from.aver_eta());
-    }
     if (from.has_int_e_a()) {
       set_int_e_a(from.int_e_a());
     }
@@ -2792,11 +2756,11 @@ void E4Special::MergeFrom(const E4Special& from) {
     if (from.has_n()) {
       set_n(from.n());
     }
-  }
-  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
     if (from.has_ia()) {
       set_ia(from.ia());
     }
+  }
+  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
     if (from.has_ib()) {
       set_ib(from.ib());
     }
@@ -2837,7 +2801,6 @@ void E4Special::Swap(E4Special* other) {
   if (other != this) {
     std::swap(e_2_, other->e_2_);
     std::swap(aver_a_2_, other->aver_a_2_);
-    std::swap(aver_eta_, other->aver_eta_);
     std::swap(int_e_a_, other->int_e_a_);
     std::swap(na_, other->na_);
     std::swap(nb_, other->nb_);

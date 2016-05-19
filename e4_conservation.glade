@@ -87,11 +87,11 @@
             <property name="fixed_height_mode">True</property>
             <property name="enable_grid_lines">both</property>
             <child>
-              <object class="GtkTreeViewColumn" id="eta">
+              <object class="GtkTreeViewColumn" id="A">
                 <property name="resizable">True</property>
                 <property name="sizing">fixed</property>
                 <property name="fixed_width">100</property>
-                <property name="title" translatable="yes">eta</property>
+                <property name="title" translatable="yes">A</property>
                 <child>
                   <object class="GtkCellRendererText" id="cellrenderertext1"/>
                   <attributes>
@@ -101,11 +101,11 @@
               </object>
             </child>
             <child>
-              <object class="GtkTreeViewColumn" id="a">
+              <object class="GtkTreeViewColumn" id="psi">
                 <property name="resizable">True</property>
                 <property name="sizing">fixed</property>
                 <property name="fixed_width">100</property>
-                <property name="title" translatable="yes">a</property>
+                <property name="title" translatable="yes">psi</property>
                 <child>
                   <object class="GtkCellRendererText" id="cellrenderertext2"/>
                   <attributes>
@@ -115,11 +115,11 @@
               </object>
             </child>
             <child>
-              <object class="GtkTreeViewColumn" id="ksi">
+              <object class="GtkTreeViewColumn" id="Z">
                 <property name="resizable">True</property>
                 <property name="sizing">fixed</property>
                 <property name="fixed_width">100</property>
-                <property name="title" translatable="yes">ksi</property>
+                <property name="title" translatable="yes">Z</property>
                 <child>
                   <object class="GtkCellRendererText" id="cellrenderertext3"/>
                   <attributes>
@@ -129,11 +129,11 @@
               </object>
             </child>
             <child>
-              <object class="GtkTreeViewColumn" id="integral">
+              <object class="GtkTreeViewColumn" id="delta">
                 <property name="resizable">True</property>
                 <property name="sizing">fixed</property>
                 <property name="fixed_width">100</property>
-                <property name="title" translatable="yes">integral</property>
+                <property name="title" translatable="yes">delta</property>
                 <child>
                   <object class="GtkCellRendererText" id="cellrenderertext4"/>
                   <attributes>

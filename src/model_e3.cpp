@@ -62,7 +62,7 @@ E3PetscSolverConfig::E3PetscSolverConfig(){
 	set_init_step(0.01);
 	set_solver(E3PetscSolverConfig::rhs);
 	set_model("tm");
-	set_n_cores(4);
+	set_n_cores(1);
 }
 
 E3PetscSolver::E3PetscSolver(const E3PetscSolverConfig* scfg, const E3Config* pcfg, const E3State* init_state){

@@ -8,7 +8,7 @@
  ============================================================================
  */
 
-#include "HelloWorld.h"
+#include "HelloWorld2.h"
 
 #include <gtkmm/main.h>
 #include <gtkmm/builder.h>
@@ -23,10 +23,10 @@
 
 #define UI_FILE_RUN "sim_params.glade"
 
-HelloWorld::HelloWorld()
+HelloWorld2::HelloWorld2()
 :forever_button("Forever"), cancel_button("Cancel"), step_button("Step"), reset_button("Reset")
 {
-  problem_name = "model e3";
+  problem_name = "model e4";
 
   computing = false;
   run_thread = NULL;
@@ -34,9 +34,6 @@ HelloWorld::HelloWorld()
   total_steps = run_steps = 0;
   total_time = run_time = 0.0;
   last_refresh_time = 0.0;
-
-  sum_ia = 0.0; sum_ib = 0.0;
-  sum_wa = 0.0; sum_wb = 0.0;
 
   this->set_title(problem_name);
 
@@ -64,7 +61,7 @@ HelloWorld::HelloWorld()
   vbox.pack_start(*this->solver_config_widget, false, false, 0);
 
   state = this->generator_widget->getState();
-  d_state = new E3State(dynamic_cast<const E3Config*>(this->config_widget->getConfig()));
+  d_state = new E4State(dynamic_cast<const E4Config*>(this->config_widget->getConfig()));
 
   // simulator config //
   Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_RUN);
@@ -100,24 +97,24 @@ HelloWorld::HelloWorld()
 
   chart_analyzer = new ChartAnalyzer(config_widget->getConfig());
   chart_analyzer->processState(state,  d_state, 0.0);
-  pb::E3Special* spec_msg = new pb::E3Special();
+  pb::E4Special* spec_msg = new pb::E4Special();
   chart_analyzer->addSpecial(spec_msg);
   vb->pack_start(*chart_analyzer, false, false);
 
   // signals //
 
   config_widget->signal_changed().connect(sigc::mem_fun(*this,
-              &HelloWorld::on_config_changed));
+              &HelloWorld2::on_config_changed));
   generator_widget->signal_changed().connect(sigc::mem_fun(*this,
-              &HelloWorld::on_state_changed));
+              &HelloWorld2::on_state_changed));
   forever_button.signal_clicked().connect(sigc::mem_fun(*this,
-              &HelloWorld::on_forever_clicked));
+              &HelloWorld2::on_forever_clicked));
   step_button.signal_clicked().connect(sigc::mem_fun(*this,
-              &HelloWorld::on_step_clicked));
+              &HelloWorld2::on_step_clicked));
   reset_button.signal_clicked().connect(sigc::mem_fun(*this,
-              &HelloWorld::on_reset_clicked));
+              &HelloWorld2::on_reset_clicked));
   cancel_button.signal_clicked().connect(sigc::mem_fun(*this,
-              &HelloWorld::on_cancel_clicked));
+              &HelloWorld2::on_cancel_clicked));
 
   this->show_all();
   win_analyzers.show_all();
@@ -158,50 +155,48 @@ HelloWorld::HelloWorld()
   chart_analyzer->addChart(spec_msg,std::vector<std::string>({"e_2", "aver_a_2"}),"",false, s3->get_id());
 }
 
-HelloWorld::~HelloWorld()
+HelloWorld2::~HelloWorld2()
 {
 }
 
-void HelloWorld::on_config_changed()
+void HelloWorld2::on_config_changed()
 {
-	d_state = new E3State(dynamic_cast<const E3Config*>(config_widget->getConfig()));
+	d_state = new E4State(dynamic_cast<const E4Config*>(config_widget->getConfig()));
 	generator_widget->loadConfig(config_widget->getConfig());
 }
-void HelloWorld::on_state_changed(){
+void HelloWorld2::on_state_changed(){
 	this->state = generator_widget->getState();
 	show_new_state();
 }
-void HelloWorld::show_new_state()
+void HelloWorld2::show_new_state()
 {
 	analyzer_widget->loadConfig(config_widget->getConfig());
 	analyzer_widget->processState(state, d_state, this->total_time);
 	chart_analyzer->processState(state, d_state, this->total_time);
 
-	pb::E3Special spec_msg;
+	pb::E4Special spec_msg;
 	fill_spec_msg(&spec_msg);
 	chart_analyzer->processSpecial(&spec_msg, this->total_time);
 }
 
-void HelloWorld::fill_spec_msg(pb::E3Special* spec_msg){
-	const E3State* estate = dynamic_cast<const E3State*>(state);
-	const E3State* dstate = dynamic_cast<const E3State*>(this->d_state);
-	const E3Config* config = dynamic_cast<const E3Config*>(config_widget->getConfig());
+void HelloWorld2::fill_spec_msg(pb::E4Special* spec_msg){
+	const E4State* estate = dynamic_cast<const E4State*>(state);
+	const E4State* dstate = dynamic_cast<const E4State*>(this->d_state);
+	const E4Config* config = dynamic_cast<const E4Config*>(config_widget->getConfig());
 
 	int N = estate->particles_size();
 	double T = this->total_time;
 	double dT = this->total_time - this->last_refresh_time;
 
 	double sum_a_2 = 0;
-	double sum_eta = 0;
 	double Na = 0, Nb = 0;			// da/dt>0 and <0
 	double Ia = 0.0, Ib = 0.0;	// sum da/dt
 	double Wa = 0.0, Wb = 0.0;	// sum a^2
 	for(int i=0; i<N; i++){
-		E3State::Particles p = estate->particles(i);
-		E3State::Particles dp = dstate->particles(i);
+		E4State::Particles p = estate->particles(i);
+		E4State::Particles dp = dstate->particles(i);
 
 		sum_a_2 += p.a()*p.a();
-		sum_eta += p.eta();
 
 		if(dp.a() > 0.0){
 			Na++;
@@ -220,7 +215,6 @@ void HelloWorld::fill_spec_msg(pb::E3Special* spec_msg){
 
 	spec_msg->set_e_2(estate->e()*estate->e());
 	spec_msg->set_aver_a_2(sum_a_2/estate->particles_size());
-	spec_msg->set_aver_eta(2.0/config->r_e()/config->m()*sum_eta);
 	spec_msg->set_int_e_a(estate->e()*estate->e()+1.0/config->n()/estate->particles_size()*sum_a_2);
 
 	spec_msg->set_na(Na);
@@ -230,27 +224,23 @@ void HelloWorld::fill_spec_msg(pb::E3Special* spec_msg){
 	spec_msg->set_wa(Wa);
 	spec_msg->set_wb(Wb);
 
-	//TODO: delete sum_***
-//	sum_ia += Ia*dT; sum_ib += Ib*dT;
-//	sum_wa += Wa*dT; sum_wb += Wb*dT;
-
 	spec_msg->set_ia_aver(Ia/Na);
 	spec_msg->set_ib_aver(Ib/Nb);
 	spec_msg->set_n(Na+Nb);
 	spec_msg->set_m(Na-Nb);
 }
 
-const OdeConfig* HelloWorld::extract_config(){
+const OdeConfig* HelloWorld2::extract_config(){
 	return config_widget->getConfig();
 }
-const OdeState* HelloWorld::extract_state(){
+const OdeState* HelloWorld2::extract_state(){
 	return generator_widget->getState();
 }
-const OdeSolverConfig* HelloWorld::extract_solver_config(){
+const OdeSolverConfig* HelloWorld2::extract_solver_config(){
 	return solver_config_widget->getConfig();
 }
 
-void HelloWorld::on_forever_clicked()
+void HelloWorld2::on_forever_clicked()
 {
   if(computing){
 	  stop_computing();
@@ -266,7 +256,7 @@ void HelloWorld::on_forever_clicked()
   forever_button.set_label("Stop");
 }
 
-void HelloWorld::on_step_clicked()
+void HelloWorld2::on_step_clicked()
 {
 	if(computing)
 		return;
@@ -274,7 +264,7 @@ void HelloWorld::on_step_clicked()
 	stop_computing();
 }
 
-void HelloWorld::on_reset_clicked()
+void HelloWorld2::on_reset_clicked()
 {
 	assert(!computing);
 
@@ -284,19 +274,16 @@ void HelloWorld::on_reset_clicked()
 	total_time = 0.0;
 	last_refresh_time = 0.0;
 
-	sum_ia = 0.0; sum_ib = 0.0;
-	sum_wa = 0.0; sum_wb = 0.0;
-
 	show_steps_and_time();
 	this->chart_analyzer->reset();
 }
 
-void HelloWorld::on_cancel_clicked()
+void HelloWorld2::on_cancel_clicked()
 {
   Gtk::Main::quit();
 }
 
-void HelloWorld::show_steps_and_time(){
+void HelloWorld2::show_steps_and_time(){
 	std::ostringstream buf;
 	buf << "sim time: " << total_time;
 	label_time->set_text(buf.str());
@@ -306,7 +293,7 @@ void HelloWorld::show_steps_and_time(){
 	label_steps->set_text(buf.str());
 }
 
-void HelloWorld::run_computing(bool use_step){
+void HelloWorld2::run_computing(bool use_step){
   assert(!computing);
   assert(!run_thread);
   assert(!solver);
@@ -328,8 +315,8 @@ void HelloWorld::run_computing(bool use_step){
   solver = OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first->createSolver(solver_config, config, state);
 
   run_thread = new RunThread(solver);
-  run_thread->getSignalFinished().connect(sigc::mem_fun(*this, &HelloWorld::run_finished_cb));
-  run_thread->getSignalStepped().connect(sigc::mem_fun(*this, &HelloWorld::run_stepped_cb));
+  run_thread->getSignalFinished().connect(sigc::mem_fun(*this, &HelloWorld2::run_finished_cb));
+  run_thread->getSignalStepped().connect(sigc::mem_fun(*this, &HelloWorld2::run_stepped_cb));
 
   computing = true;
   step_button.set_sensitive(false);
@@ -344,7 +331,7 @@ void HelloWorld::run_computing(bool use_step){
 	  run_thread->run(steps, time, use_step);
 }
 
-void HelloWorld::run_stepped_cb(){
+void HelloWorld2::run_stepped_cb(){
 
 	total_steps += solver->getSteps() - run_steps;
 	total_time  += solver->getTime()  - run_time;
@@ -364,7 +351,7 @@ void HelloWorld::run_stepped_cb(){
 	}
 }
 
-void HelloWorld::run_finished_cb(){
+void HelloWorld2::run_finished_cb(){
 	this->state = solver->getState()->clone();
 	delete run_thread;	run_thread = NULL;
 	delete solver;		solver = NULL;
@@ -375,7 +362,7 @@ void HelloWorld::run_finished_cb(){
 	reset_button.set_sensitive(true);
 }
 
-void HelloWorld::stop_computing(){
+void HelloWorld2::stop_computing(){
 	assert(computing);
 	run_thread->finish();
 	computing = false;

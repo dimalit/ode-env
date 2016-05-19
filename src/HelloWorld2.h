@@ -1,8 +1,7 @@
-#ifndef GTKMM_EXAMPLE_HELLOWORLD_H
-#define GTKMM_EXAMPLE_HELLOWORLD_H
+#ifndef GTKMM_EXAMPLE_HELLOWORLD2_H
+#define GTKMM_EXAMPLE_HELLOWORLD2_H
 
-#include "gui_e1.h"
-#include "gui_e3.h"
+#include "gui_e4.h"
 #include "ChartAnalyzer.h"
 #include "RunThread.h"
 
@@ -16,7 +15,7 @@
 
 #include <auto_ptr.h>
 
-class HelloWorld : public Gtk::Window
+class HelloWorld2 : public Gtk::Window
 {
 private:
   std::string problem_name;
@@ -24,8 +23,8 @@ private:
   RunThread* run_thread;
 
 public:
-  HelloWorld();
-  virtual ~HelloWorld();
+  HelloWorld2();
+  virtual ~HelloWorld2();
 
 private:
   int total_steps;
@@ -56,14 +55,10 @@ private:
   const OdeConfig* extract_config();
   const OdeState* extract_state();
   const OdeSolverConfig* extract_solver_config();
-  void fill_spec_msg(pb::E3Special*);
+  void fill_spec_msg(pb::E4Special*);
 
   const OdeState* state;
   const OdeState* d_state;
-
-  // for diagnostics
-  double sum_ia, sum_ib;
-  double sum_wa, sum_wb;
 
   // Member widgets:
   OdeConfigWidget* config_widget;
