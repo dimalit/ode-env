@@ -86,7 +86,7 @@ void E4PetscSolver::run(int steps, double time, bool use_step){
 	std::ostringstream cmd_stream;
 //	cmd_stream << "mpiexec -n "<< n_cores << " --host 192.168.0.101 ./Debug/ts3";
 //	cmd_stream << "mpiexec -n "<< n_cores << " --host 10.0.0.205 /home/dimalit/workspace/ts3/Debug/ts3";
-	cmd_stream << "mpiexec -n "<< n_cores << " ../ts3/Debug/ts3";// << " -info info.log";
+	cmd_stream << "mpiexec -n "<< n_cores << " ../ts4/Debug/ts4";// << " -info info.log";
 
 	std::string cmd = cmd_stream.str();
 	if(use_step)
