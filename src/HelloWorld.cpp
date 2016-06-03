@@ -215,8 +215,8 @@ void HelloWorld::fill_spec_msg(pb::E3Special* spec_msg){
 		}// Nb
 	}
 
-	Na/=N; Nb/=N;
 	Wa/=N; Wb/=N;
+	Na/=N; Nb/=N;
 
 	spec_msg->set_e_2(estate->e()*estate->e());
 	spec_msg->set_aver_a_2(sum_a_2/estate->particles_size());
@@ -234,8 +234,8 @@ void HelloWorld::fill_spec_msg(pb::E3Special* spec_msg){
 //	sum_ia += Ia*dT; sum_ib += Ib*dT;
 //	sum_wa += Wa*dT; sum_wb += Wb*dT;
 
-	spec_msg->set_ia_aver(Ia/Na);
-	spec_msg->set_ib_aver(Ib/Nb);
+	spec_msg->set_ia_aver(Ia/Na/N);
+	spec_msg->set_ib_aver(Ib/Nb/N);
 	spec_msg->set_n(Na+Nb);
 	spec_msg->set_m(Na-Nb);
 }

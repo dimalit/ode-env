@@ -178,6 +178,7 @@ void E4StateGeneratorWidget::newState(bool emit){
 
 		pb::E4State::Particles p;
 		p.set_a(a0);
+		//p.set_a(a0*(1.0+0.2*sin(int(psi-z+phi))));
 		p.set_psi(psi);
 		p.set_z(z);
 		p.set_delta(delta);

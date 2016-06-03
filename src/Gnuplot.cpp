@@ -165,7 +165,15 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 					const Descriptor* d2 = m2.GetDescriptor();
 					const Reflection* r2 = m2.GetReflection();
 					const FieldDescriptor* xfd = d2->FindFieldByName(xname);
-					x = r2->GetDouble(m2, xfd);
+
+					double dop = 0.0;
+					//!!!
+					if(xname=="psi"){
+						const FieldDescriptor* xfd = d2->FindFieldByName("z");
+						dop = r2->GetDouble(m2, xfd);
+					}
+
+					x = r2->GetDouble(m2, xfd) - dop;
 				}// if not time :(
 
 				// start new series if needed
@@ -175,7 +183,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 				}
 
 				if(polar)
-					super_buffer << x/0.5*M_PI << " " << y;
+					super_buffer << x/*/0.5*M_PI*/ << " " << y;
 				else
 					super_buffer << x << " " << y;
 
