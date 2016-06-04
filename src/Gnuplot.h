@@ -21,7 +21,7 @@ public:
 private:
 	struct serie{
 		std::string var_name;			// can contain '
-		std::vector<std::pair<double, double>> data_cache;
+		std::vector<std::pair<std::string, std::string>> data_cache;
 		bool is_expression;
 		std::vector<std::string> columns;
 		serie(){
@@ -65,7 +65,6 @@ public:
 	}
 
 	void addVar(std::string var);
-	void addExpression(std::string expr);
 	void eraseVar(int idx);
 	int getVarsCount() const {
 		return series.size();

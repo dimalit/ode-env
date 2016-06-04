@@ -43,7 +43,7 @@ public:
 	virtual int getStatesCount();
 	virtual ~ChartAnalyzer();
 
-	void addChart(const google::protobuf::Message* msg, std::vector<std::string> vars, std::string x_axis_var, bool polar, int x_win_id=0, double yrange=0.0);
+	void addChart(const google::protobuf::Message* msg, std::vector<std::string> vars, std::string x_axis_var="", bool polar=false, int x_win_id=0, double yrange=0.0);
 
 	void addSpecial(const google::protobuf::Message*);
 	void processSpecial(const google::protobuf::Message* msg, double time);

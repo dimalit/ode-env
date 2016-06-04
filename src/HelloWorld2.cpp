@@ -101,6 +101,11 @@ HelloWorld2::HelloWorld2()
   chart_analyzer->addSpecial(spec_msg);
   vb->pack_start(*chart_analyzer, false, false);
 
+  // for test
+  std::vector<std::string> vars;
+  vars.push_back("$E**2");
+  chart_analyzer->addChart(dynamic_cast<const E4State*>(state), vars);
+
   // signals //
 
   config_widget->signal_changed().connect(sigc::mem_fun(*this,
