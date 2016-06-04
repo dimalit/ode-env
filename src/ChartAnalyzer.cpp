@@ -352,6 +352,7 @@ void ChartAnalyzer::addChart(const google::protobuf::Message* msg, std::vector<s
 	}
 
 	p->setPolar(polar);
+//	p->addExpression("2* ($particles.a'-$E)");
 
 	for(int i=0; i<vars.size(); i++){
 		p->addVar(vars[i]);

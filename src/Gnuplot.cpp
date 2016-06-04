@@ -56,6 +56,16 @@ void Gnuplot::processState(const google::protobuf::Message* msg, const google::p
 	printPlotCommand(to_gnuplot, msg, d_msg, time);
 }
 
+double get_val(const Message* msg, const Descriptor* desc, const Reflection* refl, const Message* d_msg, const Descriptor* d_desc, const Reflection* d_refl, const std::string& var_name){
+	bool derivative = var_name[var_name.length()-1]=='\'';
+	string name = var_name;
+	if(derivative)
+		name = name.substr(0, name.length()-1);
+	const FieldDescriptor* fd = derivative ? d_desc->FindFieldByName(name) : desc->FindFieldByName(name);
+	assert(fd);
+	return derivative ? d_refl->GetDouble(*d_msg, fd) : refl->GetDouble(*msg, fd);
+}
+
 void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time){
 	assert(msg);
 
@@ -111,9 +121,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 		if(s.var_name.find('.') == std::string::npos){
 			// if need time
 			if(getXAxisTime()){
-				const FieldDescriptor* fd = s.derivative ? d_desc->FindFieldByName(s.var_name) : desc->FindFieldByName(s.var_name);
-				assert(fd);
-				double val = s.derivative ? d_refl->GetDouble(*d_msg, fd) : refl->GetDouble(*msg, fd);
+				double val = get_val(msg, desc, refl, d_msg, d_desc, d_refl, s.var_name);
 				s.data_cache.push_back(make_pair(time, val));
 
 				for(int i=0; i<s.data_cache.size(); i++){
@@ -121,12 +129,8 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 				}// for
 			}// if need time
 			else{
-				const FieldDescriptor* yfd = s.derivative ? d_desc->FindFieldByName(s.var_name) : desc->FindFieldByName(s.var_name);
-					assert(yfd);
-				const FieldDescriptor* xfd = derivative_x ? d_desc->FindFieldByName(this->x_axis) : desc->FindFieldByName(this->x_axis);
-					assert(xfd);
-				double yval = s.derivative ? d_refl->GetDouble(*d_msg, yfd) : refl->GetDouble(*msg, yfd);
-				double xval = derivative_x ? d_refl->GetDouble(*d_msg, xfd) : refl->GetDouble(*msg, xfd);
+				double yval = get_val(msg, desc, refl, d_msg, d_desc, d_refl, s.var_name);
+				double xval = get_val(msg, desc, refl, d_msg, d_desc, d_refl, this->x_axis);
 				super_buffer << xval << " " << yval << "\n";
 			}// not need time
 		}// if simple field
@@ -151,7 +155,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 				const FieldDescriptor* fd2 = d2->FindFieldByName(f2);
 					assert(fd2);
 
-				double y = r2->GetDouble(m2, fd2);
+				double y = get_val(&m2, d2, r2, &m2, d2, r2, f2);
 				double x = i;
 
 				// set x to value of specific x variable if needed
@@ -169,11 +173,10 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 					double dop = 0.0;
 					//!!!
 					if(xname=="psi"){
-						const FieldDescriptor* xfd = d2->FindFieldByName("z");
-						dop = r2->GetDouble(m2, xfd);
+						dop = get_val(&m2, d2, r2, &m2, d2, r2, "z");
 					}
 
-					x = r2->GetDouble(m2, xfd) - dop;
+					x = get_val(&m2, d2, r2, &m2, d2, r2, xname) - dop;
 				}// if not time :(
 
 				// start new series if needed
@@ -189,7 +192,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 
 				if(need_coloring){
 					const Message& d_m2 = d_refl->GetRepeatedMessage(*d_msg, d_fd1, i);
-					double dy = d_m2.GetReflection()->GetDouble(d_m2, d_m2.GetDescriptor()->FindFieldByName(f2));
+					double dy = get_val(NULL, NULL, NULL, &d_m2, d_m2.GetDescriptor(), d_m2.GetReflection(), f2+"'");
 					if(dy>0)
 						super_buffer << " 7";
 					else
@@ -237,6 +240,35 @@ void Gnuplot::addVar(std::string var){
 	s.derivative = var[var.size()-1]=='\'';
 	s.var_name = s.derivative ? var.substr(0, var.size()-1) : var;
 	series.push_back(s);
+}
+void Gnuplot::addExpression(std::string expr){
+	serie s;
+	s.derivative = false;
+	s.is_expression = true;
+
+	// replace var names with numbers starting at 2
+	char* dup = strdup(expr.c_str());
+	char var[45];
+	int varno = 2;
+	char* p = dup;
+	while(p=strchr(p, '$')){
+		sscanf(p, "%[$a-zA-Z0-9_.']", var);
+		// remember. duplicates are OK
+		s.columns.push_back(var+1);	// exclude $ sign
+		// remove from p
+		int varlen = strlen(var)-1;
+		char* beg = strstr(p, var+1);
+		*beg = '0'+varno;
+		for(char* cur=beg+1; *(cur+varlen-2); cur++){
+			*cur = *(cur+varlen-1);
+		}// for
+		p = beg+1;
+		varno++;
+	}
+
+	s.var_name = dup;
+	series.push_back(s);
+	free(dup);
 }
 void Gnuplot::eraseVar(int idx){
 	assert(idx >= 0 && idx <series.size());

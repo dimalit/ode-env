@@ -23,6 +23,11 @@ private:
 		std::string var_name;
 		std::vector<std::pair<double, double>> data_cache;
 		bool derivative;
+		bool is_expression;
+		std::vector<std::string> columns;
+		serie(){
+			derivative = is_expression = false;
+		}
 	};
 
 	FILE* to_gnuplot;
@@ -64,6 +69,7 @@ public:
 	}
 
 	void addVar(std::string var);
+	void addExpression(std::string expr);
 	void eraseVar(int idx);
 	int getVarsCount() const {
 		return series.size();
