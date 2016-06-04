@@ -32,7 +32,6 @@ Gnuplot::Gnuplot(int x_win_id) {
 
 	title = "";
 	x_axis = "";			// time/index
-	derivative_x = false;
 	style = STYLE_LINES;
 	polar = 0;
 
@@ -56,14 +55,20 @@ void Gnuplot::processState(const google::protobuf::Message* msg, const google::p
 	printPlotCommand(to_gnuplot, msg, d_msg, time);
 }
 
-double get_val(const Message* msg, const Descriptor* desc, const Reflection* refl, const Message* d_msg, const Descriptor* d_desc, const Reflection* d_refl, const std::string& var_name){
+double get_val(const Message* msg, const Message* d_msg, const std::string& var_name){
 	bool derivative = var_name[var_name.length()-1]=='\'';
-	string name = var_name;
-	if(derivative)
-		name = name.substr(0, name.length()-1);
-	const FieldDescriptor* fd = derivative ? d_desc->FindFieldByName(name) : desc->FindFieldByName(name);
+	string my_name = var_name;
+
+	if(derivative){
+		my_name = var_name.substr(0, var_name.length()-1);
+		msg = d_msg;
+	}
+
+	const Descriptor* desc = msg->GetDescriptor();
+	const Reflection* refl = msg->GetReflection();
+	const FieldDescriptor* fd = desc->FindFieldByName(my_name);
 	assert(fd);
-	return derivative ? d_refl->GetDouble(*d_msg, fd) : refl->GetDouble(*msg, fd);
+	return refl->GetDouble(*msg, fd);
 }
 
 void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time){
@@ -74,10 +79,8 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 	const Descriptor* d_desc = d_msg ? d_msg->GetDescriptor() : NULL;
 	const Reflection* d_refl = d_msg ? d_msg->GetReflection() : NULL;
 
-	// exit if we need derivatives but don't have them
-//	if(d_msg == NULL || d_msg->ByteSize() <= 32){	// XXX: means it is "nearly empty"
-//		return;
-//	}
+	if(x_axis[x_axis.length()-1]=='\'' && !d_msg)
+		return;
 
 //	msg->PrintDebugString();
 //	d_msg->PrintDebugString();
@@ -98,7 +101,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 		bool need_series_wrap = false;//!!getXAxisTime() && !polar && this->x_axis.find("ksi") != std::string::npos;
 		bool need_coloring = s.var_name=="particles.a" && d_refl;
 
-		if(s.derivative && !d_msg)
+		if(s.var_name[s.var_name.length()-1]=='\'' && !d_msg)
 			continue;
 
 		if(i!=0)
@@ -109,8 +112,6 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 			style += " lc variable";
 		}
 		string title = s.var_name;
-		if(s.derivative)
-			title += '\'';
 		if(title_translation_map.count(title))
 			title = title_translation_map[title];
 //		if(polar)
@@ -121,7 +122,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 		if(s.var_name.find('.') == std::string::npos){
 			// if need time
 			if(getXAxisTime()){
-				double val = get_val(msg, desc, refl, d_msg, d_desc, d_refl, s.var_name);
+				double val = get_val(msg, d_msg, s.var_name);
 				s.data_cache.push_back(make_pair(time, val));
 
 				for(int i=0; i<s.data_cache.size(); i++){
@@ -129,8 +130,8 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 				}// for
 			}// if need time
 			else{
-				double yval = get_val(msg, desc, refl, d_msg, d_desc, d_refl, s.var_name);
-				double xval = get_val(msg, desc, refl, d_msg, d_desc, d_refl, this->x_axis);
+				double yval = get_val(msg, d_msg, s.var_name);
+				double xval = get_val(msg, d_msg, this->x_axis);
 				super_buffer << xval << " " << yval << "\n";
 			}// not need time
 		}// if simple field
@@ -149,13 +150,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 			double prev_x = -100;
 
 			for(int i=0; i<n; i++){
-				const Message& m2 = s.derivative ? d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : refl->GetRepeatedMessage(*msg, fd1, i);
-				const Descriptor* d2 = m2.GetDescriptor();
-				const Reflection* r2 = m2.GetReflection();
-				const FieldDescriptor* fd2 = d2->FindFieldByName(f2);
-					assert(fd2);
-
-				double y = get_val(&m2, d2, r2, &m2, d2, r2, f2);
+				double y = get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : NULL, f2);
 				double x = i;
 
 				// set x to value of specific x variable if needed
@@ -165,18 +160,13 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 					if(this->x_axis.find('.') != std::string::npos)
 						xname = x_axis.substr(x_axis.find('.')+1);
 
-					const Message& m2 = derivative_x ? d_refl->GetRepeatedMessage(*d_msg, fd1, i) : refl->GetRepeatedMessage(*msg, fd1, i);
-					const Descriptor* d2 = m2.GetDescriptor();
-					const Reflection* r2 = m2.GetReflection();
-					const FieldDescriptor* xfd = d2->FindFieldByName(xname);
-
 					double dop = 0.0;
 					//!!!
 					if(xname=="psi"){
-						dop = get_val(&m2, d2, r2, &m2, d2, r2, "z");
+						dop = get_val(&refl->GetRepeatedMessage(*msg, fd1, i), NULL, "z");
 					}
 
-					x = get_val(&m2, d2, r2, &m2, d2, r2, xname) - dop;
+					x = get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, fd1, i) : NULL, xname) - dop;
 				}// if not time :(
 
 				// start new series if needed
@@ -192,7 +182,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 
 				if(need_coloring){
 					const Message& d_m2 = d_refl->GetRepeatedMessage(*d_msg, d_fd1, i);
-					double dy = get_val(NULL, NULL, NULL, &d_m2, d_m2.GetDescriptor(), d_m2.GetReflection(), f2+"'");
+					double dy = get_val(NULL, &d_m2, f2+"'");
 					if(dy>0)
 						super_buffer << " 7";
 					else
@@ -237,13 +227,11 @@ void Gnuplot::saveToCsv(const std::string& file, const google::protobuf::Message
 
 void Gnuplot::addVar(std::string var){
 	serie s;
-	s.derivative = var[var.size()-1]=='\'';
-	s.var_name = s.derivative ? var.substr(0, var.size()-1) : var;
+	s.var_name = var;
 	series.push_back(s);
 }
 void Gnuplot::addExpression(std::string expr){
 	serie s;
-	s.derivative = false;
 	s.is_expression = true;
 
 	// replace var names with numbers starting at 2

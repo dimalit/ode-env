@@ -20,13 +20,12 @@ public:
 	static std::map<std::string, std::string> title_translation_map;
 private:
 	struct serie{
-		std::string var_name;
+		std::string var_name;			// can contain '
 		std::vector<std::pair<double, double>> data_cache;
-		bool derivative;
 		bool is_expression;
 		std::vector<std::string> columns;
 		serie(){
-			derivative = is_expression = false;
+			is_expression = false;
 		}
 	};
 
@@ -37,7 +36,6 @@ private:
 	style_enum style;
 
 	std::string x_axis;
-	bool derivative_x;
 	bool polar;
 	std::vector<serie> series;
 public:
@@ -52,9 +50,7 @@ public:
 		style = STYLE_LINES;
 	}
 	void setXAxisVar(std::string var){
-		derivative_x = var.size() > 0 && var[var.size()-1]=='\'';
-		std::string real_var = derivative_x ? var.substr(0, var.size()-1) : var;
-		x_axis = real_var;
+		x_axis = var;
 		style = STYLE_POINTS;
 	}
 	bool getXAxisTime() const {
