@@ -40,6 +40,7 @@ class E4PetscSolverConfig;
 class E4Model;
 class E4Solution;
 class E4Special;
+class E4Special_Hist;
 
 // ===================================================================
 
@@ -110,18 +111,28 @@ class E4Config : public ::google::protobuf::Message {
   inline double delta_0() const;
   inline void set_delta_0(double value);
 
+  // optional double alpha = 3;
+  inline bool has_alpha() const;
+  inline void clear_alpha();
+  static const int kAlphaFieldNumber = 3;
+  inline double alpha() const;
+  inline void set_alpha(double value);
+
   // @@protoc_insertion_point(class_scope:pb.E4Config)
  private:
   inline void set_has_n();
   inline void clear_has_n();
   inline void set_has_delta_0();
   inline void clear_has_delta_0();
+  inline void set_has_alpha();
+  inline void clear_has_alpha();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   double delta_0_;
+  double alpha_;
   ::google::protobuf::uint32 n_;
   friend void  protobuf_AddDesc_model_5fe4_2eproto();
   friend void protobuf_AssignDesc_model_5fe4_2eproto();
@@ -652,6 +663,95 @@ class E4Solution : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class E4Special_Hist : public ::google::protobuf::Message {
+ public:
+  E4Special_Hist();
+  virtual ~E4Special_Hist();
+
+  E4Special_Hist(const E4Special_Hist& from);
+
+  inline E4Special_Hist& operator=(const E4Special_Hist& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const E4Special_Hist& default_instance();
+
+  void Swap(E4Special_Hist* other);
+
+  // implements Message ----------------------------------------------
+
+  E4Special_Hist* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const E4Special_Hist& from);
+  void MergeFrom(const E4Special_Hist& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required double x = 14;
+  inline bool has_x() const;
+  inline void clear_x();
+  static const int kXFieldNumber = 14;
+  inline double x() const;
+  inline void set_x(double value);
+
+  // required double y = 15;
+  inline bool has_y() const;
+  inline void clear_y();
+  static const int kYFieldNumber = 15;
+  inline double y() const;
+  inline void set_y(double value);
+
+  // @@protoc_insertion_point(class_scope:pb.E4Special.Hist)
+ private:
+  inline void set_has_x();
+  inline void clear_has_x();
+  inline void set_has_y();
+  inline void clear_has_y();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  double x_;
+  double y_;
+  friend void  protobuf_AddDesc_model_5fe4_2eproto();
+  friend void protobuf_AssignDesc_model_5fe4_2eproto();
+  friend void protobuf_ShutdownFile_model_5fe4_2eproto();
+
+  void InitAsDefaultInstance();
+  static E4Special_Hist* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class E4Special : public ::google::protobuf::Message {
  public:
   E4Special();
@@ -702,6 +802,8 @@ class E4Special : public ::google::protobuf::Message {
   ::google::protobuf::Metadata GetMetadata() const;
 
   // nested types ----------------------------------------------------
+
+  typedef E4Special_Hist Hist;
 
   // accessors -------------------------------------------------------
 
@@ -796,6 +898,18 @@ class E4Special : public ::google::protobuf::Message {
   inline double wb() const;
   inline void set_wb(double value);
 
+  // repeated group Hist = 13 {
+  inline int hist_size() const;
+  inline void clear_hist();
+  static const int kHistFieldNumber = 13;
+  inline const ::pb::E4Special_Hist& hist(int index) const;
+  inline ::pb::E4Special_Hist* mutable_hist(int index);
+  inline ::pb::E4Special_Hist* add_hist();
+  inline const ::google::protobuf::RepeatedPtrField< ::pb::E4Special_Hist >&
+      hist() const;
+  inline ::google::protobuf::RepeatedPtrField< ::pb::E4Special_Hist >*
+      mutable_hist();
+
   // @@protoc_insertion_point(class_scope:pb.E4Special)
  private:
   inline void set_has_e_2();
@@ -842,6 +956,7 @@ class E4Special : public ::google::protobuf::Message {
   double ib_aver_;
   double wa_;
   double wb_;
+  ::google::protobuf::RepeatedPtrField< ::pb::E4Special_Hist > hist_;
   friend void  protobuf_AddDesc_model_5fe4_2eproto();
   friend void protobuf_AssignDesc_model_5fe4_2eproto();
   friend void protobuf_ShutdownFile_model_5fe4_2eproto();
@@ -902,6 +1017,30 @@ inline void E4Config::set_delta_0(double value) {
   set_has_delta_0();
   delta_0_ = value;
   // @@protoc_insertion_point(field_set:pb.E4Config.delta_0)
+}
+
+// optional double alpha = 3;
+inline bool E4Config::has_alpha() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void E4Config::set_has_alpha() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void E4Config::clear_has_alpha() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void E4Config::clear_alpha() {
+  alpha_ = 0;
+  clear_has_alpha();
+}
+inline double E4Config::alpha() const {
+  // @@protoc_insertion_point(field_get:pb.E4Config.alpha)
+  return alpha_;
+}
+inline void E4Config::set_alpha(double value) {
+  set_has_alpha();
+  alpha_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4Config.alpha)
 }
 
 // -------------------------------------------------------------------
@@ -1401,6 +1540,58 @@ inline void E4Solution::set_allocated_d_state(::pb::E4State* d_state) {
 
 // -------------------------------------------------------------------
 
+// E4Special_Hist
+
+// required double x = 14;
+inline bool E4Special_Hist::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void E4Special_Hist::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void E4Special_Hist::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void E4Special_Hist::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+inline double E4Special_Hist::x() const {
+  // @@protoc_insertion_point(field_get:pb.E4Special.Hist.x)
+  return x_;
+}
+inline void E4Special_Hist::set_x(double value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4Special.Hist.x)
+}
+
+// required double y = 15;
+inline bool E4Special_Hist::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void E4Special_Hist::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void E4Special_Hist::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void E4Special_Hist::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+inline double E4Special_Hist::y() const {
+  // @@protoc_insertion_point(field_get:pb.E4Special.Hist.y)
+  return y_;
+}
+inline void E4Special_Hist::set_y(double value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4Special.Hist.y)
+}
+
+// -------------------------------------------------------------------
+
 // E4Special
 
 // optional double e_2 = 1;
@@ -1713,6 +1904,36 @@ inline void E4Special::set_wb(double value) {
   set_has_wb();
   wb_ = value;
   // @@protoc_insertion_point(field_set:pb.E4Special.Wb)
+}
+
+// repeated group Hist = 13 {
+inline int E4Special::hist_size() const {
+  return hist_.size();
+}
+inline void E4Special::clear_hist() {
+  hist_.Clear();
+}
+inline const ::pb::E4Special_Hist& E4Special::hist(int index) const {
+  // @@protoc_insertion_point(field_get:pb.E4Special.hist)
+  return hist_.Get(index);
+}
+inline ::pb::E4Special_Hist* E4Special::mutable_hist(int index) {
+  // @@protoc_insertion_point(field_mutable:pb.E4Special.hist)
+  return hist_.Mutable(index);
+}
+inline ::pb::E4Special_Hist* E4Special::add_hist() {
+  // @@protoc_insertion_point(field_add:pb.E4Special.hist)
+  return hist_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::pb::E4Special_Hist >&
+E4Special::hist() const {
+  // @@protoc_insertion_point(field_list:pb.E4Special.hist)
+  return hist_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::pb::E4Special_Hist >*
+E4Special::mutable_hist() {
+  // @@protoc_insertion_point(field_mutable_list:pb.E4Special.hist)
+  return &hist_;
 }
 
 

@@ -24,7 +24,7 @@ public:
 private:
 	E4Config* config;
 
-	Gtk::Entry *entry_N, *entry_delta_0;
+	Gtk::Entry *entry_N, *entry_delta_0, *entry_alpha;
 	Gtk::Button *button_apply;
 
 public:

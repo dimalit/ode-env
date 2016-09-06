@@ -24,8 +24,9 @@ using namespace google::protobuf;
 
 class ChartAddDialog: public Gtk::Window{
 private:
-	Gtk::TreeView *treeview1, *treeview2;		// for vars and derivatives
-	Glib::RefPtr<Gtk::ListStore> store1, store2;
+	Gtk::TreeView *treeview1, *treeview2, *treeview3;		// for vars, derivatives and expressions
+	Glib::RefPtr<Gtk::ListStore> store1, store2, store3;
+	Gtk::Button *btn_plus, *btn_minus;
 	Gtk::Button *btn_ok, *btn_cancel;
 	Gtk::CheckButton *check_polar;
 	ChartAnalyzer* parent;
@@ -45,12 +46,16 @@ public:
 
 		b->get_widget("treeview1", treeview1);
 		b->get_widget("treeview2", treeview2);
+		b->get_widget("treeview3", treeview3);
+		b->get_widget("btn_plus", btn_plus);
+		b->get_widget("btn_minus", btn_minus);
 		b->get_widget("btn_ok", btn_ok);
 		b->get_widget("btn_cancel", btn_cancel);
 		b->get_widget("check_polar", check_polar);
 
 		store1 = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b->get_object("liststore1"));
 		store2 = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b->get_object("liststore2"));
+		store3 = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b->get_object("liststore3"));
 
 		Gtk::CellRendererToggle *cr;
 		cr = dynamic_cast<Gtk::CellRendererToggle*>(treeview1->get_column(0)->get_first_cell());
@@ -61,6 +66,16 @@ public:
 			cr->signal_toggled().connect(sigc::bind(sigc::mem_fun(*this, &ChartAddDialog::on_use_clicked), store2));
 		cr = dynamic_cast<Gtk::CellRendererToggle*>(treeview2->get_column(2)->get_first_cell());
 			cr->signal_toggled().connect(sigc::bind(sigc::mem_fun(*this, &ChartAddDialog::on_x_clicked), store2));
+		cr = dynamic_cast<Gtk::CellRendererToggle*>(treeview3->get_column(0)->get_first_cell());
+			cr->signal_toggled().connect(sigc::bind(sigc::mem_fun(*this, &ChartAddDialog::on_use_clicked), store3));
+		cr = dynamic_cast<Gtk::CellRendererToggle*>(treeview3->get_column(2)->get_first_cell());
+			cr->signal_toggled().connect(sigc::bind(sigc::mem_fun(*this, &ChartAddDialog::on_x_clicked), store3));
+
+		Gtk::CellRendererText *crt = dynamic_cast<Gtk::CellRendererText*>(treeview3->get_column(1)->get_first_cell());
+			crt->signal_edited().connect(sigc::mem_fun(*this, &ChartAddDialog::on_expr_edited));
+
+		btn_plus->signal_clicked().connect(sigc::mem_fun(this, &ChartAddDialog::on_plus_clicked));
+		btn_minus->signal_clicked().connect(sigc::mem_fun(this, &ChartAddDialog::on_minus_clicked));
 
 		btn_ok->signal_clicked().connect(sigc::mem_fun(this, &ChartAddDialog::on_ok_clicked));
 		btn_cancel->signal_clicked().connect(sigc::mem_fun(this, &ChartAddDialog::on_cancel_clicked));
@@ -70,6 +85,7 @@ public:
 		// now add state's variables to the table
 		store1->clear();
 		store2->clear();
+		store3->clear();
 		const Descriptor* desc = msg->GetDescriptor();
 		const Reflection* refl = msg->GetReflection();
 
@@ -173,6 +189,32 @@ private:
 			}// if as x
 		}// for
 
+		// list3
+		children = store3->children();
+		for(Gtk::ListStore::const_iterator i = children.begin(); i!=children.end(); ++i){
+			// parse added vars
+			bool use;
+			i->get_value(0, use);
+			if(use){
+				Glib::ustring us;
+				i->get_value(1, us);
+				vars.push_back(us.raw());
+
+				if(us.raw().find('.') == std::string::npos)
+					has_non_repeated = true;
+				else
+					has_repeated = true;
+			}
+			// parse x var
+			bool as_x;
+			i->get_value(2, as_x);
+			if(as_x){
+				Glib::ustring us;
+				i->get_value(1, us);
+				x_axis_var = us.raw();
+			}// if as x
+		}// for
+
 		if(x_axis_var.find('.') != std::string::npos)
 			has_repeated = true;
 		else if(!x_axis_var.empty())
@@ -207,7 +249,6 @@ private:
 		it->get_value(0, val);
 		it->set_value(0, !val);
 	}
-
 	void on_x_clicked(const Glib::ustring& path, Glib::RefPtr<Gtk::ListStore> store){
 		// uncheck if checked
 		Gtk::ListStore::iterator cur = store->get_iter(path);
@@ -224,9 +265,27 @@ private:
 		for(Gtk::ListStore::iterator it = store2->children().begin(); it != store2->children().end(); ++it){
 			it->set_value(2, false);
 		}
+		for(Gtk::ListStore::iterator it = store3->children().begin(); it != store3->children().end(); ++it){
+			it->set_value(2, false);
+		}
 
 		// check
 		cur->set_value(2, true);
+	}
+
+	void on_expr_edited(const Glib::ustring& path,  const Glib::ustring& new_text){
+		Gtk::ListStore::iterator it = store3->get_iter(path);
+		it->set_value(1, new_text);
+	}
+
+	void on_plus_clicked(){
+		store3->append();
+	}
+	void on_minus_clicked(){
+		if(treeview3->get_selection()->count_selected_rows()==1){
+			Gtk::ListStore::iterator it = treeview3->get_selection()->get_selected();
+			store3->erase(it);
+		}
 	}
 };
 
@@ -243,6 +302,9 @@ ChartAnalyzer::ChartAnalyzer(const OdeConfig* config) {
 	btn_reset.set_label("Reset");
 	vbox.pack_start(btn_reset);
 	btn_reset.signal_clicked().connect(sigc::mem_fun(*this, &ChartAnalyzer::reset));
+
+	last_state = last_d_state = NULL;
+	last_special = NULL;
 
 	this->add(vbox);
 }
@@ -298,6 +360,14 @@ void ChartAnalyzer::processState(const OdeState* state, const OdeState* d_state,
 }
 
 void ChartAnalyzer::processSpecial(const google::protobuf::Message* msg, double time){
+	if(last_special){
+		delete last_special; last_special = NULL;
+	}
+	last_special = msg->New();
+	last_special->CopyFrom(*msg);
+
+	last_special_time = time;
+
 	for(int i=0; i<plots.size(); i++){
 		if(plot_special_flags[i])
 			plots[i]->processState(msg, NULL, time);
@@ -315,7 +385,15 @@ void ChartAnalyzer::on_save_clicked(Gnuplot* ptr){
 	const google::protobuf::Message* d_msg = dynamic_cast<const google::protobuf::Message*>(last_d_state);
 		assert(d_msg);
 
-	ptr->saveToCsv(file, msg, d_msg, last_time);
+	// XXX - redesign it
+	for(int i=0; i<plots.size(); i++){
+		if(ptr != plots[i])
+			continue;
+		if(plot_special_flags[i])
+			ptr->saveToCsv(file, last_special, NULL, last_special_time);
+		else
+			ptr->saveToCsv(file, msg, d_msg, last_time);
+	}
 }
 
 void ChartAnalyzer::on_add_clicked(){

@@ -27,6 +27,7 @@ E4ConfigWidget::E4ConfigWidget(const E4Config* cfg){
 
 	b->get_widget("entry_N", entry_N);
 	b->get_widget("entry_delta_0", entry_delta_0);
+	b->get_widget("entry_alpha", entry_alpha);
 
 	b->get_widget("button_apply", button_apply);
 
@@ -36,6 +37,7 @@ E4ConfigWidget::E4ConfigWidget(const E4Config* cfg){
 
 	entry_N->signal_changed().connect(sigc::mem_fun(*this, &E4ConfigWidget::edit_anything_cb));
 	entry_delta_0->signal_changed().connect(sigc::mem_fun(*this, &E4ConfigWidget::edit_anything_cb));
+	entry_alpha->signal_changed().connect(sigc::mem_fun(*this, &E4ConfigWidget::edit_anything_cb));
 
 	button_apply->signal_clicked().connect(sigc::mem_fun(*this, &E4ConfigWidget::on_apply_cb));
 }
@@ -43,6 +45,7 @@ E4ConfigWidget::E4ConfigWidget(const E4Config* cfg){
 void E4ConfigWidget::widget_to_config(){
 	config->set_n(atoi(entry_N->get_text().c_str()));
 	config->set_delta_0(atof(entry_delta_0->get_text().c_str()));
+	config->set_alpha(atof(entry_alpha->get_text().c_str()));
 
 	button_apply->set_sensitive(false);
 }
@@ -54,6 +57,10 @@ void E4ConfigWidget::config_to_widget(){
 	buf.str("");
 	buf << config->delta_0();
 	entry_delta_0->set_text(buf.str());
+
+	buf.str("");
+	buf << config->alpha();
+	entry_alpha->set_text(buf.str());
 
 	button_apply->set_sensitive(false);
 }

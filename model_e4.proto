@@ -5,6 +5,7 @@ package pb;
 message E4Config{
 	required uint32 N = 1;
 	optional double delta_0 = 2;
+	optional double alpha = 3;
 }
 
 message E4State{
@@ -50,4 +51,8 @@ message E4Special{
 	optional double Ib_aver = 10;	
 	optional double Wa = 11;
 	optional double Wb = 12;
+	repeated group Hist = 13 {
+		required double x = 14;
+		required double y = 15;
+	}
 }

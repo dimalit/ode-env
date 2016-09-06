@@ -12,6 +12,7 @@
 #include <sstream>
 #include <iostream>
 #include <cstdio>
+#include <cmath>
 #include "rpc.h"
 
 using namespace google::protobuf;
@@ -46,6 +47,7 @@ Gnuplot::Gnuplot(int x_win_id) {
 
 	fprintf(to_gnuplot, "set encoding utf8\n");
 	fprintf(to_gnuplot, "symbol(z) = \"•✷+△♠□♣♥♦\"[int(z):int(z)]\n");
+	fprintf(to_gnuplot, "modf(x,m) = (x/m-floor(x/m))*m\n");
 	fflush(to_gnuplot);
 
 	update_view();
@@ -71,11 +73,16 @@ std::string get_val(const Message* msg, const Message* d_msg, const std::string&
 	return ((std::ostringstream&)(std::ostringstream() << refl->GetDouble(*msg, fd))).str();
 }
 
-std::string get_vals(const Message* msg, const Message* d_msg, std::vector<std::string> vars){
+std::string get_vals(const Message* msg, const Message* d_msg, std::vector<std::string> vars, const Message* parent_msg=NULL, const Message* parent_d_msg=NULL){
 	const Descriptor* desc = msg->GetDescriptor();
 	const Reflection* refl = msg->GetReflection();
 	const Descriptor* d_desc = d_msg ? msg->GetDescriptor() : NULL;
 	const Reflection* d_refl = d_msg ? msg->GetReflection() : NULL;
+
+	const Descriptor* p_desc = parent_msg ? parent_msg->GetDescriptor() : NULL;
+	const Reflection* p_refl = parent_msg ? parent_msg->GetReflection() : NULL;
+	const Descriptor* p_d_desc = parent_d_msg ? parent_msg->GetDescriptor() : NULL;
+	const Reflection* p_d_refl = parent_d_msg ? parent_msg->GetReflection() : NULL;
 
 	std::ostringstream res;
 	for(int i=0; i<vars.size(); i++){
@@ -86,8 +93,14 @@ std::string get_vals(const Message* msg, const Message* d_msg, std::vector<std::
 		if(derivative)
 			my_name = var_name.substr(0, var_name.length()-1);
 		const FieldDescriptor* fd = derivative ? d_desc->FindFieldByName(my_name) : desc->FindFieldByName(my_name);
-		assert(fd);
-		res << (derivative ? d_refl->GetDouble(*msg, fd) : refl->GetDouble(*msg, fd)) << "\t";
+		// XXX: if var name in child collides with the one in parent - will get value from child instead of parent
+		if(!fd){
+			fd = derivative ? p_d_desc->FindFieldByName(my_name) : p_desc->FindFieldByName(my_name);
+			assert(fd);
+			res << (derivative ? p_d_refl->GetDouble(*parent_d_msg, fd) : p_refl->GetDouble(*parent_msg, fd)) << "\t";
+		}
+		else
+			res << (derivative ? d_refl->GetDouble(*msg, fd) : refl->GetDouble(*msg, fd)) << "\t";
 	}// for
 	return res.str();
 }
@@ -121,6 +134,8 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 
 		bool need_series_wrap = false;//!!getXAxisTime() && !polar && this->x_axis.find("ksi") != std::string::npos;
 		bool need_coloring = s.var_name=="particles.a" && d_refl;
+		bool need_boxes = s.var_name=="hist.y";
+		bool is_particles = s.var_name.find("particles") != std::string::npos;
 
 		if(s.var_name[s.var_name.length()-1]=='\'' && !d_msg)
 			continue;
@@ -129,6 +144,10 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 			plot_command << ", ";
 
 		std::string style = this->style == STYLE_LINES ? "lines" : "points ps 0.5";
+
+		if(need_boxes)
+			style = "boxes";
+
 		if(need_coloring){
 			style += " lc variable";
 		}
@@ -140,7 +159,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 
 		plot_command << "'-' ";
 		if(s.is_expression){
-			plot_command << "using ($1):(" << s.var_name << ") ";
+			plot_command << "using ($1):(" << s.expression << ") ";
 		}
 
 		plot_command << "with " << style << " title \"" << title <<"\"";
@@ -163,10 +182,17 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 			}// not need time
 		}// if simple field
 		else{	// repeated field
-			std::string f1 = s.var_name.substr(0, s.var_name.find('.'));
-				assert(f1.size());
-			std::string f2 = s.var_name.substr(s.var_name.find('.')+1);
-				assert(f2.size());
+			std::string f1, f2;
+			if(!s.is_expression){
+				f1 = s.var_name.substr(0, s.var_name.find('.'));	// parent
+					assert(f1.size());
+				f2 = s.var_name.substr(s.var_name.find('.')+1);		// child
+					assert(f2.size());
+			}
+			else{
+				f1 = s.prefix;
+				assert(!f1.empty());
+			}
 
 			const FieldDescriptor* fd1 = desc->FindFieldByName(f1);
 			const FieldDescriptor* d_fd1 = d_desc ? d_desc->FindFieldByName(f1) : NULL;
@@ -176,8 +202,15 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 
 			double prev_x = -100;
 
+			//!!! filter 100 particles
+			bool x_bits[100] = {0};
+
 			for(int i=0; i<n; i++){
-				string y = get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : NULL, f2);
+				string y;
+				if(!s.is_expression)
+					y = get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : NULL, f2);
+				else
+					y = get_vals(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : NULL, s.columns, msg, d_msg);
 				double x = i;
 
 				// set x to value of specific x variable if needed
@@ -187,13 +220,9 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 					if(this->x_axis.find('.') != std::string::npos)
 						xname = x_axis.substr(x_axis.find('.')+1);
 
-					double dop = 0.0;
-					//!!!
-					if(xname=="psi"){
-						dop = atof(get_val(&refl->GetRepeatedMessage(*msg, fd1, i), NULL, "z").c_str());
-					}
-
-					x = atof(get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, fd1, i) : NULL, xname).c_str()) - dop;
+					x = atof(get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, fd1, i) : NULL, xname).c_str());
+					if(xname=="ksi" && polar)
+						x *= 2.0*M_PI;
 				}// if not time :(
 
 				// start new series if needed
@@ -202,8 +231,18 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 					plot_command << ", '-' with " << style << " title '" << title <<"'";
 				}
 
+				// draw or not?
+				x = x - floor(x/2.0/M_PI)*2.0*M_PI;
+				int x_pos = x/2.0/M_PI*100;
+				if(x_pos >= 100)
+					x_pos = 99;
+				if(is_particles && !polar && x_bits[x_pos])
+					continue;
+
+				x_bits[x_pos] = true;
+
 				if(polar)
-					super_buffer << x/*/0.5*M_PI*/ << " " << y;
+					super_buffer << x << " " << y;
 				else
 					super_buffer << x << " " << y;
 
@@ -252,13 +291,23 @@ void Gnuplot::saveToCsv(const std::string& file, const google::protobuf::Message
 	fclose(fp);
 }
 
+std::string extract_child_part(const std::string& s, std::string* parent){
+	int pos = s.find('.');
+	if(pos == std::string::npos){
+		return s;			// ignore prefix for vars without it
+	}
+	else{
+		if(parent)
+			*parent = s.substr(0, pos);
+		return s.substr(pos+1);
+	}
+}
+
 void Gnuplot::addVar(std::string var){
 	serie s;
-	if(var.find('$') == std::string::npos){
-		s.var_name = var;
-	}// if var
-	// if expression
-	else{
+	s.var_name = var;
+	// for expressions
+	if(var.find('$') != std::string::npos){
 		s.is_expression = true;
 
 		// replace var names with numbers starting at 2
@@ -269,7 +318,7 @@ void Gnuplot::addVar(std::string var){
 		while(p=strchr(p, '$')){
 			sscanf(p, "%[$a-zA-Z0-9_.']", var);
 			// remember. duplicates are OK
-			s.columns.push_back(var+1);	// exclude $ sign
+			s.columns.push_back(extract_child_part(var+1, &s.prefix));	// exclude $ sign
 			// remove from p
 			int varlen = strlen(var)-1;
 			char* beg = strstr(p, var+1);
@@ -281,7 +330,7 @@ void Gnuplot::addVar(std::string var){
 			varno++;
 		}
 
-		s.var_name = dup;
+		s.expression = dup;
 		free(dup);
 	}// else
 	series.push_back(s);

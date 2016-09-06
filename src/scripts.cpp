@@ -662,3 +662,84 @@ void as_in_book(){
 	delete scfg;
 	delete pcfg;
 }
+
+void exp_4_gyro(){
+	string problem_name = "model e3";
+
+	OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
+	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
+
+	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
+		pcfg->set_m(1000);
+		pcfg->set_n(1.0);
+	E3PetscSolverConfig* scfg = dynamic_cast<E3PetscSolverConfig*>(solver_fact->createSolverConfg());
+		scfg->set_model("tm");
+		scfg->set_init_step(0.01);
+		scfg->set_atol(1e-10);
+		scfg->set_rtol(1e-10);
+		scfg->set_solver(E3PetscSolverConfig::rhs);
+
+	vector<double> a0s, e0s;
+	a0s.push_back(1);
+	a0s.push_back(0.1);
+	a0s.push_back(1);
+
+	e0s.push_back(1);
+	e0s.push_back(1);
+	e0s.push_back(0.1);
+
+	Gnuplot a_plot;
+		a_plot.addVar("particles.a");
+		a_plot.setXAxisVar("particles.ksi");
+		a_plot.setPolar(true);
+
+	Gnuplot p;
+		p.addVar("$E**2");
+		p.setXAxisTime();
+		p.setTitle("custom plot");
+
+	for(int i=0; i<a0s.size(); i++){
+		double a0 = a0s[i];
+		double e0 = e0s[i];
+
+		E3State* init_state = dynamic_cast<E3State*>(inst_fact->createState(pcfg));
+		init_state->set_e(e0);
+		init_state->set_phi(0);
+		init_state->set_a0(a0);
+		double right = 0.5, left = -0.5;
+		for(int i=0; i<pcfg->m(); i++){
+			init_state->mutable_particles(i)->set_a(init_state->a0());
+			init_state->mutable_particles(i)->set_eta(0);
+			double ksi = i / (double)pcfg->m() * (right-left) + left;
+			init_state->mutable_particles(i)->set_ksi(ksi);
+		}
+		E3PetscSolver* solver = dynamic_cast<E3PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
+
+		a_plot.reset();
+		p.reset();
+
+		const google::protobuf::Message *state_msg, *dstate_msg;
+		double time = 0.0;
+		solver->run(1000000, 1000, true);
+
+		MaxDetector d1, d2;
+		d2.push(0.0);
+
+		for(int i=0;;i++){
+			if(!solver->step())
+				break;
+			state_msg = dynamic_cast<const google::protobuf::Message*>(solver->getState());
+			dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
+			time = solver->getTime();
+
+			a_plot.processState(state_msg, dstate_msg, time);
+			p.processState(state_msg, dstate_msg, time);
+
+			if(time >= 10.0)
+				break;
+		}//for steps
+
+		delete solver;
+		delete init_state;
+	}// for a0s and e0s
+}

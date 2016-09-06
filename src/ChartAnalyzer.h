@@ -33,7 +33,8 @@ private:
 
 	const OdeState *last_state, *last_d_state;
 	double last_time;
-
+	google::protobuf::Message *last_special;
+	double last_special_time;
 	const google::protobuf::Message* special_msg;			// for addition of special vars
 public:
 	ChartAnalyzer(const OdeConfig* config);

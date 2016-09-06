@@ -1,4 +1,4 @@
-#include "HelloWorld2.h"
+#include "HelloWorld.h"
 #include "model_e1.h"
 
 #include <goffice/goffice.h>
@@ -9,6 +9,7 @@ extern void exp_random_init_R3();
 extern void exp_gamma2e();
 extern void exp_r2e();
 extern void as_in_book();
+extern void exp_4_gyro();
 
 int main (int argc, char *argv[])
 {
@@ -18,14 +19,16 @@ int main (int argc, char *argv[])
 	libgoffice_init();
 	go_plugins_init (NULL, NULL, NULL, NULL, TRUE, GO_TYPE_PLUGIN_LOADER_MODULE);
 
-	HelloWorld2 helloworld;
-	kit.run(helloworld);
+//	HelloWorld helloworld;
+//	kit.run(helloworld);
 
 //	exp_6_images();
 //	exp_random_init_R3();
 //	exp_r2e();
 //	exp_gamma2e();
 //	as_in_book();
+
+	exp_4_gyro();
 
 /*
 	E1InstanceFactory* eif = E1InstanceFactory::getInstance();

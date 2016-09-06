@@ -41,6 +41,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* E4Special_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   E4Special_reflection_ = NULL;
+const ::google::protobuf::Descriptor* E4Special_Hist_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  E4Special_Hist_reflection_ = NULL;
 
 }  // namespace
 
@@ -52,9 +55,10 @@ void protobuf_AssignDesc_model_5fe4_2eproto() {
       "model_e4.proto");
   GOOGLE_CHECK(file != NULL);
   E4Config_descriptor_ = file->message_type(0);
-  static const int E4Config_offsets_[2] = {
+  static const int E4Config_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Config, n_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Config, delta_0_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Config, alpha_),
   };
   E4Config_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -154,7 +158,7 @@ void protobuf_AssignDesc_model_5fe4_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E4Solution));
   E4Special_descriptor_ = file->message_type(5);
-  static const int E4Special_offsets_[13] = {
+  static const int E4Special_offsets_[14] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, e_2_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, aver_a_2_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, int_e_a_),
@@ -168,6 +172,7 @@ void protobuf_AssignDesc_model_5fe4_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, ib_aver_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, wa_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, wb_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, hist_),
   };
   E4Special_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -180,6 +185,22 @@ void protobuf_AssignDesc_model_5fe4_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E4Special));
+  E4Special_Hist_descriptor_ = E4Special_descriptor_->nested_type(0);
+  static const int E4Special_Hist_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special_Hist, x_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special_Hist, y_),
+  };
+  E4Special_Hist_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      E4Special_Hist_descriptor_,
+      E4Special_Hist::default_instance_,
+      E4Special_Hist_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special_Hist, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special_Hist, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(E4Special_Hist));
 }
 
 namespace {
@@ -206,6 +227,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
     E4Solution_descriptor_, &E4Solution::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     E4Special_descriptor_, &E4Special::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    E4Special_Hist_descriptor_, &E4Special_Hist::default_instance());
 }
 
 }  // namespace
@@ -225,6 +248,8 @@ void protobuf_ShutdownFile_model_5fe4_2eproto() {
   delete E4Solution_reflection_;
   delete E4Special::default_instance_;
   delete E4Special_reflection_;
+  delete E4Special_Hist::default_instance_;
+  delete E4Special_Hist_reflection_;
 }
 
 void protobuf_AddDesc_model_5fe4_2eproto() {
@@ -234,23 +259,25 @@ void protobuf_AddDesc_model_5fe4_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\016model_e4.proto\022\002pb\"&\n\010E4Config\022\t\n\001N\030\001 "
-    "\002(\r\022\017\n\007delta_0\030\002 \001(\001\"\212\001\n\007E4State\022\t\n\001E\030\001 "
-    "\002(\001\022\013\n\003phi\030\002 \002(\001\022(\n\tparticles\030\003 \003(\n2\025.pb"
-    ".E4State.Particles\032=\n\tParticles\022\t\n\001a\030\004 \002"
-    "(\001\022\013\n\003psi\030\005 \002(\001\022\t\n\001z\030\006 \002(\001\022\r\n\005delta\030\007 \002("
-    "\001\"U\n\023E4PetscSolverConfig\022\014\n\004atol\030\001 \001(\001\022\014"
-    "\n\004rtol\030\002 \001(\001\022\021\n\tinit_step\030\003 \001(\001\022\017\n\007n_cor"
-    "es\030\004 \001(\005\"n\n\007E4Model\022\035\n\007pconfig\030\001 \002(\0132\014.p"
-    "b.E4Config\022\032\n\005state\030\002 \002(\0132\013.pb.E4State\022("
-    "\n\007sconfig\030\003 \002(\0132\027.pb.E4PetscSolverConfig"
-    "\"F\n\nE4Solution\022\032\n\005state\030\001 \002(\0132\013.pb.E4Sta"
-    "te\022\034\n\007d_state\030\002 \001(\0132\013.pb.E4State\"\273\001\n\tE4S"
-    "pecial\022\013\n\003e_2\030\001 \001(\001\022\020\n\010aver_a_2\030\002 \001(\001\022\017\n"
-    "\007int_e_a\030\004 \001(\001\022\n\n\002Na\030\005 \001(\001\022\n\n\002Nb\030\006 \001(\001\022\t"
-    "\n\001M\030\021 \001(\001\022\t\n\001N\030\022 \001(\001\022\n\n\002Ia\030\007 \001(\001\022\n\n\002Ib\030\010"
-    " \001(\001\022\017\n\007Ia_aver\030\t \001(\001\022\017\n\007Ib_aver\030\n \001(\001\022\n"
-    "\n\002Wa\030\013 \001(\001\022\n\n\002Wb\030\014 \001(\001", 662);
+    "\n\016model_e4.proto\022\002pb\"5\n\010E4Config\022\t\n\001N\030\001 "
+    "\002(\r\022\017\n\007delta_0\030\002 \001(\001\022\r\n\005alpha\030\003 \001(\001\"\212\001\n\007"
+    "E4State\022\t\n\001E\030\001 \002(\001\022\013\n\003phi\030\002 \002(\001\022(\n\tparti"
+    "cles\030\003 \003(\n2\025.pb.E4State.Particles\032=\n\tPar"
+    "ticles\022\t\n\001a\030\004 \002(\001\022\013\n\003psi\030\005 \002(\001\022\t\n\001z\030\006 \002("
+    "\001\022\r\n\005delta\030\007 \002(\001\"U\n\023E4PetscSolverConfig\022"
+    "\014\n\004atol\030\001 \001(\001\022\014\n\004rtol\030\002 \001(\001\022\021\n\tinit_step"
+    "\030\003 \001(\001\022\017\n\007n_cores\030\004 \001(\005\"n\n\007E4Model\022\035\n\007pc"
+    "onfig\030\001 \002(\0132\014.pb.E4Config\022\032\n\005state\030\002 \002(\013"
+    "2\013.pb.E4State\022(\n\007sconfig\030\003 \002(\0132\027.pb.E4Pe"
+    "tscSolverConfig\"F\n\nE4Solution\022\032\n\005state\030\001"
+    " \002(\0132\013.pb.E4State\022\034\n\007d_state\030\002 \001(\0132\013.pb."
+    "E4State\"\373\001\n\tE4Special\022\013\n\003e_2\030\001 \001(\001\022\020\n\010av"
+    "er_a_2\030\002 \001(\001\022\017\n\007int_e_a\030\004 \001(\001\022\n\n\002Na\030\005 \001("
+    "\001\022\n\n\002Nb\030\006 \001(\001\022\t\n\001M\030\021 \001(\001\022\t\n\001N\030\022 \001(\001\022\n\n\002I"
+    "a\030\007 \001(\001\022\n\n\002Ib\030\010 \001(\001\022\017\n\007Ia_aver\030\t \001(\001\022\017\n\007"
+    "Ib_aver\030\n \001(\001\022\n\n\002Wa\030\013 \001(\001\022\n\n\002Wb\030\014 \001(\001\022 \n"
+    "\004hist\030\r \003(\n2\022.pb.E4Special.Hist\032\034\n\004Hist\022"
+    "\t\n\001x\030\016 \002(\001\022\t\n\001y\030\017 \002(\001", 741);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e4.proto", &protobuf_RegisterTypes);
   E4Config::default_instance_ = new E4Config();
@@ -260,6 +287,7 @@ void protobuf_AddDesc_model_5fe4_2eproto() {
   E4Model::default_instance_ = new E4Model();
   E4Solution::default_instance_ = new E4Solution();
   E4Special::default_instance_ = new E4Special();
+  E4Special_Hist::default_instance_ = new E4Special_Hist();
   E4Config::default_instance_->InitAsDefaultInstance();
   E4State::default_instance_->InitAsDefaultInstance();
   E4State_Particles::default_instance_->InitAsDefaultInstance();
@@ -267,6 +295,7 @@ void protobuf_AddDesc_model_5fe4_2eproto() {
   E4Model::default_instance_->InitAsDefaultInstance();
   E4Solution::default_instance_->InitAsDefaultInstance();
   E4Special::default_instance_->InitAsDefaultInstance();
+  E4Special_Hist::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_model_5fe4_2eproto);
 }
 
@@ -282,6 +311,7 @@ struct StaticDescriptorInitializer_model_5fe4_2eproto {
 #ifndef _MSC_VER
 const int E4Config::kNFieldNumber;
 const int E4Config::kDelta0FieldNumber;
+const int E4Config::kAlphaFieldNumber;
 #endif  // !_MSC_VER
 
 E4Config::E4Config()
@@ -304,6 +334,7 @@ void E4Config::SharedCtor() {
   _cached_size_ = 0;
   n_ = 0u;
   delta_0_ = 0;
+  alpha_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -393,6 +424,21 @@ bool E4Config::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(25)) goto parse_alpha;
+        break;
+      }
+
+      // optional double alpha = 3;
+      case 3: {
+        if (tag == 25) {
+         parse_alpha:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &alpha_)));
+          set_has_alpha();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -432,6 +478,11 @@ void E4Config::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->delta_0(), output);
   }
 
+  // optional double alpha = 3;
+  if (has_alpha()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->alpha(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -450,6 +501,11 @@ void E4Config::SerializeWithCachedSizes(
   // optional double delta_0 = 2;
   if (has_delta_0()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(2, this->delta_0(), target);
+  }
+
+  // optional double alpha = 3;
+  if (has_alpha()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->alpha(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -473,6 +529,11 @@ int E4Config::ByteSize() const {
 
     // optional double delta_0 = 2;
     if (has_delta_0()) {
+      total_size += 1 + 8;
+    }
+
+    // optional double alpha = 3;
+    if (has_alpha()) {
       total_size += 1 + 8;
     }
 
@@ -509,6 +570,9 @@ void E4Config::MergeFrom(const E4Config& from) {
     if (from.has_delta_0()) {
       set_delta_0(from.delta_0());
     }
+    if (from.has_alpha()) {
+      set_alpha(from.alpha());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -535,6 +599,7 @@ void E4Config::Swap(E4Config* other) {
   if (other != this) {
     std::swap(n_, other->n_);
     std::swap(delta_0_, other->delta_0_);
+    std::swap(alpha_, other->alpha_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -2155,6 +2220,277 @@ void E4Solution::Swap(E4Solution* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int E4Special_Hist::kXFieldNumber;
+const int E4Special_Hist::kYFieldNumber;
+#endif  // !_MSC_VER
+
+E4Special_Hist::E4Special_Hist()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:pb.E4Special.Hist)
+}
+
+void E4Special_Hist::InitAsDefaultInstance() {
+}
+
+E4Special_Hist::E4Special_Hist(const E4Special_Hist& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:pb.E4Special.Hist)
+}
+
+void E4Special_Hist::SharedCtor() {
+  _cached_size_ = 0;
+  x_ = 0;
+  y_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+E4Special_Hist::~E4Special_Hist() {
+  // @@protoc_insertion_point(destructor:pb.E4Special.Hist)
+  SharedDtor();
+}
+
+void E4Special_Hist::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void E4Special_Hist::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* E4Special_Hist::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return E4Special_Hist_descriptor_;
+}
+
+const E4Special_Hist& E4Special_Hist::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_model_5fe4_2eproto();
+  return *default_instance_;
+}
+
+E4Special_Hist* E4Special_Hist::default_instance_ = NULL;
+
+E4Special_Hist* E4Special_Hist::New() const {
+  return new E4Special_Hist;
+}
+
+void E4Special_Hist::Clear() {
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<E4Special_Hist*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  ZR_(x_, y_);
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool E4Special_Hist::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:pb.E4Special.Hist)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required double x = 14;
+      case 14: {
+        if (tag == 113) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &x_)));
+          set_has_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(121)) goto parse_y;
+        break;
+      }
+
+      // required double y = 15;
+      case 15: {
+        if (tag == 121) {
+         parse_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &y_)));
+          set_has_y();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:pb.E4Special.Hist)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:pb.E4Special.Hist)
+  return false;
+#undef DO_
+}
+
+void E4Special_Hist::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:pb.E4Special.Hist)
+  // required double x = 14;
+  if (has_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(14, this->x(), output);
+  }
+
+  // required double y = 15;
+  if (has_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(15, this->y(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:pb.E4Special.Hist)
+}
+
+::google::protobuf::uint8* E4Special_Hist::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:pb.E4Special.Hist)
+  // required double x = 14;
+  if (has_x()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(14, this->x(), target);
+  }
+
+  // required double y = 15;
+  if (has_y()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(15, this->y(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:pb.E4Special.Hist)
+  return target;
+}
+
+int E4Special_Hist::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required double x = 14;
+    if (has_x()) {
+      total_size += 1 + 8;
+    }
+
+    // required double y = 15;
+    if (has_y()) {
+      total_size += 1 + 8;
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void E4Special_Hist::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const E4Special_Hist* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const E4Special_Hist*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void E4Special_Hist::MergeFrom(const E4Special_Hist& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_x()) {
+      set_x(from.x());
+    }
+    if (from.has_y()) {
+      set_y(from.y());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void E4Special_Hist::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void E4Special_Hist::CopyFrom(const E4Special_Hist& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool E4Special_Hist::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+
+  return true;
+}
+
+void E4Special_Hist::Swap(E4Special_Hist* other) {
+  if (other != this) {
+    std::swap(x_, other->x_);
+    std::swap(y_, other->y_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata E4Special_Hist::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = E4Special_Hist_descriptor_;
+  metadata.reflection = E4Special_Hist_reflection_;
+  return metadata;
+}
+
+
+// -------------------------------------------------------------------
+
+#ifndef _MSC_VER
 const int E4Special::kE2FieldNumber;
 const int E4Special::kAverA2FieldNumber;
 const int E4Special::kIntEAFieldNumber;
@@ -2168,6 +2504,7 @@ const int E4Special::kIaAverFieldNumber;
 const int E4Special::kIbAverFieldNumber;
 const int E4Special::kWaFieldNumber;
 const int E4Special::kWbFieldNumber;
+const int E4Special::kHistFieldNumber;
 #endif  // !_MSC_VER
 
 E4Special::E4Special()
@@ -2256,6 +2593,7 @@ void E4Special::Clear() {
 #undef OFFSET_OF_FIELD_
 #undef ZR_
 
+  hist_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -2430,6 +2768,20 @@ bool E4Special::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(107)) goto parse_hist;
+        break;
+      }
+
+      // repeated group Hist = 13 {
+      case 13: {
+        if (tag == 107) {
+         parse_hist:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadGroupNoVirtual(
+                13, input, add_hist()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(107)) goto parse_hist;
         if (input->ExpectTag(137)) goto parse_M;
         break;
       }
@@ -2544,6 +2896,12 @@ void E4Special::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteDouble(12, this->wb(), output);
   }
 
+  // repeated group Hist = 13 {
+  for (int i = 0; i < this->hist_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteGroupMaybeToArray(
+      13, this->hist(i), output);
+  }
+
   // optional double M = 17;
   if (has_m()) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(17, this->m(), output);
@@ -2617,6 +2975,13 @@ void E4Special::SerializeWithCachedSizes(
   // optional double Wb = 12;
   if (has_wb()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(12, this->wb(), target);
+  }
+
+  // repeated group Hist = 13 {
+  for (int i = 0; i < this->hist_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteGroupNoVirtualToArray(
+        13, this->hist(i), target);
   }
 
   // optional double M = 17;
@@ -2709,6 +3074,14 @@ int E4Special::ByteSize() const {
     }
 
   }
+  // repeated group Hist = 13 {
+  total_size += 2 * this->hist_size();
+  for (int i = 0; i < this->hist_size(); i++) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::GroupSizeNoVirtual(
+        this->hist(i));
+  }
+
   if (!unknown_fields().empty()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -2734,6 +3107,7 @@ void E4Special::MergeFrom(const ::google::protobuf::Message& from) {
 
 void E4Special::MergeFrom(const E4Special& from) {
   GOOGLE_CHECK_NE(&from, this);
+  hist_.MergeFrom(from.hist_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_e_2()) {
       set_e_2(from.e_2());
@@ -2794,6 +3168,7 @@ void E4Special::CopyFrom(const E4Special& from) {
 
 bool E4Special::IsInitialized() const {
 
+  if (!::google::protobuf::internal::AllAreInitialized(this->hist())) return false;
   return true;
 }
 
@@ -2812,6 +3187,7 @@ void E4Special::Swap(E4Special* other) {
     std::swap(ib_aver_, other->ib_aver_);
     std::swap(wa_, other->wa_);
     std::swap(wb_, other->wb_);
+    hist_.Swap(&other->hist_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

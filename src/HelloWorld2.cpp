@@ -98,13 +98,9 @@ HelloWorld2::HelloWorld2()
   chart_analyzer = new ChartAnalyzer(config_widget->getConfig());
   chart_analyzer->processState(state,  d_state, 0.0);
   pb::E4Special* spec_msg = new pb::E4Special();
+  spec_msg->add_hist();
   chart_analyzer->addSpecial(spec_msg);
   vb->pack_start(*chart_analyzer, false, false);
-
-  // for test
-  std::vector<std::string> vars;
-  vars.push_back("$E**2");
-  chart_analyzer->addChart(dynamic_cast<const E4State*>(state), vars);
 
   // signals //
 
@@ -133,12 +129,12 @@ HelloWorld2::HelloWorld2()
   	  s1->set_size_request(600,200);
   Gtk::Socket* s2 = Gtk::manage(new Gtk::Socket());
   	  s2->set_size_request(600,200);
-  Gtk::Socket* s3 = Gtk::manage(new Gtk::Socket());
-  	  s3->set_size_request(600,200);
+//  Gtk::Socket* s3 = Gtk::manage(new Gtk::Socket());
+//  	  s3->set_size_request(600,200);
 
   vb->pack_start(*s1, true, true, 5);
   vb->pack_start(*s2, true, true, 5);
-  vb->pack_start(*s3, true, true, 5);
+//  vb->pack_start(*s3, true, true, 5);
 
   win_diag->add(*vb);
   win_diag->set_title("Diagnostics");
@@ -153,11 +149,11 @@ HelloWorld2::HelloWorld2()
   Gnuplot::title_translation_map["Nb"] = "N_{n}/N";
   Gnuplot::title_translation_map["N"] = "Nv/N+Nn/N";
   Gnuplot::title_translation_map["M"] = "Nv/N-Nn/N";
-  Gnuplot::title_translation_map["e_2"] = "e^2";
+  Gnuplot::title_translation_map["e_2"] = "E^2";
 
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2"}),"",false, s1->get_id(), std::numeric_limits<double>::infinity());
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na","Nb", "N", "M"}),"",false, s2->get_id());
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"e_2", "aver_a_2"}),"",false, s3->get_id());
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2", "e_2"}),"",false, s1->get_id(), std::numeric_limits<double>::infinity());
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na","Nb", "M"}),"",false, s2->get_id());
+//  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"e_2", "aver_a_2"}),"",false, s3->get_id());
 }
 
 HelloWorld2::~HelloWorld2()
@@ -233,6 +229,39 @@ void HelloWorld2::fill_spec_msg(pb::E4Special* spec_msg){
 	spec_msg->set_ib_aver(Ib/Nb);
 	spec_msg->set_n(Na+Nb);
 	spec_msg->set_m(Na-Nb);
+
+
+	// compute max/min
+	double min = std::numeric_limits<double>::infinity();
+	double max = -std::numeric_limits<double>::infinity();
+
+	for(int i=0; i<N; i++){
+		E4State::Particles p = estate->particles(i);
+		double v = p.a()*p.a();
+		if(v>max)
+			max = v;
+		if(v<min)
+			min = v;
+	}// for
+
+	// fill histogram
+	int hist[10] = {0};
+	for(int i=0; i<N; i++){
+		E4State::Particles p = estate->particles(i);
+		int bin = int((p.a()*p.a()-min)/(max-min)*10);
+		if(bin>=10)
+			bin=9;
+		if(bin<0)
+			bin=0;
+		hist[bin]++;
+	}// for
+
+	spec_msg->clear_hist();
+	for(int i=0; i<10; i++){
+		spec_msg->add_hist();
+		spec_msg->mutable_hist(i)->set_x(min+i/10.0*(max-min));
+		spec_msg->mutable_hist(i)->set_y(hist[i]);
+	}
 }
 
 const OdeConfig* HelloWorld2::extract_config(){

@@ -23,6 +23,8 @@ private:
 		std::string var_name;			// can contain '
 		std::vector<std::pair<std::string, std::string>> data_cache;
 		bool is_expression;
+		std::string expression;
+		std::string prefix;		// for particles.* style vars
 		std::vector<std::string> columns;
 		serie(){
 			is_expression = false;
