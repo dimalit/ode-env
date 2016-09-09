@@ -52,16 +52,14 @@ message E3Solution{
 message E3Special{
 	optional double e_2 = 1;
 	optional double aver_a_2 = 2;
-	optional double aver_eta = 3;
-	optional double int_e_a = 4;
-	optional double Na = 5;
-	optional double Nb = 6;
-	optional double M = 17;
-	optional double N = 18;
-	optional double Ia = 7;
-	optional double Ib = 8;
-	optional double Ia_aver = 9;
-	optional double Ib_aver = 10;	
-	optional double Wa = 11;
-	optional double Wb = 12;
+	optional double Na = 3;
+	optional double Nb = 4;
+	optional double M = 5;
+	optional double N = 6;	
+	optional double Wa = 7;
+	optional double Wb = 8;
+	repeated group Hist = 9 {
+		required double x = 10;
+		required double y = 11;
+	}	
 }

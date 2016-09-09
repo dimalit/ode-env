@@ -10,6 +10,7 @@
 #include <algorithm>
 
 #include <sstream>
+#include <fstream>
 #include <iostream>
 #include <cstdio>
 #include <cmath>
@@ -105,13 +106,120 @@ std::string get_vals(const Message* msg, const Message* d_msg, std::vector<std::
 	return res.str();
 }
 
-void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time){
-	assert(msg);
-
-	const Descriptor* desc = msg->GetDescriptor();
-	const Reflection* refl = msg->GetReflection();
+void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time, serie& s, std::ostream& out, bool add_to_cache){
 	const Descriptor* d_desc = d_msg ? d_msg->GetDescriptor() : NULL;
 	const Reflection* d_refl = d_msg ? d_msg->GetReflection() : NULL;
+
+	bool need_series_wrap = false;//!!getXAxisTime() && !polar && this->x_axis.find("ksi") != std::string::npos;
+	bool is_particles = s.var_name.find("particles") != std::string::npos;
+	bool need_coloring = s.var_name=="particles.a" && d_msg;
+
+	// simple field
+	if(s.var_name.find('.') == std::string::npos){
+		// if need time
+		if(getXAxisTime()){
+			ostringstream stime; stime << time;
+			if(add_to_cache){
+				std::string yval = s.is_expression ? get_vals(msg, d_msg, s.columns) : get_val(msg, d_msg, s.var_name);
+				s.data_cache.push_back(make_pair(stime.str(), yval));
+			}
+
+			for(int i=0; i<s.data_cache.size(); i++){
+				out << s.data_cache[i].first << " " << s.data_cache[i].second << "\n";
+			}// for
+		}// if need time
+		else{
+			std::string yval = s.is_expression ? get_vals(msg, d_msg, s.columns) : get_val(msg, d_msg, s.var_name);
+			std::string xval = get_val(msg, d_msg, this->x_axis);
+			out << xval << " " << yval << "\n";
+		}// not need time
+	}// if simple field
+	else{	// repeated field
+		std::string f1, f2;
+		if(!s.is_expression){
+			f1 = s.var_name.substr(0, s.var_name.find('.'));	// parent
+				assert(f1.size());
+			f2 = s.var_name.substr(s.var_name.find('.')+1);		// child
+				assert(f2.size());
+		}
+		else{
+			f1 = s.prefix;
+			assert(!f1.empty());
+		}
+
+		const Descriptor* desc = msg->GetDescriptor();
+		const Reflection* refl = msg->GetReflection();
+
+		const FieldDescriptor* fd1 = desc->FindFieldByName(f1);
+		const FieldDescriptor* d_fd1 = d_desc ? d_desc->FindFieldByName(f1) : NULL;
+			assert(!d_desc || fd1);
+		int n = refl->FieldSize(*msg, fd1);
+			assert(!d_fd1 || refl->FieldSize(*msg, fd1) == d_refl->FieldSize(*msg, d_fd1));
+
+		double prev_x = -100;
+
+		//!!! filter 100 particles
+		bool x_bits[100] = {0};
+
+		for(int i=0; i<n; i++){
+			string y;
+			if(!s.is_expression)
+				y = get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : NULL, f2);
+			else
+				y = get_vals(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : NULL, s.columns, msg, d_msg);
+			double x = i;
+
+			// set x to value of specific x variable if needed
+			if(!getXAxisTime()){
+				std::string xname = this->x_axis;
+				// remove all before dot
+				if(this->x_axis.find('.') != std::string::npos)
+					xname = x_axis.substr(x_axis.find('.')+1);
+
+				x = atof(get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, fd1, i) : NULL, xname).c_str());
+				if(xname=="ksi" && polar)
+					x *= 2.0*M_PI;
+			}// if not time :(
+
+			// start new series if needed
+//			if(need_series_wrap && prev_x>-99 && abs(x-prev_x)>0.5){
+//				super_buffer << "e\n";
+//				plot_command << ", '-' with " << style << " title '" << title <<"'";
+//			}
+
+			// draw or not?
+			x = x - floor(x/2.0/M_PI)*2.0*M_PI;
+			int x_pos = x/2.0/M_PI*100;
+			if(x_pos >= 100)
+				x_pos = 99;
+			if(is_particles && !polar && x_bits[x_pos])
+				continue;
+
+			x_bits[x_pos] = true;
+
+			if(polar)
+				out << x << " " << y;
+			else
+				out << x << " " << y;
+
+			if(need_coloring){
+				const Message& d_m2 = d_refl->GetRepeatedMessage(*d_msg, d_fd1, i);
+				double dy = atof(get_val(NULL, &d_m2, f2+"'").c_str());
+				if(dy>0)
+					out << " 7";
+				else
+					out << " 1";
+			}
+
+			out << "\n";
+
+			prev_x = x;
+		}// for points
+	}// if repeated field
+}
+
+void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time){
+	assert(msg);
 
 	if(x_axis[x_axis.length()-1]=='\'' && !d_msg)
 		return;
@@ -132,10 +240,8 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 	for(int i=0; i<series.size(); i++){
 		serie& s = series[i];
 
-		bool need_series_wrap = false;//!!getXAxisTime() && !polar && this->x_axis.find("ksi") != std::string::npos;
-		bool need_coloring = s.var_name=="particles.a" && d_refl;
+		bool need_coloring = s.var_name=="particles.a" && d_msg;
 		bool need_boxes = s.var_name=="hist.y";
-		bool is_particles = s.var_name.find("particles") != std::string::npos;
 
 		if(s.var_name[s.var_name.length()-1]=='\'' && !d_msg)
 			continue;
@@ -164,102 +270,8 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 
 		plot_command << "with " << style << " title \"" << title <<"\"";
 
-		// simple field
-		if(s.var_name.find('.') == std::string::npos){
-			std::string yval = s.is_expression ? get_vals(msg, d_msg, s.columns) : get_val(msg, d_msg, s.var_name);
-			// if need time
-			if(getXAxisTime()){
-				ostringstream stime; stime << time;
-				s.data_cache.push_back(make_pair(stime.str(), yval));
+		print_numbers(msg, d_msg, time, s, super_buffer);
 
-				for(int i=0; i<s.data_cache.size(); i++){
-					super_buffer << s.data_cache[i].first << " " << s.data_cache[i].second << "\n";
-				}// for
-			}// if need time
-			else{
-				std::string xval = get_val(msg, d_msg, this->x_axis);
-				super_buffer << xval << " " << yval << "\n";
-			}// not need time
-		}// if simple field
-		else{	// repeated field
-			std::string f1, f2;
-			if(!s.is_expression){
-				f1 = s.var_name.substr(0, s.var_name.find('.'));	// parent
-					assert(f1.size());
-				f2 = s.var_name.substr(s.var_name.find('.')+1);		// child
-					assert(f2.size());
-			}
-			else{
-				f1 = s.prefix;
-				assert(!f1.empty());
-			}
-
-			const FieldDescriptor* fd1 = desc->FindFieldByName(f1);
-			const FieldDescriptor* d_fd1 = d_desc ? d_desc->FindFieldByName(f1) : NULL;
-				assert(!d_desc || fd1);
-			int n = refl->FieldSize(*msg, fd1);
-				assert(!d_fd1 || refl->FieldSize(*msg, fd1) == d_refl->FieldSize(*msg, d_fd1));
-
-			double prev_x = -100;
-
-			//!!! filter 100 particles
-			bool x_bits[100] = {0};
-
-			for(int i=0; i<n; i++){
-				string y;
-				if(!s.is_expression)
-					y = get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : NULL, f2);
-				else
-					y = get_vals(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : NULL, s.columns, msg, d_msg);
-				double x = i;
-
-				// set x to value of specific x variable if needed
-				if(!getXAxisTime()){
-					std::string xname = this->x_axis;
-					// remove all before dot
-					if(this->x_axis.find('.') != std::string::npos)
-						xname = x_axis.substr(x_axis.find('.')+1);
-
-					x = atof(get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, fd1, i) : NULL, xname).c_str());
-					if(xname=="ksi" && polar)
-						x *= 2.0*M_PI;
-				}// if not time :(
-
-				// start new series if needed
-				if(need_series_wrap && prev_x>-99 && abs(x-prev_x)>0.5){
-					super_buffer << "e\n";
-					plot_command << ", '-' with " << style << " title '" << title <<"'";
-				}
-
-				// draw or not?
-				x = x - floor(x/2.0/M_PI)*2.0*M_PI;
-				int x_pos = x/2.0/M_PI*100;
-				if(x_pos >= 100)
-					x_pos = 99;
-				if(is_particles && !polar && x_bits[x_pos])
-					continue;
-
-				x_bits[x_pos] = true;
-
-				if(polar)
-					super_buffer << x << " " << y;
-				else
-					super_buffer << x << " " << y;
-
-				if(need_coloring){
-					const Message& d_m2 = d_refl->GetRepeatedMessage(*d_msg, d_fd1, i);
-					double dy = atof(get_val(NULL, &d_m2, f2+"'").c_str());
-					if(dy>0)
-						super_buffer << " 7";
-					else
-						super_buffer << " 1";
-				}
-
-				super_buffer << "\n";
-
-				prev_x = x;
-			}// for points
-		}// if repeated field
 		super_buffer << "e\n";
 	}// for series
 
@@ -289,6 +301,14 @@ void Gnuplot::saveToCsv(const std::string& file, const google::protobuf::Message
 	fprintf(fp, "set label \"t = %.2lf\" at graph 0.02, graph 0.95\n", time);
 	printPlotCommand(fp, msg, d_msg, time);
 	fclose(fp);
+}
+
+void Gnuplot::saveSerie(int ser_no, const std::string& file, const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time){
+	assert(ser_no < this->series.size());
+	std::ofstream out(file);
+	serie& s = this->series[ser_no];
+	this->print_numbers(msg, d_msg, time, s, out, false);			// don't add to cache
+	out.close();
 }
 
 std::string extract_child_part(const std::string& s, std::string* parent){

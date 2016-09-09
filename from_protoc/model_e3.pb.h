@@ -41,6 +41,7 @@ class E3PetscSolverConfig;
 class E3Model;
 class E3Solution;
 class E3Special;
+class E3Special_Hist;
 
 enum E3PetscSolverConfig_Solver {
   E3PetscSolverConfig_Solver_rhs = 0,
@@ -783,6 +784,95 @@ class E3Solution : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class E3Special_Hist : public ::google::protobuf::Message {
+ public:
+  E3Special_Hist();
+  virtual ~E3Special_Hist();
+
+  E3Special_Hist(const E3Special_Hist& from);
+
+  inline E3Special_Hist& operator=(const E3Special_Hist& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const E3Special_Hist& default_instance();
+
+  void Swap(E3Special_Hist* other);
+
+  // implements Message ----------------------------------------------
+
+  E3Special_Hist* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const E3Special_Hist& from);
+  void MergeFrom(const E3Special_Hist& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required double x = 10;
+  inline bool has_x() const;
+  inline void clear_x();
+  static const int kXFieldNumber = 10;
+  inline double x() const;
+  inline void set_x(double value);
+
+  // required double y = 11;
+  inline bool has_y() const;
+  inline void clear_y();
+  static const int kYFieldNumber = 11;
+  inline double y() const;
+  inline void set_y(double value);
+
+  // @@protoc_insertion_point(class_scope:pb.E3Special.Hist)
+ private:
+  inline void set_has_x();
+  inline void clear_has_x();
+  inline void set_has_y();
+  inline void clear_has_y();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  double x_;
+  double y_;
+  friend void  protobuf_AddDesc_model_5fe3_2eproto();
+  friend void protobuf_AssignDesc_model_5fe3_2eproto();
+  friend void protobuf_ShutdownFile_model_5fe3_2eproto();
+
+  void InitAsDefaultInstance();
+  static E3Special_Hist* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class E3Special : public ::google::protobuf::Message {
  public:
   E3Special();
@@ -834,6 +924,8 @@ class E3Special : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
+  typedef E3Special_Hist Hist;
+
   // accessors -------------------------------------------------------
 
   // optional double e_2 = 1;
@@ -850,89 +942,59 @@ class E3Special : public ::google::protobuf::Message {
   inline double aver_a_2() const;
   inline void set_aver_a_2(double value);
 
-  // optional double aver_eta = 3;
-  inline bool has_aver_eta() const;
-  inline void clear_aver_eta();
-  static const int kAverEtaFieldNumber = 3;
-  inline double aver_eta() const;
-  inline void set_aver_eta(double value);
-
-  // optional double int_e_a = 4;
-  inline bool has_int_e_a() const;
-  inline void clear_int_e_a();
-  static const int kIntEAFieldNumber = 4;
-  inline double int_e_a() const;
-  inline void set_int_e_a(double value);
-
-  // optional double Na = 5;
+  // optional double Na = 3;
   inline bool has_na() const;
   inline void clear_na();
-  static const int kNaFieldNumber = 5;
+  static const int kNaFieldNumber = 3;
   inline double na() const;
   inline void set_na(double value);
 
-  // optional double Nb = 6;
+  // optional double Nb = 4;
   inline bool has_nb() const;
   inline void clear_nb();
-  static const int kNbFieldNumber = 6;
+  static const int kNbFieldNumber = 4;
   inline double nb() const;
   inline void set_nb(double value);
 
-  // optional double M = 17;
+  // optional double M = 5;
   inline bool has_m() const;
   inline void clear_m();
-  static const int kMFieldNumber = 17;
+  static const int kMFieldNumber = 5;
   inline double m() const;
   inline void set_m(double value);
 
-  // optional double N = 18;
+  // optional double N = 6;
   inline bool has_n() const;
   inline void clear_n();
-  static const int kNFieldNumber = 18;
+  static const int kNFieldNumber = 6;
   inline double n() const;
   inline void set_n(double value);
 
-  // optional double Ia = 7;
-  inline bool has_ia() const;
-  inline void clear_ia();
-  static const int kIaFieldNumber = 7;
-  inline double ia() const;
-  inline void set_ia(double value);
-
-  // optional double Ib = 8;
-  inline bool has_ib() const;
-  inline void clear_ib();
-  static const int kIbFieldNumber = 8;
-  inline double ib() const;
-  inline void set_ib(double value);
-
-  // optional double Ia_aver = 9;
-  inline bool has_ia_aver() const;
-  inline void clear_ia_aver();
-  static const int kIaAverFieldNumber = 9;
-  inline double ia_aver() const;
-  inline void set_ia_aver(double value);
-
-  // optional double Ib_aver = 10;
-  inline bool has_ib_aver() const;
-  inline void clear_ib_aver();
-  static const int kIbAverFieldNumber = 10;
-  inline double ib_aver() const;
-  inline void set_ib_aver(double value);
-
-  // optional double Wa = 11;
+  // optional double Wa = 7;
   inline bool has_wa() const;
   inline void clear_wa();
-  static const int kWaFieldNumber = 11;
+  static const int kWaFieldNumber = 7;
   inline double wa() const;
   inline void set_wa(double value);
 
-  // optional double Wb = 12;
+  // optional double Wb = 8;
   inline bool has_wb() const;
   inline void clear_wb();
-  static const int kWbFieldNumber = 12;
+  static const int kWbFieldNumber = 8;
   inline double wb() const;
   inline void set_wb(double value);
+
+  // repeated group Hist = 9 {
+  inline int hist_size() const;
+  inline void clear_hist();
+  static const int kHistFieldNumber = 9;
+  inline const ::pb::E3Special_Hist& hist(int index) const;
+  inline ::pb::E3Special_Hist* mutable_hist(int index);
+  inline ::pb::E3Special_Hist* add_hist();
+  inline const ::google::protobuf::RepeatedPtrField< ::pb::E3Special_Hist >&
+      hist() const;
+  inline ::google::protobuf::RepeatedPtrField< ::pb::E3Special_Hist >*
+      mutable_hist();
 
   // @@protoc_insertion_point(class_scope:pb.E3Special)
  private:
@@ -940,10 +1002,6 @@ class E3Special : public ::google::protobuf::Message {
   inline void clear_has_e_2();
   inline void set_has_aver_a_2();
   inline void clear_has_aver_a_2();
-  inline void set_has_aver_eta();
-  inline void clear_has_aver_eta();
-  inline void set_has_int_e_a();
-  inline void clear_has_int_e_a();
   inline void set_has_na();
   inline void clear_has_na();
   inline void set_has_nb();
@@ -952,14 +1010,6 @@ class E3Special : public ::google::protobuf::Message {
   inline void clear_has_m();
   inline void set_has_n();
   inline void clear_has_n();
-  inline void set_has_ia();
-  inline void clear_has_ia();
-  inline void set_has_ib();
-  inline void clear_has_ib();
-  inline void set_has_ia_aver();
-  inline void clear_has_ia_aver();
-  inline void set_has_ib_aver();
-  inline void clear_has_ib_aver();
   inline void set_has_wa();
   inline void clear_has_wa();
   inline void set_has_wb();
@@ -971,18 +1021,13 @@ class E3Special : public ::google::protobuf::Message {
   mutable int _cached_size_;
   double e_2_;
   double aver_a_2_;
-  double aver_eta_;
-  double int_e_a_;
   double na_;
   double nb_;
   double m_;
   double n_;
-  double ia_;
-  double ib_;
-  double ia_aver_;
-  double ib_aver_;
   double wa_;
   double wb_;
+  ::google::protobuf::RepeatedPtrField< ::pb::E3Special_Hist > hist_;
   friend void  protobuf_AddDesc_model_5fe3_2eproto();
   friend void protobuf_AssignDesc_model_5fe3_2eproto();
   friend void protobuf_ShutdownFile_model_5fe3_2eproto();
@@ -1787,6 +1832,58 @@ inline void E3Solution::set_allocated_d_state(::pb::E3State* d_state) {
 
 // -------------------------------------------------------------------
 
+// E3Special_Hist
+
+// required double x = 10;
+inline bool E3Special_Hist::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void E3Special_Hist::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void E3Special_Hist::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void E3Special_Hist::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+inline double E3Special_Hist::x() const {
+  // @@protoc_insertion_point(field_get:pb.E3Special.Hist.x)
+  return x_;
+}
+inline void E3Special_Hist::set_x(double value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:pb.E3Special.Hist.x)
+}
+
+// required double y = 11;
+inline bool E3Special_Hist::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void E3Special_Hist::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void E3Special_Hist::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void E3Special_Hist::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+inline double E3Special_Hist::y() const {
+  // @@protoc_insertion_point(field_get:pb.E3Special.Hist.y)
+  return y_;
+}
+inline void E3Special_Hist::set_y(double value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:pb.E3Special.Hist.y)
+}
+
+// -------------------------------------------------------------------
+
 // E3Special
 
 // optional double e_2 = 1;
@@ -1837,63 +1934,15 @@ inline void E3Special::set_aver_a_2(double value) {
   // @@protoc_insertion_point(field_set:pb.E3Special.aver_a_2)
 }
 
-// optional double aver_eta = 3;
-inline bool E3Special::has_aver_eta() const {
+// optional double Na = 3;
+inline bool E3Special::has_na() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void E3Special::set_has_aver_eta() {
+inline void E3Special::set_has_na() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void E3Special::clear_has_aver_eta() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void E3Special::clear_aver_eta() {
-  aver_eta_ = 0;
-  clear_has_aver_eta();
-}
-inline double E3Special::aver_eta() const {
-  // @@protoc_insertion_point(field_get:pb.E3Special.aver_eta)
-  return aver_eta_;
-}
-inline void E3Special::set_aver_eta(double value) {
-  set_has_aver_eta();
-  aver_eta_ = value;
-  // @@protoc_insertion_point(field_set:pb.E3Special.aver_eta)
-}
-
-// optional double int_e_a = 4;
-inline bool E3Special::has_int_e_a() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void E3Special::set_has_int_e_a() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void E3Special::clear_has_int_e_a() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void E3Special::clear_int_e_a() {
-  int_e_a_ = 0;
-  clear_has_int_e_a();
-}
-inline double E3Special::int_e_a() const {
-  // @@protoc_insertion_point(field_get:pb.E3Special.int_e_a)
-  return int_e_a_;
-}
-inline void E3Special::set_int_e_a(double value) {
-  set_has_int_e_a();
-  int_e_a_ = value;
-  // @@protoc_insertion_point(field_set:pb.E3Special.int_e_a)
-}
-
-// optional double Na = 5;
-inline bool E3Special::has_na() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void E3Special::set_has_na() {
-  _has_bits_[0] |= 0x00000010u;
-}
 inline void E3Special::clear_has_na() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void E3Special::clear_na() {
   na_ = 0;
@@ -1909,15 +1958,15 @@ inline void E3Special::set_na(double value) {
   // @@protoc_insertion_point(field_set:pb.E3Special.Na)
 }
 
-// optional double Nb = 6;
+// optional double Nb = 4;
 inline bool E3Special::has_nb() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
 inline void E3Special::set_has_nb() {
-  _has_bits_[0] |= 0x00000020u;
+  _has_bits_[0] |= 0x00000008u;
 }
 inline void E3Special::clear_has_nb() {
-  _has_bits_[0] &= ~0x00000020u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void E3Special::clear_nb() {
   nb_ = 0;
@@ -1933,15 +1982,15 @@ inline void E3Special::set_nb(double value) {
   // @@protoc_insertion_point(field_set:pb.E3Special.Nb)
 }
 
-// optional double M = 17;
+// optional double M = 5;
 inline bool E3Special::has_m() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+  return (_has_bits_[0] & 0x00000010u) != 0;
 }
 inline void E3Special::set_has_m() {
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000010u;
 }
 inline void E3Special::clear_has_m() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void E3Special::clear_m() {
   m_ = 0;
@@ -1957,15 +2006,15 @@ inline void E3Special::set_m(double value) {
   // @@protoc_insertion_point(field_set:pb.E3Special.M)
 }
 
-// optional double N = 18;
+// optional double N = 6;
 inline bool E3Special::has_n() const {
-  return (_has_bits_[0] & 0x00000080u) != 0;
+  return (_has_bits_[0] & 0x00000020u) != 0;
 }
 inline void E3Special::set_has_n() {
-  _has_bits_[0] |= 0x00000080u;
+  _has_bits_[0] |= 0x00000020u;
 }
 inline void E3Special::clear_has_n() {
-  _has_bits_[0] &= ~0x00000080u;
+  _has_bits_[0] &= ~0x00000020u;
 }
 inline void E3Special::clear_n() {
   n_ = 0;
@@ -1981,111 +2030,15 @@ inline void E3Special::set_n(double value) {
   // @@protoc_insertion_point(field_set:pb.E3Special.N)
 }
 
-// optional double Ia = 7;
-inline bool E3Special::has_ia() const {
-  return (_has_bits_[0] & 0x00000100u) != 0;
-}
-inline void E3Special::set_has_ia() {
-  _has_bits_[0] |= 0x00000100u;
-}
-inline void E3Special::clear_has_ia() {
-  _has_bits_[0] &= ~0x00000100u;
-}
-inline void E3Special::clear_ia() {
-  ia_ = 0;
-  clear_has_ia();
-}
-inline double E3Special::ia() const {
-  // @@protoc_insertion_point(field_get:pb.E3Special.Ia)
-  return ia_;
-}
-inline void E3Special::set_ia(double value) {
-  set_has_ia();
-  ia_ = value;
-  // @@protoc_insertion_point(field_set:pb.E3Special.Ia)
-}
-
-// optional double Ib = 8;
-inline bool E3Special::has_ib() const {
-  return (_has_bits_[0] & 0x00000200u) != 0;
-}
-inline void E3Special::set_has_ib() {
-  _has_bits_[0] |= 0x00000200u;
-}
-inline void E3Special::clear_has_ib() {
-  _has_bits_[0] &= ~0x00000200u;
-}
-inline void E3Special::clear_ib() {
-  ib_ = 0;
-  clear_has_ib();
-}
-inline double E3Special::ib() const {
-  // @@protoc_insertion_point(field_get:pb.E3Special.Ib)
-  return ib_;
-}
-inline void E3Special::set_ib(double value) {
-  set_has_ib();
-  ib_ = value;
-  // @@protoc_insertion_point(field_set:pb.E3Special.Ib)
-}
-
-// optional double Ia_aver = 9;
-inline bool E3Special::has_ia_aver() const {
-  return (_has_bits_[0] & 0x00000400u) != 0;
-}
-inline void E3Special::set_has_ia_aver() {
-  _has_bits_[0] |= 0x00000400u;
-}
-inline void E3Special::clear_has_ia_aver() {
-  _has_bits_[0] &= ~0x00000400u;
-}
-inline void E3Special::clear_ia_aver() {
-  ia_aver_ = 0;
-  clear_has_ia_aver();
-}
-inline double E3Special::ia_aver() const {
-  // @@protoc_insertion_point(field_get:pb.E3Special.Ia_aver)
-  return ia_aver_;
-}
-inline void E3Special::set_ia_aver(double value) {
-  set_has_ia_aver();
-  ia_aver_ = value;
-  // @@protoc_insertion_point(field_set:pb.E3Special.Ia_aver)
-}
-
-// optional double Ib_aver = 10;
-inline bool E3Special::has_ib_aver() const {
-  return (_has_bits_[0] & 0x00000800u) != 0;
-}
-inline void E3Special::set_has_ib_aver() {
-  _has_bits_[0] |= 0x00000800u;
-}
-inline void E3Special::clear_has_ib_aver() {
-  _has_bits_[0] &= ~0x00000800u;
-}
-inline void E3Special::clear_ib_aver() {
-  ib_aver_ = 0;
-  clear_has_ib_aver();
-}
-inline double E3Special::ib_aver() const {
-  // @@protoc_insertion_point(field_get:pb.E3Special.Ib_aver)
-  return ib_aver_;
-}
-inline void E3Special::set_ib_aver(double value) {
-  set_has_ib_aver();
-  ib_aver_ = value;
-  // @@protoc_insertion_point(field_set:pb.E3Special.Ib_aver)
-}
-
-// optional double Wa = 11;
+// optional double Wa = 7;
 inline bool E3Special::has_wa() const {
-  return (_has_bits_[0] & 0x00001000u) != 0;
+  return (_has_bits_[0] & 0x00000040u) != 0;
 }
 inline void E3Special::set_has_wa() {
-  _has_bits_[0] |= 0x00001000u;
+  _has_bits_[0] |= 0x00000040u;
 }
 inline void E3Special::clear_has_wa() {
-  _has_bits_[0] &= ~0x00001000u;
+  _has_bits_[0] &= ~0x00000040u;
 }
 inline void E3Special::clear_wa() {
   wa_ = 0;
@@ -2101,15 +2054,15 @@ inline void E3Special::set_wa(double value) {
   // @@protoc_insertion_point(field_set:pb.E3Special.Wa)
 }
 
-// optional double Wb = 12;
+// optional double Wb = 8;
 inline bool E3Special::has_wb() const {
-  return (_has_bits_[0] & 0x00002000u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 inline void E3Special::set_has_wb() {
-  _has_bits_[0] |= 0x00002000u;
+  _has_bits_[0] |= 0x00000080u;
 }
 inline void E3Special::clear_has_wb() {
-  _has_bits_[0] &= ~0x00002000u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void E3Special::clear_wb() {
   wb_ = 0;
@@ -2123,6 +2076,36 @@ inline void E3Special::set_wb(double value) {
   set_has_wb();
   wb_ = value;
   // @@protoc_insertion_point(field_set:pb.E3Special.Wb)
+}
+
+// repeated group Hist = 9 {
+inline int E3Special::hist_size() const {
+  return hist_.size();
+}
+inline void E3Special::clear_hist() {
+  hist_.Clear();
+}
+inline const ::pb::E3Special_Hist& E3Special::hist(int index) const {
+  // @@protoc_insertion_point(field_get:pb.E3Special.hist)
+  return hist_.Get(index);
+}
+inline ::pb::E3Special_Hist* E3Special::mutable_hist(int index) {
+  // @@protoc_insertion_point(field_mutable:pb.E3Special.hist)
+  return hist_.Mutable(index);
+}
+inline ::pb::E3Special_Hist* E3Special::add_hist() {
+  // @@protoc_insertion_point(field_add:pb.E3Special.hist)
+  return hist_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::pb::E3Special_Hist >&
+E3Special::hist() const {
+  // @@protoc_insertion_point(field_list:pb.E3Special.hist)
+  return hist_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::pb::E3Special_Hist >*
+E3Special::mutable_hist() {
+  // @@protoc_insertion_point(field_mutable_list:pb.E3Special.hist)
+  return &hist_;
 }
 
 

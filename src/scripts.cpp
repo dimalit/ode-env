@@ -663,6 +663,81 @@ void as_in_book(){
 	delete pcfg;
 }
 
+void model_e3_fill_spec_msg(const E3State* estate, const E3State* dstate, const E3Config* config, pb::E3Special* spec_msg){
+	int N = estate->particles_size();
+//	double T = this->total_time;
+//	double dT = this->total_time - this->last_refresh_time;
+
+	double sum_a_2 = 0;
+	double Na = 0, Nb = 0;			// da/dt>0 and <0
+	double Ia = 0.0, Ib = 0.0;	// sum da/dt
+	double Wa = 0.0, Wb = 0.0;	// sum a^2
+	for(int i=0; i<N; i++){
+		E3State::Particles p = estate->particles(i);
+		E3State::Particles dp = dstate->particles(i);
+
+		sum_a_2 += p.a()*p.a();
+
+		if(dp.a() > 0.0){
+			Na++;
+			Ia += dp.a();
+			Wa += p.a()*p.a();
+		}// Na
+		else{
+			Nb++;
+			Ib += dp.a();
+			Wb += p.a()*p.a();
+		}// Nb
+	}
+
+	Na/=N; Nb/=N;
+	Wa/=N; Wb/=N;
+
+	spec_msg->set_e_2(estate->e()*estate->e());
+	spec_msg->set_aver_a_2(sum_a_2/estate->particles_size());
+
+	spec_msg->set_na(Na);
+	spec_msg->set_nb(Nb);
+	spec_msg->set_wa(Wa);
+	spec_msg->set_wb(Wb);
+
+	spec_msg->set_n(Na+Nb);
+	spec_msg->set_m(Na-Nb);
+
+
+	// compute max/min
+	double min = std::numeric_limits<double>::infinity();
+	double max = -std::numeric_limits<double>::infinity();
+
+	for(int i=0; i<N; i++){
+		E3State::Particles p = estate->particles(i);
+		double v = p.a()*p.a();
+		if(v>max)
+			max = v;
+		if(v<min)
+			min = v;
+	}// for
+
+	// fill histogram
+	int hist[10] = {0};
+	for(int i=0; i<N; i++){
+		E3State::Particles p = estate->particles(i);
+		int bin = int((p.a()*p.a()-min)/(max-min)*10);
+		if(bin>=10)
+			bin=9;
+		if(bin<0)
+			bin=0;
+		hist[bin]++;
+	}// for
+
+	spec_msg->clear_hist();
+	for(int i=0; i<10; i++){
+		spec_msg->add_hist();
+		spec_msg->mutable_hist(i)->set_x(min+i/10.0*(max-min));
+		spec_msg->mutable_hist(i)->set_y(hist[i]);
+	}
+}
+
 void exp_4_gyro(){
 	string problem_name = "model e3";
 
@@ -678,6 +753,7 @@ void exp_4_gyro(){
 		scfg->set_atol(1e-10);
 		scfg->set_rtol(1e-10);
 		scfg->set_solver(E3PetscSolverConfig::rhs);
+		scfg->set_n_cores(2);
 
 	vector<double> a0s, e0s;
 	a0s.push_back(1);
@@ -692,11 +768,20 @@ void exp_4_gyro(){
 		a_plot.addVar("particles.a");
 		a_plot.setXAxisVar("particles.ksi");
 		a_plot.setPolar(true);
+		a_plot.setTitle("a|ksi");
 
-	Gnuplot p;
-		p.addVar("$E**2");
-		p.setXAxisTime();
-		p.setTitle("custom plot");
+	Gnuplot wa_plot;
+		wa_plot.addVar("Wa");
+		wa_plot.addVar("Wb");
+		wa_plot.addVar("aver_a_2");
+		wa_plot.addVar("e_2");
+		wa_plot.setXAxisTime();
+		wa_plot.setTitle("Wa");
+
+	Gnuplot na_plot;
+		na_plot.addVar("Na");
+		na_plot.addVar("Nb");
+		na_plot.setTitle("Na");
 
 	for(int i=0; i<a0s.size(); i++){
 		double a0 = a0s[i];
@@ -716,15 +801,14 @@ void exp_4_gyro(){
 		E3PetscSolver* solver = dynamic_cast<E3PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
 
 		a_plot.reset();
-		p.reset();
+		wa_plot.reset();
+		na_plot.reset();
 
 		const google::protobuf::Message *state_msg, *dstate_msg;
 		double time = 0.0;
 		solver->run(1000000, 1000, true);
 
-		MaxDetector d1, d2;
-		d2.push(0.0);
-
+		pb::E3Special special_msg;
 		for(int i=0;;i++){
 			if(!solver->step())
 				break;
@@ -732,12 +816,26 @@ void exp_4_gyro(){
 			dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
 			time = solver->getTime();
 
-			a_plot.processState(state_msg, dstate_msg, time);
-			p.processState(state_msg, dstate_msg, time);
+			model_e3_fill_spec_msg(
+				dynamic_cast<const E3State*>(solver->getState()),
+				dynamic_cast<const E3State*>(solver->getDState()),
+				pcfg, &special_msg);
 
-			if(time >= 10.0)
+			a_plot.processState(state_msg, dstate_msg, time);
+			wa_plot.processState(&special_msg, NULL, time);
+			na_plot.processState(&special_msg, NULL, time);
+
+			if(time >= 13.9)
 				break;
 		}//for steps
+
+		wa_plot.saveSerie(0, "Wa.csv");
+		wa_plot.saveSerie(1, "Wb.csv");
+		wa_plot.saveSerie(2, "aver_a_2.csv");
+		wa_plot.saveSerie(3, "e_2.csv");
+
+		na_plot.saveSerie(0, "Na.csv");
+		na_plot.saveSerie(1, "Nb.csv");
 
 		delete solver;
 		delete init_state;

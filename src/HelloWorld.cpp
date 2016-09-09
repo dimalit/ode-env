@@ -220,22 +220,12 @@ void HelloWorld::fill_spec_msg(pb::E3Special* spec_msg){
 
 	spec_msg->set_e_2(estate->e()*estate->e());
 	spec_msg->set_aver_a_2(sum_a_2/estate->particles_size());
-	spec_msg->set_aver_eta(2.0/config->r_e()/config->m()*sum_eta);
-	spec_msg->set_int_e_a(estate->e()*estate->e()+1.0/config->n()/estate->particles_size()*sum_a_2);
 
 	spec_msg->set_na(Na);
 	spec_msg->set_nb(Nb);
-	spec_msg->set_ia(Ia);
-	spec_msg->set_ib(Ib);
 	spec_msg->set_wa(Wa);
 	spec_msg->set_wb(Wb);
 
-	//TODO: delete sum_***
-//	sum_ia += Ia*dT; sum_ib += Ib*dT;
-//	sum_wa += Wa*dT; sum_wb += Wb*dT;
-
-	spec_msg->set_ia_aver(Ia/Na/N);
-	spec_msg->set_ib_aver(Ib/Nb/N);
 	spec_msg->set_n(Na+Nb);
 	spec_msg->set_m(Na-Nb);
 }
