@@ -6,6 +6,7 @@
  */
 
 #include "model_e3.h"
+#include "model_e4.h"
 #include "Gnuplot.h"
 #include "ChartAnalyzer.h"
 #include "MaxDetector.h"
@@ -750,8 +751,8 @@ void exp_4_gyro(){
 	E3PetscSolverConfig* scfg = dynamic_cast<E3PetscSolverConfig*>(solver_fact->createSolverConfg());
 		scfg->set_model("tm");
 		scfg->set_init_step(0.01);
-		scfg->set_atol(1e-10);
-		scfg->set_rtol(1e-10);
+		scfg->set_atol(1e-9);
+		scfg->set_rtol(1e-9);
 		scfg->set_solver(E3PetscSolverConfig::rhs);
 		scfg->set_n_cores(2);
 
@@ -764,11 +765,34 @@ void exp_4_gyro(){
 	e0s.push_back(1);
 	e0s.push_back(0.1);
 
+	// add R=-0.6 mode
+	a0s.push_back(0.1);
+	e0s.push_back(1.0);
+	vector<double> rs;
+	rs.push_back(0.0);
+	rs.push_back(0.0);
+	rs.push_back(0.0);
+	rs.push_back(-0.6);
+
+	Gnuplot e_plot;
+		e_plot.addVar("E");
+		e_plot.setXAxisTime();
+		e_plot.setTitle("E");
+
+	Gnuplot phi_plot;
+		phi_plot.addVar("phi");
+		phi_plot.setXAxisTime();
+		phi_plot.setTitle("phi");
+
 	Gnuplot a_plot;
 		a_plot.addVar("particles.a");
 		a_plot.setXAxisVar("particles.ksi");
 		a_plot.setPolar(true);
 		a_plot.setTitle("a|ksi");
+
+	Gnuplot hist_plot;
+		hist_plot.addVar("hist.y");
+		hist_plot.setXAxisVar("hist.x");
 
 	Gnuplot wa_plot;
 		wa_plot.addVar("Wa");
@@ -783,9 +807,17 @@ void exp_4_gyro(){
 		na_plot.addVar("Nb");
 		na_plot.setTitle("Na");
 
-	for(int i=0; i<a0s.size(); i++){
-		double a0 = a0s[i];
-		double e0 = e0s[i];
+	Gnuplot an_plot;
+		an_plot.addVar("particles.a");
+
+	Gnuplot ksin_plot;
+		ksin_plot.addVar("particles.ksi");
+
+	for(int e_step=3; e_step<a0s.size(); e_step++){
+		double a0 = a0s[e_step];
+		double e0 = e0s[e_step];
+		double r = rs[e_step];
+		pcfg->set_r_e(r);
 
 		E3State* init_state = dynamic_cast<E3State*>(inst_fact->createState(pcfg));
 		init_state->set_e(e0);
@@ -795,21 +827,31 @@ void exp_4_gyro(){
 		for(int i=0; i<pcfg->m(); i++){
 			init_state->mutable_particles(i)->set_a(init_state->a0());
 			init_state->mutable_particles(i)->set_eta(0);
-			double ksi = i / (double)pcfg->m() * (right-left) + left;
+			//double ksi = i / (double)pcfg->m() * (right-left) + left + rand()/(double)RAND_MAX*1e-4;
+			double ksi = rand()/(double)RAND_MAX * (right-left) + left;
 			init_state->mutable_particles(i)->set_ksi(ksi);
 		}
 		E3PetscSolver* solver = dynamic_cast<E3PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
 
+		MaxDetector md1;
+		MaxDetector md2;
+		int md_counter = 0;
+
+		e_plot.reset();
+		phi_plot.reset();
 		a_plot.reset();
+		hist_plot.reset();
 		wa_plot.reset();
 		na_plot.reset();
+		an_plot.reset();
+		ksin_plot.reset();
 
 		const google::protobuf::Message *state_msg, *dstate_msg;
 		double time = 0.0;
 		solver->run(1000000, 1000, true);
 
 		pb::E3Special special_msg;
-		for(int i=0;;i++){
+		for(int step=0;;step++){
 			if(!solver->step())
 				break;
 			state_msg = dynamic_cast<const google::protobuf::Message*>(solver->getState());
@@ -821,23 +863,181 @@ void exp_4_gyro(){
 				dynamic_cast<const E3State*>(solver->getDState()),
 				pcfg, &special_msg);
 
+			e_plot.processState(state_msg, dstate_msg, time);
+			phi_plot.processState(state_msg, dstate_msg, time);
 			a_plot.processState(state_msg, dstate_msg, time);
+			hist_plot.processState(&special_msg, NULL, time);
 			wa_plot.processState(&special_msg, NULL, time);
 			na_plot.processState(&special_msg, NULL, time);
+			an_plot.processState(state_msg, dstate_msg, time);
+			ksin_plot.processState(state_msg, dstate_msg, time);
+
+			const E3State* estate = dynamic_cast<const E3State*>(solver->getState());
+			double e = estate->e();
+			md1.push(e);
+			md2.push(-e);
+
+			if(step==0 || md1.hasMax() || md2.hasMax()){
+				std::ostringstream dir;
+				dir << "exp_4_gyro/" << e_step << "/" << md_counter << "/";
+				mkdir(dir.str().c_str(), 0777);
+
+				a_plot.saveSerie(0, dir.str() + "/a.csv", state_msg, dstate_msg, time);
+				hist_plot.saveSerie(0, dir.str() + "/hist.csv", &special_msg, NULL, time);
+				an_plot.saveSerie(0, dir.str() + "/an.csv", state_msg, dstate_msg, time);
+				ksin_plot.saveSerie(0, dir.str() + "/ksinn.csv", state_msg, dstate_msg, time);
+
+				md_counter++;
+			}// if
 
 			if(time >= 13.9)
 				break;
 		}//for steps
 
-		wa_plot.saveSerie(0, "Wa.csv");
-		wa_plot.saveSerie(1, "Wb.csv");
-		wa_plot.saveSerie(2, "aver_a_2.csv");
-		wa_plot.saveSerie(3, "e_2.csv");
+		std::ostringstream dir;
+		dir << "exp_4_gyro/" << e_step << "/";
 
-		na_plot.saveSerie(0, "Na.csv");
-		na_plot.saveSerie(1, "Nb.csv");
+		wa_plot.saveSerie(0, dir.str() + "/Wa.csv");
+		wa_plot.saveSerie(1, dir.str() + "/Wb.csv");
+		wa_plot.saveSerie(2, dir.str() + "/aver_a_2.csv");
+		wa_plot.saveSerie(3, dir.str() + "/e_2.csv");
+
+		na_plot.saveSerie(0, dir.str() + "/Na.csv");
+		na_plot.saveSerie(1, dir.str() + "/Nb.csv");
+
+		phi_plot.saveSerie(0, dir.str() + "/phi.csv");
 
 		delete solver;
 		delete init_state;
 	}// for a0s and e0s
+}
+
+void exp_ts4_super_emission(){
+	string problem_name = "model e4";
+
+	OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
+	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
+
+	E4Config* pcfg = dynamic_cast<E4Config*>(inst_fact->createConfig());
+		pcfg->set_n(1000);
+	E4PetscSolverConfig* scfg = dynamic_cast<E4PetscSolverConfig*>(solver_fact->createSolverConfg());
+		scfg->set_init_step(0.01);
+		scfg->set_atol(1e-8);
+		scfg->set_rtol(1e-8);
+		scfg->set_n_cores(2);
+
+	vector<double> alphas, e0s;
+//	alphas.push_back(0.1);
+//	alphas.push_back(0.05);
+	alphas.push_back(0.02);
+
+//	e0s.push_back(0.5);
+//	e0s.push_back(0.4);
+//	e0s.push_back(0.3);
+//	e0s.push_back(0.2);
+//	e0s.push_back(0.1);
+	e0s.push_back(0.05);
+	e0s.push_back(0.02);
+	e0s.push_back(0.01);
+
+	Gnuplot e_plot;
+		e_plot.addVar("E");
+		e_plot.setXAxisTime();
+		e_plot.setTitle("E");
+
+	Gnuplot phi_plot;
+		phi_plot.addVar("phi");
+		phi_plot.setXAxisTime();
+		phi_plot.setTitle("phi");
+
+	Gnuplot a_plot;
+		a_plot.addVar("particles.a");
+		a_plot.setXAxisVar("particles.psi");
+		a_plot.setPolar(true);
+		a_plot.setTitle("a|psi");
+
+	int counter = 21;
+	string dir = "exp_ts4_super_emission/";
+	mkdir(dir.c_str(), 0777);
+	FILE* fp = fopen((dir+"results.txt").c_str(), "ab");
+
+	for(int alpha_step=0; alpha_step<alphas.size(); alpha_step++){
+		double alpha = alphas[alpha_step];
+		pcfg->set_alpha(alpha);
+		for(int e_step=0; e_step<e0s.size(); e_step++){
+
+			double a0 = 1.0;
+			double e0 = e0s[e_step];
+
+			E4State* init_state = dynamic_cast<E4State*>(inst_fact->createState(pcfg));
+			init_state->set_e(e0);
+			init_state->set_phi(0);
+			double right = M_PI, left = -M_PI;
+			for(int i=0; i<pcfg->n(); i++){
+				init_state->mutable_particles(i)->set_a(a0);
+				//double ksi = i / (double)pcfg->m() * (right-left) + left + rand()/(double)RAND_MAX*1e-4;
+				double psi = rand()/(double)RAND_MAX * (right-left) + left;
+				init_state->mutable_particles(i)->set_psi(psi);
+			}
+			E4PetscSolver* solver = dynamic_cast<E4PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
+
+			MaxDetector md1;
+			MaxDetector md2;
+			int md_counter = 0;
+
+			e_plot.reset();
+			phi_plot.reset();
+			a_plot.reset();
+
+			const google::protobuf::Message *state_msg, *dstate_msg;
+			double time = 0.0;
+			solver->run(1000000, 10000, true);
+
+			pb::E3Special special_msg;
+			for(int step=0;;step++){
+				if(!solver->step())
+					break;
+				state_msg = dynamic_cast<const google::protobuf::Message*>(solver->getState());
+				dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
+				time = solver->getTime();
+
+				if(step % 10 == 0){
+					e_plot.processState(state_msg, dstate_msg, time);
+					phi_plot.processState(state_msg, dstate_msg, time);
+					a_plot.processState(state_msg, dstate_msg, time);
+				}
+
+				const E4State* estate = dynamic_cast<const E4State*>(solver->getState());
+				double e = estate->e();
+
+				if(md1.push(e))
+					md2.push(md1.get(1));
+
+				if(md2.hasMax() && e > 0.3 && e > e0*1.1){
+					std::ostringstream dir;
+					dir << "exp_ts4_super_emission/" << counter << "/";
+					mkdir(dir.str().c_str(), 0777);
+
+					a_plot.saveSerie(0, dir.str() + "/a.csv", state_msg, dstate_msg, time);
+
+					fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\n", counter, alpha, e0, md2.getMax(), time);
+					fflush(fp);
+
+					counter++;
+					break;
+				}// if
+			}//for steps
+
+			std::ostringstream dir;
+			dir << "exp_ts4_super_emission/" << (counter-1) << "/";
+
+			e_plot.saveSerie(0, dir.str() + "/e.csv");
+			phi_plot.saveSerie(0, dir.str() + "/phi.csv");
+
+			delete solver;
+			delete init_state;
+		}// for e0s
+	}// for alphas
+
+	fclose(fp);
 }

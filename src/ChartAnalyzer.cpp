@@ -441,9 +441,9 @@ void ChartAnalyzer::addChart(const google::protobuf::Message* msg, std::vector<s
 		full_title << "| " << x_axis_var << " ";
 	}
 
-	// set dots if plot is scatter
-	//if(!x_axis_var.empty())
-	//	p->setStyle(Gnuplot::STYLE_POINTS);
+	// set dots for arrays
+	if(vars[0].find('.')!=std::string::npos)
+		p->setStyle(Gnuplot::STYLE_POINTS);
 
 
 	p->setTitle(trim(full_title.str()));

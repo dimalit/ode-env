@@ -222,7 +222,7 @@ void E3StateGeneratorWidget::newState(bool emit){
 	double n1 = atof(entry_n1->get_text().c_str());
 	bool use_alpha = check_use_alpha->get_active();
 
-	bool use_rand = false;
+	bool use_rand = true;
 	double right = 0.5;
 	double left = -0.5;
 
@@ -249,7 +249,7 @@ void E3StateGeneratorWidget::newState(bool emit){
 		pb::E3State::Particles p;
 		p.set_ksi(ksi);
 
-		p.set_a(a);
+		p.set_a(a);// * rand() / (double)RAND_MAX);
 
 		if(!use_alpha){
 			int j = shuffle[i];
@@ -274,7 +274,7 @@ void E3StateGeneratorWidget::newState(bool emit){
 		pb::E3State::Particles p;
 		p.set_ksi(ksi);
 
-		p.set_a(a2);
+		p.set_a(a2);// * rand() / (double)RAND_MAX);
 		if(!use_alpha)
 			p.set_eta(0.0);
 		else

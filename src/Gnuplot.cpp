@@ -71,7 +71,17 @@ std::string get_val(const Message* msg, const Message* d_msg, const std::string&
 	const Reflection* refl = msg->GetReflection();
 	const FieldDescriptor* fd = desc->FindFieldByName(my_name);
 	assert(fd);
-	return ((std::ostringstream&)(std::ostringstream() << refl->GetDouble(*msg, fd))).str();
+	double val = refl->GetDouble(*msg, fd);
+
+	// HACK for model e4
+	if(var_name == "psi"){
+		const FieldDescriptor* fd2 = desc->FindFieldByName("z");
+		assert(fd2);
+		double val2 = refl->GetDouble(*msg, fd2);
+		val -= val2;
+	}
+
+	return ((std::ostringstream&)(std::ostringstream() << val)).str();
 }
 
 std::string get_vals(const Message* msg, const Message* d_msg, std::vector<std::string> vars, const Message* parent_msg=NULL, const Message* parent_d_msg=NULL){
@@ -179,23 +189,31 @@ void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::
 				x = atof(get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, fd1, i) : NULL, xname).c_str());
 				if(xname=="ksi" && polar)
 					x *= 2.0*M_PI;
-			}// if not time :(
 
+				// draw or not?
+				x = x - floor(x/2.0/M_PI)*2.0*M_PI;
+				int x_pos = x/2.0/M_PI*100;
+				if(x_pos >= 100)
+					x_pos = 99;
+				if(is_particles && !polar && x_bits[x_pos])
+					continue;
+
+				x_bits[x_pos] = true;
+			}// if not time :(
+			else{// x = i?
+				int x_pos = x/n*100;
+				if(x_pos >= 100)
+					x_pos = 99;
+				if(is_particles && !polar && x_bits[x_pos])
+					continue;
+
+				x_bits[x_pos] = true;
+			}
 			// start new series if needed
 //			if(need_series_wrap && prev_x>-99 && abs(x-prev_x)>0.5){
 //				super_buffer << "e\n";
 //				plot_command << ", '-' with " << style << " title '" << title <<"'";
 //			}
-
-			// draw or not?
-			x = x - floor(x/2.0/M_PI)*2.0*M_PI;
-			int x_pos = x/2.0/M_PI*100;
-			if(x_pos >= 100)
-				x_pos = 99;
-			if(is_particles && !polar && x_bits[x_pos])
-				continue;
-
-			x_bits[x_pos] = true;
 
 			if(polar)
 				out << x << " " << y;
