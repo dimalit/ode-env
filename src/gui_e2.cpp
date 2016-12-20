@@ -204,8 +204,8 @@ void E2StateGeneratorWidget::newState(bool emit){
 void E2StateGeneratorWidget::update_chart(){
 	// TODO: Написать как направлять команды gnuplot'у и вставлять его вывод в окно!
 
-	if(!this->is_realized())
-		return;
+//!!! commenting just for GTK3	if(!this->is_realized())
+//		return;
 
 	if(to_gnuplot == NULL){
 		int rf, wf;

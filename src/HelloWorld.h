@@ -7,6 +7,7 @@
 #include "RunThread.h"
 
 #include <gtkmm/button.h>
+#include <gtkmm/radiobutton.h>
 #include <gtkmm/window.h>
 #include <gtkmm/box.h>
 #include <gtkmm/buttonbox.h>

@@ -18,7 +18,8 @@ int main (int argc, char *argv[])
 
 	Gtk::Main kit(argc, argv);
 	libgoffice_init();
-	go_plugins_init (NULL, NULL, NULL, NULL, TRUE, GO_TYPE_PLUGIN_LOADER_MODULE);
+	//go_plugins_init (NULL, NULL, NULL, NULL, TRUE, GO_TYPE_PLUGIN_LOADER_MODULE);
+	go_plugins_init(NULL, NULL,NULL,NULL,TRUE, G_TYPE_TYPE_MODULE);
 
 	HelloWorld2 helloworld;
 	kit.run(helloworld);

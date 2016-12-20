@@ -12,6 +12,7 @@
 #include "model_e3.h"
 
 #include "gtkmm/entry.h"
+#include "gtkmm/radiobutton.h"
 #include "gtkmm/comboboxtext.h"
 #include "gtkmm/adjustment.h"
 

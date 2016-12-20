@@ -14,6 +14,7 @@
 #include <gtkmm/builder.h>
 #include <gtkmm/socket.h>
 #include <gtkmm/alignment.h>
+//#include <gdk/x11/gdkx11window.h>
 
 #include <iostream>
 
@@ -125,16 +126,11 @@ HelloWorld2::HelloWorld2()
   Gtk::Window* win_diag = new Gtk::Window();
   vb = Gtk::manage(new Gtk::VBox());
 
-  Gtk::Socket* s1 = Gtk::manage(new Gtk::Socket());
-  	  s1->set_size_request(600,200);
-  Gtk::Socket* s2 = Gtk::manage(new Gtk::Socket());
-  	  s2->set_size_request(600,200);
-//  Gtk::Socket* s3 = Gtk::manage(new Gtk::Socket());
-//  	  s3->set_size_request(600,200);
+  Gtk::Widget* s1 = chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2", "e_2"}),"",false, std::numeric_limits<double>::infinity());
+  Gtk::Widget* s2 = chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na","Nb", "M"}),"",false);
 
   vb->pack_start(*s1, true, true, 5);
   vb->pack_start(*s2, true, true, 5);
-//  vb->pack_start(*s3, true, true, 5);
 
   win_diag->add(*vb);
   win_diag->set_title("Diagnostics");
@@ -150,10 +146,6 @@ HelloWorld2::HelloWorld2()
   Gnuplot::title_translation_map["N"] = "Nv/N+Nn/N";
   Gnuplot::title_translation_map["M"] = "Nv/N-Nn/N";
   Gnuplot::title_translation_map["e_2"] = "E^2";
-
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2", "e_2"}),"",false, s1->get_id(), std::numeric_limits<double>::infinity());
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na","Nb", "M"}),"",false, s2->get_id());
-//  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"e_2", "aver_a_2"}),"",false, s3->get_id());
 }
 
 HelloWorld2::~HelloWorld2()
@@ -401,4 +393,9 @@ void HelloWorld2::stop_computing(){
 	run_thread->finish();
 	computing = false;
 	// all deletions will be done in one_run_completed_cb
+}
+
+void HelloWorld2::on_plug_added(){
+	std::cerr << "added!!\n";
+	std::cerr.flush();
 }

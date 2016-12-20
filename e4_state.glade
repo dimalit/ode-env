@@ -1,18 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
 <interface>
-  <requires lib="gtk+" version="2.24"/>
-  <!-- interface-naming-policy project-wide -->
-  <object class="GtkTable" id="root">
+  <requires lib="gtk+" version="3.0"/>
+  <object class="GtkGrid" id="root">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="n_rows">4</property>
-    <property name="n_columns">2</property>
+    <property name="margin_left">4</property>
+    <property name="margin_right">4</property>
+    <property name="margin_top">4</property>
+    <property name="margin_bottom">4</property>
+    <property name="row_spacing">4</property>
+    <property name="column_spacing">4</property>
     <child>
       <object class="GtkLabel" id="label1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">E</property>
       </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkEntry" id="entry_e">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="hexpand">True</property>
+        <property name="invisible_char">•</property>
+        <property name="primary_icon_activatable">False</property>
+        <property name="secondary_icon_activatable">False</property>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkEntry" id="entry_phi">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="hexpand">True</property>
+        <property name="invisible_char">•</property>
+        <property name="primary_icon_activatable">False</property>
+        <property name="secondary_icon_activatable">False</property>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkEntry" id="entry_a0">
+        <property name="width_request">30</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="hexpand">True</property>
+        <property name="invisible_char">•</property>
+        <property name="primary_icon_activatable">False</property>
+        <property name="secondary_icon_activatable">False</property>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">2</property>
+      </packing>
     </child>
     <child>
       <object class="GtkLabel" id="label2">
@@ -21,8 +72,8 @@
         <property name="label" translatable="yes">phi</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">1</property>
-        <property name="bottom_attach">2</property>
       </packing>
     </child>
     <child>
@@ -32,58 +83,8 @@
         <property name="label" translatable="yes">A0</property>
       </object>
       <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">2</property>
-        <property name="bottom_attach">3</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkEntry" id="entry_e">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="invisible_char">•</property>
-        <property name="primary_icon_activatable">False</property>
-        <property name="secondary_icon_activatable">False</property>
-        <property name="primary_icon_sensitive">True</property>
-        <property name="secondary_icon_sensitive">True</property>
-      </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkEntry" id="entry_phi">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="invisible_char">•</property>
-        <property name="primary_icon_activatable">False</property>
-        <property name="secondary_icon_activatable">False</property>
-        <property name="primary_icon_sensitive">True</property>
-        <property name="secondary_icon_sensitive">True</property>
-      </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
-        <property name="top_attach">1</property>
-        <property name="bottom_attach">2</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkEntry" id="entry_a0">
-        <property name="width_request">30</property>
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="invisible_char">•</property>
-        <property name="primary_icon_activatable">False</property>
-        <property name="secondary_icon_activatable">False</property>
-        <property name="primary_icon_sensitive">True</property>
-        <property name="secondary_icon_sensitive">True</property>
-      </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="right_attach">2</property>
-        <property name="top_attach">2</property>
-        <property name="bottom_attach">3</property>
       </packing>
     </child>
     <child>
@@ -94,9 +95,9 @@
         <property name="receives_default">True</property>
       </object>
       <packing>
-        <property name="right_attach">2</property>
+        <property name="left_attach">0</property>
         <property name="top_attach">3</property>
-        <property name="bottom_attach">4</property>
+        <property name="width">2</property>
       </packing>
     </child>
   </object>

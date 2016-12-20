@@ -13,6 +13,7 @@
 #include <gtkmm/treeview.h>
 #include <gtkmm/liststore.h>
 #include <gtkmm/button.h>
+#include <gtkmm/checkbutton.h>
 #include <gtkmm/messagedialog.h>
 
 #include <iostream>
@@ -421,10 +422,12 @@ std::string trim(const std::string& str,
 }
 
 // TODO: yrange param is too much %)
-void ChartAnalyzer::addChart(const google::protobuf::Message* msg, std::vector<std::string> vars, std::string x_axis_var, bool polar, int x_win_id, double yrange){
+Gtk::Widget* ChartAnalyzer::addChart(const google::protobuf::Message* msg, std::vector<std::string> vars, std::string x_axis_var, bool polar, double yrange){
 	std::ostringstream full_title;
 
-	Gnuplot* p = new Gnuplot(x_win_id);
+	Gtk::Socket* socket = Gtk::manage(new Gtk::Socket());
+
+	Gnuplot* p = new Gnuplot(socket->get_id());
 	if(yrange > 0){
 			p->setYRange(0, yrange);
 	}
@@ -472,6 +475,8 @@ void ChartAnalyzer::addChart(const google::protobuf::Message* msg, std::vector<s
 	hbox->show_all();
 
 	p->processState(msg);
+
+	return socket;
 }
 
 void ChartAnalyzer::on_del_chart_clicked(Gtk::Widget* w, const Gnuplot* ptr){

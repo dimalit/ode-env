@@ -6,6 +6,7 @@
 #include "RunThread.h"
 
 #include <gtkmm/button.h>
+#include <gtkmm/radiobutton.h>
 #include <gtkmm/window.h>
 #include <gtkmm/box.h>
 #include <gtkmm/buttonbox.h>
@@ -51,6 +52,8 @@ private:
   void on_step_clicked();
   void on_reset_clicked();
   void on_cancel_clicked();
+
+  void on_plug_added();
 
   const OdeConfig* extract_config();
   const OdeState* extract_state();
