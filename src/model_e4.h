@@ -34,20 +34,28 @@ public:
 	E4PetscSolverConfig();
 };
 
-class E4PetscSolver: public OdeSolver{
+template<class SC, class PC, class S>
+class EXPetscSolver: public OdeSolver{
 public:
-	typedef E4PetscSolverConfig SConfig;
-	typedef E4Config PConfig;
-	typedef E4State State;
+	typedef SC SConfig;
+	typedef PC PConfig;
+	typedef S State;
+
+	static const char* ts_path;
 
 public:
-	E4PetscSolver(const E4PetscSolverConfig*, const E4Config*, const E4State*);
-	virtual ~E4PetscSolver();
+	EXPetscSolver(const SConfig*, const PConfig*, const State*);
+	virtual ~EXPetscSolver();
 	virtual void run(int steps, double time, bool use_steps = false);
 	virtual bool step();
 	virtual void finish();
-	virtual double getTime() const;
-	virtual double getSteps() const;
+	virtual double getTime() const {
+		return time_passed;
+	}
+	virtual double getSteps() const {
+		return steps_passed;
+	}
+
 	virtual const OdeState* getState() const {
 		return state;
 	}
@@ -56,14 +64,14 @@ public:
 	}
 
 	static std::string getDisplayName(){
-		return "PETSc RK solver for e3";
+		return "PETSc RK solver for eX";
 	}
 
 private:
-	E4Config* pconfig;				// problem config
-	E4PetscSolverConfig* sconfig;	// solver config
-	E4State* state;
-	E4State* d_state;
+	PConfig* pconfig;				// problem config
+	SConfig* sconfig;	// solver config
+	State* state;
+	State* d_state;
 
 	FILE  *rf, *wf;
 	pid_t child;
@@ -77,6 +85,7 @@ private:
 };
 
 REGISTER_INSTANCE_CLASS(E4Config, E4State)
+typedef EXPetscSolver<E4PetscSolverConfig,E4Config,E4State> E4PetscSolver;
 REGISTER_SOLVER_CLASS(E4PetscSolver)
 
 #endif /* MODEL_E4_H_ */

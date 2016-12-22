@@ -15,6 +15,10 @@
 #include <sys/wait.h>
 #include "rpc.h"
 
+// XXX: whis should read like E4...if we use more than 1 specialization?
+template<class SC, class PC, class S>
+const char* EXPetscSolver<SC, PC, S>::ts_path = " ../ts4/Debug/ts4";
+
 E4Config::E4Config(){
 	set_n(1000);
 	set_delta_0(0);
@@ -45,24 +49,19 @@ E4PetscSolverConfig::E4PetscSolverConfig(){
 	set_n_cores(1);
 }
 
-E4PetscSolver::E4PetscSolver(const E4PetscSolverConfig* scfg, const E4Config* pcfg, const E4State* init_state){
+template<class SC, class PC, class S>
+EXPetscSolver<SC,PC,S>::EXPetscSolver(const SConfig* scfg, const PConfig* pcfg, const State* init_state){
 	time_passed = 0;
 	steps_passed = 0;
 
-	pconfig = new E4Config(*pcfg);
-	sconfig = new E4PetscSolverConfig(*scfg);
-	state = new E4State(*init_state);
-	d_state = new E4State();
+	pconfig = new PConfig(*pcfg);
+	sconfig = new SConfig(*scfg);
+	state = new State(*init_state);
+	d_state = new State();
 }
 
-double E4PetscSolver::getTime() const {
-	return time_passed;
-}
-double E4PetscSolver::getSteps() const {
-	return steps_passed;
-}
-
-E4PetscSolver::~E4PetscSolver(){
+template<class SC, class PC, class S>
+EXPetscSolver<SC,PC,S>::~EXPetscSolver(){
 	if(wf){
 		fputc('f', wf);
 		fflush(wf);
@@ -74,7 +73,8 @@ E4PetscSolver::~E4PetscSolver(){
 
 // TODO: create universal base class for PETSc solvers - so not to copypaste!
 // TODO: 1 universal code from TS solving?! (not to write it again and again!?)
-void E4PetscSolver::run(int steps, double time, bool use_step){
+template<class SC, class PC, class S>
+void EXPetscSolver<SC,PC,S>::run(int steps, double time, bool use_step){
 //	printf("run started\n");
 //	fflush(stdout);
 
@@ -87,7 +87,7 @@ void E4PetscSolver::run(int steps, double time, bool use_step){
 	std::ostringstream cmd_stream;
 //	cmd_stream << "mpiexec -n "<< n_cores << " --host 192.168.0.101 ./Debug/ts3";
 //	cmd_stream << "mpiexec -n "<< n_cores << " --host 10.0.0.205 /home/dimalit/workspace/ts3/Debug/ts3";
-	cmd_stream << "mpiexec -n "<< n_cores << " ../ts4/Debug/ts4";// << " -info info.log";
+	cmd_stream << "mpiexec -n "<< n_cores << ts_path;// << " -info info.log";
 
 	std::string cmd = cmd_stream.str();
 	if(use_step)
@@ -129,7 +129,8 @@ void E4PetscSolver::run(int steps, double time, bool use_step){
 	}
 }
 
-bool E4PetscSolver::step(){
+template<class SC, class PC, class S>
+bool EXPetscSolver<SC,PC,S>::step(){
 	if(waitpid(child, 0, WNOHANG)!=0){
 		fclose(rf); rf = NULL;
 		fclose(wf); wf = NULL;
@@ -149,7 +150,8 @@ bool E4PetscSolver::step(){
 	return true;
 }
 
-bool E4PetscSolver::read_results(){
+template<class SC, class PC, class S>
+bool EXPetscSolver<SC,PC,S>::read_results(){
 	int ok;
 	ok = fread(&steps_passed, sizeof(steps_passed), 1, rf);
 	// TODO: read=0 no longer works with mpiexec (process isn't zombie)
@@ -175,7 +177,8 @@ bool E4PetscSolver::read_results(){
 	return true;
 }
 
-void E4PetscSolver::finish(){
+template<class SC, class PC, class S>
+void EXPetscSolver<SC,PC,S>::finish(){
 	fputc('f', wf);
 	fflush(wf);
 }

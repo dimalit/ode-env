@@ -127,12 +127,9 @@ HelloWorld::HelloWorld()
   Gtk::Window* win_diag = new Gtk::Window();
   vb = Gtk::manage(new Gtk::VBox());
 
-  Gtk::Socket* s1 = Gtk::manage(new Gtk::Socket());
-  	  s1->set_size_request(600,200);
-  Gtk::Socket* s2 = Gtk::manage(new Gtk::Socket());
-  	  s2->set_size_request(600,200);
-  Gtk::Socket* s3 = Gtk::manage(new Gtk::Socket());
-  	  s3->set_size_request(600,200);
+  Gtk::Widget* s1 = chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2"}),"",false,std::numeric_limits<double>::infinity());
+  Gtk::Widget* s2 = chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na","Nb", "N", "M"}),"",false);
+  Gtk::Widget* s3 = chart_analyzer->addChart(spec_msg,std::vector<std::string>({"e_2", "aver_a_2"}),"",false);
 
   vb->pack_start(*s1, true, true, 5);
   vb->pack_start(*s2, true, true, 5);
@@ -152,10 +149,6 @@ HelloWorld::HelloWorld()
   Gnuplot::title_translation_map["N"] = "Nv/N+Nn/N";
   Gnuplot::title_translation_map["M"] = "Nv/N-Nn/N";
   Gnuplot::title_translation_map["e_2"] = "e^2";
-
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2"}),"",false, s1->get_id(), std::numeric_limits<double>::infinity());
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na","Nb", "N", "M"}),"",false, s2->get_id());
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"e_2", "aver_a_2"}),"",false, s3->get_id());
 }
 
 HelloWorld::~HelloWorld()

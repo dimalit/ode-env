@@ -15,6 +15,7 @@
 #include <gtkmm/button.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/messagedialog.h>
+#include <gtkmm/socket.h>
 
 #include <iostream>
 #include <cstdio>
