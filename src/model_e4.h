@@ -15,6 +15,11 @@
 class E4Config: public pb::E4Config, public OdeConfig{
 public:
 	E4Config();
+	virtual OdeConfig* clone() const {
+		E4Config* ret = new E4Config();
+		ret->MergeFrom(*this);
+		return ret;
+	}
 	static std::string getDisplayName(){
 		return "model e4";
 	}

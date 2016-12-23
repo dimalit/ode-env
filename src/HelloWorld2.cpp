@@ -50,7 +50,7 @@ HelloWorld2::HelloWorld2()
   OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
 
   OdeInstanceWidgetFactory* inst_widget_fact = *OdeInstanceWidgetFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
-  this->config_widget = inst_widget_fact->createConfigWidget();
+  this->config_widget = inst_widget_fact->createConfigWidget(new E4Config());
   vbox.pack_start(*this->config_widget, false, false, 0);
 
   // win state //

@@ -27,7 +27,11 @@ public:
 		random_ksi = true;
 		linear_ksi = false;
 	}
-
+	virtual OdeConfig* clone() const {
+		E1Config* ret = new E1Config();
+		*ret = *this;
+		return ret;
+	}
 	static std::string getDisplayName(){
 		return "model e1";
 	}

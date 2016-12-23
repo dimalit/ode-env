@@ -14,67 +14,145 @@
 #define UI_FILE_STATE "e4_state.glade"
 #define UI_FILE_PETSC_SOLVER "e4_petsc_solver.glade"
 
-E4ConfigWidget::E4ConfigWidget(const E4Config* cfg){
-	if(cfg)
-		this->config = new E4Config(*cfg);
+EXConfigWidget::EXConfigWidget(const OdeConfig* cfg){
+
+	grid.set_column_spacing(4);
+	grid.set_row_spacing(4);
+	grid.set_margin_left(4);
+	grid.set_margin_top(4);
+	grid.set_margin_right(4);
+	grid.set_margin_bottom(4);
+	this->add(grid);
+
+	grid.insert_row(0);
+
+	button_apply.set_label("Apply");
+	button_apply.set_hexpand(true);
+	grid.attach(button_apply, 0, 0, 2, 1);
+
+	if(!cfg){
+		this->config = NULL;
+		return;
+	}
 	else
-		this->config = new E4Config();
+		this->config = cfg->clone();
 
-	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_CONF);
+	const Message *msg = dynamic_cast<const Message*>(config);
+	const Descriptor* d = msg->GetDescriptor();
 
-	Gtk::Widget* root;
-	b->get_widget("root", root);
+	for(int i=0; i<d->field_count(); i++){
+		const FieldDescriptor* fd = d->field(d->field_count()-i-1);
+		const string& fname = fd->name();
 
-	b->get_widget("entry_N", entry_N);
-	b->get_widget("entry_delta_0", entry_delta_0);
-	b->get_widget("entry_alpha", entry_alpha);
+		Gtk::Label *label = Gtk::manage(new Gtk::Label);
+		label->set_text(fname);
 
-	b->get_widget("button_apply", button_apply);
+		Gtk::Entry *entry = Gtk::manage(new Gtk::Entry);
+		entry->set_hexpand(true);
 
-	this->add(*root);
+		grid.insert_row(0);
+		grid.attach(*label, 0, 0, 1, 1);
+		grid.attach(*entry, 1, 0, 2, 1);
+
+		entry_map[fname] = entry;
+		entry->signal_changed().connect(sigc::mem_fun(*this, &EXConfigWidget::edit_anything_cb));
+	}// for fields
 
 	config_to_widget();
 
-	entry_N->signal_changed().connect(sigc::mem_fun(*this, &E4ConfigWidget::edit_anything_cb));
-	entry_delta_0->signal_changed().connect(sigc::mem_fun(*this, &E4ConfigWidget::edit_anything_cb));
-	entry_alpha->signal_changed().connect(sigc::mem_fun(*this, &E4ConfigWidget::edit_anything_cb));
-
-	button_apply->signal_clicked().connect(sigc::mem_fun(*this, &E4ConfigWidget::on_apply_cb));
+	button_apply.signal_clicked().connect(sigc::mem_fun(*this, &EXConfigWidget::on_apply_cb));
 }
 
-void E4ConfigWidget::widget_to_config(){
-	config->set_n(atoi(entry_N->get_text().c_str()));
-	config->set_delta_0(atof(entry_delta_0->get_text().c_str()));
-	config->set_alpha(atof(entry_alpha->get_text().c_str()));
+void EXConfigWidget::widget_to_config(){
+	Message *msg = dynamic_cast<Message*>(config);
+	const Descriptor* desc = msg->GetDescriptor();
+	const Reflection* refl = msg->GetReflection();
 
-	button_apply->set_sensitive(false);
+	for(auto i=entry_map.begin(); i!=entry_map.end(); ++i){
+		const string& var = i->first;
+		Gtk::Entry* entry = i->second;
+
+		string val = entry->get_text();
+
+		const FieldDescriptor* fd = desc->FindFieldByName(var);
+		FieldDescriptor::Type type = fd->type();
+
+		switch(type){
+			case FieldDescriptor::Type::TYPE_DOUBLE:
+				refl->SetDouble(msg, fd, atof(val.c_str()));
+				break;
+			case FieldDescriptor::Type::TYPE_FLOAT:
+				refl->SetFloat(msg, fd, (float)atof(val.c_str()));
+				break;
+			case FieldDescriptor::Type::TYPE_INT32:
+				refl->SetInt32(msg, fd, atoi(val.c_str()));
+				break;
+			case FieldDescriptor::Type::TYPE_UINT32:
+				refl->SetUInt32(msg, fd, atoi(val.c_str()));
+				break;
+			case FieldDescriptor::Type::TYPE_STRING:
+				refl->SetString(msg, fd, val);
+				break;
+			default:
+				assert(false);
+		}
+
+	}// for
+
+	button_apply.set_sensitive(false);
 }
-void E4ConfigWidget::config_to_widget(){
-	std::ostringstream buf;
-	buf << config->n();
-	entry_N->set_text(buf.str());
+void EXConfigWidget::config_to_widget(){
 
-	buf.str("");
-	buf << config->delta_0();
-	entry_delta_0->set_text(buf.str());
+	Message *msg = dynamic_cast<Message*>(config);
+	const Descriptor* desc = msg->GetDescriptor();
+	const Reflection* refl = msg->GetReflection();
 
-	buf.str("");
-	buf << config->alpha();
-	entry_alpha->set_text(buf.str());
+	for(auto i=entry_map.begin(); i!=entry_map.end(); ++i){
+		const string& var = i->first;
+		Gtk::Entry* entry = i->second;
 
-	button_apply->set_sensitive(false);
+		std::ostringstream res;
+
+		const FieldDescriptor* fd = desc->FindFieldByName(var);
+		FieldDescriptor::Type type = fd->type();
+
+		switch(type){
+			case FieldDescriptor::Type::TYPE_DOUBLE:
+				res << refl->GetDouble(*msg, fd);
+				break;
+			case FieldDescriptor::Type::TYPE_FLOAT:
+				res << refl->GetFloat(*msg, fd);
+				break;
+			case FieldDescriptor::Type::TYPE_INT32:
+				res << refl->GetInt32(*msg, fd);
+				break;
+			case FieldDescriptor::Type::TYPE_UINT32:
+				res << refl->GetUInt32(*msg, fd);
+				break;
+			case FieldDescriptor::Type::TYPE_STRING:
+				res << refl->GetString(*msg, fd);
+				break;
+			default:
+				assert(false);
+		}
+
+		entry->set_text(res.str());
+
+	}// for
+
+	button_apply.set_sensitive(false);
 }
 
-void E4ConfigWidget::edit_anything_cb(){
-	button_apply->set_sensitive(true);
+void EXConfigWidget::edit_anything_cb(){
+	button_apply.set_sensitive(true);
 }
 
-void E4ConfigWidget::on_apply_cb(){
+void EXConfigWidget::on_apply_cb(){
 	widget_to_config();
 	m_signal_changed.emit();
 }
 
-void E4ConfigWidget::loadConfig(const OdeConfig* cfg){
+void EXConfigWidget::loadConfig(const OdeConfig* cfg){
 	const E4Config* ecfg = dynamic_cast<const E4Config*>(cfg);
 		assert(ecfg);
 	delete this->config;
@@ -84,9 +162,9 @@ void E4ConfigWidget::loadConfig(const OdeConfig* cfg){
 	m_signal_changed.emit();
 }
 
-const OdeConfig* E4ConfigWidget::getConfig() {
+const OdeConfig* EXConfigWidget::getConfig() {
 	widget_to_config();
-	return config;
+	return dynamic_cast<const OdeConfig*>(config);
 }
 
 E4StateGeneratorWidget::E4StateGeneratorWidget(const E4Config* _config){

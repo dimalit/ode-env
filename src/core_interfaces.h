@@ -10,6 +10,7 @@
 
 class OdeConfig{
 public:
+	virtual OdeConfig* clone() const = 0;
 	virtual ~OdeConfig(){}	// make it polymorphic
 };
 

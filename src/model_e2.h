@@ -18,6 +18,11 @@ public:
 		set_n(250);
 		set_f(1);
 	}
+	virtual OdeConfig* clone() const {
+		E2Config* ret = new E2Config();
+		ret->MergeFrom(*this);
+		return ret;
+	}
 	static std::string getDisplayName(){
 		return "model e2";
 	}

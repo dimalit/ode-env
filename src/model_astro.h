@@ -17,6 +17,11 @@
 class AstroConfig: public pb::AstroConfig, public OdeConfig{
 public:
 	AstroConfig();
+	virtual OdeConfig* clone() const {
+		AstroConfig* ret = new AstroConfig();
+		ret->MergeFrom(*this);
+		return ret;
+	}
 	static std::string getDisplayName(){
 		return "astro";
 	}

@@ -11,6 +11,9 @@
 #include "gui_factories.h"
 #include "model_e4.h"
 
+#include <google/protobuf/message.h>
+
+#include "gtkmm/grid.h"
 #include "gtkmm/entry.h"
 #include "gtkmm/comboboxtext.h"
 #include "gtkmm/adjustment.h"
@@ -18,17 +21,22 @@
 #include <cassert>
 #include <iostream>
 
-class E4ConfigWidget: public OdeConfigWidget{
+using namespace google::protobuf;
+
+class EXConfigWidget: public OdeConfigWidget{
+//!!! TODO: remove this - in gui_interfaces
 public:
 	typedef E4Config Config;
 private:
-	E4Config* config;
+	OdeConfig* config;
 
-	Gtk::Entry *entry_N, *entry_delta_0, *entry_alpha;
-	Gtk::Button *button_apply;
+	Gtk::Grid grid;
+	Gtk::Button button_apply;
+
+	std::map<string, Gtk::Entry*> entry_map;
 
 public:
-	E4ConfigWidget(const E4Config* config = NULL);
+	EXConfigWidget(const OdeConfig* config = NULL);
 
 	virtual const OdeConfig* getConfig();
 	virtual void loadConfig(const OdeConfig* cfg);
@@ -91,7 +99,7 @@ private:
 
 /////////////////////////////////////////////////////////////////////
 
-REGISTER_INSTANCE_WIDGET_CLASSES(E4ConfigWidget, E4StateGeneratorWidget)
+REGISTER_INSTANCE_WIDGET_CLASSES(EXConfigWidget, E4StateGeneratorWidget)
 REGISTER_SOLVER_CONFIG_WIDGET_CLASS(E4PetscSolverConfigWidget)
 
 #endif /* GUI_E4_H_ */
