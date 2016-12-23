@@ -34,9 +34,9 @@ public:
 	}
 };
 
-class E4PetscSolverConfig: public pb::E4PetscSolverConfig, public OdeSolverConfig{
+class EXPetscSolverConfig: public pb::EXPetscSolverConfig, public OdeSolverConfig{
 public:
-	E4PetscSolverConfig();
+	EXPetscSolverConfig();
 };
 
 template<class SC, class PC, class S>
@@ -90,7 +90,7 @@ private:
 };
 
 REGISTER_INSTANCE_CLASS(E4Config, E4State)
-typedef EXPetscSolver<E4PetscSolverConfig,E4Config,E4State> E4PetscSolver;
+typedef EXPetscSolver<EXPetscSolverConfig,E4Config,E4State> E4PetscSolver;
 REGISTER_SOLVER_CLASS(E4PetscSolver)
 
 #endif /* MODEL_E4_H_ */

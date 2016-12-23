@@ -19,7 +19,7 @@ message E4State{
 	}
 }
 
-message E4PetscSolverConfig{
+message EXPetscSolverConfig{
 	optional double atol = 1;
 	optional double rtol = 2;
 	optional double init_step = 3;
@@ -29,7 +29,7 @@ message E4PetscSolverConfig{
 message E4Model{
 	required E4Config pconfig = 1;
 	required E4State state = 2;
-	required E4PetscSolverConfig sconfig = 3;
+	required EXPetscSolverConfig sconfig = 3;
 }
 
 message E4Solution{

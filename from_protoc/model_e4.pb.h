@@ -36,7 +36,7 @@ void protobuf_ShutdownFile_model_5fe4_2eproto();
 class E4Config;
 class E4State;
 class E4State_Particles;
-class E4PetscSolverConfig;
+class EXPetscSolverConfig;
 class E4Model;
 class E4Solution;
 class E4Special;
@@ -356,14 +356,14 @@ class E4State : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class E4PetscSolverConfig : public ::google::protobuf::Message {
+class EXPetscSolverConfig : public ::google::protobuf::Message {
  public:
-  E4PetscSolverConfig();
-  virtual ~E4PetscSolverConfig();
+  EXPetscSolverConfig();
+  virtual ~EXPetscSolverConfig();
 
-  E4PetscSolverConfig(const E4PetscSolverConfig& from);
+  EXPetscSolverConfig(const EXPetscSolverConfig& from);
 
-  inline E4PetscSolverConfig& operator=(const E4PetscSolverConfig& from) {
+  inline EXPetscSolverConfig& operator=(const EXPetscSolverConfig& from) {
     CopyFrom(from);
     return *this;
   }
@@ -377,17 +377,17 @@ class E4PetscSolverConfig : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const E4PetscSolverConfig& default_instance();
+  static const EXPetscSolverConfig& default_instance();
 
-  void Swap(E4PetscSolverConfig* other);
+  void Swap(EXPetscSolverConfig* other);
 
   // implements Message ----------------------------------------------
 
-  E4PetscSolverConfig* New() const;
+  EXPetscSolverConfig* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const E4PetscSolverConfig& from);
-  void MergeFrom(const E4PetscSolverConfig& from);
+  void CopyFrom(const EXPetscSolverConfig& from);
+  void MergeFrom(const EXPetscSolverConfig& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -437,7 +437,7 @@ class E4PetscSolverConfig : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 n_cores() const;
   inline void set_n_cores(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:pb.E4PetscSolverConfig)
+  // @@protoc_insertion_point(class_scope:pb.EXPetscSolverConfig)
  private:
   inline void set_has_atol();
   inline void clear_has_atol();
@@ -461,7 +461,7 @@ class E4PetscSolverConfig : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_model_5fe4_2eproto();
 
   void InitAsDefaultInstance();
-  static E4PetscSolverConfig* default_instance_;
+  static EXPetscSolverConfig* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -536,14 +536,14 @@ class E4Model : public ::google::protobuf::Message {
   inline ::pb::E4State* release_state();
   inline void set_allocated_state(::pb::E4State* state);
 
-  // required .pb.E4PetscSolverConfig sconfig = 3;
+  // required .pb.EXPetscSolverConfig sconfig = 3;
   inline bool has_sconfig() const;
   inline void clear_sconfig();
   static const int kSconfigFieldNumber = 3;
-  inline const ::pb::E4PetscSolverConfig& sconfig() const;
-  inline ::pb::E4PetscSolverConfig* mutable_sconfig();
-  inline ::pb::E4PetscSolverConfig* release_sconfig();
-  inline void set_allocated_sconfig(::pb::E4PetscSolverConfig* sconfig);
+  inline const ::pb::EXPetscSolverConfig& sconfig() const;
+  inline ::pb::EXPetscSolverConfig* mutable_sconfig();
+  inline ::pb::EXPetscSolverConfig* release_sconfig();
+  inline void set_allocated_sconfig(::pb::EXPetscSolverConfig* sconfig);
 
   // @@protoc_insertion_point(class_scope:pb.E4Model)
  private:
@@ -560,7 +560,7 @@ class E4Model : public ::google::protobuf::Message {
   mutable int _cached_size_;
   ::pb::E4Config* pconfig_;
   ::pb::E4State* state_;
-  ::pb::E4PetscSolverConfig* sconfig_;
+  ::pb::EXPetscSolverConfig* sconfig_;
   friend void  protobuf_AddDesc_model_5fe4_2eproto();
   friend void protobuf_AssignDesc_model_5fe4_2eproto();
   friend void protobuf_ShutdownFile_model_5fe4_2eproto();
@@ -1227,102 +1227,102 @@ E4State::mutable_particles() {
 
 // -------------------------------------------------------------------
 
-// E4PetscSolverConfig
+// EXPetscSolverConfig
 
 // optional double atol = 1;
-inline bool E4PetscSolverConfig::has_atol() const {
+inline bool EXPetscSolverConfig::has_atol() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void E4PetscSolverConfig::set_has_atol() {
+inline void EXPetscSolverConfig::set_has_atol() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void E4PetscSolverConfig::clear_has_atol() {
+inline void EXPetscSolverConfig::clear_has_atol() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void E4PetscSolverConfig::clear_atol() {
+inline void EXPetscSolverConfig::clear_atol() {
   atol_ = 0;
   clear_has_atol();
 }
-inline double E4PetscSolverConfig::atol() const {
-  // @@protoc_insertion_point(field_get:pb.E4PetscSolverConfig.atol)
+inline double EXPetscSolverConfig::atol() const {
+  // @@protoc_insertion_point(field_get:pb.EXPetscSolverConfig.atol)
   return atol_;
 }
-inline void E4PetscSolverConfig::set_atol(double value) {
+inline void EXPetscSolverConfig::set_atol(double value) {
   set_has_atol();
   atol_ = value;
-  // @@protoc_insertion_point(field_set:pb.E4PetscSolverConfig.atol)
+  // @@protoc_insertion_point(field_set:pb.EXPetscSolverConfig.atol)
 }
 
 // optional double rtol = 2;
-inline bool E4PetscSolverConfig::has_rtol() const {
+inline bool EXPetscSolverConfig::has_rtol() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void E4PetscSolverConfig::set_has_rtol() {
+inline void EXPetscSolverConfig::set_has_rtol() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void E4PetscSolverConfig::clear_has_rtol() {
+inline void EXPetscSolverConfig::clear_has_rtol() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void E4PetscSolverConfig::clear_rtol() {
+inline void EXPetscSolverConfig::clear_rtol() {
   rtol_ = 0;
   clear_has_rtol();
 }
-inline double E4PetscSolverConfig::rtol() const {
-  // @@protoc_insertion_point(field_get:pb.E4PetscSolverConfig.rtol)
+inline double EXPetscSolverConfig::rtol() const {
+  // @@protoc_insertion_point(field_get:pb.EXPetscSolverConfig.rtol)
   return rtol_;
 }
-inline void E4PetscSolverConfig::set_rtol(double value) {
+inline void EXPetscSolverConfig::set_rtol(double value) {
   set_has_rtol();
   rtol_ = value;
-  // @@protoc_insertion_point(field_set:pb.E4PetscSolverConfig.rtol)
+  // @@protoc_insertion_point(field_set:pb.EXPetscSolverConfig.rtol)
 }
 
 // optional double init_step = 3;
-inline bool E4PetscSolverConfig::has_init_step() const {
+inline bool EXPetscSolverConfig::has_init_step() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void E4PetscSolverConfig::set_has_init_step() {
+inline void EXPetscSolverConfig::set_has_init_step() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void E4PetscSolverConfig::clear_has_init_step() {
+inline void EXPetscSolverConfig::clear_has_init_step() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void E4PetscSolverConfig::clear_init_step() {
+inline void EXPetscSolverConfig::clear_init_step() {
   init_step_ = 0;
   clear_has_init_step();
 }
-inline double E4PetscSolverConfig::init_step() const {
-  // @@protoc_insertion_point(field_get:pb.E4PetscSolverConfig.init_step)
+inline double EXPetscSolverConfig::init_step() const {
+  // @@protoc_insertion_point(field_get:pb.EXPetscSolverConfig.init_step)
   return init_step_;
 }
-inline void E4PetscSolverConfig::set_init_step(double value) {
+inline void EXPetscSolverConfig::set_init_step(double value) {
   set_has_init_step();
   init_step_ = value;
-  // @@protoc_insertion_point(field_set:pb.E4PetscSolverConfig.init_step)
+  // @@protoc_insertion_point(field_set:pb.EXPetscSolverConfig.init_step)
 }
 
 // optional int32 n_cores = 4;
-inline bool E4PetscSolverConfig::has_n_cores() const {
+inline bool EXPetscSolverConfig::has_n_cores() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void E4PetscSolverConfig::set_has_n_cores() {
+inline void EXPetscSolverConfig::set_has_n_cores() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void E4PetscSolverConfig::clear_has_n_cores() {
+inline void EXPetscSolverConfig::clear_has_n_cores() {
   _has_bits_[0] &= ~0x00000008u;
 }
-inline void E4PetscSolverConfig::clear_n_cores() {
+inline void EXPetscSolverConfig::clear_n_cores() {
   n_cores_ = 0;
   clear_has_n_cores();
 }
-inline ::google::protobuf::int32 E4PetscSolverConfig::n_cores() const {
-  // @@protoc_insertion_point(field_get:pb.E4PetscSolverConfig.n_cores)
+inline ::google::protobuf::int32 EXPetscSolverConfig::n_cores() const {
+  // @@protoc_insertion_point(field_get:pb.EXPetscSolverConfig.n_cores)
   return n_cores_;
 }
-inline void E4PetscSolverConfig::set_n_cores(::google::protobuf::int32 value) {
+inline void EXPetscSolverConfig::set_n_cores(::google::protobuf::int32 value) {
   set_has_n_cores();
   n_cores_ = value;
-  // @@protoc_insertion_point(field_set:pb.E4PetscSolverConfig.n_cores)
+  // @@protoc_insertion_point(field_set:pb.EXPetscSolverConfig.n_cores)
 }
 
 // -------------------------------------------------------------------
@@ -1411,7 +1411,7 @@ inline void E4Model::set_allocated_state(::pb::E4State* state) {
   // @@protoc_insertion_point(field_set_allocated:pb.E4Model.state)
 }
 
-// required .pb.E4PetscSolverConfig sconfig = 3;
+// required .pb.EXPetscSolverConfig sconfig = 3;
 inline bool E4Model::has_sconfig() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
@@ -1422,26 +1422,26 @@ inline void E4Model::clear_has_sconfig() {
   _has_bits_[0] &= ~0x00000004u;
 }
 inline void E4Model::clear_sconfig() {
-  if (sconfig_ != NULL) sconfig_->::pb::E4PetscSolverConfig::Clear();
+  if (sconfig_ != NULL) sconfig_->::pb::EXPetscSolverConfig::Clear();
   clear_has_sconfig();
 }
-inline const ::pb::E4PetscSolverConfig& E4Model::sconfig() const {
+inline const ::pb::EXPetscSolverConfig& E4Model::sconfig() const {
   // @@protoc_insertion_point(field_get:pb.E4Model.sconfig)
   return sconfig_ != NULL ? *sconfig_ : *default_instance_->sconfig_;
 }
-inline ::pb::E4PetscSolverConfig* E4Model::mutable_sconfig() {
+inline ::pb::EXPetscSolverConfig* E4Model::mutable_sconfig() {
   set_has_sconfig();
-  if (sconfig_ == NULL) sconfig_ = new ::pb::E4PetscSolverConfig;
+  if (sconfig_ == NULL) sconfig_ = new ::pb::EXPetscSolverConfig;
   // @@protoc_insertion_point(field_mutable:pb.E4Model.sconfig)
   return sconfig_;
 }
-inline ::pb::E4PetscSolverConfig* E4Model::release_sconfig() {
+inline ::pb::EXPetscSolverConfig* E4Model::release_sconfig() {
   clear_has_sconfig();
-  ::pb::E4PetscSolverConfig* temp = sconfig_;
+  ::pb::EXPetscSolverConfig* temp = sconfig_;
   sconfig_ = NULL;
   return temp;
 }
-inline void E4Model::set_allocated_sconfig(::pb::E4PetscSolverConfig* sconfig) {
+inline void E4Model::set_allocated_sconfig(::pb::EXPetscSolverConfig* sconfig) {
   delete sconfig_;
   sconfig_ = sconfig;
   if (sconfig) {

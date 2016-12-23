@@ -278,11 +278,11 @@ void E4StateGeneratorWidget::newState(bool emit){
 		m_signal_changed();
 }
 
-E4PetscSolverConfigWidget::E4PetscSolverConfigWidget(const E4PetscSolverConfig* config){
+EXPetscSolverConfigWidget::EXPetscSolverConfigWidget(const EXPetscSolverConfig* config){
 	if(config)
-		this->config = new E4PetscSolverConfig(*config);
+		this->config = new EXPetscSolverConfig(*config);
 	else
-		this->config = new E4PetscSolverConfig();
+		this->config = new EXPetscSolverConfig();
 
 	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_PETSC_SOLVER);
 
@@ -299,25 +299,25 @@ E4PetscSolverConfigWidget::E4PetscSolverConfigWidget(const E4PetscSolverConfig* 
 
 	config_to_widget();
 }
-const OdeSolverConfig* E4PetscSolverConfigWidget::getConfig(){
+const OdeSolverConfig* EXPetscSolverConfigWidget::getConfig(){
 	widget_to_config();
 	return config;
 }
-void E4PetscSolverConfigWidget::loadConfig(const OdeSolverConfig* config){
-	const E4PetscSolverConfig* econfig = dynamic_cast<const E4PetscSolverConfig*>(config);
+void EXPetscSolverConfigWidget::loadConfig(const OdeSolverConfig* config){
+	const EXPetscSolverConfig* econfig = dynamic_cast<const EXPetscSolverConfig*>(config);
 		assert(econfig);
 	delete this->config;
-	this->config = new E4PetscSolverConfig(*econfig);
+	this->config = new EXPetscSolverConfig(*econfig);
 	config_to_widget();
 }
 
-void E4PetscSolverConfigWidget::widget_to_config(){
+void EXPetscSolverConfigWidget::widget_to_config(){
 	config->set_init_step(atof(entry_step->get_text().c_str()));
 	config->set_atol(atof(entry_atol->get_text().c_str()));
 	config->set_rtol(atof(entry_rtol->get_text().c_str()));
 	config->set_n_cores(adj_n_cores->get_value());
 }
-void E4PetscSolverConfigWidget::config_to_widget(){
+void EXPetscSolverConfigWidget::config_to_widget(){
 	std::ostringstream buf;
 	buf << config->init_step();
 	entry_step->set_text(buf.str());

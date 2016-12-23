@@ -75,17 +75,17 @@ private:
 	void on_apply_cb();
 };
 
-class E4PetscSolverConfigWidget: public OdeSolverConfigWidget{
+class EXPetscSolverConfigWidget: public OdeSolverConfigWidget{
 public:
 	typedef E4PetscSolver Solver;
 private:
-	E4PetscSolverConfig* config;
+	EXPetscSolverConfig* config;
 
 	Gtk::Entry *entry_atol, *entry_rtol, *entry_step;
 	Glib::RefPtr<Gtk::Adjustment> adj_n_cores;
 
 public:
-	E4PetscSolverConfigWidget(const E4PetscSolverConfig* config = NULL);
+	EXPetscSolverConfigWidget(const EXPetscSolverConfig* config = NULL);
 	virtual const OdeSolverConfig* getConfig();
 	virtual void loadConfig(const OdeSolverConfig* config);
 
@@ -100,6 +100,6 @@ private:
 /////////////////////////////////////////////////////////////////////
 
 REGISTER_INSTANCE_WIDGET_CLASSES(EXConfigWidget, E4StateGeneratorWidget)
-REGISTER_SOLVER_CONFIG_WIDGET_CLASS(E4PetscSolverConfigWidget)
+REGISTER_SOLVER_CONFIG_WIDGET_CLASS(EXPetscSolverConfigWidget)
 
 #endif /* GUI_E4_H_ */

@@ -42,7 +42,7 @@ E4State::E4State(const E4Config* config){
 	set_phi(0.0);
 }
 
-E4PetscSolverConfig::E4PetscSolverConfig(){
+EXPetscSolverConfig::EXPetscSolverConfig(){
 	set_atol(1e-6);
 	set_rtol(1e-6);
 	set_init_step(0.01);

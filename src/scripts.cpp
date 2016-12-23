@@ -920,7 +920,7 @@ void exp_ts4_super_emission(){
 
 	E4Config* pcfg = dynamic_cast<E4Config*>(inst_fact->createConfig());
 		pcfg->set_n(1000);
-	E4PetscSolverConfig* scfg = dynamic_cast<E4PetscSolverConfig*>(solver_fact->createSolverConfg());
+	EXPetscSolverConfig* scfg = dynamic_cast<EXPetscSolverConfig*>(solver_fact->createSolverConfg());
 		scfg->set_init_step(0.01);
 		scfg->set_atol(1e-8);
 		scfg->set_rtol(1e-8);
