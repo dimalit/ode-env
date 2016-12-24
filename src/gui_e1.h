@@ -24,7 +24,7 @@ class E1ConfigWidget: public OdeConfigWidget{
 public:
 	typedef E1Config Config;
 private:
-	E1Config* config;
+	mutable E1Config* config;
 
 	Gtk::Entry *entry_m, *entry_ksi;
 	Gtk::CheckButton *check_rand, *check_linear;
@@ -32,7 +32,7 @@ private:
 public:
 	E1ConfigWidget(const E1Config* config = NULL);
 	// TODO: maybe clone?
-	virtual const OdeConfig* getConfig();
+	virtual const OdeConfig* getConfig() const;
 	virtual void loadConfig(const OdeConfig* cfg);
 
 	static std::string getDisplayName(){
@@ -40,7 +40,7 @@ public:
 	}
 
 private:
-	void widget_to_config();
+	void widget_to_config() const;
 	void config_to_widget();
 	void check_linear_toggled_cb();
 	void check_rand_toggled_cb();

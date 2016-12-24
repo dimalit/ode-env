@@ -31,7 +31,7 @@ private:
 public:
 	E3ConfigWidget(const E3Config* config = NULL);
 
-	virtual const OdeConfig* getConfig();
+	virtual const OdeConfig* getConfig() const;
 	virtual void loadConfig(const OdeConfig* cfg);
 
 	static std::string getDisplayName(){
@@ -39,7 +39,7 @@ public:
 	}
 
 private:
-	void widget_to_config();
+	void widget_to_config() const;
 	void config_to_widget();
 	void edit_anything_cb();
 	void on_apply_cb();

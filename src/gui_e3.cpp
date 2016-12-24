@@ -50,7 +50,7 @@ E3ConfigWidget::E3ConfigWidget(const E3Config* cfg){
 	button_apply->signal_clicked().connect(sigc::mem_fun(*this, &E3ConfigWidget::on_apply_cb));
 }
 
-void E3ConfigWidget::widget_to_config(){
+void E3ConfigWidget::widget_to_config() const {
 	config->set_m(atoi(entry_m->get_text().c_str()));
 	config->set_n(atof(entry_n->get_text().c_str()));
 	config->set_theta_e(atof(entry_theta->get_text().c_str()));
@@ -112,7 +112,7 @@ void E3ConfigWidget::loadConfig(const OdeConfig* cfg){
 	m_signal_changed.emit();
 }
 
-const OdeConfig* E3ConfigWidget::getConfig() {
+const OdeConfig* E3ConfigWidget::getConfig() const {
 	widget_to_config();
 	return config;
 }

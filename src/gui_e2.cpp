@@ -45,7 +45,7 @@ E2ConfigWidget::E2ConfigWidget(const E2Config* cfg){
 	button_apply->signal_clicked().connect(sigc::mem_fun(*this, &E2ConfigWidget::on_apply_cb));
 }
 
-void E2ConfigWidget::widget_to_config(){
+void E2ConfigWidget::widget_to_config() const {
 	config->set_n(atoi(entry_n->get_text().c_str()));
 	config->set_a(atoi(entry_a->get_text().c_str()));
 	config->set_delta(atoi(entry_delta->get_text().c_str()));
@@ -92,7 +92,7 @@ void E2ConfigWidget::loadConfig(const OdeConfig* cfg){
 	m_signal_changed.emit();
 }
 
-const OdeConfig* E2ConfigWidget::getConfig() {
+const OdeConfig* E2ConfigWidget::getConfig() const {
 	widget_to_config();
 	return config;
 }

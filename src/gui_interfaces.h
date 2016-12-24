@@ -16,7 +16,7 @@ protected:
 	sigc::signal<void> m_signal_changed;
 public:
 	virtual void loadConfig(const OdeConfig* cfg) = 0;
-	virtual const OdeConfig* getConfig() = 0;
+	virtual const OdeConfig* getConfig() const = 0;
 	sigc::signal<void> signal_changed(){
 		return m_signal_changed;
 	}

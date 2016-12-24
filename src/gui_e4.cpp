@@ -13,7 +13,9 @@
 #define UI_FILE_STATE "e4_state.glade"
 #define UI_FILE_PETSC_SOLVER "e4_petsc_solver.glade"
 
-AbstractConfigWidget::AbstractConfigWidget(const Message *msg){
+AbstractConfigWidget::AbstractConfigWidget(Message *msg){
+	this->data = msg;
+
 	grid.set_column_spacing(4);
 	grid.set_row_spacing(4);
 	grid.set_margin_left(4);
@@ -26,15 +28,6 @@ AbstractConfigWidget::AbstractConfigWidget(const Message *msg){
 	button_apply.set_hexpand(true);
 	button_apply.signal_clicked().connect(sigc::mem_fun(*this, &AbstractConfigWidget::on_apply_cb));
 
-	if(!msg){
-		data = NULL;
-		return;
-	}
-	else{
-		data = msg->New();
-		data->CopyFrom(*msg);
-	}
-
 	construct_ui();
 	config_to_widget();
 }
@@ -46,11 +39,15 @@ void AbstractConfigWidget::construct_ui(){
 	for(auto it=v.begin(); it!=v.end(); ++it){
 		Gtk::Widget* w = *it;
 		grid.remove(*w);
-		delete w;
+		if(w != &button_apply)
+			delete w;
 	}// for
 
 	// 2 add
 	grid.attach(button_apply, 0, 0, 2, 1);
+
+	if(!data)
+		return;
 
 	const Descriptor* d = data->GetDescriptor();
 
@@ -73,10 +70,8 @@ void AbstractConfigWidget::construct_ui(){
 	}// for fields
 }
 
-void AbstractConfigWidget::setData(const Message* msg){
-	delete data;
-	data = msg->New();
-	data->CopyFrom(*msg);
+void AbstractConfigWidget::setData(Message* msg){
+	data = msg;
 	construct_ui();
 	config_to_widget();
 }
@@ -87,6 +82,9 @@ const Message* AbstractConfigWidget::getData() const{
 }
 
 void AbstractConfigWidget::widget_to_config() const{
+	if(data == NULL)
+		return;
+
 	const Descriptor* desc = data->GetDescriptor();
 	const Reflection* refl = data->GetReflection();
 
@@ -124,6 +122,9 @@ void AbstractConfigWidget::widget_to_config() const{
 	button_apply.set_sensitive(false);
 }
 void AbstractConfigWidget::config_to_widget() const {
+	if(data == NULL)
+		return;
+
 	const Descriptor* desc = data->GetDescriptor();
 	const Reflection* refl = data->GetReflection();
 
@@ -174,154 +175,34 @@ void AbstractConfigWidget::on_apply_cb(){
 ///////////////////////////////////////////////////////////////////////////////
 
 EXConfigWidget::EXConfigWidget(const OdeConfig* cfg){
+	this->add(cfg_widget);
 
-	grid.set_column_spacing(4);
-	grid.set_row_spacing(4);
-	grid.set_margin_left(4);
-	grid.set_margin_top(4);
-	grid.set_margin_right(4);
-	grid.set_margin_bottom(4);
-	this->add(grid);
-
-	button_apply.set_label("Apply");
-	button_apply.set_hexpand(true);
-	grid.attach(button_apply, 0, 0, 2, 1);
-
-	if(!cfg){
+	if(!cfg)
 		this->config = NULL;
-		return;
-	}
 	else
 		this->config = cfg->clone();
 
-	const Message *msg = dynamic_cast<const Message*>(config);
-	const Descriptor* d = msg->GetDescriptor();
-
-	for(int i=0; i<d->field_count(); i++){
-		const FieldDescriptor* fd = d->field(d->field_count()-i-1);
-		const string& fname = fd->name();
-
-		Gtk::Label *label = Gtk::manage(new Gtk::Label);
-		label->set_text(fname);
-
-		Gtk::Entry *entry = Gtk::manage(new Gtk::Entry);
-		entry->set_hexpand(true);
-
-		grid.insert_row(0);
-		grid.attach(*label, 0, 0, 1, 1);
-		grid.attach(*entry, 1, 0, 1, 1);
-
-		entry_map[fname] = entry;
-		entry->signal_changed().connect(sigc::mem_fun(*this, &EXConfigWidget::edit_anything_cb));
-	}// for fields
-
-	config_to_widget();
-
-	button_apply.signal_clicked().connect(sigc::mem_fun(*this, &EXConfigWidget::on_apply_cb));
+	cfg_widget.setData(dynamic_cast<Message*>(config));
+	cfg_widget.signal_changed().connect(sigc::mem_fun(*this, &EXConfigWidget::on_changed));
 }
 
-void EXConfigWidget::widget_to_config(){
-	Message *msg = dynamic_cast<Message*>(config);
-	const Descriptor* desc = msg->GetDescriptor();
-	const Reflection* refl = msg->GetReflection();
-
-	for(auto i=entry_map.begin(); i!=entry_map.end(); ++i){
-		const string& var = i->first;
-		Gtk::Entry* entry = i->second;
-
-		string val = entry->get_text();
-
-		const FieldDescriptor* fd = desc->FindFieldByName(var);
-		FieldDescriptor::Type type = fd->type();
-
-		switch(type){
-			case FieldDescriptor::Type::TYPE_DOUBLE:
-				refl->SetDouble(msg, fd, atof(val.c_str()));
-				break;
-			case FieldDescriptor::Type::TYPE_FLOAT:
-				refl->SetFloat(msg, fd, (float)atof(val.c_str()));
-				break;
-			case FieldDescriptor::Type::TYPE_INT32:
-				refl->SetInt32(msg, fd, atoi(val.c_str()));
-				break;
-			case FieldDescriptor::Type::TYPE_UINT32:
-				refl->SetUInt32(msg, fd, atoi(val.c_str()));
-				break;
-			case FieldDescriptor::Type::TYPE_STRING:
-				refl->SetString(msg, fd, val);
-				break;
-			default:
-				assert(false);
-		}
-
-	}// for
-
-	button_apply.set_sensitive(false);
-}
-void EXConfigWidget::config_to_widget(){
-
-	Message *msg = dynamic_cast<Message*>(config);
-	const Descriptor* desc = msg->GetDescriptor();
-	const Reflection* refl = msg->GetReflection();
-
-	for(auto i=entry_map.begin(); i!=entry_map.end(); ++i){
-		const string& var = i->first;
-		Gtk::Entry* entry = i->second;
-
-		std::ostringstream res;
-
-		const FieldDescriptor* fd = desc->FindFieldByName(var);
-		FieldDescriptor::Type type = fd->type();
-
-		switch(type){
-			case FieldDescriptor::Type::TYPE_DOUBLE:
-				res << refl->GetDouble(*msg, fd);
-				break;
-			case FieldDescriptor::Type::TYPE_FLOAT:
-				res << refl->GetFloat(*msg, fd);
-				break;
-			case FieldDescriptor::Type::TYPE_INT32:
-				res << refl->GetInt32(*msg, fd);
-				break;
-			case FieldDescriptor::Type::TYPE_UINT32:
-				res << refl->GetUInt32(*msg, fd);
-				break;
-			case FieldDescriptor::Type::TYPE_STRING:
-				res << refl->GetString(*msg, fd);
-				break;
-			default:
-				assert(false);
-		}
-
-		entry->set_text(res.str());
-
-	}// for
-
-	button_apply.set_sensitive(false);
-}
-
-void EXConfigWidget::edit_anything_cb(){
-	button_apply.set_sensitive(true);
-}
-
-void EXConfigWidget::on_apply_cb(){
-	widget_to_config();
+void EXConfigWidget::on_changed(){
 	m_signal_changed.emit();
 }
 
 void EXConfigWidget::loadConfig(const OdeConfig* cfg){
-	const E4Config* ecfg = dynamic_cast<const E4Config*>(cfg);
-		assert(ecfg);
-	delete this->config;
-	this->config = new E4Config(*ecfg);
-	config_to_widget();
+	if(!cfg)
+		this->config = NULL;
+	else
+		this->config = cfg->clone();
 
-	m_signal_changed.emit();
+	Message* msg = dynamic_cast<Message*>(config);
+		assert(msg);
+	cfg_widget.setData(msg);
 }
 
-const OdeConfig* EXConfigWidget::getConfig() {
-	widget_to_config();
-	return dynamic_cast<const OdeConfig*>(config);
+const OdeConfig* EXConfigWidget::getConfig() const{
+	return this->config;
 }
 
 E4StateGeneratorWidget::E4StateGeneratorWidget(const E4Config* _config){

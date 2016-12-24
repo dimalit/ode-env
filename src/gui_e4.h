@@ -23,6 +23,7 @@
 
 using namespace google::protobuf;
 
+// monitors EXTERNAL Message - with no ownership!
 class AbstractConfigWidget: public Gtk::Bin{
 private:
 	mutable Message* data;
@@ -34,10 +35,13 @@ private:
 
 	sigc::signal<void> m_signal_changed;
 public:
-	AbstractConfigWidget(const Message *msg = NULL);
+	AbstractConfigWidget(Message *msg = NULL);
 
-	void setData(const Message* msg);
+	void setData(Message* msg);
 	const Message* getData() const;
+	void update(){
+		config_to_widget();
+	}
 
 	// only fires when changed from GUI
 	sigc::signal<void> signal_changed() const{
@@ -63,15 +67,12 @@ public:
 private:
 	OdeConfig* config;
 
-	Gtk::Grid grid;
-	Gtk::Button button_apply;
-
-	std::map<string, Gtk::Entry*> entry_map;
+	AbstractConfigWidget cfg_widget;
 
 public:
 	EXConfigWidget(const OdeConfig* config = NULL);
 
-	virtual const OdeConfig* getConfig();
+	virtual const OdeConfig* getConfig() const;
 	virtual void loadConfig(const OdeConfig* cfg);
 
 	static std::string getDisplayName(){
@@ -79,10 +80,7 @@ public:
 	}
 
 private:
-	void widget_to_config();
-	void config_to_widget();
-	void edit_anything_cb();
-	void on_apply_cb();
+	void on_changed();
 };
 
 class E4StateGeneratorWidget: public OdeStateGeneratorWidget{

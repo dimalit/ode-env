@@ -43,7 +43,7 @@ E1ConfigWidget::E1ConfigWidget(const E1Config* cfg){
 	config_to_widget();
 }
 
-void E1ConfigWidget::widget_to_config(){
+void E1ConfigWidget::widget_to_config() const {
 	config->g_m = atoi(entry_m->get_text().c_str());
 	config->ksi = atof(entry_ksi->get_text().c_str());
 	config->random_ksi = check_rand->get_active();
@@ -86,7 +86,7 @@ void E1ConfigWidget::loadConfig(const OdeConfig* cfg){
 	config_to_widget();
 }
 
-const OdeConfig* E1ConfigWidget::getConfig() {
+const OdeConfig* E1ConfigWidget::getConfig() const {
 	widget_to_config();
 	return config;
 }
