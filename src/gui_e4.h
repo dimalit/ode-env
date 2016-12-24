@@ -23,6 +23,39 @@
 
 using namespace google::protobuf;
 
+class AbstractConfigWidget: public Gtk::Bin{
+private:
+	mutable Message* data;
+
+	Gtk::Grid grid;
+	mutable Gtk::Button button_apply;
+
+	std::map<string, Gtk::Entry*> entry_map;
+
+	sigc::signal<void> m_signal_changed;
+public:
+	AbstractConfigWidget(const Message *msg = NULL);
+
+	void setData(const Message* msg);
+	const Message* getData() const;
+
+	// only fires when changed from GUI
+	sigc::signal<void> signal_changed() const{
+		return m_signal_changed;
+	}
+
+	virtual ~AbstractConfigWidget(){
+		delete data;
+	}
+
+private:
+	void construct_ui();
+	void widget_to_config() const;
+	void config_to_widget() const;
+	void edit_anything_cb();
+	void on_apply_cb();
+};
+
 class EXConfigWidget: public OdeConfigWidget{
 //!!! TODO: remove this - in gui_interfaces
 public:

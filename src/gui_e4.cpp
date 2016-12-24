@@ -10,9 +10,168 @@
 #include <gtkmm/builder.h>
 #include <gtkmm/table.h>
 
-#define UI_FILE_CONF "e4_config.glade"
 #define UI_FILE_STATE "e4_state.glade"
 #define UI_FILE_PETSC_SOLVER "e4_petsc_solver.glade"
+
+AbstractConfigWidget::AbstractConfigWidget(const Message *msg){
+	grid.set_column_spacing(4);
+	grid.set_row_spacing(4);
+	grid.set_margin_left(4);
+	grid.set_margin_top(4);
+	grid.set_margin_right(4);
+	grid.set_margin_bottom(4);
+	this->add(grid);
+
+	button_apply.set_label("Apply");
+	button_apply.set_hexpand(true);
+	button_apply.signal_clicked().connect(sigc::mem_fun(*this, &AbstractConfigWidget::on_apply_cb));
+
+	if(!msg){
+		data = NULL;
+		return;
+	}
+	else{
+		data = msg->New();
+		data->CopyFrom(*msg);
+	}
+
+	construct_ui();
+	config_to_widget();
+}
+
+void AbstractConfigWidget::construct_ui(){
+
+	// 1 clear
+	std::vector<Widget*> v = grid.get_children();
+	for(auto it=v.begin(); it!=v.end(); ++it){
+		Gtk::Widget* w = *it;
+		grid.remove(*w);
+		delete w;
+	}// for
+
+	// 2 add
+	grid.attach(button_apply, 0, 0, 2, 1);
+
+	const Descriptor* d = data->GetDescriptor();
+
+	for(int i=0; i<d->field_count(); i++){
+		const FieldDescriptor* fd = d->field(d->field_count()-i-1);
+		const string& fname = fd->name();
+
+		Gtk::Label *label = Gtk::manage(new Gtk::Label);
+		label->set_text(fname);
+
+		Gtk::Entry *entry = Gtk::manage(new Gtk::Entry);
+		entry->set_hexpand(true);
+
+		grid.insert_row(0);
+		grid.attach(*label, 0, 0, 1, 1);
+		grid.attach(*entry, 1, 0, 1, 1);
+
+		entry_map[fname] = entry;
+		entry->signal_changed().connect(sigc::mem_fun(*this, &AbstractConfigWidget::edit_anything_cb));
+	}// for fields
+}
+
+void AbstractConfigWidget::setData(const Message* msg){
+	delete data;
+	data = msg->New();
+	data->CopyFrom(*msg);
+	construct_ui();
+	config_to_widget();
+}
+
+const Message* AbstractConfigWidget::getData() const{
+	widget_to_config();
+	return data;
+}
+
+void AbstractConfigWidget::widget_to_config() const{
+	const Descriptor* desc = data->GetDescriptor();
+	const Reflection* refl = data->GetReflection();
+
+	for(auto i=entry_map.begin(); i!=entry_map.end(); ++i){
+		const string& var = i->first;
+		Gtk::Entry* entry = i->second;
+
+		string val = entry->get_text();
+
+		const FieldDescriptor* fd = desc->FindFieldByName(var);
+		FieldDescriptor::Type type = fd->type();
+
+		switch(type){
+			case FieldDescriptor::Type::TYPE_DOUBLE:
+				refl->SetDouble(data, fd, atof(val.c_str()));
+				break;
+			case FieldDescriptor::Type::TYPE_FLOAT:
+				refl->SetFloat(data, fd, (float)atof(val.c_str()));
+				break;
+			case FieldDescriptor::Type::TYPE_INT32:
+				refl->SetInt32(data, fd, atoi(val.c_str()));
+				break;
+			case FieldDescriptor::Type::TYPE_UINT32:
+				refl->SetUInt32(data, fd, atoi(val.c_str()));
+				break;
+			case FieldDescriptor::Type::TYPE_STRING:
+				refl->SetString(data, fd, val);
+				break;
+			default:
+				assert(false);
+		}
+
+	}// for
+
+	button_apply.set_sensitive(false);
+}
+void AbstractConfigWidget::config_to_widget() const {
+	const Descriptor* desc = data->GetDescriptor();
+	const Reflection* refl = data->GetReflection();
+
+	for(auto i=entry_map.begin(); i!=entry_map.end(); ++i){
+		const string& var = i->first;
+		Gtk::Entry* entry = i->second;
+
+		std::ostringstream res;
+
+		const FieldDescriptor* fd = desc->FindFieldByName(var);
+		FieldDescriptor::Type type = fd->type();
+
+		switch(type){
+			case FieldDescriptor::Type::TYPE_DOUBLE:
+				res << refl->GetDouble(*data, fd);
+				break;
+			case FieldDescriptor::Type::TYPE_FLOAT:
+				res << refl->GetFloat(*data, fd);
+				break;
+			case FieldDescriptor::Type::TYPE_INT32:
+				res << refl->GetInt32(*data, fd);
+				break;
+			case FieldDescriptor::Type::TYPE_UINT32:
+				res << refl->GetUInt32(*data, fd);
+				break;
+			case FieldDescriptor::Type::TYPE_STRING:
+				res << refl->GetString(*data, fd);
+				break;
+			default:
+				assert(false);
+		}
+
+		entry->set_text(res.str());
+	}// for
+
+	button_apply.set_sensitive(false);
+}
+
+void AbstractConfigWidget::edit_anything_cb(){
+	button_apply.set_sensitive(true);
+}
+
+void AbstractConfigWidget::on_apply_cb(){
+	widget_to_config();
+	m_signal_changed.emit();
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 EXConfigWidget::EXConfigWidget(const OdeConfig* cfg){
 
@@ -23,8 +182,6 @@ EXConfigWidget::EXConfigWidget(const OdeConfig* cfg){
 	grid.set_margin_right(4);
 	grid.set_margin_bottom(4);
 	this->add(grid);
-
-	grid.insert_row(0);
 
 	button_apply.set_label("Apply");
 	button_apply.set_hexpand(true);
@@ -52,7 +209,7 @@ EXConfigWidget::EXConfigWidget(const OdeConfig* cfg){
 
 		grid.insert_row(0);
 		grid.attach(*label, 0, 0, 1, 1);
-		grid.attach(*entry, 1, 0, 2, 1);
+		grid.attach(*entry, 1, 0, 1, 1);
 
 		entry_map[fname] = entry;
 		entry->signal_changed().connect(sigc::mem_fun(*this, &EXConfigWidget::edit_anything_cb));
