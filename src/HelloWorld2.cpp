@@ -47,7 +47,7 @@ HelloWorld2::HelloWorld2()
 
   vbox.pack_end(button_box, false, false);
 
-  OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
+  OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
 
   OdeInstanceWidgetFactory* inst_widget_fact = *OdeInstanceWidgetFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
   this->config_widget = inst_widget_fact->createConfigWidget(new E4Config());
@@ -327,7 +327,7 @@ void HelloWorld2::run_computing(bool use_step){
   const OdeConfig* config = extract_config();
   const OdeSolverConfig* solver_config = extract_solver_config();
 
-  OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory(problem_name);
+  OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem(problem_name);
 
   bool use_max_steps = radio_steps->get_active();
   steps = atoi(entry_steps->get_text().c_str());

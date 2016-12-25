@@ -21,9 +21,9 @@ class OdeState;
 class OdeInstance;
 class OdeSolverConfig;
 class OdeSolver;
-class OdeInstanceFactoryManager;
+class OdeProblemManager;
 
-class OdeInstanceFactory{
+class OdeProblem{
 public:
 	OdeInstance* createInstance() const;
 	virtual OdeConfig* createConfig() const = 0;
@@ -31,8 +31,8 @@ public:
 
 	virtual std::string getDisplayName() const = 0;
 protected:
-	OdeInstanceFactory();
-	virtual ~OdeInstanceFactory();
+	OdeProblem();
+	virtual ~OdeProblem();
 };
 
 class OdeSolverFactory{
@@ -41,20 +41,20 @@ public:
 	virtual OdeSolverConfig* createSolverConfg() const = 0;
 
 	virtual std::string getDisplayName() const = 0;
-	OdeInstanceFactory* getBaseFactory() const {
+	OdeProblem* getBaseFactory() const {
 		return corresponding_instance_factory;
 	}
 
 protected:
-	OdeSolverFactory(OdeInstanceFactory* corresponding_instance_factory);
+	OdeSolverFactory(OdeProblem* corresponding_instance_factory);
 	virtual ~OdeSolverFactory();
-	OdeInstanceFactory* corresponding_instance_factory;
+	OdeProblem* corresponding_instance_factory;
 };
 
 ////////////////////// TEMPLATES FOR DERIVED CLASSES ////////////////////////
 
 template<class C, class S>
-class TemplateInstanceFactory: public OdeInstanceFactory{
+class TemplateInstanceFactory: public OdeProblem{
 public:
 	static TemplateInstanceFactory* getInstance(){
 		static TemplateInstanceFactory instance;
@@ -113,17 +113,17 @@ template<class IF, class SOLVER>
 TemplateSolverFactory<IF, SOLVER> TemplateSolverFactory<IF, SOLVER>::instance;
 
 //////////////////////////// FACTORY MANAGERS ///////////////////////////////
-class OdeInstanceFactoryManager{
-	typedef std::map<std::string, OdeInstanceFactory*> name_to_inst_map;
+class OdeProblemManager{
+	typedef std::map<std::string, OdeProblem*> name_to_inst_map;
 public:
-	static OdeInstanceFactoryManager* getInstance(){
-		static OdeInstanceFactoryManager instance;
+	static OdeProblemManager* getInstance(){
+		static OdeProblemManager instance;
 		return &instance;
 	}
-	void add(OdeInstanceFactory* f);
-	void remove(OdeInstanceFactory* f);
-	std::vector<std::string> getInstanceNames() const;
-	OdeInstanceFactory* getFactory(const std::string& name);
+	void add(OdeProblem* f);
+	void remove(OdeProblem* f);
+	std::vector<std::string> getProblemNames() const;
+	OdeProblem* getProblem(const std::string& name);
 
 private:
 
@@ -219,16 +219,16 @@ private:
 
 template<class C, class S>
 TemplateInstanceFactory<C, S>::TemplateInstanceFactory(){
-	OdeInstanceFactoryManager::getInstance()->add(this);
+	OdeProblemManager::getInstance()->add(this);
 }
 
 template<class C, class S>
 TemplateInstanceFactory<C, S>::~TemplateInstanceFactory(){
-	OdeInstanceFactoryManager::getInstance()->remove(this);
+	OdeProblemManager::getInstance()->remove(this);
 }
 
-typedef AuxFactoryManager<OdeSolverFactory, OdeInstanceFactory> OdeSolverFactoryManager;
-template class AuxFactoryManager<OdeSolverFactory, OdeInstanceFactory>;
+typedef AuxFactoryManager<OdeSolverFactory, OdeProblem> OdeSolverFactoryManager;
+template class AuxFactoryManager<OdeSolverFactory, OdeProblem>;
 
 // TODO: investigate if I could move ctor of AuxFactoryManaget into cpp-file
 

@@ -40,7 +40,7 @@ void compute_integrals(const E3Config* config, const E3State* estate, double* in
 void exp_6_images(){
 	string problem_name = "model e3";
 
-	OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
+	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
 	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
 
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
@@ -189,7 +189,7 @@ void exp_6_images(){
 void exp_random_init_R3(){
 	string problem_name = "model e3";
 
-	OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
+	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
 	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
 
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
@@ -280,7 +280,7 @@ void exp_random_init_R3(){
 void exp_gamma2e(){
 	string problem_name = "model e3";
 
-	OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
+	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
 	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
 
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
@@ -412,7 +412,7 @@ void exp_gamma2e(){
 void exp_r2e(){
 	string problem_name = "model e3";
 
-	OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
+	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
 	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
 
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
@@ -578,7 +578,7 @@ void exp_r2e(){
 void as_in_book(){
 	string problem_name = "model e3";
 
-	OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
+	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
 	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
 
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
@@ -742,7 +742,7 @@ void model_e3_fill_spec_msg(const E3State* estate, const E3State* dstate, const 
 void exp_4_gyro(){
 	string problem_name = "model e3";
 
-	OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
+	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
 	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
 
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
@@ -915,7 +915,7 @@ void exp_4_gyro(){
 void exp_ts4_super_emission(){
 	string problem_name = "model e4";
 
-	OdeInstanceFactory* inst_fact = OdeInstanceFactoryManager::getInstance()->getFactory( problem_name );
+	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
 	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
 
 	E4Config* pcfg = dynamic_cast<E4Config*>(inst_fact->createConfig());

@@ -7,7 +7,7 @@
 
 #include "gui_factories.h"
 
-OdeInstanceWidgetFactory::OdeInstanceWidgetFactory(OdeInstanceFactory* corresponding_instance_factory){
+OdeInstanceWidgetFactory::OdeInstanceWidgetFactory(OdeProblem* corresponding_instance_factory){
 	this->corresponding_instance_factory = corresponding_instance_factory;
 	OdeInstanceWidgetFactoryManager::getInstance()->add(this);
 }
@@ -23,7 +23,7 @@ OdeSolverConfigWidgetFactory::~OdeSolverConfigWidgetFactory(){
 	OdeSolverConfigWidgetFactoryManager::getInstance()->remove(this);
 }
 
-OdeAnalyzerWidgetFactory::OdeAnalyzerWidgetFactory(OdeInstanceFactory* corresponding_instance_factory){
+OdeAnalyzerWidgetFactory::OdeAnalyzerWidgetFactory(OdeProblem* corresponding_instance_factory){
 	this->corresponding_instance_factory = corresponding_instance_factory;
 	OdeAnalyzerWidgetFactoryManager::getInstance()->add(this);
 }

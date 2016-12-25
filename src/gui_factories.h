@@ -15,18 +15,18 @@
 
 class OdeInstanceWidgetFactory{
 public:
-	OdeInstanceWidgetFactory(OdeInstanceFactory* corresponding_instance_factory);
+	OdeInstanceWidgetFactory(OdeProblem* corresponding_instance_factory);
 	virtual ~OdeInstanceWidgetFactory();
 	virtual OdeConfigWidget* createConfigWidget(const OdeConfig* = NULL) const = 0;
 	virtual OdeStateGeneratorWidget* createStateGeneratorWidget(const OdeConfig* cfg) const = 0;
 
 	virtual std::string getDisplayName() const = 0;
 
-	OdeInstanceFactory* getBaseFactory() const {
+	OdeProblem* getBaseFactory() const {
 		return corresponding_instance_factory;
 	}
 private:
-	OdeInstanceFactory* corresponding_instance_factory;
+	OdeProblem* corresponding_instance_factory;
 };
 
 class OdeSolverConfigWidgetFactory{
@@ -46,25 +46,25 @@ private:
 
 class OdeAnalyzerWidgetFactory{
 public:
-	OdeAnalyzerWidgetFactory(OdeInstanceFactory* corresponding_instance_factory);
+	OdeAnalyzerWidgetFactory(OdeProblem* corresponding_instance_factory);
 	virtual ~OdeAnalyzerWidgetFactory();
 	virtual OdeAnalyzerWidget* createAnalyzerWidget(const OdeConfig* = NULL) const = 0;
 
 	virtual std::string getDisplayName() const = 0;
 
-	OdeInstanceFactory* getBaseFactory() const {
+	OdeProblem* getBaseFactory() const {
 		return corresponding_instance_factory;
 	}
 private:
-	OdeInstanceFactory* corresponding_instance_factory;
+	OdeProblem* corresponding_instance_factory;
 };
 
-typedef AuxFactoryManager<OdeInstanceWidgetFactory, OdeInstanceFactory> OdeInstanceWidgetFactoryManager;
-template class AuxFactoryManager<OdeInstanceWidgetFactory, OdeInstanceFactory>;
+typedef AuxFactoryManager<OdeInstanceWidgetFactory, OdeProblem> OdeInstanceWidgetFactoryManager;
+template class AuxFactoryManager<OdeInstanceWidgetFactory, OdeProblem>;
 typedef AuxFactoryManager<OdeSolverConfigWidgetFactory, OdeSolverFactory> OdeSolverConfigWidgetFactoryManager;
 template class AuxFactoryManager<OdeSolverConfigWidgetFactory, OdeSolverFactory>;
-typedef AuxFactoryManager<OdeAnalyzerWidgetFactory, OdeInstanceFactory> OdeAnalyzerWidgetFactoryManager;
-template class AuxFactoryManager<OdeAnalyzerWidgetFactory, OdeInstanceFactory>;
+typedef AuxFactoryManager<OdeAnalyzerWidgetFactory, OdeProblem> OdeAnalyzerWidgetFactoryManager;
+template class AuxFactoryManager<OdeAnalyzerWidgetFactory, OdeProblem>;
 
 ///////////////////// DEMPLATES FOR DERIVED CLASSES /////////////////////////
 
