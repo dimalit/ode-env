@@ -214,31 +214,14 @@ E4StateGeneratorWidget::E4StateGeneratorWidget(const E4Config* _config){
 		this->config = new E4Config();
 
 	// TODO: may be state should remember its config?!
+	pb::E4StateGeneratorConfig* sgc = new pb::E4StateGeneratorConfig();
+	sgc->set_e0(0.01);
+	sgc->set_phi0(0.0);
+	sgc->set_a0(1.0);
+	cfg_widget.setData(sgc);
 
-	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_STATE);
-
-	Gtk::Widget* root;
-	b->get_widget("root", root);
-
-	b->get_widget("entry_e", entry_e);
-	b->get_widget("entry_phi", entry_phi);
-	b->get_widget("entry_a0", entry_a0);
-
-
-	b->get_widget("button_apply", button_apply);
-
-	this->add(*root);
-
-	entry_e->set_text("0.01");
-	entry_phi->set_text("0.0");
-	entry_a0->set_text("1.0");
-
-	// signals
-	entry_e->signal_changed().connect(sigc::mem_fun(*this, &E4StateGeneratorWidget::edit_anything_cb));
-	entry_phi->signal_changed().connect(sigc::mem_fun(*this, &E4StateGeneratorWidget::edit_anything_cb));
-	entry_a0->signal_changed().connect(sigc::mem_fun(*this, &E4StateGeneratorWidget::edit_anything_cb));
-
-	button_apply->signal_clicked().connect(sigc::mem_fun(*this, &E4StateGeneratorWidget::on_apply_cb));
+	this->add(cfg_widget);
+	cfg_widget.signal_changed().connect(sigc::mem_fun(*this, &E4StateGeneratorWidget::on_changed));
 
 	assert(!this->state);
 	newState();
@@ -248,13 +231,9 @@ E4StateGeneratorWidget::~E4StateGeneratorWidget(){
 	// XXX where are deletes?
 }
 
-void E4StateGeneratorWidget::edit_anything_cb(){
-	button_apply->set_sensitive(true);
-}
-void E4StateGeneratorWidget::on_apply_cb(){
+void E4StateGeneratorWidget::on_changed(){
 	newState();
 }
-
 
 void E4StateGeneratorWidget::loadConfig(const OdeConfig* cfg){
 	const E4Config* ecfg = dynamic_cast<const E4Config*>(cfg);
@@ -282,9 +261,11 @@ void E4StateGeneratorWidget::newState(bool emit){
 	delete state;
 	state = new E4State(config);
 
-	double e = atof(entry_e->get_text().c_str());
-	double phi = atof(entry_phi->get_text().c_str());
-	double a0 = atof(entry_a0->get_text().c_str());
+	const pb::E4StateGeneratorConfig* sgc = dynamic_cast<const pb::E4StateGeneratorConfig*>(cfg_widget.getData());
+
+	double e = sgc->e0();
+	double phi = sgc->phi0();
+	double a0 = sgc->a0();
 
 	bool use_rand = false;
 	double right = 2*M_PI;

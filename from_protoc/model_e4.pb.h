@@ -36,6 +36,7 @@ void protobuf_ShutdownFile_model_5fe4_2eproto();
 class E4Config;
 class E4State;
 class E4State_Particles;
+class E4StateGeneratorConfig;
 class EXPetscSolverConfig;
 class E4Model;
 class E4Solution;
@@ -353,6 +354,105 @@ class E4State : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static E4State* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class E4StateGeneratorConfig : public ::google::protobuf::Message {
+ public:
+  E4StateGeneratorConfig();
+  virtual ~E4StateGeneratorConfig();
+
+  E4StateGeneratorConfig(const E4StateGeneratorConfig& from);
+
+  inline E4StateGeneratorConfig& operator=(const E4StateGeneratorConfig& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const E4StateGeneratorConfig& default_instance();
+
+  void Swap(E4StateGeneratorConfig* other);
+
+  // implements Message ----------------------------------------------
+
+  E4StateGeneratorConfig* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const E4StateGeneratorConfig& from);
+  void MergeFrom(const E4StateGeneratorConfig& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required double E0 = 1;
+  inline bool has_e0() const;
+  inline void clear_e0();
+  static const int kE0FieldNumber = 1;
+  inline double e0() const;
+  inline void set_e0(double value);
+
+  // required double phi0 = 2;
+  inline bool has_phi0() const;
+  inline void clear_phi0();
+  static const int kPhi0FieldNumber = 2;
+  inline double phi0() const;
+  inline void set_phi0(double value);
+
+  // required double A0 = 3;
+  inline bool has_a0() const;
+  inline void clear_a0();
+  static const int kA0FieldNumber = 3;
+  inline double a0() const;
+  inline void set_a0(double value);
+
+  // @@protoc_insertion_point(class_scope:pb.E4StateGeneratorConfig)
+ private:
+  inline void set_has_e0();
+  inline void clear_has_e0();
+  inline void set_has_phi0();
+  inline void clear_has_phi0();
+  inline void set_has_a0();
+  inline void clear_has_a0();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  double e0_;
+  double phi0_;
+  double a0_;
+  friend void  protobuf_AddDesc_model_5fe4_2eproto();
+  friend void protobuf_AssignDesc_model_5fe4_2eproto();
+  friend void protobuf_ShutdownFile_model_5fe4_2eproto();
+
+  void InitAsDefaultInstance();
+  static E4StateGeneratorConfig* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -1223,6 +1323,82 @@ inline ::google::protobuf::RepeatedPtrField< ::pb::E4State_Particles >*
 E4State::mutable_particles() {
   // @@protoc_insertion_point(field_mutable_list:pb.E4State.particles)
   return &particles_;
+}
+
+// -------------------------------------------------------------------
+
+// E4StateGeneratorConfig
+
+// required double E0 = 1;
+inline bool E4StateGeneratorConfig::has_e0() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void E4StateGeneratorConfig::set_has_e0() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void E4StateGeneratorConfig::clear_has_e0() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void E4StateGeneratorConfig::clear_e0() {
+  e0_ = 0;
+  clear_has_e0();
+}
+inline double E4StateGeneratorConfig::e0() const {
+  // @@protoc_insertion_point(field_get:pb.E4StateGeneratorConfig.E0)
+  return e0_;
+}
+inline void E4StateGeneratorConfig::set_e0(double value) {
+  set_has_e0();
+  e0_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4StateGeneratorConfig.E0)
+}
+
+// required double phi0 = 2;
+inline bool E4StateGeneratorConfig::has_phi0() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void E4StateGeneratorConfig::set_has_phi0() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void E4StateGeneratorConfig::clear_has_phi0() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void E4StateGeneratorConfig::clear_phi0() {
+  phi0_ = 0;
+  clear_has_phi0();
+}
+inline double E4StateGeneratorConfig::phi0() const {
+  // @@protoc_insertion_point(field_get:pb.E4StateGeneratorConfig.phi0)
+  return phi0_;
+}
+inline void E4StateGeneratorConfig::set_phi0(double value) {
+  set_has_phi0();
+  phi0_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4StateGeneratorConfig.phi0)
+}
+
+// required double A0 = 3;
+inline bool E4StateGeneratorConfig::has_a0() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void E4StateGeneratorConfig::set_has_a0() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void E4StateGeneratorConfig::clear_has_a0() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void E4StateGeneratorConfig::clear_a0() {
+  a0_ = 0;
+  clear_has_a0();
+}
+inline double E4StateGeneratorConfig::a0() const {
+  // @@protoc_insertion_point(field_get:pb.E4StateGeneratorConfig.A0)
+  return a0_;
+}
+inline void E4StateGeneratorConfig::set_a0(double value) {
+  set_has_a0();
+  a0_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4StateGeneratorConfig.A0)
 }
 
 // -------------------------------------------------------------------

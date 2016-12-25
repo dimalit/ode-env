@@ -29,6 +29,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* E4State_Particles_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   E4State_Particles_reflection_ = NULL;
+const ::google::protobuf::Descriptor* E4StateGeneratorConfig_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  E4StateGeneratorConfig_reflection_ = NULL;
 const ::google::protobuf::Descriptor* EXPetscSolverConfig_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   EXPetscSolverConfig_reflection_ = NULL;
@@ -106,7 +109,24 @@ void protobuf_AssignDesc_model_5fe4_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E4State_Particles));
-  EXPetscSolverConfig_descriptor_ = file->message_type(2);
+  E4StateGeneratorConfig_descriptor_ = file->message_type(2);
+  static const int E4StateGeneratorConfig_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4StateGeneratorConfig, e0_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4StateGeneratorConfig, phi0_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4StateGeneratorConfig, a0_),
+  };
+  E4StateGeneratorConfig_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      E4StateGeneratorConfig_descriptor_,
+      E4StateGeneratorConfig::default_instance_,
+      E4StateGeneratorConfig_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4StateGeneratorConfig, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4StateGeneratorConfig, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(E4StateGeneratorConfig));
+  EXPetscSolverConfig_descriptor_ = file->message_type(3);
   static const int EXPetscSolverConfig_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EXPetscSolverConfig, atol_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EXPetscSolverConfig, rtol_),
@@ -124,7 +144,7 @@ void protobuf_AssignDesc_model_5fe4_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(EXPetscSolverConfig));
-  E4Model_descriptor_ = file->message_type(3);
+  E4Model_descriptor_ = file->message_type(4);
   static const int E4Model_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Model, pconfig_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Model, state_),
@@ -141,7 +161,7 @@ void protobuf_AssignDesc_model_5fe4_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E4Model));
-  E4Solution_descriptor_ = file->message_type(4);
+  E4Solution_descriptor_ = file->message_type(5);
   static const int E4Solution_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Solution, state_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Solution, d_state_),
@@ -157,7 +177,7 @@ void protobuf_AssignDesc_model_5fe4_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E4Solution));
-  E4Special_descriptor_ = file->message_type(5);
+  E4Special_descriptor_ = file->message_type(6);
   static const int E4Special_offsets_[14] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, e_2_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, aver_a_2_),
@@ -220,6 +240,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     E4State_Particles_descriptor_, &E4State_Particles::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    E4StateGeneratorConfig_descriptor_, &E4StateGeneratorConfig::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     EXPetscSolverConfig_descriptor_, &EXPetscSolverConfig::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     E4Model_descriptor_, &E4Model::default_instance());
@@ -240,6 +262,8 @@ void protobuf_ShutdownFile_model_5fe4_2eproto() {
   delete E4State_reflection_;
   delete E4State_Particles::default_instance_;
   delete E4State_Particles_reflection_;
+  delete E4StateGeneratorConfig::default_instance_;
+  delete E4StateGeneratorConfig_reflection_;
   delete EXPetscSolverConfig::default_instance_;
   delete EXPetscSolverConfig_reflection_;
   delete E4Model::default_instance_;
@@ -264,25 +288,28 @@ void protobuf_AddDesc_model_5fe4_2eproto() {
     "E4State\022\t\n\001E\030\001 \002(\001\022\013\n\003phi\030\002 \002(\001\022(\n\tparti"
     "cles\030\003 \003(\n2\025.pb.E4State.Particles\032=\n\tPar"
     "ticles\022\t\n\001a\030\004 \002(\001\022\013\n\003psi\030\005 \002(\001\022\t\n\001z\030\006 \002("
-    "\001\022\r\n\005delta\030\007 \002(\001\"U\n\023EXPetscSolverConfig\022"
-    "\014\n\004atol\030\001 \001(\001\022\014\n\004rtol\030\002 \001(\001\022\021\n\tinit_step"
-    "\030\003 \001(\001\022\017\n\007n_cores\030\004 \001(\005\"n\n\007E4Model\022\035\n\007pc"
-    "onfig\030\001 \002(\0132\014.pb.E4Config\022\032\n\005state\030\002 \002(\013"
-    "2\013.pb.E4State\022(\n\007sconfig\030\003 \002(\0132\027.pb.EXPe"
-    "tscSolverConfig\"F\n\nE4Solution\022\032\n\005state\030\001"
-    " \002(\0132\013.pb.E4State\022\034\n\007d_state\030\002 \001(\0132\013.pb."
-    "E4State\"\373\001\n\tE4Special\022\013\n\003e_2\030\001 \001(\001\022\020\n\010av"
-    "er_a_2\030\002 \001(\001\022\017\n\007int_e_a\030\004 \001(\001\022\n\n\002Na\030\005 \001("
-    "\001\022\n\n\002Nb\030\006 \001(\001\022\t\n\001M\030\021 \001(\001\022\t\n\001N\030\022 \001(\001\022\n\n\002I"
-    "a\030\007 \001(\001\022\n\n\002Ib\030\010 \001(\001\022\017\n\007Ia_aver\030\t \001(\001\022\017\n\007"
-    "Ib_aver\030\n \001(\001\022\n\n\002Wa\030\013 \001(\001\022\n\n\002Wb\030\014 \001(\001\022 \n"
-    "\004hist\030\r \003(\n2\022.pb.E4Special.Hist\032\034\n\004Hist\022"
-    "\t\n\001x\030\016 \002(\001\022\t\n\001y\030\017 \002(\001", 741);
+    "\001\022\r\n\005delta\030\007 \002(\001\">\n\026E4StateGeneratorConf"
+    "ig\022\n\n\002E0\030\001 \002(\001\022\014\n\004phi0\030\002 \002(\001\022\n\n\002A0\030\003 \002(\001"
+    "\"U\n\023EXPetscSolverConfig\022\014\n\004atol\030\001 \001(\001\022\014\n"
+    "\004rtol\030\002 \001(\001\022\021\n\tinit_step\030\003 \001(\001\022\017\n\007n_core"
+    "s\030\004 \001(\005\"n\n\007E4Model\022\035\n\007pconfig\030\001 \002(\0132\014.pb"
+    ".E4Config\022\032\n\005state\030\002 \002(\0132\013.pb.E4State\022(\n"
+    "\007sconfig\030\003 \002(\0132\027.pb.EXPetscSolverConfig\""
+    "F\n\nE4Solution\022\032\n\005state\030\001 \002(\0132\013.pb.E4Stat"
+    "e\022\034\n\007d_state\030\002 \001(\0132\013.pb.E4State\"\373\001\n\tE4Sp"
+    "ecial\022\013\n\003e_2\030\001 \001(\001\022\020\n\010aver_a_2\030\002 \001(\001\022\017\n\007"
+    "int_e_a\030\004 \001(\001\022\n\n\002Na\030\005 \001(\001\022\n\n\002Nb\030\006 \001(\001\022\t\n"
+    "\001M\030\021 \001(\001\022\t\n\001N\030\022 \001(\001\022\n\n\002Ia\030\007 \001(\001\022\n\n\002Ib\030\010 "
+    "\001(\001\022\017\n\007Ia_aver\030\t \001(\001\022\017\n\007Ib_aver\030\n \001(\001\022\n\n"
+    "\002Wa\030\013 \001(\001\022\n\n\002Wb\030\014 \001(\001\022 \n\004hist\030\r \003(\n2\022.pb"
+    ".E4Special.Hist\032\034\n\004Hist\022\t\n\001x\030\016 \002(\001\022\t\n\001y\030"
+    "\017 \002(\001", 805);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e4.proto", &protobuf_RegisterTypes);
   E4Config::default_instance_ = new E4Config();
   E4State::default_instance_ = new E4State();
   E4State_Particles::default_instance_ = new E4State_Particles();
+  E4StateGeneratorConfig::default_instance_ = new E4StateGeneratorConfig();
   EXPetscSolverConfig::default_instance_ = new EXPetscSolverConfig();
   E4Model::default_instance_ = new E4Model();
   E4Solution::default_instance_ = new E4Solution();
@@ -291,6 +318,7 @@ void protobuf_AddDesc_model_5fe4_2eproto() {
   E4Config::default_instance_->InitAsDefaultInstance();
   E4State::default_instance_->InitAsDefaultInstance();
   E4State_Particles::default_instance_->InitAsDefaultInstance();
+  E4StateGeneratorConfig::default_instance_->InitAsDefaultInstance();
   EXPetscSolverConfig::default_instance_->InitAsDefaultInstance();
   E4Model::default_instance_->InitAsDefaultInstance();
   E4Solution::default_instance_->InitAsDefaultInstance();
@@ -1265,6 +1293,313 @@ void E4State::Swap(E4State* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = E4State_descriptor_;
   metadata.reflection = E4State_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int E4StateGeneratorConfig::kE0FieldNumber;
+const int E4StateGeneratorConfig::kPhi0FieldNumber;
+const int E4StateGeneratorConfig::kA0FieldNumber;
+#endif  // !_MSC_VER
+
+E4StateGeneratorConfig::E4StateGeneratorConfig()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:pb.E4StateGeneratorConfig)
+}
+
+void E4StateGeneratorConfig::InitAsDefaultInstance() {
+}
+
+E4StateGeneratorConfig::E4StateGeneratorConfig(const E4StateGeneratorConfig& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:pb.E4StateGeneratorConfig)
+}
+
+void E4StateGeneratorConfig::SharedCtor() {
+  _cached_size_ = 0;
+  e0_ = 0;
+  phi0_ = 0;
+  a0_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+E4StateGeneratorConfig::~E4StateGeneratorConfig() {
+  // @@protoc_insertion_point(destructor:pb.E4StateGeneratorConfig)
+  SharedDtor();
+}
+
+void E4StateGeneratorConfig::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void E4StateGeneratorConfig::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* E4StateGeneratorConfig::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return E4StateGeneratorConfig_descriptor_;
+}
+
+const E4StateGeneratorConfig& E4StateGeneratorConfig::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_model_5fe4_2eproto();
+  return *default_instance_;
+}
+
+E4StateGeneratorConfig* E4StateGeneratorConfig::default_instance_ = NULL;
+
+E4StateGeneratorConfig* E4StateGeneratorConfig::New() const {
+  return new E4StateGeneratorConfig;
+}
+
+void E4StateGeneratorConfig::Clear() {
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<E4StateGeneratorConfig*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  ZR_(e0_, a0_);
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool E4StateGeneratorConfig::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:pb.E4StateGeneratorConfig)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required double E0 = 1;
+      case 1: {
+        if (tag == 9) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &e0_)));
+          set_has_e0();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(17)) goto parse_phi0;
+        break;
+      }
+
+      // required double phi0 = 2;
+      case 2: {
+        if (tag == 17) {
+         parse_phi0:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &phi0_)));
+          set_has_phi0();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(25)) goto parse_A0;
+        break;
+      }
+
+      // required double A0 = 3;
+      case 3: {
+        if (tag == 25) {
+         parse_A0:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &a0_)));
+          set_has_a0();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:pb.E4StateGeneratorConfig)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:pb.E4StateGeneratorConfig)
+  return false;
+#undef DO_
+}
+
+void E4StateGeneratorConfig::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:pb.E4StateGeneratorConfig)
+  // required double E0 = 1;
+  if (has_e0()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(1, this->e0(), output);
+  }
+
+  // required double phi0 = 2;
+  if (has_phi0()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->phi0(), output);
+  }
+
+  // required double A0 = 3;
+  if (has_a0()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->a0(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:pb.E4StateGeneratorConfig)
+}
+
+::google::protobuf::uint8* E4StateGeneratorConfig::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:pb.E4StateGeneratorConfig)
+  // required double E0 = 1;
+  if (has_e0()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(1, this->e0(), target);
+  }
+
+  // required double phi0 = 2;
+  if (has_phi0()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(2, this->phi0(), target);
+  }
+
+  // required double A0 = 3;
+  if (has_a0()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->a0(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:pb.E4StateGeneratorConfig)
+  return target;
+}
+
+int E4StateGeneratorConfig::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required double E0 = 1;
+    if (has_e0()) {
+      total_size += 1 + 8;
+    }
+
+    // required double phi0 = 2;
+    if (has_phi0()) {
+      total_size += 1 + 8;
+    }
+
+    // required double A0 = 3;
+    if (has_a0()) {
+      total_size += 1 + 8;
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void E4StateGeneratorConfig::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const E4StateGeneratorConfig* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const E4StateGeneratorConfig*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void E4StateGeneratorConfig::MergeFrom(const E4StateGeneratorConfig& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_e0()) {
+      set_e0(from.e0());
+    }
+    if (from.has_phi0()) {
+      set_phi0(from.phi0());
+    }
+    if (from.has_a0()) {
+      set_a0(from.a0());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void E4StateGeneratorConfig::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void E4StateGeneratorConfig::CopyFrom(const E4StateGeneratorConfig& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool E4StateGeneratorConfig::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
+
+  return true;
+}
+
+void E4StateGeneratorConfig::Swap(E4StateGeneratorConfig* other) {
+  if (other != this) {
+    std::swap(e0_, other->e0_);
+    std::swap(phi0_, other->phi0_);
+    std::swap(a0_, other->a0_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata E4StateGeneratorConfig::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = E4StateGeneratorConfig_descriptor_;
+  metadata.reflection = E4StateGeneratorConfig_reflection_;
   return metadata;
 }
 

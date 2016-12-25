@@ -90,8 +90,7 @@ private:
 	E4State* state;
 	E4Config* config;
 
-	Gtk::Entry *entry_e, *entry_phi, *entry_a0;
-	Gtk::Button *button_apply;
+	AbstractConfigWidget cfg_widget;
 
 public:
 	E4StateGeneratorWidget(const E4Config* config);
@@ -102,8 +101,7 @@ public:
 	virtual void newState(bool emit=true);
 
 private:
-	void edit_anything_cb();
-	void on_apply_cb();
+	void on_changed();
 };
 
 class EXPetscSolverConfigWidget: public OdeSolverConfigWidget{
