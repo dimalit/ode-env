@@ -7,27 +7,27 @@
 
 #include "gui_factories.h"
 
-OdeProblemWidgetType::OdeProblemWidgetType(OdeProblem* corresponding_instance_factory){
-	this->corresponding_instance_factory = corresponding_instance_factory;
-	OdeInstanceWidgetFactoryManager::getInstance()->add(this);
+OdeProblemWidgetType::OdeProblemWidgetType(Problem* corresponding_problem){
+	this->corresponding_problem = corresponding_problem;
+	OdeInstanceWidgetManager::getInstance()->add(this);
 }
 OdeProblemWidgetType::~OdeProblemWidgetType(){
-	OdeInstanceWidgetFactoryManager::getInstance()->remove(this);
+	OdeInstanceWidgetManager::getInstance()->remove(this);
 }
 
-OdeSolverConfigWidgetType::OdeSolverConfigWidgetType(OdeSolverFactory* corresponding_solver_factory){
-	this->corresponding_solver_factory = corresponding_solver_factory;
-	OdeSolverConfigWidgetFactoryManager::getInstance()->add(this);
+OdeSolverConfigWidgetType::OdeSolverConfigWidgetType(SolverType* corresponding_solver_type){
+	this->corresponding_solver_type = corresponding_solver_type;
+	OdeSolverConfigWidgetManager::getInstance()->add(this);
 }
 OdeSolverConfigWidgetType::~OdeSolverConfigWidgetType(){
-	OdeSolverConfigWidgetFactoryManager::getInstance()->remove(this);
+	OdeSolverConfigWidgetManager::getInstance()->remove(this);
 }
 
-OdeAnalyzerWidgetType::OdeAnalyzerWidgetType(OdeProblem* corresponding_instance_factory){
-	this->corresponding_instance_factory = corresponding_instance_factory;
-	OdeAnalyzerWidgetFactoryManager::getInstance()->add(this);
+OdeAnalyzerWidgetType::OdeAnalyzerWidgetType(Problem* corresponding_problem){
+	this->corresponding_problem = corresponding_problem;
+	OdeAnalyzerWidgetManager::getInstance()->add(this);
 }
 OdeAnalyzerWidgetType::~OdeAnalyzerWidgetType(){
-	OdeAnalyzerWidgetFactoryManager::getInstance()->remove(this);
+	OdeAnalyzerWidgetManager::getInstance()->remove(this);
 }
 

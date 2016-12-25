@@ -23,7 +23,7 @@ class OdeSolverConfig;
 class OdeSolver;
 class OdeProblemManager;
 
-class OdeProblem{
+class Problem{
 public:
 	OdeInstance* createInstance() const;
 	virtual OdeConfig* createConfig() const = 0;
@@ -31,33 +31,33 @@ public:
 
 	virtual std::string getDisplayName() const = 0;
 protected:
-	OdeProblem();
-	virtual ~OdeProblem();
+	Problem();
+	virtual ~Problem();
 };
 
-class OdeSolverFactory{
+class SolverType{
 public:
 	virtual OdeSolver* createSolver(const OdeSolverConfig* scfg, const OdeConfig* ocfg, const OdeState* initial_state) const = 0;
 	virtual OdeSolverConfig* createSolverConfg() const = 0;
 
 	virtual std::string getDisplayName() const = 0;
-	OdeProblem* getBaseFactory() const {
-		return corresponding_instance_factory;
+	Problem* getBase() const {
+		return corresponding_problem;
 	}
 
 protected:
-	OdeSolverFactory(OdeProblem* corresponding_instance_factory);
-	virtual ~OdeSolverFactory();
-	OdeProblem* corresponding_instance_factory;
+	SolverType(Problem* corresponding_problem);
+	virtual ~SolverType();
+	Problem* corresponding_problem;
 };
 
 ////////////////////// TEMPLATES FOR DERIVED CLASSES ////////////////////////
 
 template<class C, class S>
-class TemplateInstanceFactory: public OdeProblem{
+class TemplateProblem: public Problem{
 public:
-	static TemplateInstanceFactory* getInstance(){
-		static TemplateInstanceFactory instance;
+	static TemplateProblem* getInstance(){
+		static TemplateProblem instance;
 		return &instance;
 	}
 
@@ -74,16 +74,16 @@ public:
 		return C::getDisplayName();
 	}
 
-	virtual ~TemplateInstanceFactory();
+	virtual ~TemplateProblem();
 private:
 	// TODO: write: when this is created it calls parent ctor which calls add(this) - and this fails because getName() isn't here yet (object partially constructed!)
-	TemplateInstanceFactory();
+	TemplateProblem();
 };
 
 template<class IF, class SOLVER>
-class TemplateSolverFactory: public OdeSolverFactory{
+class TemplateSolverType: public SolverType{
 public:
-	static TemplateSolverFactory* getInstance(){
+	static TemplateSolverType* getInstance(){
 		return &instance;
 	}
 
@@ -104,26 +104,26 @@ public:
 		return SOLVER::getDisplayName();
 	}
 private:
-	static TemplateSolverFactory instance;
-	TemplateSolverFactory():OdeSolverFactory(IF::getInstance()){
+	static TemplateSolverType instance;
+	TemplateSolverType():SolverType(IF::getInstance()){
 	}
 };
 
 template<class IF, class SOLVER>
-TemplateSolverFactory<IF, SOLVER> TemplateSolverFactory<IF, SOLVER>::instance;
+TemplateSolverType<IF, SOLVER> TemplateSolverType<IF, SOLVER>::instance;
 
-//////////////////////////// FACTORY MANAGERS ///////////////////////////////
+//////////////////////////// TYPE MANAGERS ///////////////////////////////
 class OdeProblemManager{
-	typedef std::map<std::string, OdeProblem*> name_to_inst_map;
+	typedef std::map<std::string, Problem*> name_to_inst_map;
 public:
 	static OdeProblemManager* getInstance(){
 		static OdeProblemManager instance;
 		return &instance;
 	}
-	void add(OdeProblem* f);
-	void remove(OdeProblem* f);
+	void add(Problem* f);
+	void remove(Problem* f);
 	std::vector<std::string> getProblemNames() const;
-	OdeProblem* getProblem(const std::string& name);
+	Problem* getProblem(const std::string& name);
 
 private:
 
@@ -142,10 +142,10 @@ public:
 	}
 	void add(AuxType* xfact){
 		// TODO: think about this const
-		aux_map.insert(std::make_pair(xfact->getBaseFactory(), xfact));
+		aux_map.insert(std::make_pair(xfact->getBase(), xfact));
 	}
 	void remove(AuxType* f){
-		const ProblemType* ifact = f->getBaseFactory();
+		const ProblemType* ifact = f->getBase();
 		typename inst_to_aux_map::iterator ilow = aux_map.lower_bound(ifact);
 		typename inst_to_aux_map::iterator ihi = aux_map.upper_bound(ifact);
 			assert(ilow!=aux_map.end());
@@ -218,24 +218,24 @@ private:
 /////////////////////////////// IMPLEMENTATIONS /////////////////////////////
 
 template<class C, class S>
-TemplateInstanceFactory<C, S>::TemplateInstanceFactory(){
+TemplateProblem<C, S>::TemplateProblem(){
 	OdeProblemManager::getInstance()->add(this);
 }
 
 template<class C, class S>
-TemplateInstanceFactory<C, S>::~TemplateInstanceFactory(){
+TemplateProblem<C, S>::~TemplateProblem(){
 	OdeProblemManager::getInstance()->remove(this);
 }
 
-typedef AuxTypeManager<OdeSolverFactory, OdeProblem> OdeSolverFactoryManager;
-template class AuxTypeManager<OdeSolverFactory, OdeProblem>;
+typedef AuxTypeManager<SolverType, Problem> OdeSolverTypeManager;
+template class AuxTypeManager<SolverType, Problem>;
 
 // TODO: investigate if I could move ctor of AuxFactoryManaget into cpp-file
 
 #define REGISTER_INSTANCE_CLASS(C, S) \
-template class TemplateInstanceFactory<C, S>;
+template class TemplateProblem<C, S>;
 
 #define REGISTER_SOLVER_CLASS(SOLVER) \
-template class TemplateSolverFactory<TemplateInstanceFactory<SOLVER::PConfig, SOLVER::State>, SOLVER>;
+template class TemplateSolverType<TemplateProblem<SOLVER::PConfig, SOLVER::State>, SOLVER>;
 
 #endif /* CORE_FACTORIES_H_ */

@@ -49,9 +49,9 @@ HelloWorld::HelloWorld()
 
   vbox.pack_end(button_box, false, false);
 
-  OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
+  Problem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
 
-  OdeProblemWidgetType* inst_widget_fact = *OdeInstanceWidgetFactoryManager::getInstance()->getTypesFor(inst_fact).first;
+  OdeProblemWidgetType* inst_widget_fact = *OdeInstanceWidgetManager::getInstance()->getTypesFor(inst_fact).first;
   this->config_widget = inst_widget_fact->createConfigWidget();
   vbox.pack_start(*this->config_widget, false, false, 0);
 
@@ -59,8 +59,8 @@ HelloWorld::HelloWorld()
   this->generator_widget = inst_widget_fact->createStateGeneratorWidget(this->config_widget->getConfig());
   vbox.pack_start(*this->generator_widget, false, false);
 
-  OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getTypesFor(inst_fact).first;
-  this->solver_config_widget = OdeSolverConfigWidgetFactoryManager::getInstance()->getTypesFor(solver_fact).first->createConfigWidget();
+  SolverType* solver_fact = *OdeSolverTypeManager::getInstance()->getTypesFor(inst_fact).first;
+  this->solver_config_widget = OdeSolverConfigWidgetManager::getInstance()->getTypesFor(solver_fact).first->createConfigWidget();
   vbox.pack_start(*this->solver_config_widget, false, false, 0);
 
   state = this->generator_widget->getState();
@@ -93,7 +93,7 @@ HelloWorld::HelloWorld()
   win_analyzers.add(*vb);
   win_analyzers.set_title(inst_widget_fact->getDisplayName() + " analyzers");
 
-  OdeAnalyzerWidgetType* analyzer_fact = *OdeAnalyzerWidgetFactoryManager::getInstance()->getTypesFor(inst_fact).first;
+  OdeAnalyzerWidgetType* analyzer_fact = *OdeAnalyzerWidgetManager::getInstance()->getTypesFor(inst_fact).first;
   this->analyzer_widget = analyzer_fact->createAnalyzerWidget(config_widget->getConfig());
   this->analyzer_widget->processState(state, d_state, 0.0);
   vb->pack_start(*analyzer_widget, false, false);
@@ -297,7 +297,7 @@ void HelloWorld::run_computing(bool use_step){
   const OdeConfig* config = extract_config();
   const OdeSolverConfig* solver_config = extract_solver_config();
 
-  OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem(problem_name);
+  Problem* inst_fact = OdeProblemManager::getInstance()->getProblem(problem_name);
 
   bool use_max_steps = radio_steps->get_active();
   steps = atoi(entry_steps->get_text().c_str());
@@ -308,7 +308,7 @@ void HelloWorld::run_computing(bool use_step){
   else
 	  steps = 1000000000;
 
-  solver = OdeSolverFactoryManager::getInstance()->getTypesFor(inst_fact).first->createSolver(solver_config, config, state);
+  solver = OdeSolverTypeManager::getInstance()->getTypesFor(inst_fact).first->createSolver(solver_config, config, state);
 
   run_thread = new RunThread(solver);
   run_thread->getSignalFinished().connect(sigc::mem_fun(*this, &HelloWorld::run_finished_cb));

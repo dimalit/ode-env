@@ -15,61 +15,61 @@
 
 class OdeProblemWidgetType{
 public:
-	OdeProblemWidgetType(OdeProblem* corresponding_instance_factory);
+	OdeProblemWidgetType(Problem* corresponding_problem);
 	virtual ~OdeProblemWidgetType();
 	virtual OdeConfigWidget* createConfigWidget(const OdeConfig* = NULL) const = 0;
 	virtual OdeStateGeneratorWidget* createStateGeneratorWidget(const OdeConfig* cfg) const = 0;
 
 	virtual std::string getDisplayName() const = 0;
 
-	OdeProblem* getBaseFactory() const {
-		return corresponding_instance_factory;
+	Problem* getBase() const {
+		return corresponding_problem;
 	}
 private:
-	OdeProblem* corresponding_instance_factory;
+	Problem* corresponding_problem;
 };
 
 class OdeSolverConfigWidgetType{
 public:
-	OdeSolverConfigWidgetType(OdeSolverFactory* corresponding_solver_factory);
+	OdeSolverConfigWidgetType(SolverType* corresponding_solver_type);
 	virtual ~OdeSolverConfigWidgetType();
 	virtual OdeSolverConfigWidget* createConfigWidget(const OdeSolverConfig* = NULL) const = 0;
 
 	virtual std::string getDisplayName() const = 0;
 
-	OdeSolverFactory* getBaseFactory() const {
-		return corresponding_solver_factory;
+	SolverType* getBase() const {
+		return corresponding_solver_type;
 	}
 private:
-	OdeSolverFactory* corresponding_solver_factory;
+	SolverType* corresponding_solver_type;
 };
 
 class OdeAnalyzerWidgetType{
 public:
-	OdeAnalyzerWidgetType(OdeProblem* corresponding_instance_factory);
+	OdeAnalyzerWidgetType(Problem* corresponding_problem);
 	virtual ~OdeAnalyzerWidgetType();
 	virtual OdeAnalyzerWidget* createAnalyzerWidget(const OdeConfig* = NULL) const = 0;
 
 	virtual std::string getDisplayName() const = 0;
 
-	OdeProblem* getBaseFactory() const {
-		return corresponding_instance_factory;
+	Problem* getBase() const {
+		return corresponding_problem;
 	}
 private:
-	OdeProblem* corresponding_instance_factory;
+	Problem* corresponding_problem;
 };
 
-typedef AuxTypeManager<OdeProblemWidgetType, OdeProblem> OdeInstanceWidgetFactoryManager;
-template class AuxTypeManager<OdeProblemWidgetType, OdeProblem>;
-typedef AuxTypeManager<OdeSolverConfigWidgetType, OdeSolverFactory> OdeSolverConfigWidgetFactoryManager;
-template class AuxTypeManager<OdeSolverConfigWidgetType, OdeSolverFactory>;
-typedef AuxTypeManager<OdeAnalyzerWidgetType, OdeProblem> OdeAnalyzerWidgetFactoryManager;
-template class AuxTypeManager<OdeAnalyzerWidgetType, OdeProblem>;
+typedef AuxTypeManager<OdeProblemWidgetType, Problem> OdeInstanceWidgetManager;
+template class AuxTypeManager<OdeProblemWidgetType, Problem>;
+typedef AuxTypeManager<OdeSolverConfigWidgetType, SolverType> OdeSolverConfigWidgetManager;
+template class AuxTypeManager<OdeSolverConfigWidgetType, SolverType>;
+typedef AuxTypeManager<OdeAnalyzerWidgetType, Problem> OdeAnalyzerWidgetManager;
+template class AuxTypeManager<OdeAnalyzerWidgetType, Problem>;
 
 ///////////////////// DEMPLATES FOR DERIVED CLASSES /////////////////////////
 
 template<class CW, class SW>
-class TemplateInstanceWidgetFactory: public OdeProblemWidgetType{
+class TemplateInstanceWidgetType: public OdeProblemWidgetType{
 public:
 	virtual OdeConfigWidget* createConfigWidget(const OdeConfig* cfg = NULL) const {
 		const typename CW::Config* ecfg = dynamic_cast<const typename CW::Config*>(cfg);
@@ -87,18 +87,18 @@ public:
 	}
 
 private:
-	static TemplateInstanceWidgetFactory instance;
-	TemplateInstanceWidgetFactory()
-		:OdeProblemWidgetType(TemplateInstanceFactory<typename CW::Config, typename SW::State>::getInstance())
+	static TemplateInstanceWidgetType instance;
+	TemplateInstanceWidgetType()
+		:OdeProblemWidgetType(TemplateProblem<typename CW::Config, typename SW::State>::getInstance())
 	{
 	}
 };
 
 template<class CW, class SW>
-TemplateInstanceWidgetFactory<CW, SW> TemplateInstanceWidgetFactory<CW, SW>::instance;
+TemplateInstanceWidgetType<CW, SW> TemplateInstanceWidgetType<CW, SW>::instance;
 
 template<class SCW>
-class TemplateSolverConfigWidgetFactory: public OdeSolverConfigWidgetType{
+class TemplateSolverConfigWidgetType: public OdeSolverConfigWidgetType{
 public:
 	virtual OdeSolverConfigWidget* createConfigWidget(const OdeSolverConfig* cfg = NULL) const {
 		const typename SCW::Solver::SConfig* ecfg = dynamic_cast<const typename SCW::Solver::SConfig*>(cfg);
@@ -111,21 +111,21 @@ public:
 	}
 
 private:
-	static TemplateSolverConfigWidgetFactory instance;
-	TemplateSolverConfigWidgetFactory()
-		:OdeSolverConfigWidgetType(TemplateSolverFactory<TemplateInstanceFactory<typename SCW::Solver::PConfig, typename SCW::Solver::State>, typename SCW::Solver>::getInstance())
+	static TemplateSolverConfigWidgetType instance;
+	TemplateSolverConfigWidgetType()
+		:OdeSolverConfigWidgetType(TemplateSolverType<TemplateProblem<typename SCW::Solver::PConfig, typename SCW::Solver::State>, typename SCW::Solver>::getInstance())
 	{
 	}
-	virtual ~TemplateSolverConfigWidgetFactory()
+	virtual ~TemplateSolverConfigWidgetType()
 	{
 	}
 };
 
 template<class SCW>
-TemplateSolverConfigWidgetFactory<SCW> TemplateSolverConfigWidgetFactory<SCW>::instance;
+TemplateSolverConfigWidgetType<SCW> TemplateSolverConfigWidgetType<SCW>::instance;
 
 template<class AW>
-class TemplateAnalyzerWidgetFactory: public OdeAnalyzerWidgetType{
+class TemplateAnalyzerWidgetType: public OdeAnalyzerWidgetType{
 public:
 	virtual OdeAnalyzerWidget* createAnalyzerWidget(const OdeConfig* cfg = NULL) const {
 		const typename AW::Config* ecfg = dynamic_cast<const typename AW::Config*>(cfg);
@@ -137,23 +137,23 @@ public:
 	}
 
 private:
-	static TemplateAnalyzerWidgetFactory instance;
-	TemplateAnalyzerWidgetFactory()
-		:OdeAnalyzerWidgetType(TemplateInstanceFactory<typename AW::Config, typename AW::State>::getInstance())
+	static TemplateAnalyzerWidgetType instance;
+	TemplateAnalyzerWidgetType()
+		:OdeAnalyzerWidgetType(TemplateProblem<typename AW::Config, typename AW::State>::getInstance())
 	{
 	}
 };
 
 template<class AW>
-TemplateAnalyzerWidgetFactory<AW> TemplateAnalyzerWidgetFactory<AW>::instance;
+TemplateAnalyzerWidgetType<AW> TemplateAnalyzerWidgetType<AW>::instance;
 
 #define REGISTER_INSTANCE_WIDGET_CLASSES(CW, SW) \
-template class TemplateInstanceWidgetFactory<CW, SW>;
+template class TemplateInstanceWidgetType<CW, SW>;
 
 #define REGISTER_SOLVER_CONFIG_WIDGET_CLASS(SCW) \
-template class TemplateSolverConfigWidgetFactory<SCW>;
+template class TemplateSolverConfigWidgetType<SCW>;
 
 #define REGISTER_ANALYZER_WIDGET_CLASS(AW) \
-template class TemplateAnalyzerWidgetFactory<AW>;
+template class TemplateAnalyzerWidgetType<AW>;
 
 #endif /* GUI_FACTORIES_H_ */

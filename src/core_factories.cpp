@@ -11,41 +11,41 @@
 
 #include <cassert>
 
-OdeProblem::OdeProblem(){
+Problem::Problem(){
 	//TODO: better it worked. but for now - moved to children...
 	//OdeProblemManager::getInstance()->add(this);
 }
 
-OdeProblem::~OdeProblem(){
+Problem::~Problem(){
 	//TODO: better it worked. but for now - moved to children...
 	//OdeProblemManager::getInstance()->remove(this);
 }
 
-OdeInstance* OdeProblem::createInstance() const {
+OdeInstance* Problem::createInstance() const {
 	OdeConfig* c = createConfig();
 	OdeState*  s = createState(c);
 	return new OdeInstance(c, s);
 }
 
-OdeSolverFactory::OdeSolverFactory(OdeProblem* corresponding_instance_factory){
-	assert(corresponding_instance_factory);
-	this->corresponding_instance_factory = corresponding_instance_factory;
+SolverType::SolverType(Problem* corresponding_problem){
+	assert(corresponding_problem);
+	this->corresponding_problem = corresponding_problem;
 
-	OdeSolverFactoryManager::getInstance()->add(this);
+	OdeSolverTypeManager::getInstance()->add(this);
 }
-OdeSolverFactory::~OdeSolverFactory(){
-	OdeSolverFactoryManager::getInstance()->remove(this);
+SolverType::~SolverType(){
+	OdeSolverTypeManager::getInstance()->remove(this);
 }
 
-///////////////////////////// FACTORY MANAGERS //////////////////////////////
+///////////////////////////// TYPE MANAGERS //////////////////////////////
 
-void OdeProblemManager::add(OdeProblem* f){
+void OdeProblemManager::add(Problem* f){
 	std::string key = f->getDisplayName();
 	assert(instance_factories.find(key)==instance_factories.end());
 	instance_factories[key] = f;
 }
 
-void OdeProblemManager::remove(OdeProblem* f){
+void OdeProblemManager::remove(Problem* f){
 	assert(instance_factories.find(f->getDisplayName())!=instance_factories.end());
 
 	// TODO: remove related solvers!
@@ -59,6 +59,6 @@ std::vector<std::string> OdeProblemManager::getProblemNames() const {
 	std::for_each(instance_factories.begin(), instance_factories.end(), [&](const name_to_inst_map::value_type& pr){v.push_back(pr.second->getDisplayName());});
 	return v;
 }
-OdeProblem* OdeProblemManager::getProblem(const std::string& name){
+Problem* OdeProblemManager::getProblem(const std::string& name){
 	return instance_factories.at(name);
 }
