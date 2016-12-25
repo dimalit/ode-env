@@ -131,21 +131,21 @@ private:
 	name_to_inst_map instance_factories;
 };
 
-template<class AuxFactory, class BaseFactory>
-class AuxFactoryManager{
+template<class AuxType, class ProblemType>
+class AuxTypeManager{
 private:
-	typedef std::multimap<const BaseFactory*, AuxFactory*> inst_to_aux_map;
+	typedef std::multimap<const ProblemType*, AuxType*> inst_to_aux_map;
 public:
-	static AuxFactoryManager* getInstance(){
-		static AuxFactoryManager instance;
+	static AuxTypeManager* getInstance(){
+		static AuxTypeManager instance;
 		return &instance;
 	}
-	void add(AuxFactory* xfact){
+	void add(AuxType* xfact){
 		// TODO: think about this const
 		aux_map.insert(std::make_pair(xfact->getBaseFactory(), xfact));
 	}
-	void remove(AuxFactory* f){
-		const BaseFactory* ifact = f->getBaseFactory();
+	void remove(AuxType* f){
+		const ProblemType* ifact = f->getBaseFactory();
 		typename inst_to_aux_map::iterator ilow = aux_map.lower_bound(ifact);
 		typename inst_to_aux_map::iterator ihi = aux_map.upper_bound(ifact);
 			assert(ilow!=aux_map.end());
@@ -156,59 +156,59 @@ public:
 		// 3 статические поля в шаблонных классах (там же)
 		// 4 for cross-table: explicit template instantiation for static members (template class MyClass<type>;)
 		// 5 Управление gnuplot через pipe'ы
-		typename inst_to_aux_map::iterator found = std::find(ilow, ihi, std::pair<const BaseFactory *const, AuxFactory*>(ifact, f));
+		typename inst_to_aux_map::iterator found = std::find(ilow, ihi, std::pair<const ProblemType *const, AuxType*>(ifact, f));
 			assert(found != aux_map.end());
 		aux_map.erase(found);
 	}
 
-	class FactoryIterator: public std::iterator<std::input_iterator_tag, BaseFactory*>{
-		friend class AuxFactoryManager;
+	class TypeIterator: public std::iterator<std::input_iterator_tag, ProblemType*>{
+		friend class AuxTypeManager;
 	public:
-		AuxFactory* operator*() const {
+		AuxType* operator*() const {
 			return iterator->second;
 		}
-		AuxFactory* operator->() const {
+		AuxType* operator->() const {
 			return iterator->second;
 		}
-		FactoryIterator& operator++(){				// prefix
+		TypeIterator& operator++(){				// prefix
 			++iterator;
 			return *this;
 		}
-		FactoryIterator operator++(int){			// postfix
-			FactoryIterator tmp = *this;
+		TypeIterator operator++(int){			// postfix
+			TypeIterator tmp = *this;
 			++iterator;
 			return tmp;
 		}
-		bool operator==(const FactoryIterator& rhs) const {
+		bool operator==(const TypeIterator& rhs) const {
 			return iterator == rhs.iterator;
 		}
-		bool operator!=(const FactoryIterator& rhs) const {
+		bool operator!=(const TypeIterator& rhs) const {
 			return iterator != rhs.iterator;
 		}
 
 	private:		// friend interface
-		FactoryIterator(typename AuxFactoryManager::inst_to_aux_map::const_iterator it)
+		TypeIterator(typename AuxTypeManager::inst_to_aux_map::const_iterator it)
 			:iterator(it)
 		{
 		}
 
 	private:		// implementation
-		typename AuxFactoryManager::inst_to_aux_map::const_iterator iterator;
+		typename AuxTypeManager::inst_to_aux_map::const_iterator iterator;
 	};
 
-	std::pair< FactoryIterator, FactoryIterator > getFactoriesFor(const BaseFactory* f) const {
+	std::pair< TypeIterator, TypeIterator > getTypesFor(const ProblemType* f) const {
 		auto range_to_return = aux_map.equal_range(f);
-		FactoryIterator begin( range_to_return.first );
-		FactoryIterator end( range_to_return.second );
+		TypeIterator begin( range_to_return.first );
+		TypeIterator end( range_to_return.second );
 		return std::make_pair(begin, end);
 	}
 
-	FactoryIterator begin(){
-		return FactoryIterator(aux_map.begin());
+	TypeIterator begin(){
+		return TypeIterator(aux_map.begin());
 	}
 
-	FactoryIterator end(){
-		return FactoryIterator(aux_map.end());
+	TypeIterator end(){
+		return TypeIterator(aux_map.end());
 	}
 
 private:
@@ -227,8 +227,8 @@ TemplateInstanceFactory<C, S>::~TemplateInstanceFactory(){
 	OdeProblemManager::getInstance()->remove(this);
 }
 
-typedef AuxFactoryManager<OdeSolverFactory, OdeProblem> OdeSolverFactoryManager;
-template class AuxFactoryManager<OdeSolverFactory, OdeProblem>;
+typedef AuxTypeManager<OdeSolverFactory, OdeProblem> OdeSolverFactoryManager;
+template class AuxTypeManager<OdeSolverFactory, OdeProblem>;
 
 // TODO: investigate if I could move ctor of AuxFactoryManaget into cpp-file
 

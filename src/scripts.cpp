@@ -41,7 +41,7 @@ void exp_6_images(){
 	string problem_name = "model e3";
 
 	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
-	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
+	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getTypesFor(inst_fact).first;
 
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
 		pcfg->set_theta_e(0.0);
@@ -190,7 +190,7 @@ void exp_random_init_R3(){
 	string problem_name = "model e3";
 
 	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
-	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
+	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getTypesFor(inst_fact).first;
 
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
 		pcfg->set_theta_e(0.0);
@@ -281,7 +281,7 @@ void exp_gamma2e(){
 	string problem_name = "model e3";
 
 	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
-	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
+	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getTypesFor(inst_fact).first;
 
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
 		pcfg->set_theta_e(0.0);
@@ -413,7 +413,7 @@ void exp_r2e(){
 	string problem_name = "model e3";
 
 	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
-	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
+	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getTypesFor(inst_fact).first;
 
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
 		pcfg->set_theta_e(0.0);
@@ -579,7 +579,7 @@ void as_in_book(){
 	string problem_name = "model e3";
 
 	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
-	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
+	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getTypesFor(inst_fact).first;
 
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
 		pcfg->set_theta_e(0.0);
@@ -743,7 +743,7 @@ void exp_4_gyro(){
 	string problem_name = "model e3";
 
 	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
-	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
+	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getTypesFor(inst_fact).first;
 
 	E3Config* pcfg = dynamic_cast<E3Config*>(inst_fact->createConfig());
 		pcfg->set_m(1000);
@@ -916,7 +916,7 @@ void exp_ts4_super_emission(){
 	string problem_name = "model e4";
 
 	OdeProblem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
-	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getFactoriesFor(inst_fact).first;
+	OdeSolverFactory* solver_fact = *OdeSolverFactoryManager::getInstance()->getTypesFor(inst_fact).first;
 
 	E4Config* pcfg = dynamic_cast<E4Config*>(inst_fact->createConfig());
 		pcfg->set_n(1000);
