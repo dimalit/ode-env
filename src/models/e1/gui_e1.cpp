@@ -13,9 +13,9 @@
 
 #include <string>
 
-#define UI_FILE_CONF "e1_config.glade"
-#define UI_FILE_STATE "e1_state.glade"
-#define UI_FILE_PETSC_SOLVER "e1_petsc_solver.glade"
+#define UI_FILE_CONF "src/models/e1/e1_config.glade"
+#define UI_FILE_STATE "src/models/e1/e1_state.glade"
+#define UI_FILE_PETSC_SOLVER "src/models/e1/e1_petsc_solver.glade"
 
 E1ConfigWidget::E1ConfigWidget(const E1Config* cfg){
 	if(cfg)

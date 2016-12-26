@@ -7,11 +7,12 @@
 
 #include "model_e2.h"
 
+#include <rpc.h>
+
 #include <iostream>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include "rpc.h"
 
 E2State::E2State(const E2Config* config){
 	int n = config->n();

@@ -5,8 +5,9 @@
  *      Author: dimalit
  */
 
-#include "model_e3.h"
-#include "model_e4.h"
+#include "models/e3/model_e3.h"
+#include "models/e4/model_e4.h"
+
 #include "Gnuplot.h"
 #include "ChartAnalyzer.h"
 #include "MaxDetector.h"

@@ -8,9 +8,10 @@
 #ifndef MODEL_E1_H_
 #define MODEL_E1_H_
 
-#include "core_interfaces.h"
-#include "core_factories.h"
+#include <core_interfaces.h>
+#include <core_factories.h>
 
+#include <cstdlib>
 #include <vector>
 #include <string>
 #include <cassert>

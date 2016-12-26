@@ -5,63 +5,85 @@
  *      Author: dimalit
  */
 
-#include "model_e4.h"
+#include "model_e3.h"
 
 #include <sstream>
+
+#include <rpc.h>
 
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include "rpc.h"
 
-// XXX: whis should read like E4...if we use more than 1 specialization?
-template<class SC, class PC, class S>
-const char* EXPetscSolver<SC, PC, S>::ts_path = " ../ts4/Debug/ts4";
+void parse_with_prefix(google::protobuf::Message& msg, FILE* fp){
+	int size;
+	int ok = fread(&size, sizeof(size), 1, fp);
+	assert(ok == 1);
 
-E4Config::E4Config(){
-	set_n(1000);
-	set_delta_0(0);
+	//TODO:without buffer cannot read later bytes
+	char *buf = (char*)malloc(size);
+	ok = fread(buf, 1, size, fp);
+		assert(ok==size);
+	msg.ParseFromArray(buf, size);
+	free(buf);
 }
 
-E4State::E4State(){
+E3Config::E3Config(){
+	set_m(1000);
+	set_n(1.0);
+	set_theta_e(0);
+	set_gamma_0_2(0.0);
+	set_delta_e(0);
+	set_r_e(0.0);
+	set_alpha(0.0);
+}
+
+E3State::E3State(){
 	set_e(0.001);
 	set_phi(0.0);
+	set_simulated(false);
 }
 
-E4State::E4State(const E4Config* config){
-	int N = config->n();
-	for(int i=0; i<N; i++){
+E3State::E3State(const E3Config* config){
+	int m = config->m();
+	for(int i=0; i<m; i++){
 		this->add_particles();
 		this->mutable_particles(i)->set_a(1);
-		this->mutable_particles(i)->set_psi(0.0);
-		this->mutable_particles(i)->set_z(0.0);
-		this->mutable_particles(i)->set_delta(0.0);
+		this->mutable_particles(i)->set_ksi(0.0);
 	}
 	set_e(0.001);
 	set_phi(0.0);
+	set_simulated(false);
 }
 
-EXPetscSolverConfig::EXPetscSolverConfig(){
+E3PetscSolverConfig::E3PetscSolverConfig(){
 	set_atol(1e-6);
 	set_rtol(1e-6);
 	set_init_step(0.01);
+	set_solver(E3PetscSolverConfig::rhs);
+	set_model("tm");
 	set_n_cores(1);
 }
 
-template<class SC, class PC, class S>
-EXPetscSolver<SC,PC,S>::EXPetscSolver(const SConfig* scfg, const PConfig* pcfg, const State* init_state){
+E3PetscSolver::E3PetscSolver(const E3PetscSolverConfig* scfg, const E3Config* pcfg, const E3State* init_state){
 	time_passed = 0;
 	steps_passed = 0;
 
-	pconfig = new PConfig(*pcfg);
-	sconfig = new SConfig(*scfg);
-	state = new State(*init_state);
-	d_state = new State();
+	pconfig = new E3Config(*pcfg);
+	sconfig = new E3PetscSolverConfig(*scfg);
+	state = new E3State(*init_state);
+	d_state = new E3State();
 }
 
-template<class SC, class PC, class S>
-EXPetscSolver<SC,PC,S>::~EXPetscSolver(){
+double E3PetscSolver::getTime() const {
+	return time_passed;
+}
+double E3PetscSolver::getSteps() const {
+	return steps_passed;
+}
+
+E3PetscSolver::~E3PetscSolver(){
 	if(wf){
 		fputc('f', wf);
 		fflush(wf);
@@ -73,8 +95,7 @@ EXPetscSolver<SC,PC,S>::~EXPetscSolver(){
 
 // TODO: create universal base class for PETSc solvers - so not to copypaste!
 // TODO: 1 universal code from TS solving?! (not to write it again and again!?)
-template<class SC, class PC, class S>
-void EXPetscSolver<SC,PC,S>::run(int steps, double time, bool use_step){
+void E3PetscSolver::run(int steps, double time, bool use_step){
 //	printf("run started\n");
 //	fflush(stdout);
 
@@ -87,7 +108,7 @@ void EXPetscSolver<SC,PC,S>::run(int steps, double time, bool use_step){
 	std::ostringstream cmd_stream;
 //	cmd_stream << "mpiexec -n "<< n_cores << " --host 192.168.0.101 ./Debug/ts3";
 //	cmd_stream << "mpiexec -n "<< n_cores << " --host 10.0.0.205 /home/dimalit/workspace/ts3/Debug/ts3";
-	cmd_stream << "mpiexec -n "<< n_cores << ts_path;// << " -info info.log";
+	cmd_stream << "mpiexec -n "<< n_cores << " ../ts3/Debug/ts3";// << " -info info.log";
 
 	std::string cmd = cmd_stream.str();
 	if(use_step)
@@ -100,7 +121,7 @@ void EXPetscSolver<SC,PC,S>::run(int steps, double time, bool use_step){
 //	int tmp = open("tmp", O_WRONLY | O_CREAT, 0664);
 //	state->PrintDebugString();
 
-	pb::E4Model all;
+	pb::E3Model all;
 	all.mutable_sconfig()->CopyFrom(*sconfig);
 	all.mutable_pconfig()->CopyFrom(*pconfig);
 	all.mutable_state()->CopyFrom(*state);
@@ -129,8 +150,7 @@ void EXPetscSolver<SC,PC,S>::run(int steps, double time, bool use_step){
 	}
 }
 
-template<class SC, class PC, class S>
-bool EXPetscSolver<SC,PC,S>::step(){
+bool E3PetscSolver::step(){
 	if(waitpid(child, 0, WNOHANG)!=0){
 		fclose(rf); rf = NULL;
 		fclose(wf); wf = NULL;
@@ -150,8 +170,7 @@ bool EXPetscSolver<SC,PC,S>::step(){
 	return true;
 }
 
-template<class SC, class PC, class S>
-bool EXPetscSolver<SC,PC,S>::read_results(){
+bool E3PetscSolver::read_results(){
 	int ok;
 	ok = fread(&steps_passed, sizeof(steps_passed), 1, rf);
 	// TODO: read=0 no longer works with mpiexec (process isn't zombie)
@@ -165,9 +184,10 @@ bool EXPetscSolver<SC,PC,S>::read_results(){
 //	printf("%d %lf %s\n", steps_passed, time_passed, sconfig->model().c_str());
 //	fflush(stdout);
 
-	pb::E4Solution sol;
-	extern void parse_with_prefix(google::protobuf::Message& msg, FILE* fp);
+	pb::E3Solution sol;
 	parse_with_prefix(sol, rf);
+	sol.mutable_state()->set_simulated(true);
+	sol.mutable_d_state()->set_simulated(true);
 
 //	sol.state().PrintDebugString();
 //	fflush(stdout);
@@ -177,8 +197,7 @@ bool EXPetscSolver<SC,PC,S>::read_results(){
 	return true;
 }
 
-template<class SC, class PC, class S>
-void EXPetscSolver<SC,PC,S>::finish(){
+void E3PetscSolver::finish(){
 	fputc('f', wf);
 	fflush(wf);
 }

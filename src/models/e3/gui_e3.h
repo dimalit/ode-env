@@ -8,13 +8,14 @@
 #ifndef GUI_E3_H_
 #define GUI_E3_H_
 
-#include "gui_factories.h"
 #include "model_e3.h"
 
-#include "gtkmm/entry.h"
-#include "gtkmm/radiobutton.h"
-#include "gtkmm/comboboxtext.h"
-#include "gtkmm/adjustment.h"
+#include <gui_factories.h>
+
+#include <gtkmm/entry.h>
+#include <gtkmm/radiobutton.h>
+#include <gtkmm/comboboxtext.h>
+#include <gtkmm/adjustment.h>
 
 #include <cassert>
 #include <iostream>

@@ -9,7 +9,8 @@
 #define ANALYZERS_E2_H_
 
 #include "model_e2.h"
-#include "gui_factories.h"
+
+#include <gui_factories.h>
 
 class E2FieldAnalyzer: public OdeAnalyzerWidget{
 public:

@@ -8,9 +8,9 @@
 #ifndef MODEL_E2_H_
 #define MODEL_E2_H_
 
-#include "core_interfaces.h"
-#include "core_factories.h"
-#include "../from_protoc/model_e2.pb.h"
+#include <core_interfaces.h>
+#include <core_factories.h>
+#include <../from_protoc/model_e2.pb.h>
 
 class E2Config: public pb::E2Config, public OdeConfig{
 public:

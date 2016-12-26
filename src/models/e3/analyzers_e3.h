@@ -9,7 +9,8 @@
 #define ANALYZERS_E3_H_
 
 #include "model_e3.h"
-#include "gui_factories.h"
+
+#include <gui_factories.h>
 
 #include "gtkmm/entry.h"
 #include "gtkmm/treeview.h"

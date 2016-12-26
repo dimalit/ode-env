@@ -8,8 +8,9 @@
 #ifndef GUI_E4_H_
 #define GUI_E4_H_
 
-#include "gui_factories.h"
 #include "model_e4.h"
+
+#include <gui_factories.h>
 
 #include <google/protobuf/message.h>
 

@@ -9,12 +9,13 @@
 #define ANALYZERS_E4_H_
 
 #include "model_e4.h"
-#include "gui_factories.h"
 
-#include "gtkmm/entry.h"
-#include "gtkmm/treeview.h"
-#include "gtkmm/liststore.h"
-#include "gtkmm/builder.h"
+#include <gui_factories.h>
+
+#include <gtkmm/entry.h>
+#include <gtkmm/treeview.h>
+#include <gtkmm/liststore.h>
+#include <gtkmm/builder.h>
 
 class E4ConservationAnalyzer: public OdeAnalyzerWidget{
 public:

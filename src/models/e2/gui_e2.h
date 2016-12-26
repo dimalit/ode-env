@@ -8,12 +8,13 @@
 #ifndef GUI_E2_H_
 #define GUI_E2_H_
 
-#include "gui_factories.h"
 #include "model_e2.h"
 
-#include "gtkmm/entry.h"
-#include "gtkmm/checkbutton.h"
-#include "gtkmm/socket.h"
+#include <gui_factories.h>
+
+#include <gtkmm/entry.h>
+#include <gtkmm/checkbutton.h>
+#include <gtkmm/socket.h>
 
 #include <cassert>
 #include <iostream>

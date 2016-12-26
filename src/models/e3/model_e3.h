@@ -8,9 +8,9 @@
 #ifndef MODEL_E3_H_
 #define MODEL_E3_H_
 
-#include "core_interfaces.h"
-#include "core_factories.h"
-#include "../from_protoc/model_e3.pb.h"
+#include <core_interfaces.h>
+#include <core_factories.h>
+#include <../from_protoc/model_e3.pb.h>
 
 class E3Config: public pb::E3Config, public OdeConfig{
 public:

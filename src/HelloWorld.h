@@ -1,8 +1,8 @@
 #ifndef GTKMM_EXAMPLE_HELLOWORLD_H
 #define GTKMM_EXAMPLE_HELLOWORLD_H
 
-#include "gui_e1.h"
-#include "gui_e3.h"
+#include "models/e1/gui_e1.h"
+#include "models/e3/gui_e3.h"
 #include "ChartAnalyzer.h"
 #include "RunThread.h"
 

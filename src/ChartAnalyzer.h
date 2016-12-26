@@ -10,7 +10,6 @@
 
 #include "gui_interfaces.h"
 #include "Gnuplot.h"
-#include "model_e3.h"
 
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
@@ -18,9 +17,6 @@
 #include <vector>
 
 class ChartAnalyzer: public OdeAnalyzerWidget {
-public:
-	typedef E3Config Config;
-	typedef E3State State;
 private:
 	std::vector<Gnuplot*> plots;
 	std::vector<bool> plot_special_flags;

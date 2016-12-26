@@ -10,8 +10,8 @@
 #include <gtkmm/builder.h>
 #include <gtkmm/table.h>
 
-#define UI_FILE_STATE "e4_state.glade"
-#define UI_FILE_PETSC_SOLVER "e4_petsc_solver.glade"
+#define UI_FILE_STATE "src/models/e4/e4_state.glade"
+#define UI_FILE_PETSC_SOLVER "src/models/e4/e4_petsc_solver.glade"
 
 AbstractConfigWidget::AbstractConfigWidget(Message *msg){
 	this->data = msg;

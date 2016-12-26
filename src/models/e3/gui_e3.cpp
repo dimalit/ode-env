@@ -10,9 +10,9 @@
 #include <gtkmm/builder.h>
 #include <gtkmm/table.h>
 
-#define UI_FILE_CONF "e3_config.glade"
-#define UI_FILE_STATE "e3_state.glade"
-#define UI_FILE_PETSC_SOLVER "e3_petsc_solver.glade"
+#define UI_FILE_CONF "src/models/e3/e3_config.glade"
+#define UI_FILE_STATE "src/models/e3/e3_state.glade"
+#define UI_FILE_PETSC_SOLVER "src/models/e3/e3_petsc_solver.glade"
 
 E3ConfigWidget::E3ConfigWidget(const E3Config* cfg){
 	if(cfg)

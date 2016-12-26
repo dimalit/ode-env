@@ -1,5 +1,5 @@
 #include "HelloWorld2.h"
-#include "model_e1.h"
+#include "models/e1/model_e1.h"
 
 #include <goffice/goffice.h>
 #include <gtkmm/main.h>

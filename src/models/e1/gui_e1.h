@@ -8,9 +8,9 @@
 #ifndef GUI_E1_H_
 #define GUI_E1_H_
 
-#include "gui_factories.h"
-
 #include "model_e1.h"
+
+#include <gui_factories.h>
 
 #include <gtkmm/entry.h>
 #include <gtkmm/checkbutton.h>

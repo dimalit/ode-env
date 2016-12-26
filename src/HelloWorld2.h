@@ -1,7 +1,7 @@
 #ifndef GTKMM_EXAMPLE_HELLOWORLD2_H
 #define GTKMM_EXAMPLE_HELLOWORLD2_H
 
-#include "gui_e4.h"
+#include "models/e4/gui_e4.h"
 #include "ChartAnalyzer.h"
 #include "RunThread.h"
 

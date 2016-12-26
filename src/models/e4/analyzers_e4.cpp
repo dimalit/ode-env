@@ -9,7 +9,7 @@
 
 #include <cassert>
 
-#define UI_FILE "e4_conservation.glade"
+#define UI_FILE "src/models/e4/e4_conservation.glade"
 
 // TODO: make Gnuplotting" functionality apart and use it to draw energy chars!
 E4ConservationAnalyzer::E4ConservationAnalyzer(const E4Config* config){
