@@ -37,7 +37,7 @@ public:
 	}
 };
 
-class E4PetscSolver: public EXPetscSolver<EXPetscSolverConfig,E4Config,E4State>{
+class E4PetscSolver: public EXPetscSolver{
 public:
 	typedef EXPetscSolverConfig SConfig;
 	typedef E4Config PConfig;
