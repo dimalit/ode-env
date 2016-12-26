@@ -60,10 +60,11 @@ private:
 	void on_apply_cb();
 };
 
+template<class C>
 class EXConfigWidget: public OdeConfigWidget{
 //!!! TODO: remove this - in gui_interfaces
 public:
-	typedef E4Config Config;
+	typedef C Config;
 private:
 	OdeConfig* config;
 
@@ -76,7 +77,7 @@ public:
 	virtual void loadConfig(const OdeConfig* cfg);
 
 	static std::string getDisplayName(){
-		return "GTK+ widgets for E4";
+		return "GTK+ widgets for EX";
 	}
 
 private:
@@ -127,8 +128,8 @@ private:
 };
 
 /////////////////////////////////////////////////////////////////////
-
-REGISTER_INSTANCE_WIDGET_CLASSES(EXConfigWidget, E4StateGeneratorWidget)
+typedef EXConfigWidget<E4Config> E4ConfigWidget;
+REGISTER_INSTANCE_WIDGET_CLASSES(E4ConfigWidget, E4StateGeneratorWidget)
 REGISTER_SOLVER_CONFIG_WIDGET_CLASS(EXPetscSolverConfigWidget)
 
 #endif /* GUI_E4_H_ */

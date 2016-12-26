@@ -174,7 +174,8 @@ void AbstractConfigWidget::on_apply_cb(){
 
 ///////////////////////////////////////////////////////////////////////////////
 
-EXConfigWidget::EXConfigWidget(const OdeConfig* cfg){
+template<class C>
+EXConfigWidget<C>::EXConfigWidget(const OdeConfig* cfg){
 	this->add(cfg_widget);
 
 	if(!cfg)
@@ -186,11 +187,13 @@ EXConfigWidget::EXConfigWidget(const OdeConfig* cfg){
 	cfg_widget.signal_changed().connect(sigc::mem_fun(*this, &EXConfigWidget::on_changed));
 }
 
-void EXConfigWidget::on_changed(){
+template<class C>
+void EXConfigWidget<C>::on_changed(){
 	m_signal_changed.emit();
 }
 
-void EXConfigWidget::loadConfig(const OdeConfig* cfg){
+template<class C>
+void EXConfigWidget<C>::loadConfig(const OdeConfig* cfg){
 	if(!cfg)
 		this->config = NULL;
 	else
@@ -201,7 +204,8 @@ void EXConfigWidget::loadConfig(const OdeConfig* cfg){
 	cfg_widget.setData(msg);
 }
 
-const OdeConfig* EXConfigWidget::getConfig() const{
+template<class C>
+const OdeConfig* EXConfigWidget<C>::getConfig() const{
 	return this->config;
 }
 
