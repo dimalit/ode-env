@@ -37,6 +37,7 @@ public:
 
 class OdeSolverConfig{
 public:
+	virtual OdeSolverConfig* clone() const = 0;
 	virtual ~OdeSolverConfig(){}	// make it polymorphic
 };
 

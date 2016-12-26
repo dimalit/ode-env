@@ -37,8 +37,17 @@ public:
 	}
 };
 
+class E4PetscSolver: public EXPetscSolver<EXPetscSolverConfig,E4Config,E4State>{
+public:
+	typedef EXPetscSolverConfig SConfig;
+	typedef E4Config PConfig;
+	typedef E4State State;
+
+	E4PetscSolver(const SConfig* sc, const PConfig* pc, const State* s):
+		EXPetscSolver(sc, pc, s){}
+};
+
 REGISTER_INSTANCE_CLASS(E4Config, E4State)
-typedef EXPetscSolver<EXPetscSolverConfig,E4Config,E4State> E4PetscSolver;
 REGISTER_SOLVER_CLASS(E4PetscSolver)
 
 #endif /* MODEL_E4_H_ */

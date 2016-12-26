@@ -132,6 +132,13 @@ private:
 
 class E1PetscSolverConfig: public OdeSolverConfig{
 public:
+	virtual OdeSolverConfig* clone() const {
+		E1PetscSolverConfig* ret = new E1PetscSolverConfig();
+		ret->g_tol = this->g_tol;
+		ret->g_step = this->g_step;
+		return ret;
+	}
+
 	double g_tol;
 	double g_step;
 };

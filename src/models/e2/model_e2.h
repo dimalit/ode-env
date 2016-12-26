@@ -41,6 +41,11 @@ public:
 
 class E2PetscSolverConfig: public pb::E2PetscSolverConfig, public OdeSolverConfig{
 public:
+	virtual OdeSolverConfig* clone() const {
+		E2PetscSolverConfig* ret = new E2PetscSolverConfig();
+		ret->MergeFrom(*this);
+		return ret;
+	}
 	E2PetscSolverConfig(){
 		this->set_tolerance(0.001);
 		this->set_init_step(0.1);

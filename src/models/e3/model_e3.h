@@ -36,6 +36,11 @@ public:
 
 class E3PetscSolverConfig: public pb::E3PetscSolverConfig, public OdeSolverConfig{
 public:
+	virtual OdeSolverConfig* clone() const {
+		E3PetscSolverConfig* ret = new E3PetscSolverConfig();
+		ret->MergeFrom(*this);
+		return ret;
+	}
 	E3PetscSolverConfig();
 };
 

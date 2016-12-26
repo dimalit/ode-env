@@ -39,20 +39,21 @@ using namespace google::protobuf;
 
 class EXPetscSolverConfig: public pb::EXPetscSolverConfig, public OdeSolverConfig{
 public:
+	virtual OdeSolverConfig* clone() const {
+		EXPetscSolverConfig* ret = new EXPetscSolverConfig();
+		ret->MergeFrom(*this);
+		return ret;
+	}
 	EXPetscSolverConfig();
 };
 
 template<class SC, class PC, class S>
 class EXPetscSolver: public OdeSolver{
 public:
-	typedef SC SConfig;
-	typedef PC PConfig;
-	typedef S State;
-
 	static const char* ts_path;
 
 public:
-	EXPetscSolver(const SConfig*, const PConfig*, const State*);
+	EXPetscSolver(const EXPetscSolverConfig*, const OdeConfig*, const OdeState*);
 	virtual ~EXPetscSolver();
 	virtual void run(int steps, double time, bool use_steps = false);
 	virtual bool step();
@@ -76,10 +77,10 @@ public:
 	}
 
 private:
-	PConfig* pconfig;				// problem config
-	SConfig* sconfig;	// solver config
-	State* state;
-	State* d_state;
+	OdeConfig* pconfig;				// problem config
+	EXPetscSolverConfig* sconfig;		// solver config
+	OdeState* state;
+	OdeState* d_state;
 
 	FILE  *rf, *wf;
 	pid_t child;
@@ -219,14 +220,15 @@ template<class SC, class PC, class S>
 const char* EXPetscSolver<SC, PC, S>::ts_path = " ../ts4/Debug/ts4";
 
 template<class SC, class PC, class S>
-EXPetscSolver<SC,PC,S>::EXPetscSolver(const SConfig* scfg, const PConfig* pcfg, const State* init_state){
+EXPetscSolver<SC,PC,S>::EXPetscSolver(const EXPetscSolverConfig* scfg, const OdeConfig* pcfg, const OdeState* init_state){
 	time_passed = 0;
 	steps_passed = 0;
 
-	pconfig = new PConfig(*pcfg);
-	sconfig = new SConfig(*scfg);
-	state = new State(*init_state);
-	d_state = new State();
+	pconfig = pcfg->clone();
+	sconfig = new EXPetscSolverConfig(*scfg);
+	state = init_state->clone();
+	// TODO Here ws just new State. Make virtual New function?
+	d_state = init_state->clone();
 }
 
 template<class SC, class PC, class S>
@@ -246,6 +248,9 @@ template<class SC, class PC, class S>
 void EXPetscSolver<SC,PC,S>::run(int steps, double time, bool use_step){
 //	printf("run started\n");
 //	fflush(stdout);
+
+	::google::protobuf::Message* pconfig = dynamic_cast<::google::protobuf::Message*>(this->pconfig);
+	::google::protobuf::Message* state = dynamic_cast<::google::protobuf::Message*>(this->state);
 
 	static int run_cnt = 0;
 	run_cnt++;
@@ -340,6 +345,10 @@ bool EXPetscSolver<SC,PC,S>::read_results(){
 
 //	sol.state().PrintDebugString();
 //	fflush(stdout);
+
+
+	::google::protobuf::Message* state = dynamic_cast<::google::protobuf::Message*>(this->state);
+	::google::protobuf::Message* d_state = dynamic_cast<::google::protobuf::Message*>(this->d_state);
 
 	state->CopyFrom(sol.state());
 	d_state->CopyFrom(sol.d_state());
