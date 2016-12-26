@@ -62,7 +62,7 @@ HelloWorld2::HelloWorld2()
   vbox.pack_start(*this->solver_config_widget, false, false, 0);
 
   state = this->generator_widget->getState();
-  d_state = new E4State(dynamic_cast<const E4Config*>(this->config_widget->getConfig()));
+  d_state = state->clone();//new E4State(dynamic_cast<const E4Config*>(this->config_widget->getConfig()));
 
   // simulator config //
   Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_RUN);
@@ -154,7 +154,8 @@ HelloWorld2::~HelloWorld2()
 
 void HelloWorld2::on_config_changed()
 {
-	d_state = new E4State(dynamic_cast<const E4Config*>(config_widget->getConfig()));
+	//XXX: how state is updated here?
+	d_state = state->clone();//new E4State(dynamic_cast<const E4Config*>(config_widget->getConfig()));
 	generator_widget->loadConfig(config_widget->getConfig());
 }
 void HelloWorld2::on_state_changed(){
