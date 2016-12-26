@@ -127,13 +127,17 @@ HelloWorld::HelloWorld()
   Gtk::Window* win_diag = new Gtk::Window();
   vb = Gtk::manage(new Gtk::VBox());
 
-  Gtk::Widget* s1 = chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2"}),"",false,std::numeric_limits<double>::infinity());
-  Gtk::Widget* s2 = chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na","Nb", "N", "M"}),"",false);
-  Gtk::Widget* s3 = chart_analyzer->addChart(spec_msg,std::vector<std::string>({"e_2", "aver_a_2"}),"",false);
+  Gtk::Container* s1 = Gtk::manage(new Gtk::Alignment());
+  Gtk::Container* s2 = Gtk::manage(new Gtk::Alignment());
+  Gtk::Container* s3 = Gtk::manage(new Gtk::Alignment());
 
   vb->pack_start(*s1, true, true, 5);
   vb->pack_start(*s2, true, true, 5);
   vb->pack_start(*s3, true, true, 5);
+
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2"}),"", s1, false,std::numeric_limits<double>::infinity());
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na","Nb", "N", "M"}),"", s2, false);
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"e_2", "aver_a_2"}),"", s3, false);
 
   win_diag->add(*vb);
   win_diag->set_title("Diagnostics");

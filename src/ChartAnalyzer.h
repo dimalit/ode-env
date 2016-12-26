@@ -40,7 +40,7 @@ public:
 	virtual int getStatesCount();
 	virtual ~ChartAnalyzer();
 
-	Gtk::Widget* addChart(const google::protobuf::Message* msg, std::vector<std::string> vars, std::string x_axis_var="", bool polar=false, double yrange=0.0);
+	void addChart(const google::protobuf::Message* msg, std::vector<std::string> vars, std::string x_axis_var="", Gtk::Container* parent=NULL, bool polar=false, double yrange=0.0);
 
 	void addSpecial(const google::protobuf::Message*);
 	void processSpecial(const google::protobuf::Message* msg, double time);

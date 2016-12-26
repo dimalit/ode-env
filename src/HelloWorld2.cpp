@@ -125,16 +125,18 @@ HelloWorld2::HelloWorld2()
 
   Gtk::Window* win_diag = new Gtk::Window();
   vb = Gtk::manage(new Gtk::VBox());
+  win_diag->add(*vb);
 
-  Gtk::Widget* s1 = chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2", "e_2"}),"",false, std::numeric_limits<double>::infinity());
-  Gtk::Widget* s2 = chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na","Nb", "M"}),"",false);
-
+  Gtk::Container* s1 = Gtk::manage(new Gtk::Alignment());
+  Gtk::Container* s2 = Gtk::manage(new Gtk::Alignment());
   vb->pack_start(*s1, true, true, 5);
   vb->pack_start(*s2, true, true, 5);
 
-  win_diag->add(*vb);
   win_diag->set_title("Diagnostics");
   win_diag->show_all();
+
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2", "e_2"}),"", s1, false, std::numeric_limits<double>::infinity());
+  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na","Nb", "M"}),"", s2, false);
 
   Gnuplot::title_translation_map["Wa_aver"] = "W_{v,aver}";
   Gnuplot::title_translation_map["Wb_aver"] = "W_{n,aver}";
@@ -154,7 +156,6 @@ HelloWorld2::~HelloWorld2()
 
 void HelloWorld2::on_config_changed()
 {
-	//XXX: how state is updated here?
 	d_state = state->clone();//new E4State(dynamic_cast<const E4Config*>(config_widget->getConfig()));
 	generator_widget->loadConfig(config_widget->getConfig());
 }

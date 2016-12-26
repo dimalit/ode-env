@@ -236,7 +236,7 @@ private:
 			return;
 		}
 
-		parent->addChart(msg, vars, x_axis_var, polar);
+		parent->addChart(msg, vars, x_axis_var, NULL, polar);
 
 		this->hide();
 		delete this;
@@ -423,12 +423,19 @@ std::string trim(const std::string& str,
 }
 
 // TODO: yrange param is too much %)
-Gtk::Widget* ChartAnalyzer::addChart(const google::protobuf::Message* msg, std::vector<std::string> vars, std::string x_axis_var, bool polar, double yrange){
+void ChartAnalyzer::addChart(const google::protobuf::Message* msg, std::vector<std::string> vars, std::string x_axis_var, Gtk::Container* parent, bool polar, double yrange){
 	std::ostringstream full_title;
 
-	Gtk::Socket* socket = Gtk::manage(new Gtk::Socket());
+	int socket_id = 0;
 
-	Gnuplot* p = new Gnuplot(socket->get_id());
+	if(parent){
+		Gtk::Socket* socket = Gtk::manage(new Gtk::Socket());
+		parent->add(*socket);
+		parent->show_all();
+		socket_id = socket->get_id();
+		cerr << "Socket: " << hex << socket_id << "\n";
+	}
+	Gnuplot* p = new Gnuplot(socket_id);
 	if(yrange > 0){
 			p->setYRange(0, yrange);
 	}
@@ -476,8 +483,6 @@ Gtk::Widget* ChartAnalyzer::addChart(const google::protobuf::Message* msg, std::
 	hbox->show_all();
 
 	p->processState(msg);
-
-	return socket;
 }
 
 void ChartAnalyzer::on_del_chart_clicked(Gtk::Widget* w, const Gnuplot* ptr){
