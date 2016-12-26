@@ -17,6 +17,12 @@
 #include <cassert>
 #include <iostream>
 
+class E4ConfigWidget: public EXConfigWidget{
+public:
+	typedef E4Config Config;
+	E4ConfigWidget(const Config* cfg):EXConfigWidget(cfg){}
+};
+
 class E4StateGeneratorWidget: public OdeStateGeneratorWidget{
 public:
 	typedef E4State State;
@@ -39,7 +45,6 @@ private:
 };
 
 /////////////////////////////////////////////////////////////////////
-typedef EXConfigWidget<E4Config> E4ConfigWidget;
 REGISTER_INSTANCE_WIDGET_CLASSES(E4ConfigWidget, E4StateGeneratorWidget)
 typedef EXPetscSolverConfigWidget<E4PetscSolver> E4PetscSolverConfigWidget;
 REGISTER_SOLVER_CONFIG_WIDGET_CLASS(E4PetscSolverConfigWidget)

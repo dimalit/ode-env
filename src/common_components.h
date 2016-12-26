@@ -129,11 +129,7 @@ private:
 	void on_apply_cb();
 };
 
-template<class C>
 class EXConfigWidget: public OdeConfigWidget{
-//!!! TODO: remove this - in gui_interfaces
-public:
-	typedef C Config;
 private:
 	OdeConfig* config;
 
@@ -354,41 +350,6 @@ template<class SC, class PC, class S>
 void EXPetscSolver<SC,PC,S>::finish(){
 	fputc('f', wf);
 	fflush(wf);
-}
-
-template<class C>
-EXConfigWidget<C>::EXConfigWidget(const OdeConfig* cfg){
-	this->add(cfg_widget);
-
-	if(!cfg)
-		this->config = NULL;
-	else
-		this->config = cfg->clone();
-
-	cfg_widget.setData(dynamic_cast<Message*>(config));
-	cfg_widget.signal_changed().connect(sigc::mem_fun(*this, &EXConfigWidget::on_changed));
-}
-
-template<class C>
-void EXConfigWidget<C>::on_changed(){
-	m_signal_changed.emit();
-}
-
-template<class C>
-void EXConfigWidget<C>::loadConfig(const OdeConfig* cfg){
-	if(!cfg)
-		this->config = NULL;
-	else
-		this->config = cfg->clone();
-
-	Message* msg = dynamic_cast<Message*>(config);
-		assert(msg);
-	cfg_widget.setData(msg);
-}
-
-template<class C>
-const OdeConfig* EXConfigWidget<C>::getConfig() const{
-	return this->config;
 }
 
 template<class S>

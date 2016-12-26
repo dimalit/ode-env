@@ -66,7 +66,7 @@ template class AuxTypeManager<OdeSolverConfigWidgetType, SolverType>;
 typedef AuxTypeManager<OdeAnalyzerWidgetType, Problem> OdeAnalyzerWidgetManager;
 template class AuxTypeManager<OdeAnalyzerWidgetType, Problem>;
 
-///////////////////// DEMPLATES FOR DERIVED CLASSES /////////////////////////
+///////////////////// TEMPLATES FOR DERIVED CLASSES /////////////////////////
 
 template<class CW, class SW>
 class TemplateInstanceWidgetType: public OdeProblemWidgetType{

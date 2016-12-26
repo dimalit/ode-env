@@ -188,6 +188,38 @@ void AbstractConfigWidget::on_apply_cb(){
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+EXConfigWidget::EXConfigWidget(const OdeConfig* cfg){
+	this->add(cfg_widget);
+
+	if(!cfg)
+		this->config = NULL;
+	else
+		this->config = cfg->clone();
+
+	cfg_widget.setData(dynamic_cast<Message*>(config));
+	cfg_widget.signal_changed().connect(sigc::mem_fun(*this, &EXConfigWidget::on_changed));
+}
+
+void EXConfigWidget::on_changed(){
+	m_signal_changed.emit();
+}
+
+void EXConfigWidget::loadConfig(const OdeConfig* cfg){
+	if(!cfg)
+		this->config = NULL;
+	else
+		this->config = cfg->clone();
+
+	Message* msg = dynamic_cast<Message*>(config);
+		assert(msg);
+	cfg_widget.setData(msg);
+}
+
+const OdeConfig* EXConfigWidget::getConfig() const{
+	return this->config;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 class ChartAddDialog: public Gtk::Window{
 private:

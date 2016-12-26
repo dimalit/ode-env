@@ -9,7 +9,6 @@
 #include "models/e4/model_e4.h"
 
 #include "Gnuplot.h"
-#include "ChartAnalyzer.h"
 #include "MaxDetector.h"
 
 #include <gtkmm/window.h>

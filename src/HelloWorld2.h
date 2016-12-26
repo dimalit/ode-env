@@ -2,7 +2,6 @@
 #define GTKMM_EXAMPLE_HELLOWORLD2_H
 
 #include "models/e4/gui_e4.h"
-#include "ChartAnalyzer.h"
 #include "RunThread.h"
 
 #include <gtkmm/button.h>

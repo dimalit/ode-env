@@ -200,6 +200,8 @@ public:
 		auto range_to_return = aux_map.equal_range(f);
 		TypeIterator begin( range_to_return.first );
 		TypeIterator end( range_to_return.second );
+		if(begin==end)
+			return std::make_pair(TypeIterator(aux_map.end()), TypeIterator(aux_map.end()));
 		return std::make_pair(begin, end);
 	}
 
