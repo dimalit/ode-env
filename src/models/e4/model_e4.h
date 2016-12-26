@@ -34,61 +34,6 @@ public:
 	}
 };
 
-class EXPetscSolverConfig: public pb::EXPetscSolverConfig, public OdeSolverConfig{
-public:
-	EXPetscSolverConfig();
-};
-
-template<class SC, class PC, class S>
-class EXPetscSolver: public OdeSolver{
-public:
-	typedef SC SConfig;
-	typedef PC PConfig;
-	typedef S State;
-
-	static const char* ts_path;
-
-public:
-	EXPetscSolver(const SConfig*, const PConfig*, const State*);
-	virtual ~EXPetscSolver();
-	virtual void run(int steps, double time, bool use_steps = false);
-	virtual bool step();
-	virtual void finish();
-	virtual double getTime() const {
-		return time_passed;
-	}
-	virtual double getSteps() const {
-		return steps_passed;
-	}
-
-	virtual const OdeState* getState() const {
-		return state;
-	}
-	virtual const OdeState* getDState() const{
-		return d_state;
-	}
-
-	static std::string getDisplayName(){
-		return "PETSc RK solver for eX";
-	}
-
-private:
-	PConfig* pconfig;				// problem config
-	SConfig* sconfig;	// solver config
-	State* state;
-	State* d_state;
-
-	FILE  *rf, *wf;
-	pid_t child;
-
-	double time_passed;
-	int steps_passed;
-
-private:
-//	int read_simulation(FILE* fp, int m);
-	bool read_results();
-};
-
 REGISTER_INSTANCE_CLASS(E4Config, E4State)
 typedef EXPetscSolver<EXPetscSolverConfig,E4Config,E4State> E4PetscSolver;
 REGISTER_SOLVER_CLASS(E4PetscSolver)

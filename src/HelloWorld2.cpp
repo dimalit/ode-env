@@ -91,11 +91,13 @@ HelloWorld2::HelloWorld2()
   win_analyzers.add(*vb);
   win_analyzers.set_title(inst_widget_fact->getDisplayName() + " analyzers");
 
+  // this is table
   OdeAnalyzerWidgetType* analyzer_fact = *OdeAnalyzerWidgetManager::getInstance()->getTypesFor(inst_fact).first;
   this->analyzer_widget = analyzer_fact->createAnalyzerWidget(config_widget->getConfig());
   this->analyzer_widget->processState(state, d_state, 0.0);
   vb->pack_start(*analyzer_widget, false, false);
 
+  // these are charts with "add" button
   chart_analyzer = new ChartAnalyzer(config_widget->getConfig());
   chart_analyzer->processState(state,  d_state, 0.0);
   pb::E4Special* spec_msg = new pb::E4Special();
