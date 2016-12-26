@@ -10,12 +10,9 @@
 
 #include "model_e4.h"
 
-#include <gui_factories.h>
+#include <common_components.h>
 
-#include "gtkmm/grid.h"
-#include "gtkmm/entry.h"
-#include "gtkmm/comboboxtext.h"
-#include "gtkmm/adjustment.h"
+#include <gui_factories.h>
 
 #include <cassert>
 #include <iostream>
@@ -44,6 +41,7 @@ private:
 /////////////////////////////////////////////////////////////////////
 typedef EXConfigWidget<E4Config> E4ConfigWidget;
 REGISTER_INSTANCE_WIDGET_CLASSES(E4ConfigWidget, E4StateGeneratorWidget)
-REGISTER_SOLVER_CONFIG_WIDGET_CLASS(EXPetscSolverConfigWidget)
+typedef EXPetscSolverConfigWidget<E4PetscSolver> E4PetscSolverConfigWidget;
+REGISTER_SOLVER_CONFIG_WIDGET_CLASS(E4PetscSolverConfigWidget)
 
 #endif /* GUI_E4_H_ */

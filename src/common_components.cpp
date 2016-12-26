@@ -7,9 +7,17 @@
 
 #include "common_components.h"
 
-// XXX: whis should read like E4...if we use more than 1 specialization?
-template<class SC, class PC, class S>
-const char* EXPetscSolver<SC, PC, S>::ts_path = " ../ts4/Debug/ts4";
+#include <gtkmm/table.h>
+#include <gtkmm/window.h>
+#include <gtkmm/treeview.h>
+#include <gtkmm/liststore.h>
+#include <gtkmm/button.h>
+#include <gtkmm/checkbutton.h>
+#include <gtkmm/messagedialog.h>
+#include <gtkmm/socket.h>
+
+#include <sstream>
+#include <iostream>
 
 #define UI_FILE "charts_add.glade"
 
@@ -19,143 +27,6 @@ EXPetscSolverConfig::EXPetscSolverConfig(){
 	set_init_step(0.01);
 	set_n_cores(1);
 }
-
-template<class SC, class PC, class S>
-EXPetscSolver<SC,PC,S>::EXPetscSolver(const SConfig* scfg, const PConfig* pcfg, const State* init_state){
-	time_passed = 0;
-	steps_passed = 0;
-
-	pconfig = new PConfig(*pcfg);
-	sconfig = new SConfig(*scfg);
-	state = new State(*init_state);
-	d_state = new State();
-}
-
-template<class SC, class PC, class S>
-EXPetscSolver<SC,PC,S>::~EXPetscSolver(){
-	if(wf){
-		fputc('f', wf);
-		fflush(wf);
-	}
-	delete state;
-	delete sconfig;
-	delete pconfig;
-}
-
-// TODO: create universal base class for PETSc solvers - so not to copypaste!
-// TODO: 1 universal code from TS solving?! (not to write it again and again!?)
-template<class SC, class PC, class S>
-void EXPetscSolver<SC,PC,S>::run(int steps, double time, bool use_step){
-//	printf("run started\n");
-//	fflush(stdout);
-
-	static int run_cnt = 0;
-	run_cnt++;
-
-	int n_cores = 1;
-	if(this->sconfig->has_n_cores())
-		n_cores = this->sconfig->n_cores();
-	std::ostringstream cmd_stream;
-//	cmd_stream << "mpiexec -n "<< n_cores << " --host 192.168.0.101 ./Debug/ts3";
-//	cmd_stream << "mpiexec -n "<< n_cores << " --host 10.0.0.205 /home/dimalit/workspace/ts3/Debug/ts3";
-	cmd_stream << "mpiexec -n "<< n_cores << ts_path;// << " -info info.log";
-
-	std::string cmd = cmd_stream.str();
-	if(use_step)
-		cmd += " use_step";
-	int rfd, wfd;
-	child = rpc_call(cmd.c_str(), &rfd, &wfd);
-	rf = fdopen(rfd, "rb");
-	wf = fdopen(wfd, "wb");
-
-//	int tmp = open("tmp", O_WRONLY | O_CREAT, 0664);
-//	state->PrintDebugString();
-
-	pb::E4Model all;
-	all.mutable_sconfig()->CopyFrom(*sconfig);
-	all.mutable_pconfig()->CopyFrom(*pconfig);
-	all.mutable_state()->CopyFrom(*state);
-
-	int size = all.ByteSize();
-
-	int ok;
-	ok = fwrite(&size, sizeof(size), 1, wf);
-		assert(ok == 1);
-
-	fflush(wf);
-	all.SerializeToFileDescriptor(fileno(wf));
-
-	ok = fwrite(&steps, sizeof(steps), 1, wf);
-		assert(ok == 1);
-	ok = fwrite(&time, sizeof(time), 1, wf);
-		assert(ok == 1);
-	fflush(wf);
-
-	if(!use_step){		// just final step
-		bool res = read_results();
-			assert(res==true);		// last
-		waitpid(child, 0, 0);
-		fclose(rf); rf = NULL;
-		fclose(wf); wf = NULL;
-	}
-}
-
-template<class SC, class PC, class S>
-bool EXPetscSolver<SC,PC,S>::step(){
-	if(waitpid(child, 0, WNOHANG)!=0){
-		fclose(rf); rf = NULL;
-		fclose(wf); wf = NULL;
-		return false;
-	}
-
-	fputc('s', wf);
-	fflush(wf);
-
-	if(!read_results()){
-		// TODO: will it ever run? (see waitpid above)
-		waitpid(child, 0, 0);		// was before read - here for tests
-		fclose(rf); rf = NULL;
-		fclose(wf); wf = NULL;
-		return false;
-	}
-	return true;
-}
-
-template<class SC, class PC, class S>
-bool EXPetscSolver<SC,PC,S>::read_results(){
-	int ok;
-	ok = fread(&steps_passed, sizeof(steps_passed), 1, rf);
-	// TODO: read=0 no longer works with mpiexec (process isn't zombie)
-	if(ok==0)
-		return false;
-	else
-		assert(ok == 1);
-	ok = fread(&time_passed, sizeof(time_passed), 1, rf);
-		assert(ok == 1);
-
-//	printf("%d %lf %s\n", steps_passed, time_passed, sconfig->model().c_str());
-//	fflush(stdout);
-
-	pb::E4Solution sol;
-	extern void parse_with_prefix(google::protobuf::Message& msg, FILE* fp);
-	parse_with_prefix(sol, rf);
-
-//	sol.state().PrintDebugString();
-//	fflush(stdout);
-
-	state->CopyFrom(sol.state());
-	d_state->CopyFrom(sol.d_state());
-	return true;
-}
-
-template<class SC, class PC, class S>
-void EXPetscSolver<SC,PC,S>::finish(){
-	fputc('f', wf);
-	fflush(wf);
-}
-
-#define UI_FILE_STATE "src/models/e4/e4_state.glade"
-#define UI_FILE_PETSC_SOLVER "src/models/e4/e4_petsc_solver.glade"
 
 AbstractConfigWidget::AbstractConfigWidget(Message *msg){
 	this->data = msg;
@@ -317,95 +188,6 @@ void AbstractConfigWidget::on_apply_cb(){
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-template<class C>
-EXConfigWidget<C>::EXConfigWidget(const OdeConfig* cfg){
-	this->add(cfg_widget);
-
-	if(!cfg)
-		this->config = NULL;
-	else
-		this->config = cfg->clone();
-
-	cfg_widget.setData(dynamic_cast<Message*>(config));
-	cfg_widget.signal_changed().connect(sigc::mem_fun(*this, &EXConfigWidget::on_changed));
-}
-
-template<class C>
-void EXConfigWidget<C>::on_changed(){
-	m_signal_changed.emit();
-}
-
-template<class C>
-void EXConfigWidget<C>::loadConfig(const OdeConfig* cfg){
-	if(!cfg)
-		this->config = NULL;
-	else
-		this->config = cfg->clone();
-
-	Message* msg = dynamic_cast<Message*>(config);
-		assert(msg);
-	cfg_widget.setData(msg);
-}
-
-template<class C>
-const OdeConfig* EXConfigWidget<C>::getConfig() const{
-	return this->config;
-}
-
-EXPetscSolverConfigWidget::EXPetscSolverConfigWidget(const EXPetscSolverConfig* config){
-	if(config)
-		this->config = new EXPetscSolverConfig(*config);
-	else
-		this->config = new EXPetscSolverConfig();
-
-	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_PETSC_SOLVER);
-
-	Gtk::Widget* root;
-	b->get_widget("root", root);
-
-	b->get_widget("entry_atol", entry_atol);
-	b->get_widget("entry_rtol", entry_rtol);
-	b->get_widget("entry_step", entry_step);
-	adj_n_cores = Glib::RefPtr<Gtk::Adjustment>::cast_dynamic(b->get_object("adj_n_cores"));
-	adj_n_cores->set_value(4);
-
-	this->add(*root);
-
-	config_to_widget();
-}
-const OdeSolverConfig* EXPetscSolverConfigWidget::getConfig(){
-	widget_to_config();
-	return config;
-}
-void EXPetscSolverConfigWidget::loadConfig(const OdeSolverConfig* config){
-	const EXPetscSolverConfig* econfig = dynamic_cast<const EXPetscSolverConfig*>(config);
-		assert(econfig);
-	delete this->config;
-	this->config = new EXPetscSolverConfig(*econfig);
-	config_to_widget();
-}
-
-void EXPetscSolverConfigWidget::widget_to_config(){
-	config->set_init_step(atof(entry_step->get_text().c_str()));
-	config->set_atol(atof(entry_atol->get_text().c_str()));
-	config->set_rtol(atof(entry_rtol->get_text().c_str()));
-	config->set_n_cores(adj_n_cores->get_value());
-}
-void EXPetscSolverConfigWidget::config_to_widget(){
-	std::ostringstream buf;
-	buf << config->init_step();
-	entry_step->set_text(buf.str());
-
-	buf.str("");
-	buf << config->atol();
-	entry_atol->set_text(buf.str());
-
-	buf.str("");
-	buf << config->rtol();
-	entry_rtol->set_text(buf.str());
-	adj_n_cores->set_value(config->n_cores());
-}
 
 class ChartAddDialog: public Gtk::Window{
 private:
@@ -816,7 +598,7 @@ void ChartAnalyzer::addChart(const google::protobuf::Message* msg, std::vector<s
 		parent->add(*socket);
 		parent->show_all();
 		socket_id = socket->get_id();
-		cerr << "Socket: " << hex << socket_id << "\n";
+		std::cerr << "Socket: " << std::hex << socket_id << "\n";
 	}
 	Gnuplot* p = new Gnuplot(socket_id);
 	if(yrange > 0){

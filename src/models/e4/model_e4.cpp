@@ -7,15 +7,6 @@
 
 #include "model_e4.h"
 
-#include <sstream>
-
-#include <rpc.h>
-
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/wait.h>
-
 E4Config::E4Config(){
 	set_n(1000);
 	set_delta_0(0);

@@ -3,8 +3,10 @@
 
 #include "models/e1/gui_e1.h"
 #include "models/e3/gui_e3.h"
-#include "ChartAnalyzer.h"
+
 #include "RunThread.h"
+
+#include <common_components.h>
 
 #include <gtkmm/button.h>
 #include <gtkmm/radiobutton.h>

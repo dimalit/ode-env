@@ -8,8 +8,11 @@
 #ifndef MODEL_E4_H_
 #define MODEL_E4_H_
 
+#include <common_components.h>
+
 #include <core_interfaces.h>
 #include <core_factories.h>
+
 #include <../from_protoc/model_e4.pb.h>
 
 class E4Config: public pb::E4Config, public OdeConfig{

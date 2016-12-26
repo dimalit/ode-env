@@ -7,9 +7,6 @@
 
 #include "gui_e4.h"
 
-#include <gtkmm/builder.h>
-#include <gtkmm/table.h>
-
 E4StateGeneratorWidget::E4StateGeneratorWidget(const E4Config* _config){
 	this->state = NULL;
 
