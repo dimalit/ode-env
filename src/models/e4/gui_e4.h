@@ -23,6 +23,13 @@ public:
 	E4ConfigWidget(const Config* cfg):EXConfigWidget(cfg){}
 };
 
+class E4PetscSolverConfigWidget: public EXPetscSolverConfigWidget{
+public:
+	typedef E4PetscSolver Solver;
+	E4PetscSolverConfigWidget(const EXPetscSolverConfig* config = NULL):
+		EXPetscSolverConfigWidget(config){}
+};
+
 class E4StateGeneratorWidget: public OdeStateGeneratorWidget{
 public:
 	typedef E4State State;
@@ -46,7 +53,6 @@ private:
 
 /////////////////////////////////////////////////////////////////////
 REGISTER_INSTANCE_WIDGET_CLASSES(E4ConfigWidget, E4StateGeneratorWidget)
-typedef EXPetscSolverConfigWidget<E4PetscSolver> E4PetscSolverConfigWidget;
 REGISTER_SOLVER_CONFIG_WIDGET_CLASS(E4PetscSolverConfigWidget)
 
 #endif /* GUI_E4_H_ */

@@ -360,6 +360,66 @@ const OdeConfig* EXConfigWidget::getConfig() const{
 
 ///////////////////////////////////////////////////////////////////////////////
 
+
+EXPetscSolverConfigWidget::EXPetscSolverConfigWidget(const EXPetscSolverConfig* config){
+	if(config)
+		this->config = new EXPetscSolverConfig(*config);
+	else
+		this->config = new EXPetscSolverConfig();
+
+	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_PETSC_SOLVER);
+
+	Gtk::Widget* root;
+	b->get_widget("root", root);
+
+	b->get_widget("entry_atol", entry_atol);
+	b->get_widget("entry_rtol", entry_rtol);
+	b->get_widget("entry_step", entry_step);
+	adj_n_cores = Glib::RefPtr<Gtk::Adjustment>::cast_dynamic(b->get_object("adj_n_cores"));
+	adj_n_cores->set_value(4);
+
+	this->add(*root);
+
+	config_to_widget();
+}
+
+const OdeSolverConfig* EXPetscSolverConfigWidget::getConfig(){
+	widget_to_config();
+	return config;
+}
+
+void EXPetscSolverConfigWidget::loadConfig(const OdeSolverConfig* config){
+	const EXPetscSolverConfig* econfig = dynamic_cast<const EXPetscSolverConfig*>(config);
+		assert(econfig);
+	delete this->config;
+	this->config = new EXPetscSolverConfig(*econfig);
+	config_to_widget();
+}
+
+void EXPetscSolverConfigWidget::widget_to_config(){
+	config->set_init_step(atof(entry_step->get_text().c_str()));
+	config->set_atol(atof(entry_atol->get_text().c_str()));
+	config->set_rtol(atof(entry_rtol->get_text().c_str()));
+	config->set_n_cores(adj_n_cores->get_value());
+}
+
+void EXPetscSolverConfigWidget::config_to_widget(){
+	std::ostringstream buf;
+	buf << config->init_step();
+	entry_step->set_text(buf.str());
+
+	buf.str("");
+	buf << config->atol();
+	entry_atol->set_text(buf.str());
+
+	buf.str("");
+	buf << config->rtol();
+	entry_rtol->set_text(buf.str());
+	adj_n_cores->set_value(config->n_cores());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 class ChartAddDialog: public Gtk::Window{
 private:
 	Gtk::TreeView *treeview1, *treeview2, *treeview3;		// for vars, derivatives and expressions

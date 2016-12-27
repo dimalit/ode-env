@@ -149,10 +149,7 @@ private:
 	void on_changed();
 };
 
-template<class S>
 class EXPetscSolverConfigWidget: public OdeSolverConfigWidget{
-public:
-	typedef S Solver;
 private:
 	EXPetscSolverConfig* config;
 
@@ -212,70 +209,6 @@ private:
 	void on_restore_clicked(Gnuplot* ptr);
 	void on_add_special_clicked();
 };
-
-/////////////////// IMPLEMENTATIONS ///////////////////////
-
-template<class S>
-EXPetscSolverConfigWidget<S>::EXPetscSolverConfigWidget(const EXPetscSolverConfig* config){
-	if(config)
-		this->config = new EXPetscSolverConfig(*config);
-	else
-		this->config = new EXPetscSolverConfig();
-
-	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_PETSC_SOLVER);
-
-	Gtk::Widget* root;
-	b->get_widget("root", root);
-
-	b->get_widget("entry_atol", entry_atol);
-	b->get_widget("entry_rtol", entry_rtol);
-	b->get_widget("entry_step", entry_step);
-	adj_n_cores = Glib::RefPtr<Gtk::Adjustment>::cast_dynamic(b->get_object("adj_n_cores"));
-	adj_n_cores->set_value(4);
-
-	this->add(*root);
-
-	config_to_widget();
-}
-
-template<class S>
-const OdeSolverConfig* EXPetscSolverConfigWidget<S>::getConfig(){
-	widget_to_config();
-	return config;
-}
-
-template<class S>
-void EXPetscSolverConfigWidget<S>::loadConfig(const OdeSolverConfig* config){
-	const EXPetscSolverConfig* econfig = dynamic_cast<const EXPetscSolverConfig*>(config);
-		assert(econfig);
-	delete this->config;
-	this->config = new EXPetscSolverConfig(*econfig);
-	config_to_widget();
-}
-
-template<class S>
-void EXPetscSolverConfigWidget<S>::widget_to_config(){
-	config->set_init_step(atof(entry_step->get_text().c_str()));
-	config->set_atol(atof(entry_atol->get_text().c_str()));
-	config->set_rtol(atof(entry_rtol->get_text().c_str()));
-	config->set_n_cores(adj_n_cores->get_value());
-}
-
-template<class S>
-void EXPetscSolverConfigWidget<S>::config_to_widget(){
-	std::ostringstream buf;
-	buf << config->init_step();
-	entry_step->set_text(buf.str());
-
-	buf.str("");
-	buf << config->atol();
-	entry_atol->set_text(buf.str());
-
-	buf.str("");
-	buf << config->rtol();
-	entry_rtol->set_text(buf.str());
-	adj_n_cores->set_value(config->n_cores());
-}
 
 //REGISTER_ANALYZER_WIDGET_CLASS(ChartAnalyzer)
 
