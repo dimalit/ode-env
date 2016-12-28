@@ -6,7 +6,9 @@
  */
 
 #include "models/e3/model_e3.h"
+#include "models/e3/analyzers_e3.h"
 #include "models/e4/model_e4.h"
+#include "models/e4/analyzers_e4.h"
 
 #include "Gnuplot.h"
 #include "MaxDetector.h"
@@ -54,7 +56,7 @@ void exp_6_images(){
 		scfg->set_rtol(1e-6);
 		scfg->set_solver(E3PetscSolverConfig::rhs);
 
-	ChartAnalyzer chart_analyzer(pcfg);
+	E3ChartAnalyzer chart_analyzer(pcfg);
 	Gtk::Window win;
 	win.add(chart_analyzer);
 	win.show_all();
@@ -202,7 +204,7 @@ void exp_random_init_R3(){
 		scfg->set_atol(0.001);
 		scfg->set_rtol(0.001);
 
-	ChartAnalyzer chart_analyzer(pcfg);
+	E3ChartAnalyzer chart_analyzer(pcfg);
 	Gtk::Window win;
 	win.add(chart_analyzer);
 	win.show_all();
@@ -294,7 +296,7 @@ void exp_gamma2e(){
 		scfg->set_rtol(1e-7);
 		scfg->set_solver(E3PetscSolverConfig::rhs);
 
-	ChartAnalyzer chart_analyzer(pcfg);
+	E3ChartAnalyzer chart_analyzer(pcfg);
 	Gtk::Window win;
 	win.add(chart_analyzer);
 	win.show_all();
@@ -426,7 +428,7 @@ void exp_r2e(){
 		scfg->set_rtol(1e-10);
 		scfg->set_solver(E3PetscSolverConfig::rhs);
 
-	ChartAnalyzer chart_analyzer(pcfg);
+	E3ChartAnalyzer chart_analyzer(pcfg);
 	Gtk::Window win;
 	win.add(chart_analyzer);
 	win.show_all();
@@ -595,7 +597,7 @@ void as_in_book(){
 		scfg->set_solver(E3PetscSolverConfig::rhs);
 		scfg->set_model("tm");
 
-	ChartAnalyzer chart_analyzer(pcfg);
+	E3ChartAnalyzer chart_analyzer(pcfg);
 	Gtk::Window win;
 	win.add(chart_analyzer);
 	win.show_all();

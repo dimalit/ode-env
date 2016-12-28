@@ -3,6 +3,7 @@
 
 #include "models/e1/gui_e1.h"
 #include "models/e3/gui_e3.h"
+#include "models/e3/analyzers_e3.h"
 
 #include "RunThread.h"
 
@@ -59,7 +60,6 @@ private:
   const OdeConfig* extract_config();
   const OdeState* extract_state();
   const OdeSolverConfig* extract_solver_config();
-  void fill_spec_msg(pb::E3Special*);
 
   const OdeState* state;
   const OdeState* d_state;
@@ -75,7 +75,7 @@ private:
 
   Gtk::Window win_analyzers;
   OdeAnalyzerWidget* analyzer_widget;
-  ChartAnalyzer* chart_analyzer;
+  E3ChartAnalyzer* chart_analyzer;
 
   Gtk::RadioButton *radio_time, *radio_steps;
   Gtk::Entry *entry_time, *entry_steps;

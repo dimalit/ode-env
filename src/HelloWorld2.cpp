@@ -98,11 +98,8 @@ HelloWorld2::HelloWorld2()
   vb->pack_start(*analyzer_widget, false, false);
 
   // these are charts with "add" button
-  chart_analyzer = new ChartAnalyzer(config_widget->getConfig());
+  chart_analyzer = new E4ChartAnalyzer(config_widget->getConfig());
   chart_analyzer->processState(state,  d_state, 0.0);
-  pb::E4Special* spec_msg = new pb::E4Special();
-  spec_msg->add_hist();
-  chart_analyzer->addSpecial(spec_msg);
   vb->pack_start(*chart_analyzer, false, false);
 
   // signals //
@@ -137,8 +134,12 @@ HelloWorld2::HelloWorld2()
   win_diag->set_title("Diagnostics");
   win_diag->show_all();
 
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2", "e_2"}),"", s1, false, std::numeric_limits<double>::infinity());
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na","Nb", "M"}),"", s2, false);
+  MessageChart *c1 = new MessageChart(std::vector<std::string>({"Wa","Wb", "aver_a_2", "e_2"}), s1);
+  c1->setYRange(0, std::numeric_limits<double>::infinity());
+  chart_analyzer->addSpecial(c1);
+
+  MessageChart *c2 = new MessageChart(std::vector<std::string>({"Na","Nb", "M"}), s2);
+  chart_analyzer->addSpecial(c2);
 
   Gnuplot::title_translation_map["Wa_aver"] = "W_{v,aver}";
   Gnuplot::title_translation_map["Wb_aver"] = "W_{n,aver}";
@@ -170,94 +171,6 @@ void HelloWorld2::show_new_state()
 	analyzer_widget->loadConfig(config_widget->getConfig());
 	analyzer_widget->processState(state, d_state, this->total_time);
 	chart_analyzer->processState(state, d_state, this->total_time);
-
-	pb::E4Special spec_msg;
-	fill_spec_msg(&spec_msg);
-	chart_analyzer->processSpecial(&spec_msg, this->total_time);
-}
-
-void HelloWorld2::fill_spec_msg(pb::E4Special* spec_msg){
-	const E4State* estate = dynamic_cast<const E4State*>(state);
-	const E4State* dstate = dynamic_cast<const E4State*>(this->d_state);
-	const E4Config* config = dynamic_cast<const E4Config*>(config_widget->getConfig());
-
-	int N = estate->particles_size();
-	double T = this->total_time;
-	double dT = this->total_time - this->last_refresh_time;
-
-	double sum_a_2 = 0;
-	double Na = 0, Nb = 0;			// da/dt>0 and <0
-	double Ia = 0.0, Ib = 0.0;	// sum da/dt
-	double Wa = 0.0, Wb = 0.0;	// sum a^2
-	for(int i=0; i<N; i++){
-		E4State::Particles p = estate->particles(i);
-		E4State::Particles dp = dstate->particles(i);
-
-		sum_a_2 += p.a()*p.a();
-
-		if(dp.a() > 0.0){
-			Na++;
-			Ia += dp.a();
-			Wa += p.a()*p.a();
-		}// Na
-		else{
-			Nb++;
-			Ib += dp.a();
-			Wb += p.a()*p.a();
-		}// Nb
-	}
-
-	Na/=N; Nb/=N;
-	Wa/=N; Wb/=N;
-
-	spec_msg->set_e_2(estate->e()*estate->e());
-	spec_msg->set_aver_a_2(sum_a_2/estate->particles_size());
-	spec_msg->set_int_e_a(estate->e()*estate->e()+1.0/config->n()/estate->particles_size()*sum_a_2);
-
-	spec_msg->set_na(Na);
-	spec_msg->set_nb(Nb);
-	spec_msg->set_ia(Ia);
-	spec_msg->set_ib(Ib);
-	spec_msg->set_wa(Wa);
-	spec_msg->set_wb(Wb);
-
-	spec_msg->set_ia_aver(Ia/Na);
-	spec_msg->set_ib_aver(Ib/Nb);
-	spec_msg->set_n(Na+Nb);
-	spec_msg->set_m(Na-Nb);
-
-
-	// compute max/min
-	double min = std::numeric_limits<double>::infinity();
-	double max = -std::numeric_limits<double>::infinity();
-
-	for(int i=0; i<N; i++){
-		E4State::Particles p = estate->particles(i);
-		double v = p.a()*p.a();
-		if(v>max)
-			max = v;
-		if(v<min)
-			min = v;
-	}// for
-
-	// fill histogram
-	int hist[10] = {0};
-	for(int i=0; i<N; i++){
-		E4State::Particles p = estate->particles(i);
-		int bin = int((p.a()*p.a()-min)/(max-min)*10);
-		if(bin>=10)
-			bin=9;
-		if(bin<0)
-			bin=0;
-		hist[bin]++;
-	}// for
-
-	spec_msg->clear_hist();
-	for(int i=0; i<10; i++){
-		spec_msg->add_hist();
-		spec_msg->mutable_hist(i)->set_x(min+i/10.0*(max-min));
-		spec_msg->mutable_hist(i)->set_y(hist[i]);
-	}
 }
 
 const OdeConfig* HelloWorld2::extract_config(){

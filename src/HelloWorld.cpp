@@ -98,10 +98,8 @@ HelloWorld::HelloWorld()
   this->analyzer_widget->processState(state, d_state, 0.0);
   vb->pack_start(*analyzer_widget, false, false);
 
-  chart_analyzer = new ChartAnalyzer(config_widget->getConfig());
+  chart_analyzer = new E3ChartAnalyzer(config_widget->getConfig());
   chart_analyzer->processState(state,  d_state, 0.0);
-  pb::E3Special* spec_msg = new pb::E3Special();
-  chart_analyzer->addSpecial(spec_msg);
   vb->pack_start(*chart_analyzer, false, false);
 
   // signals //
@@ -135,9 +133,13 @@ HelloWorld::HelloWorld()
   vb->pack_start(*s2, true, true, 5);
   vb->pack_start(*s3, true, true, 5);
 
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Wa","Wb", "aver_a_2"}),"", s1, false,std::numeric_limits<double>::infinity());
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"Na","Nb", "N", "M"}),"", s2, false);
-  chart_analyzer->addChart(spec_msg,std::vector<std::string>({"e_2", "aver_a_2"}),"", s3, false);
+  MessageChart *c1 = new MessageChart(std::vector<std::string>({"Wa","Wb", "aver_a_2", "e_2"}), s1);
+  c1->setYRange(0, std::numeric_limits<double>::infinity());
+  chart_analyzer->addSpecial(c1);
+  MessageChart *c2 = new MessageChart(std::vector<std::string>({"Na","Nb", "N", "M"}), s2);
+  chart_analyzer->addSpecial(c2);
+  MessageChart *c3 = new MessageChart(std::vector<std::string>({"e_2", "aver_a_2"}), s3);
+  chart_analyzer->addSpecial(c3);
 
   win_diag->add(*vb);
   win_diag->set_title("Diagnostics");
@@ -173,58 +175,6 @@ void HelloWorld::show_new_state()
 	analyzer_widget->loadConfig(config_widget->getConfig());
 	analyzer_widget->processState(state, d_state, this->total_time);
 	chart_analyzer->processState(state, d_state, this->total_time);
-
-	pb::E3Special spec_msg;
-	fill_spec_msg(&spec_msg);
-	chart_analyzer->processSpecial(&spec_msg, this->total_time);
-}
-
-void HelloWorld::fill_spec_msg(pb::E3Special* spec_msg){
-	const E3State* estate = dynamic_cast<const E3State*>(state);
-	const E3State* dstate = dynamic_cast<const E3State*>(this->d_state);
-	const E3Config* config = dynamic_cast<const E3Config*>(config_widget->getConfig());
-
-	int N = estate->particles_size();
-	double T = this->total_time;
-	double dT = this->total_time - this->last_refresh_time;
-
-	double sum_a_2 = 0;
-	double sum_eta = 0;
-	double Na = 0, Nb = 0;			// da/dt>0 and <0
-	double Ia = 0.0, Ib = 0.0;	// sum da/dt
-	double Wa = 0.0, Wb = 0.0;	// sum a^2
-	for(int i=0; i<N; i++){
-		E3State::Particles p = estate->particles(i);
-		E3State::Particles dp = dstate->particles(i);
-
-		sum_a_2 += p.a()*p.a();
-		sum_eta += p.eta();
-
-		if(dp.a() > 0.0){
-			Na++;
-			Ia += dp.a();
-			Wa += p.a()*p.a();
-		}// Na
-		else{
-			Nb++;
-			Ib += dp.a();
-			Wb += p.a()*p.a();
-		}// Nb
-	}
-
-	Wa/=N; Wb/=N;
-	Na/=N; Nb/=N;
-
-	spec_msg->set_e_2(estate->e()*estate->e());
-	spec_msg->set_aver_a_2(sum_a_2/estate->particles_size());
-
-	spec_msg->set_na(Na);
-	spec_msg->set_nb(Nb);
-	spec_msg->set_wa(Wa);
-	spec_msg->set_wb(Wb);
-
-	spec_msg->set_n(Na+Nb);
-	spec_msg->set_m(Na-Nb);
 }
 
 const OdeConfig* HelloWorld::extract_config(){

@@ -2,6 +2,7 @@
 #define GTKMM_EXAMPLE_HELLOWORLD2_H
 
 #include "models/e4/gui_e4.h"
+#include "models/e4/analyzers_e4.h"
 #include "RunThread.h"
 
 #include <gtkmm/button.h>
@@ -57,7 +58,6 @@ private:
   const OdeConfig* extract_config();
   const OdeState* extract_state();
   const OdeSolverConfig* extract_solver_config();
-  void fill_spec_msg(pb::E4Special*);
 
   const OdeState* state;
   const OdeState* d_state;
@@ -69,7 +69,7 @@ private:
 
   Gtk::Window win_analyzers;
   OdeAnalyzerWidget* analyzer_widget;
-  ChartAnalyzer* chart_analyzer;
+  E4ChartAnalyzer* chart_analyzer;
 
   Gtk::RadioButton *radio_time, *radio_steps;
   Gtk::Entry *entry_time, *entry_steps;

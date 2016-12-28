@@ -59,7 +59,9 @@ public:
 	bool getXAxisTime() const {
 		return x_axis.empty();
 	}
-	std::string getXAxisVar() const;
+	std::string getXAxisVar() const{
+		return x_axis;
+	}
 	bool getPolar() const {
 		return polar;
 	}
