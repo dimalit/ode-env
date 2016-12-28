@@ -20,7 +20,7 @@
 class E4ConfigWidget: public EXConfigWidget{
 public:
 	typedef E4Config Config;
-	E4ConfigWidget(const Config* cfg):EXConfigWidget(cfg){}
+	E4ConfigWidget(const Config* cfg):EXConfigWidget(cfg?cfg:new E4Config()){}
 };
 
 class E4PetscSolverConfigWidget: public EXPetscSolverConfigWidget{
