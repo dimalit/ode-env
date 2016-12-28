@@ -515,3 +515,91 @@ void MessageChart::on_restore_clicked(){
 	gnuplot->restore();
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+EXChartAnalyzer::EXChartAnalyzer(const OdeConfig* config) {
+	this->config = config->clone();
+
+	states_count = 0;
+
+	btn_add.set_label("Add chart");
+	vbox.pack_start(btn_add);
+	btn_add.signal_clicked().connect(sigc::mem_fun(*this, &EXChartAnalyzer::on_add_clicked));
+
+	btn_reset.set_label("Reset");
+	vbox.pack_start(btn_reset);
+	btn_reset.signal_clicked().connect(sigc::mem_fun(*this, &EXChartAnalyzer::reset));
+
+	this->add(vbox);
+}
+
+EXChartAnalyzer::~EXChartAnalyzer() {
+	for(int i=0; i<charts.size(); i++)
+		delete charts[i];
+	delete config;
+}
+
+int EXChartAnalyzer::getStatesCount(){
+	return states_count;
+}
+
+void EXChartAnalyzer::reset(){
+	states_count = 0;
+	for(int i=0; i<charts.size(); i++)
+		charts[i]->reset();
+}
+
+void EXChartAnalyzer::processState(const OdeState* state, const OdeState* d_state, double time){
+	const google::protobuf::Message* msg = dynamic_cast<const google::protobuf::Message*>(state);
+		assert(msg);
+	const google::protobuf::Message* d_msg = dynamic_cast<const google::protobuf::Message*>(d_state);
+		assert(d_msg);
+
+	for(int i=0; i<charts.size(); i++)
+		charts[i]->processMessage(msg, d_msg, time);
+}
+
+void EXChartAnalyzer::addChart(MessageChart* chart){
+	charts.push_back(chart);
+	vbox.pack_end(*chart, false, false, 20);
+}
+
+void EXChartAnalyzer::on_add_clicked(){
+	const google::protobuf::Message* msg = new_state();
+	ChartAddDialog* dialog = new ChartAddDialog(msg, true);
+	dialog->signal_cancel.connect(
+			sigc::bind(
+					sigc::mem_fun(*this, &EXChartAnalyzer::on_dialog_cancel),
+					dialog
+			)
+	);
+	dialog->signal_ok.connect(
+			sigc::bind(
+					sigc::mem_fun(*this, &EXChartAnalyzer::on_dialog_add_ok),
+					dialog
+			)
+	);
+
+	dialog->show_all();
+}
+
+void EXChartAnalyzer::on_dialog_add_ok(ChartAddDialog* dialog){
+	MessageChart* chart = new MessageChart(dialog->vars, NULL);
+	addChart(chart);
+	delete dialog;
+}
+
+void EXChartAnalyzer::on_dialog_cancel(ChartAddDialog* dialog){
+	delete dialog;
+}
+
+void EXChartAnalyzer::on_del_chart_clicked(const MessageChart* chart){
+	assert(chart);
+	for(int i=0; i<charts.size(); i++){
+		if(charts[i] == chart){
+			delete charts[i];
+			charts.erase(charts.begin()+i);
+			return;
+		}// if
+	}// for
+}

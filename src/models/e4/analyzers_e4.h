@@ -43,6 +43,34 @@ public:
 	}
 };
 
+class E4ChartAnalyzer: public EXChartAnalyzer {
+public:
+	typedef E4Config Config;
+	typedef E4State State;
+private:
+	std::vector<bool> chart_special_flags;
+	Gtk::Button btn_add_special;
+
+public:
+	E4ChartAnalyzer(const OdeConfig* config);
+	virtual void processState(const OdeState* state, const OdeState* d_state, double time);
+	virtual ~E4ChartAnalyzer();
+
+	static std::string getDisplayName(){
+		return "customized for E4 EXChartAnalyzer";
+	}
+
+	virtual void addChart(MessageChart* chart);
+	virtual void addSpecial(MessageChart* chart);
+
+private:
+	virtual ::google::protobuf::Message* new_state(){ return new E4State();}
+	void fill_spec_msg(const OdeState* state, const OdeState* d_state, pb::E4Special* spec_msg);
+
+	void on_add_special_clicked();
+	void on_dialog_add_special_ok(ChartAddDialog* dialog);
+};
+
 REGISTER_ANALYZER_WIDGET_CLASS(E4ConservationAnalyzer)
 REGISTER_ANALYZER_WIDGET_CLASS(E4ChartAnalyzer)
 

@@ -90,40 +90,14 @@ E4ConservationAnalyzer::~E4ConservationAnalyzer(){
 	delete config;
 }
 
-E4ChartAnalyzer::E4ChartAnalyzer(const OdeConfig* config) {
-	this->config = config->clone();
-
-	states_count = 0;
-
-	btn_add.set_label("Add chart");
-	vbox.pack_start(btn_add);
-	btn_add.signal_clicked().connect(sigc::mem_fun(*this, &E4ChartAnalyzer::on_add_clicked));
-
-	btn_reset.set_label("Reset");
-	vbox.pack_start(btn_reset);
-	btn_reset.signal_clicked().connect(sigc::mem_fun(*this, &E4ChartAnalyzer::reset));
-
+E4ChartAnalyzer::E4ChartAnalyzer(const OdeConfig* config):EXChartAnalyzer(config) {
 	btn_add_special.set_label("Add special");
 	vbox.pack_end(btn_add_special);
 	btn_add_special.signal_clicked().connect(sigc::mem_fun(*this, &E4ChartAnalyzer::on_add_special_clicked));
-
-	this->add(vbox);
 }
 
 E4ChartAnalyzer::~E4ChartAnalyzer() {
-	for(int i=0; i<charts.size(); i++)
-		delete charts[i];
-	delete config;
-}
 
-int E4ChartAnalyzer::getStatesCount(){
-	return states_count;
-}
-
-void E4ChartAnalyzer::reset(){
-	states_count = 0;
-	for(int i=0; i<charts.size(); i++)
-		charts[i]->reset();
 }
 
 void E4ChartAnalyzer::processState(const OdeState* state, const OdeState* d_state, double time){
@@ -155,25 +129,6 @@ void E4ChartAnalyzer::addSpecial(MessageChart* chart){
 	vbox.pack_end(*chart, false, false, 20);
 }
 
-void E4ChartAnalyzer::on_add_clicked(){
-	const google::protobuf::Message* msg = new E4State();
-	ChartAddDialog* dialog = new ChartAddDialog(msg, true);
-	dialog->signal_cancel.connect(
-			sigc::bind(
-					sigc::mem_fun(*this, &E4ChartAnalyzer::on_dialog_cancel),
-					dialog
-			)
-	);
-	dialog->signal_ok.connect(
-			sigc::bind(
-					sigc::mem_fun(*this, &E4ChartAnalyzer::on_dialog_add_ok),
-					dialog
-			)
-	);
-
-	dialog->show_all();
-}
-
 void E4ChartAnalyzer::on_add_special_clicked(){
 	const google::protobuf::Message* msg = new pb::E4Special();
 	ChartAddDialog* dialog = new ChartAddDialog(msg, false);
@@ -193,31 +148,10 @@ void E4ChartAnalyzer::on_add_special_clicked(){
 	dialog->show_all();
 }
 
-void E4ChartAnalyzer::on_dialog_add_ok(ChartAddDialog* dialog){
-	MessageChart* chart = new MessageChart(dialog->vars, NULL);
-	addChart(chart);
-	delete dialog;
-}
-
 void E4ChartAnalyzer::on_dialog_add_special_ok(ChartAddDialog* dialog){
 	MessageChart* chart = new MessageChart(dialog->vars, NULL);
 	addSpecial(chart);
 	delete dialog;
-}
-
-void E4ChartAnalyzer::on_dialog_cancel(ChartAddDialog* dialog){
-	delete dialog;
-}
-
-void E4ChartAnalyzer::on_del_chart_clicked(const MessageChart* chart){
-	assert(chart);
-	for(int i=0; i<charts.size(); i++){
-		if(charts[i] == chart){
-			delete charts[i];
-			charts.erase(charts.begin()+i);
-			return;
-		}// if
-	}// for
 }
 
 void E4ChartAnalyzer::fill_spec_msg(const OdeState* state, const OdeState* d_state, pb::E4Special* spec_msg){
@@ -301,4 +235,3 @@ void E4ChartAnalyzer::fill_spec_msg(const OdeState* state, const OdeState* d_sta
 		spec_msg->mutable_hist(i)->set_y(hist[i]);
 	}
 }
-
