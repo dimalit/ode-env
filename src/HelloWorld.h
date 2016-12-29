@@ -1,13 +1,9 @@
 #ifndef GTKMM_EXAMPLE_HELLOWORLD_H
 #define GTKMM_EXAMPLE_HELLOWORLD_H
 
-#include "models/e1/gui_e1.h"
-#include "models/e3/gui_e3.h"
-#include "models/e3/analyzers_e3.h"
-
+#include "models/e4/gui_e4.h"
+#include "models/e4/analyzers_e4.h"
 #include "RunThread.h"
-
-#include <common_components.h>
 
 #include <gtkmm/button.h>
 #include <gtkmm/radiobutton.h>
@@ -57,16 +53,14 @@ private:
   void on_reset_clicked();
   void on_cancel_clicked();
 
+  void on_plug_added();
+
   const OdeConfig* extract_config();
   const OdeState* extract_state();
   const OdeSolverConfig* extract_solver_config();
 
   const OdeState* state;
   const OdeState* d_state;
-
-  // for diagnostics
-  double sum_ia, sum_ib;
-  double sum_wa, sum_wb;
 
   // Member widgets:
   OdeConfigWidget* config_widget;
@@ -75,7 +69,7 @@ private:
 
   Gtk::Window win_analyzers;
   OdeAnalyzerWidget* analyzer_widget;
-  E3ChartAnalyzer* chart_analyzer;
+  E4ChartAnalyzer* chart_analyzer;
 
   Gtk::RadioButton *radio_time, *radio_steps;
   Gtk::Entry *entry_time, *entry_steps;
@@ -87,4 +81,4 @@ private:
   Gtk::HButtonBox button_box;
 };
 
-#endif // GTKMM_EXAMPLE_HELLOWORLD_H
+#endif

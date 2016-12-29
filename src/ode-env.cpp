@@ -1,4 +1,4 @@
-#include "HelloWorld2.h"
+#include "HelloWorld.h"
 #include "models/e1/model_e1.h"
 
 #include <goffice/goffice.h>
@@ -21,7 +21,7 @@ int main (int argc, char *argv[])
 	//go_plugins_init (NULL, NULL, NULL, NULL, TRUE, GO_TYPE_PLUGIN_LOADER_MODULE);
 	go_plugins_init(NULL, NULL,NULL,NULL,TRUE, G_TYPE_TYPE_MODULE);
 
-	HelloWorld2 helloworld;
+	HelloWorld helloworld;
 	kit.run(helloworld);
 
 	srand(time(NULL));

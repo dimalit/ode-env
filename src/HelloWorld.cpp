@@ -1,13 +1,3 @@
-/*
- ============================================================================
- Name        : ode-env.cpp
- Author      : dimalit
- Version     :
- Copyright   : 
- Description : Hello World in gtkmm
- ============================================================================
- */
-
 #include "HelloWorld.h"
 
 #include <gtkmm/main.h>
@@ -26,7 +16,7 @@
 HelloWorld::HelloWorld()
 :forever_button("Forever"), cancel_button("Cancel"), step_button("Step"), reset_button("Reset")
 {
-  problem_name = "model e3";
+  problem_name = "model e4";
 
   computing = false;
   run_thread = NULL;
@@ -34,9 +24,6 @@ HelloWorld::HelloWorld()
   total_steps = run_steps = 0;
   total_time = run_time = 0.0;
   last_refresh_time = 0.0;
-
-  sum_ia = 0.0; sum_ib = 0.0;
-  sum_wa = 0.0; sum_wb = 0.0;
 
   this->set_title(problem_name);
 
@@ -64,7 +51,7 @@ HelloWorld::HelloWorld()
   vbox.pack_start(*this->solver_config_widget, false, false, 0);
 
   state = this->generator_widget->getState();
-  d_state = new E3State(dynamic_cast<const E3Config*>(this->config_widget->getConfig()));
+  d_state = state->clone();//new E4State(dynamic_cast<const E4Config*>(this->config_widget->getConfig()));
 
   // simulator config //
   Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_RUN);
@@ -93,12 +80,14 @@ HelloWorld::HelloWorld()
   win_analyzers.add(*vb);
   win_analyzers.set_title(inst_widget_fact->getDisplayName() + " analyzers");
 
+  // this is table
   OdeAnalyzerWidgetType* analyzer_fact = *OdeAnalyzerWidgetManager::getInstance()->getTypesFor(inst_fact).first;
   this->analyzer_widget = analyzer_fact->createAnalyzerWidget(config_widget->getConfig());
   this->analyzer_widget->processState(state, d_state, 0.0);
   vb->pack_start(*analyzer_widget, false, false);
 
-  chart_analyzer = new E3ChartAnalyzer(config_widget->getConfig());
+  // these are charts with "add" button
+  chart_analyzer = new E4ChartAnalyzer(config_widget->getConfig());
   chart_analyzer->processState(state,  d_state, 0.0);
   vb->pack_start(*chart_analyzer, false, false);
 
@@ -124,26 +113,27 @@ HelloWorld::HelloWorld()
 
   Gtk::Window* win_diag = new Gtk::Window();
   vb = Gtk::manage(new Gtk::VBox());
+  win_diag->add(*vb);
 
   Gtk::Container* s1 = Gtk::manage(new Gtk::Alignment());
   Gtk::Container* s2 = Gtk::manage(new Gtk::Alignment());
-  Gtk::Container* s3 = Gtk::manage(new Gtk::Alignment());
+  //Gtk::Container* s3 = Gtk::manage(new Gtk::Alignment());
 
   vb->pack_start(*s1, true, true, 5);
   vb->pack_start(*s2, true, true, 5);
-  vb->pack_start(*s3, true, true, 5);
+
+  win_diag->set_title("Diagnostics");
+  win_diag->show_all();
 
   MessageChart *c1 = new MessageChart(std::vector<std::string>({"Wa","Wb", "aver_a_2", "e_2"}), s1);
   c1->setYRange(0, std::numeric_limits<double>::infinity());
   chart_analyzer->addSpecial(c1);
-  MessageChart *c2 = new MessageChart(std::vector<std::string>({"Na","Nb", "N", "M"}), s2);
-  chart_analyzer->addSpecial(c2);
-  MessageChart *c3 = new MessageChart(std::vector<std::string>({"e_2", "aver_a_2"}), s3);
-  chart_analyzer->addSpecial(c3);
 
-  win_diag->add(*vb);
-  win_diag->set_title("Diagnostics");
-  win_diag->show_all();
+  MessageChart *c2 = new MessageChart(std::vector<std::string>({"Na","Nb", "M"}), s2);
+  chart_analyzer->addSpecial(c2);
+
+//  MessageChart *c3 = new MessageChart(std::vector<std::string>({"e_2", "aver_a_2"}), s3);
+//  chart_analyzer->addSpecial(c3);
 
   Gnuplot::title_translation_map["Wa_aver"] = "W_{v,aver}";
   Gnuplot::title_translation_map["Wb_aver"] = "W_{n,aver}";
@@ -154,7 +144,7 @@ HelloWorld::HelloWorld()
   Gnuplot::title_translation_map["Nb"] = "N_{n}/N";
   Gnuplot::title_translation_map["N"] = "Nv/N+Nn/N";
   Gnuplot::title_translation_map["M"] = "Nv/N-Nn/N";
-  Gnuplot::title_translation_map["e_2"] = "e^2";
+  Gnuplot::title_translation_map["e_2"] = "E^2";
 }
 
 HelloWorld::~HelloWorld()
@@ -163,7 +153,7 @@ HelloWorld::~HelloWorld()
 
 void HelloWorld::on_config_changed()
 {
-	d_state = new E3State(dynamic_cast<const E3Config*>(config_widget->getConfig()));
+	d_state = state->clone();//new E4State(dynamic_cast<const E4Config*>(config_widget->getConfig()));
 	generator_widget->loadConfig(config_widget->getConfig());
 }
 void HelloWorld::on_state_changed(){
@@ -220,9 +210,6 @@ void HelloWorld::on_reset_clicked()
 	total_steps = 0;
 	total_time = 0.0;
 	last_refresh_time = 0.0;
-
-	sum_ia = 0.0; sum_ib = 0.0;
-	sum_wa = 0.0; sum_wb = 0.0;
 
 	show_steps_and_time();
 	this->chart_analyzer->reset();
@@ -317,4 +304,9 @@ void HelloWorld::stop_computing(){
 	run_thread->finish();
 	computing = false;
 	// all deletions will be done in one_run_completed_cb
+}
+
+void HelloWorld::on_plug_added(){
+	std::cerr << "added!!\n";
+	std::cerr.flush();
 }
