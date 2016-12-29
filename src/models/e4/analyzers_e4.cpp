@@ -118,15 +118,15 @@ void E4ChartAnalyzer::processState(const OdeState* state, const OdeState* d_stat
 }
 
 void E4ChartAnalyzer::addChart(MessageChart* chart){
-	charts.push_back(chart);
+	EXChartAnalyzer::addChart(chart);
 	chart_special_flags.push_back(false);
-	vbox.pack_end(*chart, false, false, 20);
 }
 
 void E4ChartAnalyzer::addSpecial(MessageChart* chart){
 	charts.push_back(chart);
 	chart_special_flags.push_back(true);
-	vbox.pack_end(*chart, false, false, 20);
+	vbox.pack_end(*chart, false, false, 1);
+	this->show_all();
 }
 
 void E4ChartAnalyzer::on_add_special_clicked(){
@@ -150,6 +150,9 @@ void E4ChartAnalyzer::on_add_special_clicked(){
 
 void E4ChartAnalyzer::on_dialog_add_special_ok(ChartAddDialog* dialog){
 	MessageChart* chart = new MessageChart(dialog->vars, NULL);
+	if(dialog->x_axis_var!="")
+		chart->setXAxisVar(dialog->x_axis_var);
+	chart->setPolar(dialog->polar);
 	addSpecial(chart);
 	delete dialog;
 }
