@@ -13,7 +13,7 @@
 
 #include <rpc.h>
 
-#include <../from_protoc/model_e4.pb.h>
+#include <../from_protoc/model_e4mm.pb.h>
 #include <google/protobuf/message.h>
 
 #include <gtkmm/builder.h>

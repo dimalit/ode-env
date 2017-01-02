@@ -75,7 +75,7 @@ public:
 	void addSpecial(MessageChart* chart);
 
 private:
-	void fill_spec_msg(const OdeState* state, const OdeState* d_state, pb::E4Special* spec_msg);
+	void fill_spec_msg(const OdeState* state, const OdeState* d_state, pb::E3Special* spec_msg);
 
 	void on_add_clicked();
 	void on_add_special_clicked();

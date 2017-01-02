@@ -146,7 +146,7 @@ void E3ChartAnalyzer::processState(const OdeState* state, const OdeState* d_stat
 	const google::protobuf::Message* d_msg = dynamic_cast<const google::protobuf::Message*>(d_state);
 		assert(d_msg);
 
-	pb::E4Special spec_msg;
+	pb::E3Special spec_msg;
 	fill_spec_msg(state, d_state, &spec_msg);
 
 	for(int i=0; i<charts.size(); i++){
@@ -234,7 +234,7 @@ void E3ChartAnalyzer::on_del_chart_clicked(const MessageChart* chart){
 	}// for
 }
 
-void E3ChartAnalyzer::fill_spec_msg(const OdeState* state, const OdeState* d_state, pb::E4Special* spec_msg){
+void E3ChartAnalyzer::fill_spec_msg(const OdeState* state, const OdeState* d_state, pb::E3Special* spec_msg){
 	const E3State* estate = dynamic_cast<const E3State*>(state);
 	const E3State* dstate = dynamic_cast<const E3State*>(d_state);
 	const E3Config* config = dynamic_cast<const E3Config*>(this->config);

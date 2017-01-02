@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package pb;
+
+message AstroConfig{
+	required double theta = 1;
+	required double Gamma = 2;
+}
+
+message AstroState{
+	required double M = 1;
+	required double N_inc = 2;
+	required double N_c = 3;
+}
+
+message AstroSolverConfig{
+	required double step = 1;
+}

@@ -1,0 +1,43 @@
+syntax = "proto2";
+
+package pb;
+
+import "common.proto";
+
+message E4mmConfig{
+	required uint32 N = 1;
+	required uint32 n0 = 2;
+	required uint32 k = 3;
+	required double beta = 4;
+	optional double alpha = 5;
+	optional double s = 6;
+	optional double gamma_omega = 7;
+}
+
+message E4mmState{
+	repeated group Fields = 1{
+		required double E = 3;
+		required double phi = 4;	
+	}
+	repeated group Particles = 2{
+		required double a = 5;
+		required double psi = 6;
+		required double z = 7;
+	}	
+}
+
+message E4mmStateGeneratorConfig{
+	required double E0 = 1;
+	required double A0 = 2;
+}
+
+message E4mmModel{
+	required E4mmConfig pconfig = 1;
+	required E4mmState state = 2;
+	required EXPetscSolverConfig sconfig = 3;
+}
+
+message E4mmSolution{
+	required E4mmState state = 1;
+	optional E4mmState d_state = 2;
+}

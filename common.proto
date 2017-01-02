@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+package pb;
+
+message EXPetscSolverConfig{
+	optional double atol = 1;
+	optional double rtol = 2;
+	optional double init_step = 3;
+	optional int32 n_cores = 4;
+}

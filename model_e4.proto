@@ -2,6 +2,8 @@ syntax = "proto2";
 
 package pb;
 
+import "common.proto";
+
 message E4Config{
 	required uint32 N = 1;
 	optional double delta_0 = 2;
@@ -23,13 +25,6 @@ message E4StateGeneratorConfig{
 	required double E0 = 1;
 	required double phi0 = 2;
 	required double A0 = 3;
-}
-
-message EXPetscSolverConfig{
-	optional double atol = 1;
-	optional double rtol = 2;
-	optional double init_step = 3;
-	optional int32 n_cores = 4;
 }
 
 message E4Model{

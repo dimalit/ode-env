@@ -16,7 +16,7 @@
 HelloWorld::HelloWorld()
 :forever_button("Forever"), cancel_button("Cancel"), step_button("Step"), reset_button("Reset")
 {
-  problem_name = "model e4";
+  problem_name = "model e4 multi-mode";
 
   computing = false;
   run_thread = NULL;
@@ -86,10 +86,10 @@ HelloWorld::HelloWorld()
   this->analyzer_widget->processState(state, d_state, 0.0);
   vb->pack_start(*analyzer_widget, false, false);
 
-  // these are charts with "add" button
-  chart_analyzer = new E4ChartAnalyzer(config_widget->getConfig());
-  chart_analyzer->processState(state,  d_state, 0.0);
-  vb->pack_start(*chart_analyzer, false, false);
+//  // these are charts with "add" button
+//  chart_analyzer = new E4ChartAnalyzer(config_widget->getConfig());
+//  chart_analyzer->processState(state,  d_state, 0.0);
+//  vb->pack_start(*chart_analyzer, false, false);
 
   // signals //
 
@@ -110,7 +110,7 @@ HelloWorld::HelloWorld()
   win_analyzers.show_all();
 
   ///////// diagnostics ///////////
-
+/*
   Gtk::Window* win_diag = new Gtk::Window();
   vb = Gtk::manage(new Gtk::VBox());
   win_diag->add(*vb);
@@ -134,7 +134,7 @@ HelloWorld::HelloWorld()
 
 //  MessageChart *c3 = new MessageChart(std::vector<std::string>({"e_2", "aver_a_2"}), s3);
 //  chart_analyzer->addSpecial(c3);
-
+*/
   Gnuplot::title_translation_map["Wa_aver"] = "W_{v,aver}";
   Gnuplot::title_translation_map["Wb_aver"] = "W_{n,aver}";
   Gnuplot::title_translation_map["Wa"] = "W_v";

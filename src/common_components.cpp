@@ -31,7 +31,7 @@ EXPetscSolverConfig::EXPetscSolverConfig(){
 }
 
 // XXX: whis should read like E4...if we use more than 1 specialization?
-const char* EXPetscSolver::ts_path = " ../ts4/Debug/ts4";
+const char* EXPetscSolver::ts_path = " ../ts4mm/Debug/ts4mm";
 
 EXPetscSolver::EXPetscSolver(const EXPetscSolverConfig* scfg, const OdeConfig* pcfg, const OdeState* init_state){
 	time_passed = 0;
@@ -85,7 +85,7 @@ void EXPetscSolver::run(int steps, double time, bool use_step){
 //	int tmp = open("tmp", O_WRONLY | O_CREAT, 0664);
 //	state->PrintDebugString();
 
-	pb::E4Model all;
+	pb::E4mmModel all;
 	all.mutable_sconfig()->CopyFrom(*sconfig);
 	all.mutable_pconfig()->CopyFrom(*pconfig);
 	all.mutable_state()->CopyFrom(*state);
@@ -148,7 +148,7 @@ bool EXPetscSolver::read_results(){
 //	printf("%d %lf %s\n", steps_passed, time_passed, sconfig->model().c_str());
 //	fflush(stdout);
 
-	pb::E4Solution sol;
+	pb::E4mmSolution sol;
 	extern void parse_with_prefix(google::protobuf::Message& msg, FILE* fp);
 	parse_with_prefix(sol, rf);
 
