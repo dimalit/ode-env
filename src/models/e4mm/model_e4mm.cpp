@@ -13,6 +13,7 @@ E4mmConfig::E4mmConfig(){
 	set_beta(5);
 	set_k(3);
 	set_alpha(0);
+	set_s(1.0);
 	set_gamma_omega(0.0);			// TODO: not implemented!!
 }
 

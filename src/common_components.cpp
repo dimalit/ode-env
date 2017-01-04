@@ -84,6 +84,8 @@ void EXPetscSolver::run(int steps, double time, bool use_step){
 
 //	int tmp = open("tmp", O_WRONLY | O_CREAT, 0664);
 //	state->PrintDebugString();
+//	wf = fopen("all.tmp", "wb");
+
 
 	pb::E4mmModel all;
 	all.mutable_sconfig()->CopyFrom(*sconfig);

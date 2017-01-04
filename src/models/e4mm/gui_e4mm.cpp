@@ -90,8 +90,10 @@ void E4mmStateGeneratorWidget::newState(bool emit){
 	for(int j=0; j<2*k+1; j++){
 		double n = n0 - k + j;
 
-		state->mutable_fields(j)->set_e(e0/s/sqrt(M_PI)*exp( - (n-n0)*(n-n0) / (s*s) ));
-		state->mutable_fields(j)->set_phi(rand()/(double)RAND_MAX*2*M_PI);
+		double e = e0/s/sqrt(M_PI)*exp( - (n-n0)*(n-n0) / (s*s) );
+		double phi = rand()/(double)RAND_MAX*2*M_PI;
+		state->mutable_fields(j)->set_e(e);
+		state->mutable_fields(j)->set_phi(phi);
 	}
 
 	if(emit)
