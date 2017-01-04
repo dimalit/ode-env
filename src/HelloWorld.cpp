@@ -164,7 +164,7 @@ void HelloWorld::show_new_state()
 {
 	analyzer_widget->loadConfig(config_widget->getConfig());
 	analyzer_widget->processState(state, d_state, this->total_time);
-	chart_analyzer->processState(state, d_state, this->total_time);
+//	chart_analyzer->processState(state, d_state, this->total_time);
 }
 
 const OdeConfig* HelloWorld::extract_config(){
@@ -212,7 +212,7 @@ void HelloWorld::on_reset_clicked()
 	last_refresh_time = 0.0;
 
 	show_steps_and_time();
-	this->chart_analyzer->reset();
+//	this->chart_analyzer->reset();
 }
 
 void HelloWorld::on_cancel_clicked()

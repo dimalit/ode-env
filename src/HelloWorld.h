@@ -69,7 +69,7 @@ private:
 
   Gtk::Window win_analyzers;
   OdeAnalyzerWidget* analyzer_widget;
-  E4ChartAnalyzer* chart_analyzer;
+//  E4ChartAnalyzer* chart_analyzer;
 
   Gtk::RadioButton *radio_time, *radio_steps;
   Gtk::Entry *entry_time, *entry_steps;
