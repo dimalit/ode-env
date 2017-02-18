@@ -104,7 +104,7 @@
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">0</property>
-        <property name="width">2</property>
+        <property name="width">4</property>
       </packing>
     </child>
     <child>
@@ -164,6 +164,7 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">1</property>
+        <property name="width">3</property>
       </packing>
     </child>
     <child>
@@ -179,6 +180,7 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">2</property>
+        <property name="width">3</property>
       </packing>
     </child>
     <child>
@@ -195,6 +197,7 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">3</property>
+        <property name="width">3</property>
       </packing>
     </child>
     <child>
@@ -211,6 +214,71 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">4</property>
+        <property name="width">3</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="label3">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">aver_x</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">5</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkEntry" id="entry_aver_x">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">5</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="label6">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">aver_y</property>
+      </object>
+      <packing>
+        <property name="left_attach">2</property>
+        <property name="top_attach">5</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkEntry" id="entry_aver_y">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+      </object>
+      <packing>
+        <property name="left_attach">3</property>
+        <property name="top_attach">5</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="label_cm_r">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">cm_r</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">6</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkEntry" id="entry_cm_r">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">6</property>
+        <property name="width">3</property>
       </packing>
     </child>
   </object>

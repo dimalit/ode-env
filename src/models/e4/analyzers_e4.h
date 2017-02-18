@@ -29,7 +29,8 @@ private:
 	Gtk::TreeView *treeview1;
 	Glib::RefPtr<Gtk::ListStore> liststore1;
 	Gtk::Entry *entry_int1, *entry_int2;
-	Gtk::Entry *entry_e, *entry_phi;
+	Gtk::Entry *entry_aver_x, *entry_aver_y;
+	Gtk::Entry *entry_e, *entry_phi, *entry_cm_r;
 public:
 	E4ConservationAnalyzer(const E4Config* config);
 	virtual void loadConfig(const OdeConfig* config);

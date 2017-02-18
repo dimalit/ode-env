@@ -27,6 +27,10 @@ E4ConservationAnalyzer::E4ConservationAnalyzer(const E4Config* config){
 	b->get_widget("entry_e", entry_e);
 	b->get_widget("entry_phi", entry_phi);
 
+	b->get_widget("entry_aver_x", entry_aver_x);
+	b->get_widget("entry_aver_y", entry_aver_y);
+	b->get_widget("entry_cm_r", entry_cm_r);
+
 	b->get_widget("treeview1", treeview1);
 	liststore1 = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b->get_object("liststore1"));
 
@@ -50,6 +54,8 @@ void E4ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 	liststore1->clear();
 
 	double sum_a_2 = 0;
+	double sum_x = 0, sum_y = 0;
+
 	for(int i=0; i<estate->particles_size(); i++){
 		E4State::Particles p = estate->particles(i);
 
@@ -60,6 +66,8 @@ void E4ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 		it->set_value(3, p.delta());
 
 		sum_a_2 += p.a()*p.a();
+		sum_x += p.a()*cos(p.psi()-p.z());
+		sum_y += p.a()*sin(p.psi()-p.z());
 	}
 
 	std::ostringstream buf;
@@ -77,6 +85,18 @@ void E4ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 	buf.str("");
 	buf << estate->phi();
 	entry_phi->set_text(buf.str());
+
+	buf.str("");
+	buf << sum_x/estate->particles_size();
+	entry_aver_x->set_text(buf.str());
+
+	buf.str("");
+	buf << sum_y/estate->particles_size();
+	entry_aver_y->set_text(buf.str());
+
+	buf.str("");
+	buf << sqrt(sum_x*sum_x + sum_y*sum_y)/estate->particles_size();
+	entry_cm_r->set_text(buf.str());
 
 	++states_count;
 	last_update = ::time(NULL);
