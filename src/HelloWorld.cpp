@@ -16,7 +16,7 @@
 HelloWorld::HelloWorld()
 :forever_button("Forever"), cancel_button("Cancel"), step_button("Step"), reset_button("Reset")
 {
-  problem_name = "model e4 multi-mode";
+  problem_name = "model e4";
 
   computing = false;
   run_thread = NULL;
@@ -81,10 +81,15 @@ HelloWorld::HelloWorld()
   win_analyzers.set_title(inst_widget_fact->getDisplayName() + " analyzers");
 
   // this is table
-  OdeAnalyzerWidgetType* analyzer_fact = *OdeAnalyzerWidgetManager::getInstance()->getTypesFor(inst_fact).first;
-  this->analyzer_widget = analyzer_fact->createAnalyzerWidget(config_widget->getConfig());
-  this->analyzer_widget->processState(state, d_state, 0.0);
-  vb->pack_start(*analyzer_widget, false, false);
+  auto anafacts = OdeAnalyzerWidgetManager::getInstance()->getTypesFor(inst_fact);
+  for(OdeAnalyzerWidgetManager::TypeIterator i=anafacts.first; i!=anafacts.second; ++i){
+	  OdeAnalyzerWidgetType* analyzer_fact = *i;
+	  OdeAnalyzerWidget* analyzer_widget = analyzer_fact->createAnalyzerWidget(config_widget->getConfig());
+	  analyzer_widget->processState(state, d_state, 0.0);
+	  vb->pack_start(*analyzer_widget, false, false);
+	  //TODO: gracefully delete all of them!
+	  this->analyzer_widgets.push_back(analyzer_widget);
+  }
 
 //  // these are charts with "add" button
 //  chart_analyzer = new E4ChartAnalyzer(config_widget->getConfig());
@@ -162,8 +167,10 @@ void HelloWorld::on_state_changed(){
 }
 void HelloWorld::show_new_state()
 {
-	analyzer_widget->loadConfig(config_widget->getConfig());
-	analyzer_widget->processState(state, d_state, this->total_time);
+	for(auto i=analyzer_widgets.begin(); i!=analyzer_widgets.end(); ++i){
+		(*i)->loadConfig(config_widget->getConfig());
+		(*i)->processState(state, d_state, this->total_time);
+	}
 //	chart_analyzer->processState(state, d_state, this->total_time);
 }
 

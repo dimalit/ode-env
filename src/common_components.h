@@ -56,9 +56,10 @@ public:
 	EXPetscSolverConfig();
 };
 
+template<class AllModel, class ESolution>
 class EXPetscSolver: public OdeSolver{
 public:
-	static const char* ts_path;
+	virtual const char* ts_path() = 0;
 
 public:
 	EXPetscSolver(const EXPetscSolverConfig*, const OdeConfig*, const OdeState*);
@@ -303,5 +304,151 @@ protected:
 	void on_dialog_add_ok(ChartAddDialog* dialog);
 	void on_dialog_cancel(ChartAddDialog* dialog);
 };
+
+template<class AllModel, class ESolution>
+EXPetscSolver<AllModel, ESolution>::EXPetscSolver(const EXPetscSolverConfig* scfg, const OdeConfig* pcfg, const OdeState* init_state){
+	time_passed = 0;
+	steps_passed = 0;
+
+	pconfig = pcfg->clone();
+	sconfig = new EXPetscSolverConfig(*scfg);
+	state = init_state->clone();
+	// TODO Here ws just new State. Make virtual New function?
+	d_state = init_state->clone();
+}
+
+template<class AllModel, class ESolution>
+EXPetscSolver<AllModel, ESolution>::~EXPetscSolver(){
+	if(wf){
+		fputc('f', wf);
+		fflush(wf);
+	}
+	delete state;
+	delete sconfig;
+	delete pconfig;
+}
+
+// TODO: create universal base class for PETSc solvers - so not to copypaste!
+// TODO: 1 universal code from TS solving?! (not to write it again and again!?)
+template<class AllModel, class ESolution>
+void EXPetscSolver<AllModel, ESolution>::run(int steps, double time, bool use_step){
+//	printf("run started\n");
+//	fflush(stdout);
+
+	::google::protobuf::Message* pconfig = dynamic_cast<::google::protobuf::Message*>(this->pconfig);
+	::google::protobuf::Message* state = dynamic_cast<::google::protobuf::Message*>(this->state);
+
+	static int run_cnt = 0;
+	run_cnt++;
+
+	int n_cores = 1;
+	if(this->sconfig->has_n_cores())
+		n_cores = this->sconfig->n_cores();
+	std::ostringstream cmd_stream;
+//	cmd_stream << "mpiexec -n "<< n_cores << " --host 192.168.0.101 ./Debug/ts3";
+//	cmd_stream << "mpiexec -n "<< n_cores << " --host 10.0.0.205 /home/dimalit/workspace/ts3/Debug/ts3";
+	cmd_stream << "mpiexec -n "<< n_cores << ts_path();// << " -info info.log";
+
+	std::string cmd = cmd_stream.str();
+	if(use_step)
+		cmd += " use_step";
+	int rfd, wfd;
+	child = rpc_call(cmd.c_str(), &rfd, &wfd);
+	rf = fdopen(rfd, "rb");
+	wf = fdopen(wfd, "wb");
+
+//	int tmp = open("tmp", O_WRONLY | O_CREAT, 0664);
+//	state->PrintDebugString();
+//	wf = fopen("all.tmp", "wb");
+
+
+	// TODO: send them as two separate messages - and remove AllModel!!
+	AllModel all;
+	all.mutable_sconfig()->CopyFrom(*sconfig);
+	all.mutable_pconfig()->CopyFrom(*pconfig);
+	all.mutable_state()->CopyFrom(*state);
+
+	int size = all.ByteSize();
+
+	int ok;
+	ok = fwrite(&size, sizeof(size), 1, wf);
+		assert(ok == 1);
+
+	fflush(wf);
+	all.SerializeToFileDescriptor(fileno(wf));
+
+	ok = fwrite(&steps, sizeof(steps), 1, wf);
+		assert(ok == 1);
+	ok = fwrite(&time, sizeof(time), 1, wf);
+		assert(ok == 1);
+	fflush(wf);
+
+	if(!use_step){		// just final step
+		bool res = read_results();
+			assert(res==true);		// last
+		waitpid(child, 0, 0);
+		fclose(rf); rf = NULL;
+		fclose(wf); wf = NULL;
+	}
+}
+
+template<class AllModel, class ESolution>
+bool EXPetscSolver<AllModel, ESolution>::step(){
+	if(waitpid(child, 0, WNOHANG)!=0){
+		fclose(rf); rf = NULL;
+		fclose(wf); wf = NULL;
+		return false;
+	}
+
+	fputc('s', wf);
+	fflush(wf);
+
+	if(!read_results()){
+		// TODO: will it ever run? (see waitpid above)
+		waitpid(child, 0, 0);		// was before read - here for tests
+		fclose(rf); rf = NULL;
+		fclose(wf); wf = NULL;
+		return false;
+	}
+	return true;
+}
+
+template<class AllModel, class ESolution>
+bool EXPetscSolver<AllModel, ESolution>::read_results(){
+	int ok;
+	ok = fread(&steps_passed, sizeof(steps_passed), 1, rf);
+	// TODO: read=0 no longer works with mpiexec (process isn't zombie)
+	if(ok==0)
+		return false;
+	else
+		assert(ok == 1);
+	ok = fread(&time_passed, sizeof(time_passed), 1, rf);
+		assert(ok == 1);
+
+//	printf("%d %lf %s\n", steps_passed, time_passed, sconfig->model().c_str());
+//	fflush(stdout);
+
+	// TODO: unpair this to two separate messages too!!
+	ESolution sol;
+	extern void parse_with_prefix(google::protobuf::Message& msg, FILE* fp);
+	parse_with_prefix(sol, rf);
+
+//	sol.state().PrintDebugString();
+//	fflush(stdout);
+
+
+	::google::protobuf::Message* state = dynamic_cast<::google::protobuf::Message*>(this->state);
+	::google::protobuf::Message* d_state = dynamic_cast<::google::protobuf::Message*>(this->d_state);
+
+	state->CopyFrom(sol.state());
+	d_state->CopyFrom(sol.d_state());
+	return true;
+}
+
+template<class AllModel, class ESolution>
+void EXPetscSolver<AllModel, ESolution>::finish(){
+	fputc('f', wf);
+	fflush(wf);
+}
 
 #endif /* COMMON_COMPONENTS_H_ */

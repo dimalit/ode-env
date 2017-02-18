@@ -68,7 +68,7 @@ private:
   OdeSolverConfigWidget* solver_config_widget;
 
   Gtk::Window win_analyzers;
-  OdeAnalyzerWidget* analyzer_widget;
+  std::vector<OdeAnalyzerWidget*> analyzer_widgets;
 //  E4ChartAnalyzer* chart_analyzer;
 
   Gtk::RadioButton *radio_time, *radio_steps;

@@ -37,11 +37,15 @@ public:
 	}
 };
 
-class E4mmPetscSolver: public EXPetscSolver{
+class E4mmPetscSolver: public EXPetscSolver<pb::E4mmModel, pb::E4mmSolution>{
 public:
 	typedef EXPetscSolverConfig SConfig;
 	typedef E4mmConfig PConfig;
 	typedef E4mmState State;
+
+	virtual const char* ts_path(){
+		return " ../ts4mm/Debug/ts4mm";
+	}
 
 	E4mmPetscSolver(const SConfig* sc, const PConfig* pc, const State* s):
 		EXPetscSolver(sc, pc, s){}
