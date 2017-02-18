@@ -74,12 +74,12 @@ std::string get_val(const Message* msg, const Message* d_msg, const std::string&
 	double val = refl->GetDouble(*msg, fd);
 
 	// HACK for model e4
-	if(var_name == "psi"){
-		const FieldDescriptor* fd2 = desc->FindFieldByName("z");
-		assert(fd2);
-		double val2 = refl->GetDouble(*msg, fd2);
-		val -= val2;
-	}
+//	if(var_name == "psi"){
+//		const FieldDescriptor* fd2 = desc->FindFieldByName("z");
+//		assert(fd2);
+//		double val2 = refl->GetDouble(*msg, fd2);
+//		val -= val2;
+//	}
 
 	return ((std::ostringstream&)(std::ostringstream() << val)).str();
 }

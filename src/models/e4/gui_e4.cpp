@@ -69,17 +69,14 @@ void E4StateGeneratorWidget::newState(bool emit){
 	double phi = sgc->phi0();
 	double a0 = sgc->a0();
 
-	bool use_rand = false;
-	double right = 2*M_PI;
-	double left = 0.0;
+//	double right = 2*M_PI;
+//	double left = 0.0;
 
 	int N = config->n();
 
-	double h = (right-left)/250;
-
 	for(int i=0; i<N; i++){
-		double psi = rand() / (double)RAND_MAX * (right-left) + left;
-		double z = i / (double)N * (right-left) + left;
+		double psi = rand() / (double)RAND_MAX * (2*M_PI) + 0;
+		double z = i / (double)N * (5*2*M_PI) + 0;
 		double delta = rand() / (double)RAND_MAX * (2*config->delta_0()) - config->delta_0();
 
 		pb::E4State::Particles p;
