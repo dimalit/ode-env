@@ -92,7 +92,33 @@ void E4StateGeneratorWidget::newState(bool emit){
 	state->set_e(e);
 	state->set_phi(phi);
 
+	center_masses();
+
 	if(emit)
 		m_signal_changed();
 }
 
+void E4StateGeneratorWidget::center_masses(){
+	int N = config->n();
+
+	double sum_x = 0, sum_y = 0;
+
+	for(int i=0; i<N; i++){
+		E4State::Particles p = state->particles(i);
+
+		sum_x += p.a()*cos(p.psi()-p.z());
+		sum_y += p.a()*sin(p.psi()-p.z());
+	}
+
+	double dx = sum_x/N;
+	double dy = sum_y/N;
+
+	for(int i=0; i<N; i++){
+		E4State::Particles& p = *state->mutable_particles(i);
+
+		double scalar = dx*cos(p.psi()-p.z()) + dy*sin(p.psi()-p.z());
+		p.set_a(p.a()-scalar);
+		scalar = -dx*sin(p.psi()-p.z()) + dy*cos(p.psi()-p.z());
+		p.set_psi(p.psi()-scalar/p.a());
+	}
+}

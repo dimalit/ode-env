@@ -158,11 +158,12 @@ HelloWorld::~HelloWorld()
 
 void HelloWorld::on_config_changed()
 {
-	d_state = state->clone();//new E4State(dynamic_cast<const E4Config*>(config_widget->getConfig()));
 	generator_widget->loadConfig(config_widget->getConfig());
 }
 void HelloWorld::on_state_changed(){
 	this->state = generator_widget->getState();
+	// XXX: for state change from widget we need only dummy d_state. think about other cases
+	d_state = state->clone();//new E4State(dynamic_cast<const E4Config*>(config_widget->getConfig()));
 	show_new_state();
 }
 void HelloWorld::show_new_state()
