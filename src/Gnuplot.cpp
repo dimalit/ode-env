@@ -191,14 +191,15 @@ void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::
 					x *= 2.0*M_PI;
 
 				// draw or not?
-				x = x - floor(x/2.0/M_PI)*2.0*M_PI;
-				int x_pos = x/2.0/M_PI*100;
-				if(x_pos >= 100)
-					x_pos = 99;
-				if(is_particles && !polar && x_bits[x_pos])
-					continue;
-
-				x_bits[x_pos] = true;
+				// this was for limiting to 100 particles
+//				double xc = x - floor(x/2.0/M_PI)*2.0*M_PI;
+//				int x_pos = xc/2.0/M_PI*100;
+//				if(x_pos >= 100)
+//					x_pos = 99;
+//				if(is_particles && !polar && x_bits[x_pos])
+//					continue;
+//
+//				x_bits[x_pos] = true;
 			}// if not time :(
 			else{// x = i?
 				int x_pos = x/n*100;
