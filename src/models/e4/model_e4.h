@@ -44,7 +44,7 @@ public:
 	typedef E4State State;
 
 	virtual const char* ts_path(){
-		return " ../ts4/Debug/ts4";
+		return " ../ts4_new/Debug/ts4_new";
 	}
 
 	E4PetscSolver(const SConfig* sc, const PConfig* pc, const State* s):

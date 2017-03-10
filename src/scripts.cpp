@@ -13,7 +13,10 @@
 #include "Gnuplot.h"
 #include "MaxDetector.h"
 
+#include <gtkmm/main.h>
 #include <gtkmm/window.h>
+#include <glibmm/main.h>
+#include <glibmm/threads.h>
 #include <string>
 #include <sstream>
 #include <fstream>
@@ -914,7 +917,7 @@ void exp_4_gyro(){
 	}// for a0s and e0s
 }
 
-void exp_ts4_super_emission(){
+void exp_ts4_super_emission(int argc, char *argv[]){
 	string problem_name = "model e4";
 
 	Problem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
@@ -929,18 +932,19 @@ void exp_ts4_super_emission(){
 		scfg->set_n_cores(2);
 
 	vector<double> alphas, e0s;
-//	alphas.push_back(0.1);
-//	alphas.push_back(0.05);
+	alphas.push_back(0.1);
+	alphas.push_back(0.05);
+	alphas.push_back(0.03);
 	alphas.push_back(0.02);
 
 //	e0s.push_back(0.5);
 //	e0s.push_back(0.4);
 //	e0s.push_back(0.3);
-//	e0s.push_back(0.2);
-//	e0s.push_back(0.1);
+	e0s.push_back(0.2);
+	e0s.push_back(0.1);
 	e0s.push_back(0.05);
 	e0s.push_back(0.02);
-	e0s.push_back(0.01);
+//	e0s.push_back(0.01);
 
 	Gnuplot e_plot;
 		e_plot.addVar("E");
@@ -958,8 +962,30 @@ void exp_ts4_super_emission(){
 		a_plot.setPolar(true);
 		a_plot.setTitle("a|psi");
 
-	int counter = 21;
-	string dir = "exp_ts4_super_emission/";
+//	Gtk::Main kit(argc, argv);
+//
+//	// this is table
+//	std::vector<OdeAnalyzerWidget*> analyzer_widgets;
+//
+//	Gtk::Window win_analyzers;
+//	Gtk::VBox *vb = Gtk::manage(new Gtk::VBox());
+//	win_analyzers.add(*vb);
+//	win_analyzers.set_title("data table");
+//
+//	auto anafacts = OdeAnalyzerWidgetManager::getInstance()->getTypesFor(inst_fact);
+//	for(OdeAnalyzerWidgetManager::TypeIterator i=anafacts.first; i!=anafacts.second; ++i){
+//	  OdeAnalyzerWidgetType* analyzer_fact = *i;
+//	  OdeAnalyzerWidget* analyzer_widget = analyzer_fact->createAnalyzerWidget(pcfg);
+//	  vb->pack_start(*analyzer_widget, false, false);
+//	  //TODO: gracefully delete all of them!
+//	  analyzer_widgets.push_back(analyzer_widget);
+//	}
+//	win_analyzers.show_all();
+//	Glib::Threads::Thread* thread = Glib::Threads::Thread::create(sigc::ptr_fun<void>(&Gtk::Main::run));
+//	sleep(1);
+
+	int counter = 0;
+	string dir = "exp_ts4_new/";
 	mkdir(dir.c_str(), 0777);
 	FILE* fp = fopen((dir+"results.txt").c_str(), "ab");
 
@@ -974,12 +1000,12 @@ void exp_ts4_super_emission(){
 			E4State* init_state = dynamic_cast<E4State*>(inst_fact->createState(pcfg));
 			init_state->set_e(e0);
 			init_state->set_phi(0);
-			double right = M_PI, left = -M_PI;
 			for(int i=0; i<pcfg->n(); i++){
 				init_state->mutable_particles(i)->set_a(a0);
-				//double ksi = i / (double)pcfg->m() * (right-left) + left + rand()/(double)RAND_MAX*1e-4;
-				double psi = rand()/(double)RAND_MAX * (right-left) + left;
+				double z = i / (double)pcfg->n() * 5 + 0;
+				double psi = rand()/(double)RAND_MAX * (2*M_PI) + 0;
 				init_state->mutable_particles(i)->set_psi(psi);
+				init_state->mutable_particles(i)->set_z(z);
 			}
 			E4PetscSolver* solver = dynamic_cast<E4PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
 
@@ -1003,21 +1029,41 @@ void exp_ts4_super_emission(){
 				dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
 				time = solver->getTime();
 
+				const E4State* estate = dynamic_cast<const E4State*>(solver->getState());
+				double e = estate->e();
+
 				if(step % 10 == 0){
 					e_plot.processState(state_msg, dstate_msg, time);
 					phi_plot.processState(state_msg, dstate_msg, time);
 					a_plot.processState(state_msg, dstate_msg, time);
-				}
 
-				const E4State* estate = dynamic_cast<const E4State*>(solver->getState());
-				double e = estate->e();
+//					for(auto i=analyzer_widgets.begin(); i!=analyzer_widgets.end(); ++i){
+//						(*i)->loadConfig(pcfg);
+//						(*i)->processState(solver->getState(), solver->getDState(), time);
+//					}
+					//kit.iteration(true);
+
+					// integral!!
+					double sum_a_2 = 0;
+
+					for(int i=0; i<pcfg->n(); i++){
+						E4State::Particles p = estate->particles(i);
+						sum_a_2 += p.a()*p.a();
+					}
+
+					std::ostringstream buf;
+					buf.setf( std::ios::fixed, std:: ios::floatfield );
+					buf.precision(10);
+
+					fprintf(stderr, "%.10lf\n", e*e+1.0/pcfg->n()*sum_a_2);
+				}
 
 				if(md1.push(e))
 					md2.push(md1.get(1));
 
 				if(md2.hasMax() && e > 0.3 && e > e0*1.1){
 					std::ostringstream dir;
-					dir << "exp_ts4_super_emission/" << counter << "/";
+					dir << "exp_ts4_new/" << counter << "/";
 					mkdir(dir.str().c_str(), 0777);
 
 					a_plot.saveSerie(0, dir.str() + "/a.csv", state_msg, dstate_msg, time);
@@ -1031,7 +1077,7 @@ void exp_ts4_super_emission(){
 			}//for steps
 
 			std::ostringstream dir;
-			dir << "exp_ts4_super_emission/" << (counter-1) << "/";
+			dir << "exp_ts4_new/" << (counter-1) << "/";
 
 			e_plot.saveSerie(0, dir.str() + "/e.csv");
 			phi_plot.saveSerie(0, dir.str() + "/phi.csv");

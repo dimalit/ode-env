@@ -66,8 +66,8 @@ void E4ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 		it->set_value(3, p.delta());
 
 		sum_a_2 += p.a()*p.a();
-		sum_x += p.a()*cos(p.psi()-p.z());
-		sum_y += p.a()*sin(p.psi()-p.z());
+		sum_x += p.a()*cos(p.psi()-2*M_PI*p.z());
+		sum_y += p.a()*sin(p.psi()-2*M_PI*p.z());
 	}
 
 	std::ostringstream buf;

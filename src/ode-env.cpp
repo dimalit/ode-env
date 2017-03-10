@@ -10,7 +10,7 @@ extern void exp_gamma2e();
 extern void exp_r2e();
 extern void as_in_book();
 extern void exp_4_gyro();
-extern void exp_ts4_super_emission();
+extern void exp_ts4_super_emission(int argc, char *argv[]);
 
 int main (int argc, char *argv[])
 {
@@ -24,7 +24,6 @@ int main (int argc, char *argv[])
 	HelloWorld helloworld;
 	kit.run(helloworld);
 
-	srand(time(NULL));
 //	exp_6_images();
 //	exp_random_init_R3();
 //	exp_r2e();
@@ -32,7 +31,7 @@ int main (int argc, char *argv[])
 //	as_in_book();
 
 //	exp_4_gyro();
-//	exp_ts4_super_emission();
+//	exp_ts4_super_emission(argc, argv);
 
 /*
 	E1InstanceFactory* eif = E1InstanceFactory::getInstance();

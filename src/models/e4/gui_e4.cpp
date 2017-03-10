@@ -76,11 +76,11 @@ void E4StateGeneratorWidget::newState(bool emit){
 
 	for(int i=0; i<N; i++){
 		double psi = rand() / (double)RAND_MAX * (2*M_PI) + 0;
-		double z = i / (double)N * (5*2*M_PI) + 0;
+		double z = i / (double)N * 5 + 0;
 		double delta = rand() / (double)RAND_MAX * (2*config->delta_0()) - config->delta_0();
 
 		pb::E4State::Particles p;
-		p.set_a(a0);
+		p.set_a(a0);//+0.1*sin(psi-2*M_PI*z));
 		//p.set_a(a0*(1.0+0.2*sin(int(psi-z+phi))));
 		p.set_psi(psi);
 		p.set_z(z);
@@ -92,7 +92,7 @@ void E4StateGeneratorWidget::newState(bool emit){
 	state->set_e(e);
 	state->set_phi(phi);
 
-	center_masses();
+//	center_masses();
 
 	if(emit)
 		m_signal_changed();
@@ -106,8 +106,8 @@ void E4StateGeneratorWidget::center_masses(){
 	for(int i=0; i<N; i++){
 		E4State::Particles p = state->particles(i);
 
-		sum_x += p.a()*cos(p.psi()-p.z());
-		sum_y += p.a()*sin(p.psi()-p.z());
+		sum_x += p.a()*cos(p.psi()-2*M_PI*p.z());
+		sum_y += p.a()*sin(p.psi()-2*M_PI*p.z());
 	}
 
 	double dx = sum_x/N;
@@ -116,9 +116,9 @@ void E4StateGeneratorWidget::center_masses(){
 	for(int i=0; i<N; i++){
 		E4State::Particles& p = *state->mutable_particles(i);
 
-		double scalar = dx*cos(p.psi()-p.z()) + dy*sin(p.psi()-p.z());
+		double scalar = dx*cos(p.psi()-2*M_PI*p.z()) + dy*sin(p.psi()-2*M_PI*p.z());
 		p.set_a(p.a()-scalar);
-		scalar = -dx*sin(p.psi()-p.z()) + dy*cos(p.psi()-p.z());
+		scalar = -dx*sin(p.psi()-2*M_PI*p.z()) + dy*cos(p.psi()-2*M_PI*p.z());
 		p.set_psi(p.psi()-scalar/p.a());
 	}
 }

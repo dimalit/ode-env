@@ -78,7 +78,7 @@ std::string get_val(const Message* msg, const Message* d_msg, const std::string&
 		const FieldDescriptor* fd2 = desc->FindFieldByName("z");
 		assert(fd2);
 		double val2 = refl->GetDouble(*msg, fd2);
-		val -= val2;
+		val -= 2*M_PI*val2;
 	}
 
 	return ((std::ostringstream&)(std::ostringstream() << val)).str();

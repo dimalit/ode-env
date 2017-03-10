@@ -119,6 +119,13 @@ class E4Config : public ::google::protobuf::Message {
   inline double alpha() const;
   inline void set_alpha(double value);
 
+  // optional double E0 = 4;
+  inline bool has_e0() const;
+  inline void clear_e0();
+  static const int kE0FieldNumber = 4;
+  inline double e0() const;
+  inline void set_e0(double value);
+
   // @@protoc_insertion_point(class_scope:pb.E4Config)
  private:
   inline void set_has_n();
@@ -127,6 +134,8 @@ class E4Config : public ::google::protobuf::Message {
   inline void clear_has_delta_0();
   inline void set_has_alpha();
   inline void clear_has_alpha();
+  inline void set_has_e0();
+  inline void clear_has_e0();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -134,6 +143,7 @@ class E4Config : public ::google::protobuf::Message {
   mutable int _cached_size_;
   double delta_0_;
   double alpha_;
+  double e0_;
   ::google::protobuf::uint32 n_;
   friend void  protobuf_AddDesc_model_5fe4_2eproto();
   friend void protobuf_AssignDesc_model_5fe4_2eproto();
@@ -1032,6 +1042,30 @@ inline void E4Config::set_alpha(double value) {
   set_has_alpha();
   alpha_ = value;
   // @@protoc_insertion_point(field_set:pb.E4Config.alpha)
+}
+
+// optional double E0 = 4;
+inline bool E4Config::has_e0() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void E4Config::set_has_e0() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void E4Config::clear_has_e0() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void E4Config::clear_e0() {
+  e0_ = 0;
+  clear_has_e0();
+}
+inline double E4Config::e0() const {
+  // @@protoc_insertion_point(field_get:pb.E4Config.E0)
+  return e0_;
+}
+inline void E4Config::set_e0(double value) {
+  set_has_e0();
+  e0_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4Config.E0)
 }
 
 // -------------------------------------------------------------------

@@ -220,7 +220,9 @@ void HelloWorld::on_reset_clicked()
 	last_refresh_time = 0.0;
 
 	show_steps_and_time();
-//	this->chart_analyzer->reset();
+	for(auto i=analyzer_widgets.begin(); i!=analyzer_widgets.end(); ++i){
+		(*i)->reset();
+	}
 }
 
 void HelloWorld::on_cancel_clicked()

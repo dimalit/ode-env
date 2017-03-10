@@ -8,6 +8,7 @@ message E4Config{
 	required uint32 N = 1;
 	optional double delta_0 = 2;
 	optional double alpha = 3;
+	optional double E0 = 4;
 }
 
 message E4State{
