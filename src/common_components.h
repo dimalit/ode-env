@@ -42,10 +42,6 @@
 
 using namespace google::protobuf;
 
-#define UI_FILE "charts_add.glade"
-#define UI_FILE_STATE "src/models/e4/e4_state.glade"
-#define UI_FILE_PETSC_SOLVER "src/models/e4/e4_petsc_solver.glade"
-
 class EXPetscSolverConfig: public pb::EXPetscSolverConfig, public OdeSolverConfig{
 public:
 	virtual OdeSolverConfig* clone() const {
@@ -172,7 +168,7 @@ public:
 	virtual void loadConfig(const OdeSolverConfig* config);
 
 	static std::string getDisplayName(){
-		return "PETSc solver for E4 config widget";
+		return "PETSc solver for EX config widget";
 	}
 private:
 	void widget_to_config();

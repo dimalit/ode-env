@@ -10,6 +10,9 @@
 #include <sstream>
 #include <iostream>
 
+#define UI_FILE_CHARTS_ADD "charts_add.glade"
+#define UI_FILE_EX_PETSC_SOLVER "ex_petsc_solver.glade"
+
 std::string trim(const std::string& str,
                  const std::string& whitespace = " \t")
 {
@@ -230,7 +233,7 @@ EXPetscSolverConfigWidget::EXPetscSolverConfigWidget(const EXPetscSolverConfig* 
 	else
 		this->config = new EXPetscSolverConfig();
 
-	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_PETSC_SOLVER);
+	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_EX_PETSC_SOLVER);
 
 	Gtk::Widget* root;
 	b->get_widget("root", root);
@@ -288,7 +291,7 @@ ChartAddDialog::ChartAddDialog(const google::protobuf::Message* msg, bool show_d
 	this->msg = msg;
 	this->set_modal(true);
 
-	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE);
+	Glib::RefPtr<Gtk::Builder> b = Gtk::Builder::create_from_file(UI_FILE_CHARTS_ADD);
 
 	Gtk::Widget* root;
 	b->get_widget("root", root);
