@@ -16,7 +16,7 @@
 HelloWorld::HelloWorld()
 :forever_button("Forever"), cancel_button("Cancel"), step_button("Step"), reset_button("Reset")
 {
-  problem_name = "model e42m";
+  problem_name = "model e42mc";
 
   computing = false;
   run_thread = NULL;

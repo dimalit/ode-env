@@ -16,19 +16,6 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-void parse_with_prefix(google::protobuf::Message& msg, FILE* fp){
-	int size;
-	int ok = fread(&size, sizeof(size), 1, fp);
-	assert(ok == 1);
-
-	//TODO:without buffer cannot read later bytes
-	char *buf = (char*)malloc(size);
-	ok = fread(buf, 1, size, fp);
-		assert(ok==size);
-	msg.ParseFromArray(buf, size);
-	free(buf);
-}
-
 E3Config::E3Config(){
 	set_m(1000);
 	set_n(1.0);
@@ -185,6 +172,7 @@ bool E3PetscSolver::read_results(){
 //	fflush(stdout);
 
 	pb::E3Solution sol;
+	extern void parse_with_prefix(google::protobuf::Message& msg, FILE* fp);
 	parse_with_prefix(sol, rf);
 	sol.mutable_state()->set_simulated(true);
 	sol.mutable_d_state()->set_simulated(true);

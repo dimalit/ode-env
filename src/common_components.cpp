@@ -26,6 +26,19 @@ std::string trim(const std::string& str,
     return str.substr(strBegin, strRange);
 }
 
+void parse_with_prefix(google::protobuf::Message& msg, FILE* fp){
+	int size;
+	int ok = fread(&size, sizeof(size), 1, fp);
+	assert(ok == 1);
+
+	//TODO:without buffer cannot read later bytes
+	char *buf = (char*)malloc(size);
+	ok = fread(buf, 1, size, fp);
+		assert(ok==size);
+	msg.ParseFromArray(buf, size);
+	free(buf);
+}
+
 EXPetscSolverConfig::EXPetscSolverConfig(){
 	set_atol(1e-6);
 	set_rtol(1e-6);
