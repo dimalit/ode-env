@@ -10,9 +10,9 @@ E42mcStateGeneratorWidget::E42mcStateGeneratorWidget(const E42mcConfig* _config)
 
 	// TODO: may be state should remember its config?!
 	pb::E42mcStateGeneratorConfig* sgc = new pb::E42mcStateGeneratorConfig();
-	sgc->set_e_p0(0.01);
+	sgc->set_e_p0(0.1);
 	sgc->set_phi_p0(0.0);
-	sgc->set_e_m0(0.01);
+	sgc->set_e_m0(0.1);
 	sgc->set_phi_m0(0.0);
 	sgc->set_a0(1.0);
 	cfg_widget.setData(sgc);

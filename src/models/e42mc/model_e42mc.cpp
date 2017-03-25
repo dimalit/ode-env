@@ -3,7 +3,7 @@
 E42mcConfig::E42mcConfig(){
 	set_n(1000);
 	set_delta_0(0);
-	set_alpha(0);
+	set_alpha(0.1);
 }
 
 E42mcState::E42mcState(){
