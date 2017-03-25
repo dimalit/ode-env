@@ -20,7 +20,8 @@ E42mcState::E42mcState(const E42mcConfig* config){
 		this->mutable_particles(i)->set_x(1);
 		this->mutable_particles(i)->set_y(0.0);
 		this->mutable_particles(i)->set_z(0.0);
-		this->mutable_particles(i)->set_delta(0.0);
+		this->mutable_particles(i)->set_xn(0.0);
+		this->mutable_particles(i)->set_yn(0.0);
 	}
 	set_x_p(0.001);
 	set_y_p(0.0);

@@ -76,7 +76,8 @@ void E42mcConservationAnalyzer::processState(const OdeState* state, const OdeSta
 		it->set_value(0, mod(p.x(), p.y()));
 		it->set_value(1, arg(p.x(), p.y()));
 		it->set_value(2, p.z());
-		it->set_value(3, p.delta());
+		it->set_value(3, mod(p.xn(), p.yn()));
+		it->set_value(4, arg(p.xn(), p.yn()));
 
 		sum_a_2 += mod2(p.x(), p.y());
 	}

@@ -74,14 +74,15 @@ void E42mcStateGeneratorWidget::newState(bool emit){
 	for(int i=0; i<N; i++){
 		double psi = rand() / (double)RAND_MAX * (2*M_PI) + 0;
 		double z = i / (double)N * 5 + 0;
-		double delta = rand() / (double)RAND_MAX * (2*config->delta_0()) - config->delta_0();
+//		double delta = rand() / (double)RAND_MAX * (2*config->delta_0()) - config->delta_0();
 
 		pb::E42mcState::Particles p;
 		p.set_x(a0*cos(psi));//+0.1*sin(psi-2*M_PI*z));
 		//p.set_a(a0*(1.0+0.2*sin(int(psi-z+phi))));
 		p.set_y(a0*sin(psi));
 		p.set_z(z);
-		p.set_delta(delta);
+		p.set_xn(0);
+		p.set_yn(0);
 
 		state->mutable_particles(i)->CopyFrom(p);
 	}
