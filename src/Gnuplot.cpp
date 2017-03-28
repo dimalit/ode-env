@@ -49,6 +49,7 @@ Gnuplot::Gnuplot(int x_win_id) {
 	fprintf(to_gnuplot, "set encoding utf8\n");
 	fprintf(to_gnuplot, "symbol(z) = \"•✷+△♠□♣♥♦\"[int(z):int(z)]\n");
 	fprintf(to_gnuplot, "modf(x,m) = (x/m-floor(x/m))*m\n");
+	fprintf(to_gnuplot, "set view 0,90\n");
 	fflush(to_gnuplot);
 
 	update_view();
@@ -216,6 +217,16 @@ void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::
 //				plot_command << ", '-' with " << style << " title '" << title <<"'";
 //			}
 
+//			if(is_particles){
+//				x += atof(get_val(&refl->GetRepeatedMessage(*msg, fd1, i), NULL, "x").c_str());
+//				double yy;
+//				sscanf(y.c_str(), "%lf", &yy);
+//				yy += atof(get_val(&refl->GetRepeatedMessage(*msg, fd1, i), NULL, "y").c_str());
+//				stringstream ss;
+//				ss << yy;
+//				y = ss.str();
+//			}
+
 			if(polar)
 				out << x << " " << y;
 			else
@@ -229,6 +240,14 @@ void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::
 				else
 					out << " 1";
 			}
+
+			if(is_particles){
+				double z = atof(get_val(&refl->GetRepeatedMessage(*msg, fd1, i), NULL, "z").c_str());
+				z = fmod(z, 1.0);
+				//z = cos(2*M_PI*z);
+				out << " " << z;
+			}
+
 
 			out << "\n";
 
@@ -254,7 +273,8 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 		plot_command << "set polar\n";
 //		plot_command << draw_bells(msg, desc, refl);
 	}
-	plot_command << "plot ";
+
+	plot_command << "splot ";
 
 	for(int i=0; i<series.size(); i++){
 		serie& s = series[i];
@@ -268,7 +288,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 		if(i!=0)
 			plot_command << ", ";
 
-		std::string style = this->style == STYLE_LINES ? "lines" : "points ps 0.5";
+		std::string style = this->style == STYLE_LINES ? "lines" : "points palette ps 0.5";
 
 		if(need_boxes)
 			style = "boxes";

@@ -79,7 +79,7 @@ void E42mcConservationAnalyzer::processState(const OdeState* state, const OdeSta
 		it->set_value(3, mod(p.xn(), p.yn()));
 		it->set_value(4, arg(p.xn(), p.yn()));
 
-		sum_a_2 += mod2(p.x(), p.y());
+		sum_a_2 += mod2(p.x()+p.xn(), p.y()+p.yn());
 	}
 
 	std::ostringstream buf;
