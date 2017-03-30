@@ -274,13 +274,19 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 //		plot_command << draw_bells(msg, desc, refl);
 	}
 
-	plot_command << "splot ";
+	//plot_command << "splot ";
 
 	for(int i=0; i<series.size(); i++){
 		serie& s = series[i];
 
 		bool need_coloring = s.var_name=="particles.a" && d_msg;
 		bool need_boxes = s.var_name=="hist.y";
+		bool is_particles = s.var_name.find("particles") != std::string::npos;
+
+		if(i==0 && is_particles)
+			plot_command << "splot ";
+		else if(i==0)
+			plot_command << "plot ";
 
 		if(s.var_name[s.var_name.length()-1]=='\'' && !d_msg)
 			continue;
@@ -304,7 +310,10 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 
 		plot_command << "'-' ";
 		if(s.is_expression){
-			plot_command << "using ($1):(" << s.expression << ") ";
+			plot_command << "using ($1):(" << s.expression << ")";
+			if(is_particles)
+				plot_command << ":($" << s.columns.size()+2 << ")";
+			plot_command << " ";
 		}
 
 		plot_command << "with " << style << " title \"" << title <<"\"";
@@ -320,6 +329,8 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 	fprintf(fp, super_buffer.str().c_str());
 	fflush(fp);
 
+//	printf(plot_command.str().c_str());
+//	printf(super_buffer.str().c_str());
 }
 
 void Gnuplot::processToFile(const std::string& file, const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time){

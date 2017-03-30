@@ -272,10 +272,8 @@ void HelloWorld::run_computing(bool use_step){
   run_steps = 0;
   run_time = 0.0;
 
-  if(use_step)
-	  run_thread->run(1000000000, 1000000000.0, use_step);
-  else
-	  run_thread->run(steps, time, use_step);
+  //run_thread->run(1000000000, 1000000000.0, use_step);
+  run_thread->run(steps, time, use_step);
 }
 
 void HelloWorld::run_stepped_cb(){

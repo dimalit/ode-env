@@ -92,7 +92,7 @@ void E4StateGeneratorWidget::newState(bool emit){
 	state->set_e(e);
 	state->set_phi(phi);
 
-	center_masses();
+	//center_masses();
 
 	if(emit)
 		m_signal_changed();
