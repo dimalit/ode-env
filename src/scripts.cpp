@@ -9,6 +9,9 @@
 #include "models/e3/analyzers_e3.h"
 #include "models/e4/model_e4.h"
 #include "models/e4/analyzers_e4.h"
+#include "models/e42mc/model_e42mc.h"
+#include "models/e42mc/analyzers_e42mc.h"
+
 
 #include "Gnuplot.h"
 #include "MaxDetector.h"
@@ -962,28 +965,6 @@ void exp_ts4_super_emission(int argc, char *argv[]){
 		a_plot.setPolar(true);
 		a_plot.setTitle("a|psi");
 
-//	Gtk::Main kit(argc, argv);
-//
-//	// this is table
-//	std::vector<OdeAnalyzerWidget*> analyzer_widgets;
-//
-//	Gtk::Window win_analyzers;
-//	Gtk::VBox *vb = Gtk::manage(new Gtk::VBox());
-//	win_analyzers.add(*vb);
-//	win_analyzers.set_title("data table");
-//
-//	auto anafacts = OdeAnalyzerWidgetManager::getInstance()->getTypesFor(inst_fact);
-//	for(OdeAnalyzerWidgetManager::TypeIterator i=anafacts.first; i!=anafacts.second; ++i){
-//	  OdeAnalyzerWidgetType* analyzer_fact = *i;
-//	  OdeAnalyzerWidget* analyzer_widget = analyzer_fact->createAnalyzerWidget(pcfg);
-//	  vb->pack_start(*analyzer_widget, false, false);
-//	  //TODO: gracefully delete all of them!
-//	  analyzer_widgets.push_back(analyzer_widget);
-//	}
-//	win_analyzers.show_all();
-//	Glib::Threads::Thread* thread = Glib::Threads::Thread::create(sigc::ptr_fun<void>(&Gtk::Main::run));
-//	sleep(1);
-
 	int counter = 0;
 	string dir = "exp_ts4_new/";
 	mkdir(dir.c_str(), 0777);
@@ -1082,6 +1063,135 @@ void exp_ts4_super_emission(int argc, char *argv[]){
 			e_plot.saveSerie(0, dir.str() + "/e.csv");
 			phi_plot.saveSerie(0, dir.str() + "/phi.csv");
 
+			delete solver;
+			delete init_state;
+		}// for e0s
+	}// for alphas
+
+	fclose(fp);
+}
+
+void exp_ts42mc(int argc, char *argv[]){
+	string problem_name = "model e42mc";
+
+	Problem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
+	SolverType* solver_fact = *OdeSolverTypeManager::getInstance()->getTypesFor(inst_fact).first;
+
+	E42mcConfig* pcfg = dynamic_cast<E42mcConfig*>(inst_fact->createConfig());
+		pcfg->set_n(900);
+	EXPetscSolverConfig* scfg = dynamic_cast<EXPetscSolverConfig*>(solver_fact->createSolverConfg());
+		scfg->set_init_step(0.01);
+		scfg->set_atol(1e-9);
+		scfg->set_rtol(1e-9);
+		scfg->set_n_cores(3);
+
+	vector<double> alphas, e0s;
+	alphas.push_back(0.1);
+	alphas.push_back(0.05);
+	alphas.push_back(0.02);
+
+	e0s.push_back(0.1);
+	e0s.push_back(0.05);
+	e0s.push_back(0.02);
+
+	Gnuplot e_plot;
+		e_plot.addVar("$x_p*$x_p+$y_p*$y_p");
+		e_plot.addVar("$x_m*$x_m+$y_m*$y_m");
+		e_plot.setXAxisTime();
+
+	Gnuplot a_plot;
+		a_plot.addVar("particles.yn");
+		a_plot.setXAxisVar("particles.xn");
+
+	int counter = 0;
+	string dir = "exp_ts42mc/";
+	mkdir(dir.c_str(), 0777);
+	FILE* fp = fopen((dir+"results.txt").c_str(), "ab");
+
+	for(int alpha_step=0; alpha_step<alphas.size(); alpha_step++){
+		double alpha = alphas[alpha_step];
+		pcfg->set_alpha(alpha);
+		for(int e_step=0; e_step<e0s.size(); e_step++){
+
+			double a0 = 1.0;
+			double e0 = e0s[e_step];
+
+			E42mcState* init_state = dynamic_cast<E42mcState*>(inst_fact->createState(pcfg));
+			init_state->set_x_p(e0);
+			init_state->set_x_m(0.02);
+			for(int i=0; i<pcfg->n(); i++){
+				double z = i / (double)pcfg->n() * 5 + 0;
+				double psi = rand()/(double)RAND_MAX * (2*M_PI) + 0;
+				E42mcState::Particles* p = init_state->mutable_particles(i);
+				p->set_x(0);
+				p->set_y(0);
+				p->set_xn(a0*cos(psi));
+				p->set_yn(a0*sin(psi));
+				p->set_z(z);
+			}
+			E42mcPetscSolver* solver = dynamic_cast<E42mcPetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
+
+			MaxDetector md;
+
+			e_plot.reset();
+			a_plot.reset();
+
+			const google::protobuf::Message *state_msg, *dstate_msg;
+			double time = 0.0;
+			solver->run(1000000, 0.5, true);
+
+			std::ostringstream dir;
+			dir << "exp_ts42mc/" << counter << "/";
+			mkdir(dir.str().c_str(), 0777);
+
+			FILE* int_fp = fopen((dir.str()+"int.txt").c_str(), "wb");
+
+			for(int step=0;;step++){
+				if(!solver->step())
+					break;
+				state_msg = dynamic_cast<const google::protobuf::Message*>(solver->getState());
+				dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
+				time = solver->getTime();
+
+				const E42mcState* estate = dynamic_cast<const E42mcState*>(solver->getState());
+				double em = sqrt(estate->x_m()*estate->x_m() + estate->y_m()*estate->y_m());
+				double ep = sqrt(estate->x_p()*estate->x_p() + estate->y_p()*estate->y_p());
+
+				e_plot.processState(state_msg, dstate_msg, time);
+				a_plot.processState(state_msg, dstate_msg, time);
+
+				// integral!!
+				double sum_a_2 = 0;
+
+				for(int i=0; i<pcfg->n(); i++){
+					E42mcState::Particles p = estate->particles(i);
+					sum_a_2 += (p.x()+p.xn())*(p.x()+p.xn()) + (p.y()+p.yn())*(p.y()+p.yn());
+				}
+
+				std::ostringstream buf;
+				buf.setf( std::ios::fixed, std:: ios::floatfield );
+				buf.precision(10);
+
+				fprintf(int_fp, "%.10lf\n", ep*ep+em*em+1.0/pcfg->n()*sum_a_2);
+
+				md.push(em);
+
+				if(time>1000.0){
+					a_plot.saveSerie(0, dir.str() + "/a.csv", state_msg, dstate_msg, time);
+
+					fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\n", counter, alpha, e0, md.hasMax() ? md.getMax() : 0.0, time);
+					fflush(fp);
+
+					counter++;
+					break;
+				}// if
+			}//for steps
+			fclose(int_fp);
+
+			e_plot.saveSerie(0, dir.str() + "ep.csv");
+			e_plot.saveSerie(1, dir.str() + "em.csv");
+
+			solver->finish();
 			delete solver;
 			delete init_state;
 		}// for e0s

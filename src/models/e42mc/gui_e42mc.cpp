@@ -10,9 +10,9 @@ E42mcStateGeneratorWidget::E42mcStateGeneratorWidget(const E42mcConfig* _config)
 
 	// TODO: may be state should remember its config?!
 	pb::E42mcStateGeneratorConfig* sgc = new pb::E42mcStateGeneratorConfig();
-	sgc->set_e_p0(0.1);
+	sgc->set_e_p0(0.05);
 	sgc->set_phi_p0(0.0);
-	sgc->set_e_m0(0.1);
+	sgc->set_e_m0(0.0);
 	sgc->set_phi_m0(0.0);
 	sgc->set_a0(1.0);
 	cfg_widget.setData(sgc);
@@ -92,7 +92,31 @@ void E42mcStateGeneratorWidget::newState(bool emit){
 	state->set_x_m(e_m*cos(phi_m));
 	state->set_y_m(e_m*sin(phi_m));
 
+	center_masses();
+
 	if(emit)
 		m_signal_changed();
 }
 
+void E42mcStateGeneratorWidget::center_masses(){
+	int N = config->n();
+
+	double sum_x = 0, sum_y = 0;
+
+	for(int i=0; i<N; i++){
+		E42mcState::Particles p = state->particles(i);
+
+		sum_x += p.x()+p.xn();
+		sum_y += p.y()+p.yn();
+	}
+
+	double dx = sum_x/N;
+	double dy = sum_y/N;
+
+	for(int i=0; i<N; i++){
+		E42mcState::Particles& p = *state->mutable_particles(i);
+
+		p.set_xn(p.xn()-dx);
+		p.set_yn(p.yn()-dy);
+	}
+}

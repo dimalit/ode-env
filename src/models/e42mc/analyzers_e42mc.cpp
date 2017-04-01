@@ -22,6 +22,13 @@ double mod2(double x, double y){
 	return x*x+y*y;
 }
 
+void rotate(double& x, double& y, double alpha){
+	double xx = x*cos(alpha)-y*sin(alpha);
+	double yy = y*cos(alpha)+x*sin(alpha);
+	x = xx;
+	y = yy;
+}
+
 // TODO: make Gnuplotting" functionality apart and use it to draw energy chars!
 E42mcConservationAnalyzer::E42mcConservationAnalyzer(const E42mcConfig* config){
 	states_count = 0;
@@ -42,7 +49,14 @@ E42mcConservationAnalyzer::E42mcConservationAnalyzer(const E42mcConfig* config){
 
 	b->get_widget("entry_aver_x", entry_aver_x);
 	b->get_widget("entry_aver_y", entry_aver_y);
+	b->get_widget("entry_aver_xp", entry_aver_xp);
+	b->get_widget("entry_aver_yp", entry_aver_yp);
+	b->get_widget("entry_aver_xm", entry_aver_xm);
+	b->get_widget("entry_aver_ym", entry_aver_ym);
+
 	b->get_widget("entry_cm_r", entry_cm_r);
+	b->get_widget("entry_cm_rp", entry_cm_rp);
+	b->get_widget("entry_cm_rm", entry_cm_rm);
 
 	b->get_widget("treeview1", treeview1);
 	liststore1 = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b->get_object("liststore1"));
@@ -68,6 +82,8 @@ void E42mcConservationAnalyzer::processState(const OdeState* state, const OdeSta
 
 	double sum_a_2 = 0;
 	double sum_x = 0, sum_y = 0;
+	double sum_xp = 0, sum_yp = 0;
+	double sum_xm = 0, sum_ym = 0;
 
 	for(int i=0; i<estate->particles_size(); i++){
 		E42mcState::Particles p = estate->particles(i);
@@ -80,6 +96,18 @@ void E42mcConservationAnalyzer::processState(const OdeState* state, const OdeSta
 		it->set_value(4, arg(p.xn(), p.yn()));
 
 		sum_a_2 += mod2(p.x()+p.xn(), p.y()+p.yn());
+
+		double xp = p.x()+p.xn(), xm = p.x()+p.xn();
+		double yp = p.y()+p.yn(), ym = p.y()+p.yn();
+
+		rotate(xp, yp, -2*M_PI*p.z());
+		rotate(xm, ym, +2*M_PI*p.z());
+
+		sum_x += p.x() + p.xn();
+		sum_y += p.y() + p.yn();
+
+		sum_xp += xp; sum_yp += yp;
+		sum_xm += xm; sum_ym += ym;
 	}
 
 	std::ostringstream buf;
@@ -109,14 +137,33 @@ void E42mcConservationAnalyzer::processState(const OdeState* state, const OdeSta
 	buf.str("");
 	buf << sum_x/estate->particles_size();
 	entry_aver_x->set_text(buf.str());
-
 	buf.str("");
 	buf << sum_y/estate->particles_size();
 	entry_aver_y->set_text(buf.str());
 
 	buf.str("");
+	buf << sum_xp/estate->particles_size();
+	entry_aver_xp->set_text(buf.str());
+	buf.str("");
+	buf << sum_yp/estate->particles_size();
+	entry_aver_yp->set_text(buf.str());
+
+	buf.str("");
+	buf << sum_xm/estate->particles_size();
+	entry_aver_xm->set_text(buf.str());
+	buf.str("");
+	buf << sum_ym/estate->particles_size();
+	entry_aver_ym->set_text(buf.str());
+
+	buf.str("");
 	buf << sqrt(sum_x*sum_x + sum_y*sum_y)/estate->particles_size();
 	entry_cm_r->set_text(buf.str());
+	buf.str("");
+	buf << sqrt(sum_xp*sum_xp + sum_yp*sum_yp)/estate->particles_size();
+	entry_cm_rp->set_text(buf.str());
+	buf.str("");
+	buf << sqrt(sum_xm*sum_xm + sum_ym*sum_ym)/estate->particles_size();
+	entry_cm_rm->set_text(buf.str());
 
 	++states_count;
 	last_update = ::time(NULL);
