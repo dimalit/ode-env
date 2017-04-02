@@ -28,6 +28,7 @@ private:
 		std::vector<std::string> columns;
 		serie(){
 			is_expression = false;
+			expression = "$2";
 		}
 	};
 
@@ -38,6 +39,8 @@ private:
 	style_enum style;
 
 	std::string x_axis;
+	std::vector<std::string> x_columns;
+	std::string x_prefix;
 	bool polar;
 	std::vector<serie> series;
 public:
@@ -52,10 +55,8 @@ public:
 		x_axis = "";
 		style = STYLE_LINES;
 	}
-	void setXAxisVar(std::string var){
-		x_axis = var;
-		style = STYLE_POINTS;
-	}
+	//!!! ACHTUNG: this can be called ONLY BEFORE addVar()!!
+	void setXAxisVar(std::string var);
 	bool getXAxisTime() const {
 		return x_axis.empty();
 	}

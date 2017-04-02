@@ -185,7 +185,7 @@ private:
 
 	Gtk::Label label;	// with title
 public:
-	MessageChart(const std::vector<std::string>& vars, Gtk::Container* parent = NULL);
+	MessageChart(const std::vector<std::string>& vars, const std::string& x_var, Gtk::Container* parent = NULL);
 	void processMessage(const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time);
 	~MessageChart(){
 		delete gnuplot;
@@ -195,14 +195,14 @@ public:
 
 	sigc::signal<void> signal_closed;
 
-	void setXAxisTime(){
-		gnuplot->setXAxisTime();
-		update_title();
-	}
-	void setXAxisVar(const std::string& var){
-		gnuplot->setXAxisVar(var);
-		update_title();
-	}
+//	void setXAxisTime(){
+//		gnuplot->setXAxisTime();
+//		update_title();
+//	}
+//	void setXAxisVar(const std::string& var){
+//		gnuplot->setXAxisVar(var);
+//		update_title();
+//	}
 	bool getXAxisTime() const {
 		return gnuplot->getXAxisTime();
 	}

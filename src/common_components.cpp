@@ -557,7 +557,7 @@ void ChartAddDialog::on_minus_clicked(){
 }
 ///////////////////////////////////////////////////////////////////////////////
 
-MessageChart::MessageChart(const std::vector<std::string>& vars, Gtk::Container* parent){
+MessageChart::MessageChart(const std::vector<std::string>& vars, const std::string& x_var, Gtk::Container* parent){
 	last_time = 0;
 	last_msg = NULL;
 	last_d_msg = NULL;
@@ -573,6 +573,9 @@ MessageChart::MessageChart(const std::vector<std::string>& vars, Gtk::Container*
 		std::cerr << "Socket: " << std::hex << socket_id << "\n";
 	}
 	gnuplot = new Gnuplot(socket_id);
+
+	if(!x_var.empty())
+		gnuplot->setXAxisVar(x_var);
 
 	for(int i=0; i<vars.size(); i++)
 		gnuplot->addVar(vars[i]);
@@ -722,9 +725,7 @@ void EXChartAnalyzer::on_add_clicked(){
 }
 
 void EXChartAnalyzer::on_dialog_add_ok(ChartAddDialog* dialog){
-	MessageChart* chart = new MessageChart(dialog->vars, NULL);
-	if(dialog->x_axis_var!="")
-		chart->setXAxisVar(dialog->x_axis_var);
+	MessageChart* chart = new MessageChart(dialog->vars, dialog->x_axis_var, NULL);
 	chart->setPolar(dialog->polar);
 	addChart(chart);
 	delete dialog;

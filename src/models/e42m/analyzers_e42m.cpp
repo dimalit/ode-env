@@ -179,9 +179,7 @@ void E42mChartAnalyzer::on_add_special_clicked(){
 }
 
 void E42mChartAnalyzer::on_dialog_add_special_ok(ChartAddDialog* dialog){
-	MessageChart* chart = new MessageChart(dialog->vars, NULL);
-	if(dialog->x_axis_var!="")
-		chart->setXAxisVar(dialog->x_axis_var);
+	MessageChart* chart = new MessageChart(dialog->vars, dialog->x_axis_var, NULL);
 	chart->setPolar(dialog->polar);
 	addSpecial(chart);
 	delete dialog;

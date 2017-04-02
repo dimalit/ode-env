@@ -20,6 +20,43 @@ using namespace google::protobuf;
 
 std::map<std::string, std::string> Gnuplot::title_translation_map;
 
+std::string extract_child_part(const std::string& s, std::string* parent=NULL){
+	int pos = s.find('.');
+	if(pos == std::string::npos){
+		return s;			// ignore prefix for vars without it
+	}
+	else{
+		if(parent)
+			*parent = s.substr(0, pos);
+		return s.substr(pos+1);
+	}
+}
+
+std::string extract_vars(const std::string& expr, std::vector<std::string>& columns, int varno){
+	// replace var names with numbers starting at varno
+	char* dup = strdup(expr.c_str());
+	char var[45];
+	char* p = dup;
+	while(p=strchr(p, '$')){
+		sscanf(p, "%[$a-zA-Z0-9_.']", var);
+		// remember. duplicates are OK
+		columns.push_back(extract_child_part(var+1));	// exclude $ sign
+		// remove from p
+		int varlen = strlen(var)-1;
+		char* beg = strstr(p, var+1);
+		*beg = '0'+varno;
+		for(char* cur=beg+1; *(cur+varlen-2); cur++){
+			*cur = *(cur+varlen-1);
+		}// for
+		p = beg+1;
+		varno++;
+	}
+
+	std::string res(dup);
+	free(dup);
+	return res;
+}
+
 Gnuplot::Gnuplot(int x_win_id) {
 	this->x_win_id = x_win_id;
 
@@ -140,8 +177,8 @@ void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::
 			}// for
 		}// if need time
 		else{
-			std::string yval = s.is_expression ? get_vals(msg, d_msg, s.columns) : get_val(msg, d_msg, s.var_name);
-			std::string xval = get_val(msg, d_msg, this->x_axis);
+			std::string yval = s.is_expression      ? get_vals(msg, d_msg, s.columns) : get_val(msg, d_msg, s.var_name);
+			std::string xval = x_columns.size() > 0 ? get_vals(msg, d_msg, x_columns) : get_val(msg, d_msg, this->x_axis);
 			out << xval << " " << yval << "\n";
 		}// not need time
 	}// if simple field
@@ -167,18 +204,15 @@ void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::
 		int n = refl->FieldSize(*msg, fd1);
 			assert(!d_fd1 || refl->FieldSize(*msg, fd1) == d_refl->FieldSize(*msg, d_fd1));
 
-		double prev_x = -100;
-
-		//!!! filter 100 particles
-		bool x_bits[100] = {0};
-
 		for(int i=0; i<n; i++){
 			string y;
 			if(!s.is_expression)
 				y = get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : NULL, f2);
 			else
 				y = get_vals(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, d_fd1, i) : NULL, s.columns, msg, d_msg);
-			double x = i;
+			std::ostringstream oss;
+			oss << i;
+			std::string x = oss.str();
 
 			// set x to value of specific x variable if needed
 			if(!getXAxisTime()){
@@ -187,9 +221,11 @@ void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::
 				if(this->x_axis.find('.') != std::string::npos)
 					xname = x_axis.substr(x_axis.find('.')+1);
 
-				x = atof(get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, fd1, i) : NULL, xname).c_str());
-				if(xname=="ksi" && polar)
-					x *= 2.0*M_PI;
+				x = x_columns.size() > 0 ?
+						get_vals(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, fd1, i) : NULL, x_columns) :
+						get_val(&refl->GetRepeatedMessage(*msg, fd1, i), d_refl ? &d_refl->GetRepeatedMessage(*d_msg, fd1, i) : NULL, xname);
+//				if(xname=="ksi" && polar)
+//					x *= 2.0*M_PI;
 
 				// draw or not?
 				// this was for limiting to 100 particles
@@ -201,16 +237,8 @@ void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::
 //					continue;
 //
 //				x_bits[x_pos] = true;
-			}// if not time :(
-			else{// x = i?
-				int x_pos = x/n*100;
-				if(x_pos >= 100)
-					x_pos = 99;
-				if(is_particles && !polar && x_bits[x_pos])
-					continue;
+			}// if
 
-				x_bits[x_pos] = true;
-			}
 			// start new series if needed
 //			if(need_series_wrap && prev_x>-99 && abs(x-prev_x)>0.5){
 //				super_buffer << "e\n";
@@ -251,7 +279,6 @@ void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::
 
 			out << "\n";
 
-			prev_x = x;
 		}// for points
 	}// if repeated field
 }
@@ -294,7 +321,8 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 		if(i!=0)
 			plot_command << ", ";
 
-		std::string style = this->style == STYLE_LINES ? "lines" : "points palette ps 0.5";
+		std::string palette = is_particles ? "palette " : "";
+		std::string style = this->style == STYLE_LINES ? "lines" : "points " + palette + "ps 0.5";
 
 		if(need_boxes)
 			style = "boxes";
@@ -309,12 +337,16 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 //			plot_command << "0.5, ";
 
 		plot_command << "'-' ";
-		if(s.is_expression){
+		if(x_columns.size()==0)
 			plot_command << "using ($1):(" << s.expression << ")";
-			if(is_particles)
-				plot_command << ":($" << s.columns.size()+2 << ")";
-			plot_command << " ";
+		else
+			plot_command << "using ("<< x_axis <<"):(" << s.expression << ")";
+		if(is_particles){
+			int x_columns_size = x_columns.size() == 0 ? 1 : x_columns.size();
+			int y_columns_size = s.columns.size() == 0 ? 1 : s.columns.size();
+			plot_command << ":($" << x_columns_size+y_columns_size+1 << ")";
 		}
+		plot_command << " ";
 
 		plot_command << "with " << style << " title \"" << title <<"\"";
 
@@ -361,15 +393,15 @@ void Gnuplot::saveSerie(int ser_no, const std::string& file, const google::proto
 	out.close();
 }
 
-std::string extract_child_part(const std::string& s, std::string* parent){
-	int pos = s.find('.');
-	if(pos == std::string::npos){
-		return s;			// ignore prefix for vars without it
-	}
-	else{
-		if(parent)
-			*parent = s.substr(0, pos);
-		return s.substr(pos+1);
+void Gnuplot::setXAxisVar(std::string var){
+	style = STYLE_POINTS;
+	x_axis = var;
+	if(var.find('$') != std::string::npos){
+		int s_pos = var.find('$');
+		x_axis = extract_vars(var, this->x_columns, 1);
+		int dot_pos = var.find('.');
+		if(dot_pos != std::string::npos)
+			this->x_prefix = var.substr(s_pos+1, dot_pos-s_pos-1);
 	}
 }
 
@@ -378,30 +410,12 @@ void Gnuplot::addVar(std::string var){
 	s.var_name = var;
 	// for expressions
 	if(var.find('$') != std::string::npos){
+		int s_pos = var.find('$');
 		s.is_expression = true;
-
-		// replace var names with numbers starting at 2
-		char* dup = strdup(var.c_str());
-		char var[45];
-		int varno = 2;
-		char* p = dup;
-		while(p=strchr(p, '$')){
-			sscanf(p, "%[$a-zA-Z0-9_.']", var);
-			// remember. duplicates are OK
-			s.columns.push_back(extract_child_part(var+1, &s.prefix));	// exclude $ sign
-			// remove from p
-			int varlen = strlen(var)-1;
-			char* beg = strstr(p, var+1);
-			*beg = '0'+varno;
-			for(char* cur=beg+1; *(cur+varlen-2); cur++){
-				*cur = *(cur+varlen-1);
-			}// for
-			p = beg+1;
-			varno++;
-		}
-
-		s.expression = dup;
-		free(dup);
+		s.expression = extract_vars(var, s.columns, this->x_columns.size()+1);
+		int dot_pos = var.find('.');
+		if(dot_pos != std::string::npos)
+			s.prefix = var.substr(s_pos+1, dot_pos-s_pos-1);
 	}// else
 	series.push_back(s);
 }
