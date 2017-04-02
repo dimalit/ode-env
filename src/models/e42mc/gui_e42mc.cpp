@@ -101,22 +101,34 @@ void E42mcStateGeneratorWidget::newState(bool emit){
 void E42mcStateGeneratorWidget::center_masses(){
 	int N = config->n();
 
-	double sum_x = 0, sum_y = 0;
+	double sum_px = 0, sum_py = 0;
+	double sum_mx = 0, sum_my = 0;
+	double half_sum = N / M_PI;
 
+	// center cosine-weighted masses...
 	for(int i=0; i<N; i++){
 		E42mcState::Particles p = state->particles(i);
 
-		sum_x += p.x()+p.xn();
-		sum_y += p.y()+p.yn();
+		if(cos(2*M_PI*p.z()) > 0){
+			sum_px += (p.x()+p.xn())*cos(2*M_PI*p.z());
+			sum_py += (p.y()+p.yn())*cos(2*M_PI*p.z());
+		}
+		else{
+			sum_mx += (p.x()+p.xn())*cos(2*M_PI*p.z());
+			sum_my += (p.y()+p.yn())*cos(2*M_PI*p.z());
+		}// else
 	}
-
-	double dx = sum_x/N;
-	double dy = sum_y/N;
 
 	for(int i=0; i<N; i++){
 		E42mcState::Particles& p = *state->mutable_particles(i);
 
-		p.set_xn(p.xn()-dx);
-		p.set_yn(p.yn()-dy);
+		if(cos(2*M_PI*p.z()) > 0){
+			p.set_xn(p.xn()-sum_px/half_sum);
+			p.set_yn(p.yn()-sum_py/half_sum);
+		}
+		else{
+			p.set_xn(p.xn()+sum_mx/half_sum);
+			p.set_yn(p.yn()+sum_my/half_sum);
+		}//else
 	}
 }

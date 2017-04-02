@@ -44,9 +44,11 @@ std::string extract_vars(const std::string& expr, std::vector<std::string>& colu
 		// remove from p
 		int varlen = strlen(var)-1;
 		char* beg = strstr(p, var+1);
-		*beg = '0'+varno;
-		for(char* cur=beg+1; *(cur+varlen-2); cur++){
-			*cur = *(cur+varlen-1);
+		//*beg = '0'+varno;
+		sprintf(beg, "%d", varno);
+		int num_len = strlen(beg);
+		for(char* cur=beg+num_len; *(cur+varlen-num_len-1); cur++){
+			*cur = *(cur+varlen-num_len);
 		}// for
 		p = beg+1;
 		varno++;
@@ -408,11 +410,14 @@ void Gnuplot::setXAxisVar(std::string var){
 void Gnuplot::addVar(std::string var){
 	serie s;
 	s.var_name = var;
+	int x_columns_size = this->x_columns.size();
+	if(x_columns_size==0)
+		x_columns_size = 1;			// for possible t
 	// for expressions
 	if(var.find('$') != std::string::npos){
 		int s_pos = var.find('$');
 		s.is_expression = true;
-		s.expression = extract_vars(var, s.columns, this->x_columns.size()+1);
+		s.expression = extract_vars(var, s.columns, x_columns_size+1);
 		int dot_pos = var.find('.');
 		if(dot_pos != std::string::npos)
 			s.prefix = var.substr(s_pos+1, dot_pos-s_pos-1);
