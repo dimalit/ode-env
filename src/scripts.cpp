@@ -1071,6 +1071,41 @@ void exp_ts4_super_emission(int argc, char *argv[]){
 	fclose(fp);
 }
 
+void ts42mc_center_masses(E42mcState *state){
+	int N = state->particles_size();
+
+	double sum_px = 0, sum_py = 0;
+	double sum_mx = 0, sum_my = 0;
+	double half_sum = N / M_PI;
+
+	// center cosine-weighted masses...
+	for(int i=0; i<N; i++){
+		E42mcState::Particles p = state->particles(i);
+
+		if(cos(2*M_PI*p.z()) > 0){
+			sum_px += (p.x()+p.xn())*cos(2*M_PI*p.z());
+			sum_py += (p.y()+p.yn())*cos(2*M_PI*p.z());
+		}
+		else{
+			sum_mx += (p.x()+p.xn())*cos(2*M_PI*p.z());
+			sum_my += (p.y()+p.yn())*cos(2*M_PI*p.z());
+		}// else
+	}
+
+	for(int i=0; i<N; i++){
+		E42mcState::Particles& p = *state->mutable_particles(i);
+
+		if(cos(2*M_PI*p.z()) > 0){
+			p.set_xn(p.xn()-sum_px/half_sum);
+			p.set_yn(p.yn()-sum_py/half_sum);
+		}
+		else{
+			p.set_xn(p.xn()+sum_mx/half_sum);
+			p.set_yn(p.yn()+sum_my/half_sum);
+		}//else
+	}
+}
+
 void exp_ts42mc(int argc, char *argv[]){
 	string problem_name = "model e42mc";
 
@@ -1089,21 +1124,27 @@ void exp_ts42mc(int argc, char *argv[]){
 	alphas.push_back(0.1);
 	alphas.push_back(0.05);
 	alphas.push_back(0.02);
+	alphas.push_back(0.01);
 
-	e0s.push_back(0.1);
-	e0s.push_back(0.05);
-	e0s.push_back(0.02);
+//	e0s.push_back(0.1);
+//	e0s.push_back(0.05);
+//	e0s.push_back(0.02);
+	e0s.push_back(0.0);
 
 	Gnuplot e_plot;
 		e_plot.addVar("$x_p*$x_p+$y_p*$y_p");
 		e_plot.addVar("$x_m*$x_m+$y_m*$y_m");
 		e_plot.setXAxisTime();
 
+	Gnuplot e_total_plot;
+		e_total_plot.addVar("sqrt($x_p*$x_p+$y_p*$y_p+$x_m*$x_m+$y_m*$y_m)");
+		e_total_plot.setXAxisTime();
+
 	Gnuplot a_plot;
 		a_plot.addVar("particles.yn");
 		a_plot.setXAxisVar("particles.xn");
 
-	int counter = 0;
+	int counter = 15;
 	string dir = "exp_ts42mc/";
 	mkdir(dir.c_str(), 0777);
 	FILE* fp = fopen((dir+"results.txt").c_str(), "ab");
@@ -1118,7 +1159,7 @@ void exp_ts42mc(int argc, char *argv[]){
 
 			E42mcState* init_state = dynamic_cast<E42mcState*>(inst_fact->createState(pcfg));
 			init_state->set_x_p(e0);
-			init_state->set_x_m(0.02);
+			init_state->set_x_m(0.0);
 			for(int i=0; i<pcfg->n(); i++){
 				double z = i / (double)pcfg->n() * 5 + 0;
 				double psi = rand()/(double)RAND_MAX * (2*M_PI) + 0;
@@ -1129,11 +1170,13 @@ void exp_ts42mc(int argc, char *argv[]){
 				p->set_yn(a0*sin(psi));
 				p->set_z(z);
 			}
+			ts42mc_center_masses(init_state);
 			E42mcPetscSolver* solver = dynamic_cast<E42mcPetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
 
-			MaxDetector md;
+			double max_e=0, max_ep=0, max_em=0;
 
 			e_plot.reset();
+			e_total_plot.reset();
 			a_plot.reset();
 
 			const google::protobuf::Message *state_msg, *dstate_msg;
@@ -1154,10 +1197,12 @@ void exp_ts42mc(int argc, char *argv[]){
 				time = solver->getTime();
 
 				const E42mcState* estate = dynamic_cast<const E42mcState*>(solver->getState());
-				double em = sqrt(estate->x_m()*estate->x_m() + estate->y_m()*estate->y_m());
 				double ep = sqrt(estate->x_p()*estate->x_p() + estate->y_p()*estate->y_p());
+				double em = sqrt(estate->x_m()*estate->x_m() + estate->y_m()*estate->y_m());
+				double e = sqrt(ep*ep+em*em);
 
 				e_plot.processState(state_msg, dstate_msg, time);
+				e_total_plot.processState(state_msg, dstate_msg, time);
 				a_plot.processState(state_msg, dstate_msg, time);
 
 				// integral!!
@@ -1174,12 +1219,17 @@ void exp_ts42mc(int argc, char *argv[]){
 
 				fprintf(int_fp, "%.10lf\n", ep*ep+em*em+1.0/pcfg->n()*sum_a_2);
 
-				md.push(em);
+				if(ep>max_ep)
+					max_ep = ep;
+				if(em>max_em)
+					max_em = em;
+				if(e>max_e)
+					max_e = e;
 
 				if(time>1000.0){
 					a_plot.saveSerie(0, dir.str() + "/a.csv", state_msg, dstate_msg, time);
 
-					fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\n", counter, alpha, e0, md.hasMax() ? md.getMax() : 0.0, time);
+					fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\n", counter, alpha, e0, max_e, max_ep, max_em, time);
 					fflush(fp);
 
 					counter++;
@@ -1190,6 +1240,7 @@ void exp_ts42mc(int argc, char *argv[]){
 
 			e_plot.saveSerie(0, dir.str() + "ep.csv");
 			e_plot.saveSerie(1, dir.str() + "em.csv");
+			e_total_plot.saveSerie(0, dir.str() + "e.csv");
 
 			solver->finish();
 			delete solver;

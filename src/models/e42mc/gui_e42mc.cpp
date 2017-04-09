@@ -70,29 +70,42 @@ void E42mcStateGeneratorWidget::newState(bool emit){
 //	double left = 0.0;
 
 	int N = config->n();
+	int sqN = sqrt(N);
 
-	for(int i=0; i<N; i++){
-		double psi = rand() / (double)RAND_MAX * (2*M_PI) + 0;
-		double z = i / (double)N * 5 + 0;
-//		double delta = rand() / (double)RAND_MAX * (2*config->delta_0()) - config->delta_0();
+//	double* psis = new double[N];
+//	int i = 0;
+//	for_each(psis, psis+N, [&i,N](double& d)->void{d = (double)i++ / N * (2*M_PI);});
+//	random_shuffle(psis, psis+N);
 
-		pb::E42mcState::Particles p;
-		p.set_x(0);
-		p.set_y(0);
-		p.set_z(z);
-		p.set_xn(a0*cos(psi));//+0.1*sin(psi-2*M_PI*z));
-		p.set_yn(a0*sin(psi));
-		//p.set_a(a0*(1.0+0.2*sin(int(psi-z+phi))));
+	for(int i=0; i<sqN; i++){
+		for(int j=0; j<sqN; j++){
+			int k = i*sqN+j;
 
-		state->mutable_particles(i)->CopyFrom(p);
+			//double psi = rand() / (double)RAND_MAX * (2*M_PI) + 0;
+	//		double psi = psis[i];
+			double z = i / (double)sqN;// * 5 + 0;
+			double psi = j / (double)sqN * 2*M_PI;// * 5 + 0;
+	//		double delta = rand() / (double)RAND_MAX * (2*config->delta_0()) - config->delta_0();
+
+			pb::E42mcState::Particles p;
+			p.set_x(0);
+			p.set_y(0);
+			p.set_z(z);
+			p.set_xn(a0*cos(psi));//+0.1*sin(psi-2*M_PI*z));
+			p.set_yn(a0*sin(psi));
+			//p.set_a(a0*(1.0+0.2*sin(int(psi-z+phi))));
+
+			state->mutable_particles(k)->CopyFrom(p);
+		}
 	}
+//	delete psis;
 
 	state->set_x_p(e_p*cos(phi_p));
 	state->set_y_p(e_p*sin(phi_p));
 	state->set_x_m(e_m*cos(phi_m));
 	state->set_y_m(e_m*sin(phi_m));
 
-	center_masses();
+//	center_masses();
 
 	if(emit)
 		m_signal_changed();

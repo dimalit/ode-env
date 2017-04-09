@@ -1,5 +1,7 @@
 #include "HelloWorld.h"
 
+#include "models/e42mc/analyzers_e42mc.h"
+
 #include <gtkmm/main.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/socket.h>
@@ -89,6 +91,26 @@ HelloWorld::HelloWorld()
 	  vb->pack_start(*analyzer_widget, false, false);
 	  //TODO: gracefully delete all of them!
 	  this->analyzer_widgets.push_back(analyzer_widget);
+
+	  E42mcChartAnalyzer* ana = dynamic_cast<E42mcChartAnalyzer*>(analyzer_widget);
+	  if(ana){
+		  MessageChart* chart;
+		  std::vector<std::string> vars;
+		  std::string x_var;
+
+		  vars.clear();
+		  vars.push_back("$x_p*$x_p+$y_p*$y_p");
+		  vars.push_back("$x_m*$x_m+$y_m*$y_m");
+		  x_var ="";
+		  chart = new MessageChart(vars, x_var, NULL);
+		  ana->addChart(chart);
+
+		  vars.clear();
+		  vars.push_back("sqrt($x_p*$x_p+$y_p*$y_p+$x_m*$x_m+$y_m*$y_m)");
+		  x_var ="";
+		  chart = new MessageChart(vars, x_var, NULL);
+		  ana->addChart(chart);
+	  }
   }
 
 //  // these are charts with "add" button

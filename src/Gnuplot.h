@@ -42,6 +42,7 @@ private:
 	std::vector<std::string> x_columns;
 	std::string x_prefix;
 	bool polar;
+	bool parametric;
 	std::vector<serie> series;
 public:
 	Gnuplot(int x_win_id=0);
@@ -68,6 +69,12 @@ public:
 	}
 	void setPolar(bool p){
 		polar = p;
+	}
+	bool getParametric() const {
+		return parametric;
+	}
+	void setParametric(bool p){
+		parametric = p;
 	}
 
 	void addVar(std::string var);

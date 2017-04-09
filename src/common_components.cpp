@@ -317,8 +317,10 @@ ChartAddDialog::ChartAddDialog(const google::protobuf::Message* msg, bool show_d
 	b->get_widget("btn_ok", btn_ok);
 	b->get_widget("btn_cancel", btn_cancel);
 	b->get_widget("check_polar", check_polar);
+	b->get_widget("check_parametric", check_parametric);
 
 	polar = check_polar->get_active();
+	parametric = check_parametric->get_active();
 
 	store1 = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b->get_object("liststore1"));
 	store2 = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b->get_object("liststore2"));
@@ -401,6 +403,7 @@ void ChartAddDialog::on_ok_clicked(){
 	vars.clear();
 	x_axis_var = "";
 	polar = check_polar->get_active();
+	parametric = check_parametric->get_active();
 
 	// check all repeated or all non-repeated
 	bool has_repeated = false, has_non_repeated = false;
@@ -727,6 +730,7 @@ void EXChartAnalyzer::on_add_clicked(){
 void EXChartAnalyzer::on_dialog_add_ok(ChartAddDialog* dialog){
 	MessageChart* chart = new MessageChart(dialog->vars, dialog->x_axis_var, NULL);
 	chart->setPolar(dialog->polar);
+	chart->setParametric(dialog->parametric);
 	addChart(chart);
 	delete dialog;
 }

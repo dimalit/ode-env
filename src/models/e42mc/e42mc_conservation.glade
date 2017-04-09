@@ -10,9 +10,9 @@
       <column type="gdouble"/>
       <!-- column-name Z -->
       <column type="gdouble"/>
-      <!-- column-name xn -->
+      <!-- column-name An -->
       <column type="gdouble"/>
-      <!-- column-name yn -->
+      <!-- column-name psi_n -->
       <column type="gdouble"/>
     </columns>
   </object>
@@ -87,11 +87,11 @@
               </object>
             </child>
             <child>
-              <object class="GtkTreeViewColumn" id="xn">
+              <object class="GtkTreeViewColumn" id="An">
                 <property name="resizable">True</property>
                 <property name="sizing">fixed</property>
                 <property name="fixed_width">100</property>
-                <property name="title" translatable="yes">xn</property>
+                <property name="title" translatable="yes">An</property>
                 <child>
                   <object class="GtkCellRendererText" id="cellrenderertext4"/>
                   <attributes>
@@ -101,9 +101,9 @@
               </object>
             </child>
             <child>
-              <object class="GtkTreeViewColumn" id="yn">
+              <object class="GtkTreeViewColumn" id="psi_n">
                 <property name="sizing">fixed</property>
-                <property name="title" translatable="yes">yn</property>
+                <property name="title" translatable="yes">psi__n</property>
                 <child>
                   <object class="GtkCellRendererText" id="cellrenderertext5"/>
                   <attributes>

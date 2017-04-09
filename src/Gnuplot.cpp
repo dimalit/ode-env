@@ -167,11 +167,12 @@ void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::
 	// simple field
 	if(s.var_name.find('.') == std::string::npos){
 		// if need time
-		if(getXAxisTime()){
+		if(getXAxisTime() || getParametric()){
 			ostringstream stime; stime << time;
 			if(add_to_cache){
 				std::string yval = s.is_expression ? get_vals(msg, d_msg, s.columns) : get_val(msg, d_msg, s.var_name);
-				s.data_cache.push_back(make_pair(stime.str(), yval));
+				std::string xval = getParametric() ? get_val(msg, d_msg, this->x_axis) : stime.str();
+				s.data_cache.push_back(make_pair(xval, yval));
 			}
 
 			for(int i=0; i<s.data_cache.size(); i++){
@@ -302,6 +303,8 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 		plot_command << "set polar\n";
 //		plot_command << draw_bells(msg, desc, refl);
 	}
+	if(parametric)
+		plot_command << "set parametric\n";
 
 	//plot_command << "splot ";
 

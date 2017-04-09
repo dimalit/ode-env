@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
 <interface>
-  <requires lib="gtk+" version="2.24"/>
-  <!-- interface-naming-policy project-wide -->
+  <requires lib="gtk+" version="3.0"/>
   <object class="GtkListStore" id="liststore1">
     <columns>
       <!-- column-name use -->
@@ -44,6 +44,9 @@
         <property name="rules_hint">True</property>
         <property name="search_column">1</property>
         <property name="enable_grid_lines">both</property>
+        <child internal-child="selection">
+          <object class="GtkTreeSelection" id="treeview-selection1"/>
+        </child>
         <child>
           <object class="GtkTreeViewColumn" id="use">
             <property name="title" translatable="yes">use</property>
@@ -92,8 +95,8 @@
       <object class="GtkLabel" id="label1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">Derivatives:</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
         <property name="expand">True</property>
@@ -110,6 +113,9 @@
         <property name="rules_hint">True</property>
         <property name="search_column">1</property>
         <property name="enable_grid_lines">both</property>
+        <child internal-child="selection">
+          <object class="GtkTreeSelection" id="treeview-selection2"/>
+        </child>
         <child>
           <object class="GtkTreeViewColumn" id="use1">
             <property name="title" translatable="yes">use</property>
@@ -158,8 +164,8 @@
       <object class="GtkLabel" id="label2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="xalign">0</property>
         <property name="label" translatable="yes">Expressions:</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
         <property name="expand">True</property>
@@ -176,6 +182,9 @@
         <property name="rules_hint">True</property>
         <property name="search_column">1</property>
         <property name="enable_grid_lines">both</property>
+        <child internal-child="selection">
+          <object class="GtkTreeSelection" id="treeview-selection3"/>
+        </child>
         <child>
           <object class="GtkTreeViewColumn" id="use2">
             <property name="title" translatable="yes">use</property>
@@ -232,12 +241,28 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
+            <property name="xalign">0.5</property>
             <property name="draw_indicator">True</property>
           </object>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="check_parametric">
+            <property name="label" translatable="yes">parametric</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="xalign">0</property>
+            <property name="draw_indicator">True</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
@@ -250,7 +275,7 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
@@ -263,7 +288,7 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>

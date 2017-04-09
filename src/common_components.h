@@ -216,6 +216,17 @@ public:
 		gnuplot->setPolar(p);
 		update_title();
 	}
+	bool getParametric() const {
+		return gnuplot->getParametric();
+	}
+	void setParametric(bool p){
+		gnuplot->setParametric(p);
+		if(p)
+			gnuplot->setStyle(Gnuplot::STYLE_LINES);
+		else if(vars[0].find('.')!=std::string::npos)
+			gnuplot->setStyle(Gnuplot::STYLE_POINTS);
+		update_title();
+	}
 	void reset(){
 		gnuplot->reset();
 	}
@@ -242,7 +253,7 @@ private:
 	Glib::RefPtr<Gtk::ListStore> store1, store2, store3;
 	Gtk::Button *btn_plus, *btn_minus;
 	Gtk::Button *btn_ok, *btn_cancel;
-	Gtk::CheckButton *check_polar;
+	Gtk::CheckButton *check_polar, *check_parametric;
 
 	const google::protobuf::Message* msg;
 
@@ -254,6 +265,7 @@ public:
 	std::vector<std::string> vars;
 	std::string x_axis_var;
 	bool polar;
+	bool parametric;
 
 	ChartAddDialog(const google::protobuf::Message* msg, bool show_derivatives = false);
 
