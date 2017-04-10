@@ -75,6 +75,7 @@ Gnuplot::Gnuplot(int x_win_id) {
 	x_axis = "";			// time/index
 	style = STYLE_LINES;
 	polar = 0;
+	parametric = false;
 
 	int rf, wf;
 	rpc_call("gnuplot", &rf, &wf);

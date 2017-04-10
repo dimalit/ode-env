@@ -1106,6 +1106,32 @@ void ts42mc_center_masses(E42mcState *state){
 	}
 }
 
+void ts42mc_fill_as_grid(E42mcState* state){
+
+	double a0 = 1.0;
+
+	int N = state->particles_size();
+	int sqN = sqrt(N);
+
+	for(int i=0; i<sqN; i++){
+		for(int j=0; j<sqN; j++){
+			int k = i*sqN+j;
+
+			double z = i / (double)sqN;// * 5 + 0;
+			double psi = j / (double)sqN * 2*M_PI;// * 5 + 0;
+
+			pb::E42mcState::Particles p;
+			p.set_x(0);
+			p.set_y(0);
+			p.set_z(z);
+			p.set_xn(a0*cos(psi));//+0.1*sin(psi-2*M_PI*z));
+			p.set_yn(a0*sin(psi));
+
+			state->mutable_particles(k)->CopyFrom(p);
+		}
+	}// for
+}
+
 void exp_ts42mc(int argc, char *argv[]){
 	string problem_name = "model e42mc";
 
@@ -1123,13 +1149,15 @@ void exp_ts42mc(int argc, char *argv[]){
 	vector<double> alphas, e0s;
 	alphas.push_back(0.1);
 	alphas.push_back(0.05);
+	alphas.push_back(0.03);
 	alphas.push_back(0.02);
 	alphas.push_back(0.01);
 
-//	e0s.push_back(0.1);
-//	e0s.push_back(0.05);
-//	e0s.push_back(0.02);
-	e0s.push_back(0.0);
+	e0s.push_back(0.2);
+	e0s.push_back(0.1);
+	e0s.push_back(0.05);
+	e0s.push_back(0.02);
+	e0s.push_back(0.01);
 
 	Gnuplot e_plot;
 		e_plot.addVar("$x_p*$x_p+$y_p*$y_p");
@@ -1159,21 +1187,15 @@ void exp_ts42mc(int argc, char *argv[]){
 
 			E42mcState* init_state = dynamic_cast<E42mcState*>(inst_fact->createState(pcfg));
 			init_state->set_x_p(e0);
-			init_state->set_x_m(0.0);
-			for(int i=0; i<pcfg->n(); i++){
-				double z = i / (double)pcfg->n() * 5 + 0;
-				double psi = rand()/(double)RAND_MAX * (2*M_PI) + 0;
-				E42mcState::Particles* p = init_state->mutable_particles(i);
-				p->set_x(0);
-				p->set_y(0);
-				p->set_xn(a0*cos(psi));
-				p->set_yn(a0*sin(psi));
-				p->set_z(z);
-			}
-			ts42mc_center_masses(init_state);
+			init_state->set_x_m(0.01);
+			ts42mc_fill_as_grid(init_state);
 			E42mcPetscSolver* solver = dynamic_cast<E42mcPetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
 
-			double max_e=0, max_ep=0, max_em=0;
+			MaxDetector md1_p, md1_m;
+			MaxDetector md2_p, md2_m;
+			bool found_max_p = false, found_max_m = false;
+			double max_e = 0;
+			double time_p, time_m;
 
 			e_plot.reset();
 			e_total_plot.reset();
@@ -1219,17 +1241,29 @@ void exp_ts42mc(int argc, char *argv[]){
 
 				fprintf(int_fp, "%.10lf\n", ep*ep+em*em+1.0/pcfg->n()*sum_a_2);
 
-				if(ep>max_ep)
-					max_ep = ep;
-				if(em>max_em)
-					max_em = em;
 				if(e>max_e)
 					max_e = e;
 
-				if(time>1000.0){
+				md1_p.push(ep);
+				md1_m.push(em);
+				if(md1_p.hasMax())
+					md2_p.push(md1_p.get(1));
+				if(md1_m.hasMax())
+					md2_m.push(md1_m.get(1));
+
+				if(md2_p.hasMax()){
+					found_max_p = true;
+					time_p = time;
+				}
+				if(md2_m.hasMax()){
+					found_max_m = true;
+					time_m = time;
+				}
+
+				if(found_max_p && found_max_m || time>3000.0){
 					a_plot.saveSerie(0, dir.str() + "/a.csv", state_msg, dstate_msg, time);
 
-					fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\n", counter, alpha, e0, max_e, max_ep, max_em, time);
+					fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\n", counter, alpha, e0, max_e, md2_p.getMax(), md2_m.getMax(), time_p, time_m);
 					fflush(fp);
 
 					counter++;
