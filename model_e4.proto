@@ -15,6 +15,7 @@ message E4Config{
 message E4State{
 	required double E = 1;
 	required double phi = 2;
+	optional double Eout = 8;
 	repeated group Particles = 3{
 		required double a = 4;
 		required double psi = 5;

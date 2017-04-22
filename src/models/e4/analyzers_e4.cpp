@@ -22,6 +22,7 @@ E4ConservationAnalyzer::E4ConservationAnalyzer(const E4Config* config){
 	Gtk::Widget* root;
 	b->get_widget("root", root);
 
+	b->get_widget("entry_eout", entry_eout);
 	b->get_widget("entry_int1", entry_int1);
 	b->get_widget("entry_int2", entry_int2);
 	b->get_widget("entry_e", entry_e);
@@ -75,7 +76,11 @@ void E4ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 	buf.precision(10);
 
 	buf.str("");
-	buf << estate->e()*estate->e()+1.0/config->n()*sum_a_2;
+	buf << estate->eout();
+	entry_eout->set_text(buf.str());
+
+	buf.str("");
+	buf << estate->e()*estate->e()+1.0/config->n()*sum_a_2+estate->eout();
 	entry_int1->set_text(buf.str());
 
 	buf.str("");

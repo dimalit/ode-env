@@ -115,12 +115,12 @@ std::string get_val(const Message* msg, const Message* d_msg, const std::string&
 	double val = refl->GetDouble(*msg, fd);
 
 	// HACK for model e4
-//	if(var_name == "psi"){
-//		const FieldDescriptor* fd2 = desc->FindFieldByName("z");
-//		assert(fd2);
-//		double val2 = refl->GetDouble(*msg, fd2);
-//		val -= 2*M_PI*val2;
-//	}
+	if(var_name == "psi"){
+		const FieldDescriptor* fd2 = desc->FindFieldByName("z");
+		assert(fd2);
+		double val2 = refl->GetDouble(*msg, fd2);
+		val -= 2*M_PI*val2;
+	}
 
 	return ((std::ostringstream&)(std::ostringstream() << val)).str();
 }
@@ -312,11 +312,11 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 	for(int i=0; i<series.size(); i++){
 		serie& s = series[i];
 
-		bool need_coloring = s.var_name=="particles.a" && d_msg;
+		bool need_coloring = false;//s.var_name=="particles.a" && d_msg;
 		bool need_boxes = s.var_name=="hist.y";
 		bool is_particles = s.var_name.find("particles") != std::string::npos;
 
-		if(i==0 && is_particles)
+		if(i==0 && is_particles && !polar)
 			plot_command << "splot ";
 		else if(i==0)
 			plot_command << "plot ";

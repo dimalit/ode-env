@@ -342,6 +342,13 @@ class E4State : public ::google::protobuf::Message {
   inline double phi() const;
   inline void set_phi(double value);
 
+  // optional double Eout = 8;
+  inline bool has_eout() const;
+  inline void clear_eout();
+  static const int kEoutFieldNumber = 8;
+  inline double eout() const;
+  inline void set_eout(double value);
+
   // repeated group Particles = 3 {
   inline int particles_size() const;
   inline void clear_particles();
@@ -360,6 +367,8 @@ class E4State : public ::google::protobuf::Message {
   inline void clear_has_e();
   inline void set_has_phi();
   inline void clear_has_phi();
+  inline void set_has_eout();
+  inline void clear_has_eout();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -367,6 +376,7 @@ class E4State : public ::google::protobuf::Message {
   mutable int _cached_size_;
   double e_;
   double phi_;
+  double eout_;
   ::google::protobuf::RepeatedPtrField< ::pb::E4State_Particles > particles_;
   friend void  protobuf_AddDesc_model_5fe4_2eproto();
   friend void protobuf_AssignDesc_model_5fe4_2eproto();
@@ -1252,6 +1262,30 @@ inline void E4State::set_phi(double value) {
   set_has_phi();
   phi_ = value;
   // @@protoc_insertion_point(field_set:pb.E4State.phi)
+}
+
+// optional double Eout = 8;
+inline bool E4State::has_eout() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void E4State::set_has_eout() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void E4State::clear_has_eout() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void E4State::clear_eout() {
+  eout_ = 0;
+  clear_has_eout();
+}
+inline double E4State::eout() const {
+  // @@protoc_insertion_point(field_get:pb.E4State.Eout)
+  return eout_;
+}
+inline void E4State::set_eout(double value) {
+  set_has_eout();
+  eout_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4State.Eout)
 }
 
 // repeated group Particles = 3 {
