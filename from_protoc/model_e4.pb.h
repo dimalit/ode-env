@@ -119,10 +119,17 @@ class E4Config : public ::google::protobuf::Message {
   inline double alpha() const;
   inline void set_alpha(double value);
 
-  // optional double E0 = 4;
+  // optional double theta = 4;
+  inline bool has_theta() const;
+  inline void clear_theta();
+  static const int kThetaFieldNumber = 4;
+  inline double theta() const;
+  inline void set_theta(double value);
+
+  // optional double E0 = 5;
   inline bool has_e0() const;
   inline void clear_e0();
-  static const int kE0FieldNumber = 4;
+  static const int kE0FieldNumber = 5;
   inline double e0() const;
   inline void set_e0(double value);
 
@@ -134,6 +141,8 @@ class E4Config : public ::google::protobuf::Message {
   inline void clear_has_delta_0();
   inline void set_has_alpha();
   inline void clear_has_alpha();
+  inline void set_has_theta();
+  inline void clear_has_theta();
   inline void set_has_e0();
   inline void clear_has_e0();
 
@@ -143,6 +152,7 @@ class E4Config : public ::google::protobuf::Message {
   mutable int _cached_size_;
   double delta_0_;
   double alpha_;
+  double theta_;
   double e0_;
   ::google::protobuf::uint32 n_;
   friend void  protobuf_AddDesc_model_5fe4_2eproto();
@@ -1044,15 +1054,39 @@ inline void E4Config::set_alpha(double value) {
   // @@protoc_insertion_point(field_set:pb.E4Config.alpha)
 }
 
-// optional double E0 = 4;
-inline bool E4Config::has_e0() const {
+// optional double theta = 4;
+inline bool E4Config::has_theta() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void E4Config::set_has_e0() {
+inline void E4Config::set_has_theta() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void E4Config::clear_has_e0() {
+inline void E4Config::clear_has_theta() {
   _has_bits_[0] &= ~0x00000008u;
+}
+inline void E4Config::clear_theta() {
+  theta_ = 0;
+  clear_has_theta();
+}
+inline double E4Config::theta() const {
+  // @@protoc_insertion_point(field_get:pb.E4Config.theta)
+  return theta_;
+}
+inline void E4Config::set_theta(double value) {
+  set_has_theta();
+  theta_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4Config.theta)
+}
+
+// optional double E0 = 5;
+inline bool E4Config::has_e0() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void E4Config::set_has_e0() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void E4Config::clear_has_e0() {
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void E4Config::clear_e0() {
   e0_ = 0;

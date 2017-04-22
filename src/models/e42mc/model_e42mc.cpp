@@ -9,7 +9,7 @@ E42mcConfig::E42mcConfig(){
 E42mcState::E42mcState(){
 	set_x_p(0.05);
 	set_y_p(0.0);
-	set_x_m(0.0);
+	set_x_m(0.01);
 	set_y_m(0.0);
 }
 
@@ -25,7 +25,7 @@ E42mcState::E42mcState(const E42mcConfig* config){
 	}
 	set_x_p(0.05);
 	set_y_p(0.0);
-	set_x_m(0.0);
+	set_x_m(0.01);
 	set_y_m(0.0);
 }
 

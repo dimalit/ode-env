@@ -17,13 +17,13 @@ int main (int argc, char *argv[])
 {
 	srand(time(NULL));
 
-//	Gtk::Main kit(argc, argv);
-//	libgoffice_init();
-//	//go_plugins_init (NULL, NULL, NULL, NULL, TRUE, GO_TYPE_PLUGIN_LOADER_MODULE);
-//	go_plugins_init(NULL, NULL,NULL,NULL,TRUE, G_TYPE_TYPE_MODULE);
-//
-//	HelloWorld helloworld;
-//	kit.run(helloworld);
+	Gtk::Main kit(argc, argv);
+	libgoffice_init();
+	//go_plugins_init (NULL, NULL, NULL, NULL, TRUE, GO_TYPE_PLUGIN_LOADER_MODULE);
+	go_plugins_init(NULL, NULL,NULL,NULL,TRUE, G_TYPE_TYPE_MODULE);
+
+	HelloWorld helloworld;
+	kit.run(helloworld);
 
 //	exp_6_images();
 //	exp_random_init_R3();
@@ -33,7 +33,7 @@ int main (int argc, char *argv[])
 
 //	exp_4_gyro();
 //	exp_ts4_super_emission(argc, argv);
-	exp_ts42mc(argc, argv);
+//	exp_ts42mc(argc, argv);
 
 /*
 	E1InstanceFactory* eif = E1InstanceFactory::getInstance();

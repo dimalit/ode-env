@@ -15,6 +15,7 @@
 
 #include "Gnuplot.h"
 #include "MaxDetector.h"
+#include "RunningAverage.h"
 
 #include <gtkmm/main.h>
 #include <gtkmm/window.h>
@@ -1142,8 +1143,8 @@ void exp_ts42mc(int argc, char *argv[]){
 		pcfg->set_n(900);
 	EXPetscSolverConfig* scfg = dynamic_cast<EXPetscSolverConfig*>(solver_fact->createSolverConfg());
 		scfg->set_init_step(0.01);
-		scfg->set_atol(1e-9);
-		scfg->set_rtol(1e-9);
+		scfg->set_atol(1e-7);
+		scfg->set_rtol(1e-7);
 		scfg->set_n_cores(3);
 
 	vector<double> alphas, e0s;
@@ -1172,7 +1173,7 @@ void exp_ts42mc(int argc, char *argv[]){
 		a_plot.addVar("particles.yn");
 		a_plot.setXAxisVar("particles.xn");
 
-	int counter = 15;
+	int counter = 0;
 	string dir = "exp_ts42mc/";
 	mkdir(dir.c_str(), 0777);
 	FILE* fp = fopen((dir+"results.txt").c_str(), "ab");
@@ -1196,6 +1197,7 @@ void exp_ts42mc(int argc, char *argv[]){
 			bool found_max_p = false, found_max_m = false;
 			double max_e = 0;
 			double time_p, time_m;
+			RunningAverage ra_p(4), ra_m(4);
 
 			e_plot.reset();
 			e_total_plot.reset();
@@ -1203,7 +1205,7 @@ void exp_ts42mc(int argc, char *argv[]){
 
 			const google::protobuf::Message *state_msg, *dstate_msg;
 			double time = 0.0;
-			solver->run(1000000, 0.5, true);
+			solver->run(1000000, 0.25, true);
 
 			std::ostringstream dir;
 			dir << "exp_ts42mc/" << counter << "/";
@@ -1244,23 +1246,30 @@ void exp_ts42mc(int argc, char *argv[]){
 				if(e>max_e)
 					max_e = e;
 
+				if(max_e < 2*e0)
+					continue;
+
 				md1_p.push(ep);
 				md1_m.push(em);
-				if(md1_p.hasMax())
-					md2_p.push(md1_p.get(1));
-				if(md1_m.hasMax())
-					md2_m.push(md1_m.get(1));
+				if(md1_p.hasMax() && !found_max_p){
+					ra_p.push(md1_p.get(1));
+					md2_p.push(ra_p.get());
+				}
+				if(md1_m.hasMax() && !found_max_m){
+					ra_m.push(md1_m.get(1));
+					md2_m.push(ra_m.get());
+				}
 
-				if(md2_p.hasMax()){
+				if(md2_p.hasMax() && !found_max_p){
 					found_max_p = true;
 					time_p = time;
 				}
-				if(md2_m.hasMax()){
+				if(md2_m.hasMax() && !found_max_m){
 					found_max_m = true;
 					time_m = time;
 				}
 
-				if(found_max_p && found_max_m || time>3000.0){
+				if(found_max_p && found_max_m || time>4000.0){
 					a_plot.saveSerie(0, dir.str() + "/a.csv", state_msg, dstate_msg, time);
 
 					fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\n", counter, alpha, e0, max_e, md2_p.getMax(), md2_m.getMax(), time_p, time_m);

@@ -1,0 +1,45 @@
+syntax = "proto2";
+
+package pb;
+
+import "common.proto";
+
+message E42mcConfig{
+	required uint32 N = 1;
+	optional double delta_0 = 2;
+	optional double alpha = 3;
+	optional double theta = 4;
+}
+
+message E42mcState{
+	required double x_p = 1;
+	required double y_p = 2;
+	repeated group Particles = 3{
+		required double x = 4;
+		required double y = 5;
+		required double z = 6;
+		required double xn = 7;
+		required double yn = 8;
+	}
+	required double x_m = 8;
+	required double y_m = 9;	
+}
+
+message E42mcStateGeneratorConfig{
+	required double E_p0 = 1;
+	required double phi_p0 = 2;
+	required double A0 = 3;
+	required double E_m0 = 4;
+	required double phi_m0 = 5;	
+}
+
+message E42mcModel{
+	required E42mcConfig pconfig = 1;
+	required E42mcState state = 2;
+	required EXPetscSolverConfig sconfig = 3;
+}
+
+message E42mcSolution{
+	required E42mcState state = 1;
+	optional E42mcState d_state = 2;
+}
