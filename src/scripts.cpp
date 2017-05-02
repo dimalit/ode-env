@@ -184,6 +184,7 @@ void exp_6_images(){
 					solver->run(1000000, 0.5);
 				}// infinite loop
 
+				solver->finish();
 				delete solver;
 				delete init_state;
 	////////////////////////////////////////////////////
@@ -278,6 +279,7 @@ void exp_random_init_R3(){
 			solver->run(1000000, 0.5);
 		}// infinite loop
 
+		solver->finish();
 		delete solver;
 		delete init_state;
 	////////////////////////////////////////////////////
@@ -407,6 +409,7 @@ void exp_gamma2e(){
 				imgname << model << "_r" << r << "_g" << gamma << ".png";
 				E_plot.processToFile(imgname.str(), state_msg, dstate_msg, time);
 
+				solver->finish();
 				delete solver;
 				delete init_state;
 		////////////////////////////////////////////////////
@@ -562,6 +565,7 @@ void exp_r2e(){
 			imgname << "r2e_" << model << "_a0_" << a0 << "_r" << r << ".png";
 			E_plot.processToFile(imgname.str(), state_msg, dstate_msg, time);
 
+			solver->finish();
 			delete solver;
 			delete init_state;
 	////////////////////////////////////////////////////
@@ -666,6 +670,7 @@ void as_in_book(){
 				}
 			}// infinite loop
 
+			solver->finish();
 			delete solver;
 			delete init_state;
 	////////////////////////////////////////////////////
@@ -916,6 +921,7 @@ void exp_4_gyro(){
 
 		phi_plot.saveSerie(0, dir.str() + "/phi.csv");
 
+		solver->finish();
 		delete solver;
 		delete init_state;
 	}// for a0s and e0s
@@ -1064,6 +1070,7 @@ void exp_ts4_super_emission(int argc, char *argv[]){
 			e_plot.saveSerie(0, dir.str() + "/e.csv");
 			phi_plot.saveSerie(0, dir.str() + "/phi.csv");
 
+			solver->finish();
 			delete solver;
 			delete init_state;
 		}// for e0s
@@ -1290,6 +1297,300 @@ void exp_ts42mc(int argc, char *argv[]){
 			delete init_state;
 		}// for e0s
 	}// for alphas
+
+	fclose(fp);
+}
+
+void exp_ts4_theta(int argc, char *argv[]){
+	string problem_name = "model e4";
+
+	Problem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
+	SolverType* solver_fact = *OdeSolverTypeManager::getInstance()->getTypesFor(inst_fact).first;
+
+	E4Config* pcfg = dynamic_cast<E4Config*>(inst_fact->createConfig());
+		pcfg->set_n(900);
+	EXPetscSolverConfig* scfg = dynamic_cast<EXPetscSolverConfig*>(solver_fact->createSolverConfg());
+		scfg->set_init_step(0.01);
+		scfg->set_atol(1e-8);
+		scfg->set_rtol(1e-8);
+		scfg->set_n_cores(2);
+
+	double alpha = 0.1;
+	double e0 = 0.05;
+	pcfg->set_alpha(alpha);
+
+	vector<double> thetas;
+//	thetas.push_back(0.05);
+//	thetas.push_back(0.02);
+//	thetas.push_back(0.01);
+//	thetas.push_back(0.005);
+	thetas.push_back(0.015);
+//	thetas.push_back(0.007);
+//	thetas.push_back(0.003);
+
+	Gnuplot e_plot;
+		e_plot.addVar("E");
+		e_plot.addVar("Eout");
+		e_plot.setXAxisTime();
+		e_plot.setTitle("E");
+
+	Gnuplot phi_plot;
+		phi_plot.addVar("phi");
+		phi_plot.setXAxisTime();
+		phi_plot.setTitle("phi");
+
+	Gnuplot a_plot;
+		a_plot.addVar("particles.a");
+		a_plot.setXAxisVar("particles.psi");
+		a_plot.setPolar(true);
+		a_plot.setTitle("a|psi");
+
+	int counter = 4;
+	string dir = "exp_ts4_theta/";
+	mkdir(dir.c_str(), 0777);
+	FILE* fp = fopen((dir+"results.txt").c_str(), "ab");
+
+	for(int theta_step=0; theta_step<thetas.size(); theta_step++){
+
+		double theta = thetas[theta_step];
+		double a0 = 1.0;
+		pcfg->set_theta(theta);
+
+		E4State* init_state = dynamic_cast<E4State*>(inst_fact->createState(pcfg));
+		init_state->set_e(e0);
+		init_state->set_phi(0);
+		for(int i=0; i<pcfg->n(); i++){
+			init_state->mutable_particles(i)->set_a(a0);
+			double z = i / (double)pcfg->n() * 5 + 0;
+			double psi = rand()/(double)RAND_MAX * (2*M_PI) + 0;
+			init_state->mutable_particles(i)->set_psi(psi);
+			init_state->mutable_particles(i)->set_z(z);
+		}
+		E4PetscSolver* solver = dynamic_cast<E4PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
+
+		MaxDetector md1;
+
+		e_plot.reset();
+		phi_plot.reset();
+		a_plot.reset();
+
+		const google::protobuf::Message *state_msg, *dstate_msg;
+		double time = 0.0;
+		solver->run(1000000, 0.25, true);
+
+		for(int step=0;;step++){
+			if(!solver->step())
+				break;
+			state_msg = dynamic_cast<const google::protobuf::Message*>(solver->getState());
+			dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
+			time = solver->getTime();
+
+			const E4State* estate = dynamic_cast<const E4State*>(solver->getState());
+			double e = estate->e();
+
+			e_plot.processState(state_msg, dstate_msg, time);
+			phi_plot.processState(state_msg, dstate_msg, time);
+			a_plot.processState(state_msg, dstate_msg, time);
+
+//					for(auto i=analyzer_widgets.begin(); i!=analyzer_widgets.end(); ++i){
+//						(*i)->loadConfig(pcfg);
+//						(*i)->processState(solver->getState(), solver->getDState(), time);
+//					}
+			//kit.iteration(true);
+
+			// integral!!
+			double sum_a_2 = 0;
+
+			for(int i=0; i<pcfg->n(); i++){
+				E4State::Particles p = estate->particles(i);
+				sum_a_2 += p.a()*p.a();
+			}
+
+			std::ostringstream buf;
+			buf.setf( std::ios::fixed, std:: ios::floatfield );
+			buf.precision(10);
+
+			fprintf(stderr, "%.10lf\n", e*e+1.0/pcfg->n()*sum_a_2+estate->eout());
+
+			md1.push(e);
+
+			if(md1.hasMax() && time > 100 && e < 0.01){
+				std::ostringstream dir;
+				dir << "exp_ts4_theta/" << counter << "/";
+				mkdir(dir.str().c_str(), 0777);
+
+				a_plot.saveSerie(0, dir.str() + "/a.csv", state_msg, dstate_msg, time);
+
+				fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\n", counter, theta, e0, estate->eout(), time);
+				fflush(fp);
+
+				counter++;
+				break;
+			}// if
+		}//for steps
+
+		std::ostringstream dir;
+		dir << "exp_ts4_theta/" << (counter-1) << "/";
+
+		e_plot.saveSerie(0, dir.str() + "/e.csv");
+		e_plot.saveSerie(1, dir.str() + "/eout.csv");
+		phi_plot.saveSerie(0, dir.str() + "/phi.csv");
+
+		solver->finish();
+		delete solver;
+		delete init_state;
+	}// for thetas
+
+	fclose(fp);
+}
+
+void exp_ts42mc_theta(int argc, char *argv[]) {
+	string problem_name = "model e42mc";
+
+	Problem* inst_fact = OdeProblemManager::getInstance()->getProblem(
+			problem_name);
+	SolverType* solver_fact = *OdeSolverTypeManager::getInstance()->getTypesFor(
+			inst_fact).first;
+
+	E42mcConfig* pcfg = dynamic_cast<E42mcConfig*>(inst_fact->createConfig());
+	pcfg->set_n(900);
+	EXPetscSolverConfig* scfg =
+			dynamic_cast<EXPetscSolverConfig*>(solver_fact->createSolverConfg());
+	scfg->set_init_step(0.01);
+	scfg->set_atol(1e-7);
+	scfg->set_rtol(1e-7);
+	scfg->set_n_cores(2);
+
+	double alpha = 0.1;
+	double e0 = 0.05;
+	pcfg->set_alpha(alpha);
+
+	vector<double> thetas;
+	thetas.push_back(0.02);
+	thetas.push_back(0.015);
+	thetas.push_back(0.01);
+	thetas.push_back(0.007);
+	thetas.push_back(0.005);
+	thetas.push_back(0.003);
+
+	Gnuplot e_plot;
+	e_plot.addVar("$x_p*$x_p+$y_p*$y_p");
+	e_plot.addVar("$x_m*$x_m+$y_m*$y_m");
+	e_plot.addVar("Eout");
+	e_plot.setXAxisTime();
+
+	Gnuplot e_total_plot;
+	e_total_plot.addVar("sqrt($x_p*$x_p+$y_p*$y_p+$x_m*$x_m+$y_m*$y_m)");
+	e_total_plot.setXAxisTime();
+
+	Gnuplot a_plot;
+	a_plot.addVar("particles.yn");
+	a_plot.setXAxisVar("particles.xn");
+
+	int counter = 0;
+	string dir = "exp_ts42mc_theta/";
+	mkdir(dir.c_str(), 0777);
+	FILE* fp = fopen((dir + "results.txt").c_str(), "ab");
+
+	for (int theta_step = 0; theta_step < thetas.size(); theta_step++) {
+
+		double theta = thetas[theta_step];
+		double a0 = 1.0;
+		pcfg->set_theta(theta);
+
+		E42mcState* init_state =
+				dynamic_cast<E42mcState*>(inst_fact->createState(pcfg));
+		init_state->set_x_p(e0);
+		init_state->set_x_m(0.01);
+		ts42mc_fill_as_grid(init_state);
+		E42mcPetscSolver* solver =
+				dynamic_cast<E42mcPetscSolver*>(solver_fact->createSolver(scfg,
+						pcfg, init_state));
+
+		MaxDetector md1;
+		double max_e = 0;
+		double max_time;
+
+		e_plot.reset();
+		e_total_plot.reset();
+		a_plot.reset();
+
+		const google::protobuf::Message *state_msg, *dstate_msg;
+		double time = 0.0;
+		solver->run(1000000, 0.25, true);
+
+		std::ostringstream dir;
+		dir << "exp_ts42mc_theta/" << counter << "/";
+		mkdir(dir.str().c_str(), 0777);
+
+		FILE* int_fp = fopen((dir.str() + "int.txt").c_str(), "wb");
+
+		for (int step = 0;; step++) {
+			if (!solver->step())
+				break;
+			state_msg =	dynamic_cast<const google::protobuf::Message*>(solver->getState());
+			dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
+			time = solver->getTime();
+
+			const E42mcState* estate = dynamic_cast<const E42mcState*>(solver->getState());
+			double ep = sqrt( estate->x_p() * estate->x_p()
+							+ estate->y_p() * estate->y_p());
+			double em = sqrt( estate->x_m() * estate->x_m()
+							+ estate->y_m() * estate->y_m());
+			double e = sqrt(ep * ep + em * em);
+			double eout = estate->eout();
+
+			e_plot.processState(state_msg, dstate_msg, time);
+			e_total_plot.processState(state_msg, dstate_msg, time);
+			a_plot.processState(state_msg, dstate_msg, time);
+
+			// integral!!
+			double sum_a_2 = 0;
+
+			for (int i = 0; i < pcfg->n(); i++) {
+				E42mcState::Particles p = estate->particles(i);
+				sum_a_2 += (p.x() + p.xn()) * (p.x() + p.xn())
+						+ (p.y() + p.yn()) * (p.y() + p.yn());
+			}
+
+			std::ostringstream buf;
+			buf.setf(std::ios::fixed, std::ios::floatfield);
+			buf.precision(10);
+
+			fprintf(int_fp, "%.10lf\n",
+					ep * ep + em * em + 1.0 / pcfg->n() * sum_a_2
+							+ estate->eout());
+
+			if (e > max_e) {
+				max_e = e;
+				max_time = time;
+			}
+
+			md1.push(e);
+
+			if (md1.hasMax() && time > 100 && e < 0.01) {
+				a_plot.saveSerie(0, dir.str() + "/a.csv", state_msg, dstate_msg,
+						time);
+
+				fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\n", counter,
+						theta, max_e, eout, max_time);
+				fflush(fp);
+
+				counter++;
+				break;
+			}			// if
+		}			//for steps
+		fclose(int_fp);
+
+		e_plot.saveSerie(0, dir.str() + "ep.csv");
+		e_plot.saveSerie(1, dir.str() + "em.csv");
+		e_plot.saveSerie(2, dir.str() + "eout.csv");
+		e_total_plot.saveSerie(0, dir.str() + "e.csv");
+
+		solver->finish();
+		delete solver;
+		delete init_state;
+	}			// for thetas
 
 	fclose(fp);
 }

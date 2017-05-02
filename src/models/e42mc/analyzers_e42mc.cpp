@@ -46,6 +46,8 @@ E42mcConservationAnalyzer::E42mcConservationAnalyzer(const E42mcConfig* config){
 	b->get_widget("entry_phi_p", entry_phi_p);
 	b->get_widget("entry_e_m", entry_e_m);
 	b->get_widget("entry_phi_m", entry_phi_m);
+	b->get_widget("entry_eout", entry_eout);
+
 
 	b->get_widget("entry_aver_x", entry_aver_x);
 	b->get_widget("entry_aver_y", entry_aver_y);
@@ -115,8 +117,12 @@ void E42mcConservationAnalyzer::processState(const OdeState* state, const OdeSta
 	buf.precision(10);
 
 	buf.str("");
-	buf << mod2(estate->x_p(), estate->y_p()) + mod2(estate->x_m(), estate->y_m()) + 1.0/config->n()*sum_a_2;
+	buf << mod2(estate->x_p(), estate->y_p()) + mod2(estate->x_m(), estate->y_m()) + 1.0/config->n()*sum_a_2+estate->eout();
 	entry_int1->set_text(buf.str());
+
+	buf.str("");
+	buf << estate->eout();
+	entry_eout->set_text(buf.str());
 
 	buf.str("");
 	buf << mod(estate->x_p(), estate->y_p());

@@ -18,7 +18,7 @@
 HelloWorld::HelloWorld()
 :forever_button("Forever"), cancel_button("Cancel"), step_button("Step"), reset_button("Reset")
 {
-  problem_name = "model e4";
+  problem_name = "model e42mc";
 
   computing = false;
   run_thread = NULL;
@@ -101,6 +101,7 @@ HelloWorld::HelloWorld()
 		  vars.clear();
 		  vars.push_back("$x_p*$x_p+$y_p*$y_p");
 		  vars.push_back("$x_m*$x_m+$y_m*$y_m");
+		  vars.push_back("Eout");
 		  x_var ="";
 		  chart = new MessageChart(vars, x_var, NULL);
 		  ana->addChart(chart);

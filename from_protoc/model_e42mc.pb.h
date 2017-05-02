@@ -352,19 +352,26 @@ class E42mcState : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedPtrField< ::pb::E42mcState_Particles >*
       mutable_particles();
 
-  // required double x_m = 8;
+  // required double x_m = 9;
   inline bool has_x_m() const;
   inline void clear_x_m();
-  static const int kXMFieldNumber = 8;
+  static const int kXMFieldNumber = 9;
   inline double x_m() const;
   inline void set_x_m(double value);
 
-  // required double y_m = 9;
+  // required double y_m = 10;
   inline bool has_y_m() const;
   inline void clear_y_m();
-  static const int kYMFieldNumber = 9;
+  static const int kYMFieldNumber = 10;
   inline double y_m() const;
   inline void set_y_m(double value);
+
+  // optional double Eout = 11;
+  inline bool has_eout() const;
+  inline void clear_eout();
+  static const int kEoutFieldNumber = 11;
+  inline double eout() const;
+  inline void set_eout(double value);
 
   // @@protoc_insertion_point(class_scope:pb.E42mcState)
  private:
@@ -376,6 +383,8 @@ class E42mcState : public ::google::protobuf::Message {
   inline void clear_has_x_m();
   inline void set_has_y_m();
   inline void clear_has_y_m();
+  inline void set_has_eout();
+  inline void clear_has_eout();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -386,6 +395,7 @@ class E42mcState : public ::google::protobuf::Message {
   ::google::protobuf::RepeatedPtrField< ::pb::E42mcState_Particles > particles_;
   double x_m_;
   double y_m_;
+  double eout_;
   friend void  protobuf_AddDesc_model_5fe42mc_2eproto();
   friend void protobuf_AssignDesc_model_5fe42mc_2eproto();
   friend void protobuf_ShutdownFile_model_5fe42mc_2eproto();
@@ -1019,7 +1029,7 @@ E42mcState::mutable_particles() {
   return &particles_;
 }
 
-// required double x_m = 8;
+// required double x_m = 9;
 inline bool E42mcState::has_x_m() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
@@ -1043,7 +1053,7 @@ inline void E42mcState::set_x_m(double value) {
   // @@protoc_insertion_point(field_set:pb.E42mcState.x_m)
 }
 
-// required double y_m = 9;
+// required double y_m = 10;
 inline bool E42mcState::has_y_m() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
@@ -1065,6 +1075,30 @@ inline void E42mcState::set_y_m(double value) {
   set_has_y_m();
   y_m_ = value;
   // @@protoc_insertion_point(field_set:pb.E42mcState.y_m)
+}
+
+// optional double Eout = 11;
+inline bool E42mcState::has_eout() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void E42mcState::set_has_eout() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void E42mcState::clear_has_eout() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void E42mcState::clear_eout() {
+  eout_ = 0;
+  clear_has_eout();
+}
+inline double E42mcState::eout() const {
+  // @@protoc_insertion_point(field_get:pb.E42mcState.Eout)
+  return eout_;
+}
+inline void E42mcState::set_eout(double value) {
+  set_has_eout();
+  eout_ = value;
+  // @@protoc_insertion_point(field_set:pb.E42mcState.Eout)
 }
 
 // -------------------------------------------------------------------

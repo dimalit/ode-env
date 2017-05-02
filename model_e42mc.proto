@@ -21,8 +21,9 @@ message E42mcState{
 		required double xn = 7;
 		required double yn = 8;
 	}
-	required double x_m = 8;
-	required double y_m = 9;	
+	required double x_m = 9;
+	required double y_m = 10;
+	optional double Eout = 11;
 }
 
 message E42mcStateGeneratorConfig{
