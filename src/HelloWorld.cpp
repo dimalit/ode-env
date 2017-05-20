@@ -18,7 +18,7 @@
 HelloWorld::HelloWorld()
 :forever_button("Forever"), cancel_button("Cancel"), step_button("Step"), reset_button("Reset")
 {
-  problem_name = "model e42mc";
+  problem_name = "model e4";
 
   computing = false;
   run_thread = NULL;
@@ -38,17 +38,17 @@ HelloWorld::HelloWorld()
 
   vbox.pack_end(button_box, false, false);
 
-  Problem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
+  Problem* problem = OdeProblemManager::getInstance()->getProblem( problem_name );
 
-  OdeProblemWidgetType* inst_widget_fact = *OdeInstanceWidgetManager::getInstance()->getTypesFor(inst_fact).first;
-  this->config_widget = inst_widget_fact->createConfigWidget();
+  OdeProblemWidgetType* prob_widget_fact = *OdeInstanceWidgetManager::getInstance()->getTypesFor(problem).first;
+  this->config_widget = prob_widget_fact->createConfigWidget();
   vbox.pack_start(*this->config_widget, false, false, 0);
 
   // win state //
-  this->generator_widget = inst_widget_fact->createStateGeneratorWidget(this->config_widget->getConfig());
+  this->generator_widget = prob_widget_fact->createStateGeneratorWidget(this->config_widget->getConfig());
   vbox.pack_start(*this->generator_widget, false, false);
 
-  SolverType* solver_fact = *OdeSolverTypeManager::getInstance()->getTypesFor(inst_fact).first;
+  SolverType* solver_fact = *OdeSolverTypeManager::getInstance()->getTypesFor(problem).first;
   this->solver_config_widget = OdeSolverConfigWidgetManager::getInstance()->getTypesFor(solver_fact).first->createConfigWidget();
   vbox.pack_start(*this->solver_config_widget, false, false, 0);
 
@@ -80,10 +80,10 @@ HelloWorld::HelloWorld()
   // analyzers //
   Gtk::VBox *vb = Gtk::manage(new Gtk::VBox());
   win_analyzers.add(*vb);
-  win_analyzers.set_title(inst_widget_fact->getDisplayName() + " analyzers");
+  win_analyzers.set_title(prob_widget_fact->getDisplayName() + " analyzers");
 
   // this is table
-  auto anafacts = OdeAnalyzerWidgetManager::getInstance()->getTypesFor(inst_fact);
+  auto anafacts = OdeAnalyzerWidgetManager::getInstance()->getTypesFor(problem);
   for(OdeAnalyzerWidgetManager::TypeIterator i=anafacts.first; i!=anafacts.second; ++i){
 	  OdeAnalyzerWidgetType* analyzer_fact = *i;
 	  OdeAnalyzerWidget* analyzer_widget = analyzer_fact->createAnalyzerWidget(config_widget->getConfig());

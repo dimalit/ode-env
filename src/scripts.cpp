@@ -1301,6 +1301,31 @@ void exp_ts42mc(int argc, char *argv[]){
 	fclose(fp);
 }
 
+void ts4_center_masses(E4State* state){
+	int N = state->particles_size();
+
+	double sum_x = 0, sum_y = 0;
+
+	for(int i=0; i<N; i++){
+		E4State::Particles p = state->particles(i);
+
+		sum_x += p.a()*cos(p.psi()-2*M_PI*p.z());
+		sum_y += p.a()*sin(p.psi()-2*M_PI*p.z());
+	}
+
+	double dx = sum_x/N;
+	double dy = sum_y/N;
+
+	for(int i=0; i<N; i++){
+		E4State::Particles& p = *state->mutable_particles(i);
+
+		double scalar = dx*cos(p.psi()-2*M_PI*p.z()) + dy*sin(p.psi()-2*M_PI*p.z());
+		p.set_a(p.a()-scalar);
+		scalar = -dx*sin(p.psi()-2*M_PI*p.z()) + dy*cos(p.psi()-2*M_PI*p.z());
+		p.set_psi(p.psi()-scalar/p.a());
+	}
+}
+
 void exp_ts4_theta(int argc, char *argv[]){
 	string problem_name = "model e4";
 
@@ -1316,17 +1341,26 @@ void exp_ts4_theta(int argc, char *argv[]){
 		scfg->set_n_cores(2);
 
 	double alpha = 0.1;
-	double e0 = 0.05;
+	double e0 = 0.01;
 	pcfg->set_alpha(alpha);
 
 	vector<double> thetas;
 //	thetas.push_back(0.05);
-//	thetas.push_back(0.02);
-//	thetas.push_back(0.01);
-//	thetas.push_back(0.005);
-	thetas.push_back(0.015);
-//	thetas.push_back(0.007);
-//	thetas.push_back(0.003);
+//	thetas.push_back(0.2);
+//	thetas.push_back(0.5);
+
+//	thetas.push_back(1);
+//	thetas.push_back(1.5);
+//	thetas.push_back(2);
+//	thetas.push_back(3);
+
+	thetas.push_back(4);
+	thetas.push_back(5);
+	thetas.push_back(6);
+	thetas.push_back(7);
+	thetas.push_back(8);
+	thetas.push_back(9);
+	thetas.push_back(10);
 
 	Gnuplot e_plot;
 		e_plot.addVar("E");
@@ -1366,9 +1400,13 @@ void exp_ts4_theta(int argc, char *argv[]){
 			init_state->mutable_particles(i)->set_psi(psi);
 			init_state->mutable_particles(i)->set_z(z);
 		}
+		ts4_center_masses(init_state);
+
 		E4PetscSolver* solver = dynamic_cast<E4PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
 
-		MaxDetector md1;
+		MaxDetector md_plus;
+		MaxDetector md_minus;
+		double max_e = 0;
 
 		e_plot.reset();
 		phi_plot.reset();
@@ -1377,6 +1415,12 @@ void exp_ts4_theta(int argc, char *argv[]){
 		const google::protobuf::Message *state_msg, *dstate_msg;
 		double time = 0.0;
 		solver->run(1000000, 0.25, true);
+
+		std::ostringstream dir;
+		dir << "exp_ts4_theta/" << counter << "/";
+		mkdir(dir.str().c_str(), 0777);
+
+		FILE* int_fp = fopen((dir.str() + "int.txt").c_str(), "wb");
 
 		for(int step=0;;step++){
 			if(!solver->step())
@@ -1410,18 +1454,18 @@ void exp_ts4_theta(int argc, char *argv[]){
 			buf.setf( std::ios::fixed, std:: ios::floatfield );
 			buf.precision(10);
 
-			fprintf(stderr, "%.10lf\n", e*e+1.0/pcfg->n()*sum_a_2+estate->eout());
+			double integral = e*e+1.0/pcfg->n()*sum_a_2+estate->eout();
+			fprintf(int_fp, "%.10lf\n", integral);
 
-			md1.push(e);
+			md_plus.push(e);
+			md_minus.push(-e);
+			if(e>max_e)
+				max_e = e;
 
-			if(md1.hasMax() && time > 100 && e < 0.01){
-				std::ostringstream dir;
-				dir << "exp_ts4_theta/" << counter << "/";
-				mkdir(dir.str().c_str(), 0777);
-
+			if(md_minus.hasMax() && max_e > e0*1.1 && e<0.25*max_e && time > 100){
 				a_plot.saveSerie(0, dir.str() + "/a.csv", state_msg, dstate_msg, time);
 
-				fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\n", counter, theta, e0, estate->eout(), time);
+				fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\t%lf\n", counter, theta, max_e, estate->eout(), time, integral);
 				fflush(fp);
 
 				counter++;
@@ -1429,7 +1473,9 @@ void exp_ts4_theta(int argc, char *argv[]){
 			}// if
 		}//for steps
 
-		std::ostringstream dir;
+		fclose(int_fp);
+
+		dir.str("");
 		dir << "exp_ts4_theta/" << (counter-1) << "/";
 
 		e_plot.saveSerie(0, dir.str() + "/e.csv");
@@ -1462,16 +1508,27 @@ void exp_ts42mc_theta(int argc, char *argv[]) {
 	scfg->set_n_cores(2);
 
 	double alpha = 0.1;
-	double e0 = 0.05;
+	double e0 = 0.01;
 	pcfg->set_alpha(alpha);
 
 	vector<double> thetas;
-	thetas.push_back(0.02);
-	thetas.push_back(0.015);
-	thetas.push_back(0.01);
-	thetas.push_back(0.007);
-	thetas.push_back(0.005);
-	thetas.push_back(0.003);
+	//	thetas.push_back(0.05);
+	//	thetas.push_back(0.2);
+
+		thetas.push_back(0.5);
+		thetas.push_back(1);
+		thetas.push_back(1.5);
+		thetas.push_back(2);
+		thetas.push_back(3);
+
+		thetas.push_back(4);
+		thetas.push_back(5);
+		thetas.push_back(6);
+		thetas.push_back(7);
+		thetas.push_back(8);
+		thetas.push_back(9);
+		thetas.push_back(10);
+		thetas.push_back(20);
 
 	Gnuplot e_plot;
 	e_plot.addVar("$x_p*$x_p+$y_p*$y_p");
@@ -1507,7 +1564,8 @@ void exp_ts42mc_theta(int argc, char *argv[]) {
 				dynamic_cast<E42mcPetscSolver*>(solver_fact->createSolver(scfg,
 						pcfg, init_state));
 
-		MaxDetector md1;
+		MaxDetector md_plus;
+		MaxDetector md_minus;
 		double max_e = 0;
 		double max_time;
 
@@ -1557,23 +1615,24 @@ void exp_ts42mc_theta(int argc, char *argv[]) {
 			buf.setf(std::ios::fixed, std::ios::floatfield);
 			buf.precision(10);
 
-			fprintf(int_fp, "%.10lf\n",
-					ep * ep + em * em + 1.0 / pcfg->n() * sum_a_2
-							+ estate->eout());
+			double integral = ep * ep + em * em + 1.0 / pcfg->n() * sum_a_2
+												+ estate->eout();
+			fprintf(int_fp, "%.10lf\n", integral);
 
 			if (e > max_e) {
 				max_e = e;
 				max_time = time;
 			}
 
-			md1.push(e);
+			md_plus.push(e);
+			md_minus.push(-e);
 
-			if (md1.hasMax() && time > 100 && e < 0.01) {
+			if (md_minus.hasMax() && time > 100 && e < 0.002) {
 				a_plot.saveSerie(0, dir.str() + "/a.csv", state_msg, dstate_msg,
 						time);
 
-				fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\n", counter,
-						theta, max_e, eout, max_time);
+				fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\t%lf\n", counter,
+						theta, max_e, eout, time, integral);
 				fflush(fp);
 
 				counter++;
@@ -1591,6 +1650,128 @@ void exp_ts42mc_theta(int argc, char *argv[]) {
 		delete solver;
 		delete init_state;
 	}			// for thetas
+
+	fclose(fp);
+}
+
+void exp_maxE_theta(int argc, char *argv[]){
+	string problem_name = "model e4";
+
+	Problem* inst_fact = OdeProblemManager::getInstance()->getProblem( problem_name );
+	SolverType* solver_fact = *OdeSolverTypeManager::getInstance()->getTypesFor(inst_fact).first;
+
+	E4Config* pcfg = dynamic_cast<E4Config*>(inst_fact->createConfig());
+		pcfg->set_n(900);
+	EXPetscSolverConfig* scfg = dynamic_cast<EXPetscSolverConfig*>(solver_fact->createSolverConfg());
+		scfg->set_init_step(0.01);
+		scfg->set_atol(1e-8);
+		scfg->set_rtol(1e-8);
+		scfg->set_n_cores(2);
+
+	double alpha = 0.1;
+	double e0 = 0.01;
+	pcfg->set_alpha(alpha);
+
+	vector<double> thetas;
+//	thetas.push_back(0.001);
+//	thetas.push_back(0.015);
+//	thetas.push_back(0.02);
+
+	thetas.push_back(0.05);
+	thetas.push_back(0.1);
+	thetas.push_back(0.2);
+	thetas.push_back(0.5);
+
+	thetas.push_back(1);
+	thetas.push_back(1.5);
+	thetas.push_back(2);
+	thetas.push_back(3);
+
+	thetas.push_back(6);
+	thetas.push_back(10);
+	thetas.push_back(15);
+	thetas.push_back(20);
+	thetas.push_back(30);
+	thetas.push_back(40);
+
+	Gnuplot e_plot;
+		e_plot.addVar("E");
+		e_plot.addVar("Eout");
+		e_plot.setXAxisTime();
+		e_plot.setTitle("E");
+
+	Gnuplot a_plot;
+		a_plot.addVar("particles.a");
+		a_plot.setXAxisVar("particles.psi");
+		a_plot.setPolar(true);
+		a_plot.setTitle("a|psi");
+
+	int counter = 0;
+	string dir = "exp_maxE_theta/";
+	mkdir(dir.c_str(), 0777);
+	FILE* fp = fopen((dir+"results.txt").c_str(), "ab");
+
+	for(int theta_step=0; theta_step<thetas.size(); theta_step++){
+
+		double theta = thetas[theta_step];
+		double a0 = 1.0;
+		pcfg->set_theta(theta);
+
+		E4State* init_state = dynamic_cast<E4State*>(inst_fact->createState(pcfg));
+		init_state->set_e(e0);
+		init_state->set_phi(0);
+		for(int i=0; i<pcfg->n(); i++){
+			init_state->mutable_particles(i)->set_a(a0);
+			double z = i / (double)pcfg->n() * 5 + 0;
+			double psi = rand()/(double)RAND_MAX * (2*M_PI) + 0;
+			init_state->mutable_particles(i)->set_psi(psi);
+			init_state->mutable_particles(i)->set_z(z);
+		}
+		ts4_center_masses(init_state);
+
+		E4PetscSolver* solver = dynamic_cast<E4PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
+
+		double max_e = 0;
+		double max_time = 0;
+
+		e_plot.reset();
+		a_plot.reset();
+
+		const google::protobuf::Message *state_msg, *dstate_msg;
+		double time = 0.0;
+		solver->run(1000000, 0.25, true);
+
+		for(int step=0;;step++){
+			if(!solver->step())
+				break;
+			state_msg = dynamic_cast<const google::protobuf::Message*>(solver->getState());
+			dstate_msg = dynamic_cast<const google::protobuf::Message*>(solver->getDState());
+			time = solver->getTime();
+
+			const E4State* estate = dynamic_cast<const E4State*>(solver->getState());
+			double e = estate->e();
+
+			e_plot.processState(state_msg, dstate_msg, time);
+			a_plot.processState(state_msg, dstate_msg, time);
+
+			if(time > 100 && e>max_e){
+				max_e = e;
+				max_time = time;
+			}
+
+			if(time>1000){
+				fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\n", counter, theta, max_e, estate->eout(), max_time);
+				fflush(fp);
+
+				counter++;
+				break;
+			}// if
+		}//for steps
+
+		solver->finish();
+		delete solver;
+		delete init_state;
+	}// for thetas
 
 	fclose(fp);
 }

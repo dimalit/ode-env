@@ -14,6 +14,7 @@ extern void exp_ts4_super_emission(int argc, char *argv[]);
 extern void exp_ts42mc(int argc, char *argv[]);
 extern void exp_ts4_theta(int argc, char *argv[]);
 extern void exp_ts42mc_theta(int argc, char *argv[]);
+extern void exp_maxE_theta(int argc, char *argv[]);
 
 int main (int argc, char *argv[])
 {
@@ -38,6 +39,7 @@ int main (int argc, char *argv[])
 //	exp_ts42mc(argc, argv);
 //	exp_ts4_theta(argc, argv);
 //	exp_ts42mc_theta(argc, argv);
+//	exp_maxE_theta(argc, argv);
 
 /*
 	E1InstanceFactory* eif = E1InstanceFactory::getInstance();
