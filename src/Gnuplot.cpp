@@ -163,7 +163,7 @@ void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::
 
 	bool need_series_wrap = false;//!!getXAxisTime() && !polar && this->x_axis.find("ksi") != std::string::npos;
 	bool is_particles = s.var_name.find("particles") != std::string::npos;
-	bool need_coloring = s.var_name=="particles.a" && d_msg;
+	bool need_coloring = false;//s.var_name=="particles.a" && d_msg;
 
 	// simple field
 	if(s.var_name.find('.') == std::string::npos){
@@ -275,7 +275,7 @@ void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::
 
 			if(is_particles){
 				double z = atof(get_val(&refl->GetRepeatedMessage(*msg, fd1, i), NULL, "z").c_str());
-				z = fmod(z, 1.0);
+				//z = fmod(z, 1.0);
 				//z = cos(2*M_PI*z);
 				out << " " << z;
 			}

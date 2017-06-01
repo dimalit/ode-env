@@ -91,6 +91,7 @@ void E4StateGeneratorWidget::newState(bool emit){
 
 	state->set_e(e);
 	state->set_phi(phi);
+	state->set_a0(a0);
 
 	center_masses();
 

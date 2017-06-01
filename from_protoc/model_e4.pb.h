@@ -361,6 +361,13 @@ class E4State : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedPtrField< ::pb::E4State_Particles >*
       mutable_particles();
 
+  // optional double a0 = 9;
+  inline bool has_a0() const;
+  inline void clear_a0();
+  static const int kA0FieldNumber = 9;
+  inline double a0() const;
+  inline void set_a0(double value);
+
   // @@protoc_insertion_point(class_scope:pb.E4State)
  private:
   inline void set_has_e();
@@ -369,6 +376,8 @@ class E4State : public ::google::protobuf::Message {
   inline void clear_has_phi();
   inline void set_has_eout();
   inline void clear_has_eout();
+  inline void set_has_a0();
+  inline void clear_has_a0();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -378,6 +387,7 @@ class E4State : public ::google::protobuf::Message {
   double phi_;
   double eout_;
   ::google::protobuf::RepeatedPtrField< ::pb::E4State_Particles > particles_;
+  double a0_;
   friend void  protobuf_AddDesc_model_5fe4_2eproto();
   friend void protobuf_AssignDesc_model_5fe4_2eproto();
   friend void protobuf_ShutdownFile_model_5fe4_2eproto();
@@ -1316,6 +1326,30 @@ inline ::google::protobuf::RepeatedPtrField< ::pb::E4State_Particles >*
 E4State::mutable_particles() {
   // @@protoc_insertion_point(field_mutable_list:pb.E4State.particles)
   return &particles_;
+}
+
+// optional double a0 = 9;
+inline bool E4State::has_a0() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void E4State::set_has_a0() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void E4State::clear_has_a0() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void E4State::clear_a0() {
+  a0_ = 0;
+  clear_has_a0();
+}
+inline double E4State::a0() const {
+  // @@protoc_insertion_point(field_get:pb.E4State.a0)
+  return a0_;
+}
+inline void E4State::set_a0(double value) {
+  set_has_a0();
+  a0_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4State.a0)
 }
 
 // -------------------------------------------------------------------

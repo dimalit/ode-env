@@ -22,6 +22,7 @@ message E4State{
 		required double z = 6;
 		required double delta = 7;
 	}
+	optional double a0 = 9;
 }
 
 message E4StateGeneratorConfig{
