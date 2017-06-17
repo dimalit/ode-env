@@ -300,9 +300,11 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 	std::ostringstream super_buffer;			// data
 		super_buffer.precision(10);
 
+	plot_command << "set size square\n";
+
 	if(polar){
 		plot_command << "set polar\n";
-//		plot_command << draw_bells(msg, desc, refl);
+		plot_command << draw_bells(msg) << "\n";
 	}
 	if(parametric)
 		plot_command << "set parametric\n";
@@ -477,7 +479,10 @@ void Gnuplot::update_view(){
 	fflush(to_gnuplot);
 }
 
-std::string Gnuplot::draw_bells(const google::protobuf::Message* msg, const google::protobuf::Descriptor* desc, const google::protobuf::Reflection* refl){
+std::string Gnuplot::draw_bells(const google::protobuf::Message* msg){
+	const Descriptor* desc = msg->GetDescriptor();
+	const Reflection* refl = msg->GetReflection();
+
 	std::stringstream plot_command;
 
 	const google::protobuf::FieldDescriptor *a0_fd = desc->FindFieldByName("a0");
@@ -487,6 +492,9 @@ std::string Gnuplot::draw_bells(const google::protobuf::Message* msg, const goog
 	const google::protobuf::FieldDescriptor *phi_fd = desc->FindFieldByName("phi");
 	double phi = refl->GetDouble(*msg,phi_fd);
 
-	//plot_command << "set arrow 1 from " << a0*cos(phi) << "," << a0*sin(phi) << " to " << -a0*cos(phi) << "," << -a0*sin(phi) << "\n";
+	const google::protobuf::FieldDescriptor *e_fd = desc->FindFieldByName("E");
+	double e = refl->GetDouble(*msg,e_fd);
+
+	plot_command << "set arrow 1 from 0,0 to " << 10*e*cos(phi) << "," << 10*e*sin(phi) << "\n";
 	return plot_command.str();
 }

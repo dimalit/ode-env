@@ -10,6 +10,7 @@ message E4Config{
 	optional double alpha = 3;
 	optional double theta = 4;
 	optional double E0 = 5;
+	optional double delta_phi = 6;
 }
 
 message E4State{

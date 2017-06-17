@@ -133,6 +133,13 @@ class E4Config : public ::google::protobuf::Message {
   inline double e0() const;
   inline void set_e0(double value);
 
+  // optional double delta_phi = 6;
+  inline bool has_delta_phi() const;
+  inline void clear_delta_phi();
+  static const int kDeltaPhiFieldNumber = 6;
+  inline double delta_phi() const;
+  inline void set_delta_phi(double value);
+
   // @@protoc_insertion_point(class_scope:pb.E4Config)
  private:
   inline void set_has_n();
@@ -145,6 +152,8 @@ class E4Config : public ::google::protobuf::Message {
   inline void clear_has_theta();
   inline void set_has_e0();
   inline void clear_has_e0();
+  inline void set_has_delta_phi();
+  inline void clear_has_delta_phi();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -154,6 +163,7 @@ class E4Config : public ::google::protobuf::Message {
   double alpha_;
   double theta_;
   double e0_;
+  double delta_phi_;
   ::google::protobuf::uint32 n_;
   friend void  protobuf_AddDesc_model_5fe4_2eproto();
   friend void protobuf_AssignDesc_model_5fe4_2eproto();
@@ -1120,6 +1130,30 @@ inline void E4Config::set_e0(double value) {
   set_has_e0();
   e0_ = value;
   // @@protoc_insertion_point(field_set:pb.E4Config.E0)
+}
+
+// optional double delta_phi = 6;
+inline bool E4Config::has_delta_phi() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void E4Config::set_has_delta_phi() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void E4Config::clear_has_delta_phi() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void E4Config::clear_delta_phi() {
+  delta_phi_ = 0;
+  clear_has_delta_phi();
+}
+inline double E4Config::delta_phi() const {
+  // @@protoc_insertion_point(field_get:pb.E4Config.delta_phi)
+  return delta_phi_;
+}
+inline void E4Config::set_delta_phi(double value) {
+  set_has_delta_phi();
+  delta_phi_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4Config.delta_phi)
 }
 
 // -------------------------------------------------------------------

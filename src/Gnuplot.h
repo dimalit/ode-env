@@ -122,7 +122,7 @@ public:
 private:
 	void update_view();
 	void printPlotCommand(FILE* fp, const google::protobuf::Message* state, const google::protobuf::Message* d_state = NULL, double time = 0.0);
-	std::string draw_bells(const google::protobuf::Message*, const google::protobuf::Descriptor*, const google::protobuf::Reflection*);
+	std::string draw_bells(const google::protobuf::Message*);
 	void print_numbers(const google::protobuf::Message* msg, const google::protobuf::Message* d_msg, double time, serie& s, std::ostream& super_buffer, bool add_to_cache = true);
 };
 
