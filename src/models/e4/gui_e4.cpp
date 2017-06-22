@@ -74,9 +74,18 @@ void E4StateGeneratorWidget::newState(bool emit){
 
 	int N = config->n();
 
+	// prepare shuffle
+	int* shuffle = new int[N];
+	for(int i=0; i<N; i++)shuffle[i] = i;
+	std::random_shuffle(shuffle, shuffle+N);
+
 	for(int i=0; i<N; i++){
-		double psi = rand() / (double)RAND_MAX * (2*M_PI) + 0;
+		int j = shuffle[i];
 		double z = i / (double)N * 5 + 0;
+
+		//double psi = rand() / (double)RAND_MAX * (2*M_PI) + 0;
+		double psi = ((j + (rand()/(double)RAND_MAX-0.5)) / N + z) * 2*M_PI;
+
 		double delta = rand() / (double)RAND_MAX * (2*config->delta_0()) - config->delta_0();
 
 		pb::E4State::Particles p;
@@ -89,11 +98,24 @@ void E4StateGeneratorWidget::newState(bool emit){
 		state->mutable_particles(i)->CopyFrom(p);
 	}
 
+	delete shuffle;
+
 	state->set_e(e);
 	state->set_phi(phi);
 	state->set_a0(a0);
 
-	center_masses();
+	//center_masses();
+
+	// move by dx
+	double dx = sgc->dx();
+	for(int i=0; i<N; i++){
+		E4State::Particles& p = *state->mutable_particles(i);
+
+		double scalar = dx*cos(p.psi()-2*M_PI*p.z());
+		p.set_a(p.a()-scalar);
+		scalar = -dx*sin(p.psi()-2*M_PI*p.z());
+		p.set_psi(p.psi()-scalar/p.a());
+	}
 
 	if(emit)
 		m_signal_changed();

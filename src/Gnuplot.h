@@ -69,6 +69,10 @@ public:
 	}
 	void setPolar(bool p){
 		polar = p;
+		if(p){
+			fprintf(to_gnuplot, "set object circle at 0,0 size 1\n");
+			fflush(to_gnuplot);
+		}// if
 	}
 	bool getParametric() const {
 		return parametric;

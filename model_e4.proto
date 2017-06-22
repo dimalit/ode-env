@@ -30,6 +30,7 @@ message E4StateGeneratorConfig{
 	required double E0 = 1;
 	required double phi0 = 2;
 	required double A0 = 3;
+	optional double dx = 4;
 }
 
 message E4Model{

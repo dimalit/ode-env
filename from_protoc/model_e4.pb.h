@@ -481,6 +481,13 @@ class E4StateGeneratorConfig : public ::google::protobuf::Message {
   inline double a0() const;
   inline void set_a0(double value);
 
+  // optional double dx = 4;
+  inline bool has_dx() const;
+  inline void clear_dx();
+  static const int kDxFieldNumber = 4;
+  inline double dx() const;
+  inline void set_dx(double value);
+
   // @@protoc_insertion_point(class_scope:pb.E4StateGeneratorConfig)
  private:
   inline void set_has_e0();
@@ -489,6 +496,8 @@ class E4StateGeneratorConfig : public ::google::protobuf::Message {
   inline void clear_has_phi0();
   inline void set_has_a0();
   inline void clear_has_a0();
+  inline void set_has_dx();
+  inline void clear_has_dx();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -497,6 +506,7 @@ class E4StateGeneratorConfig : public ::google::protobuf::Message {
   double e0_;
   double phi0_;
   double a0_;
+  double dx_;
   friend void  protobuf_AddDesc_model_5fe4_2eproto();
   friend void protobuf_AssignDesc_model_5fe4_2eproto();
   friend void protobuf_ShutdownFile_model_5fe4_2eproto();
@@ -1460,6 +1470,30 @@ inline void E4StateGeneratorConfig::set_a0(double value) {
   set_has_a0();
   a0_ = value;
   // @@protoc_insertion_point(field_set:pb.E4StateGeneratorConfig.A0)
+}
+
+// optional double dx = 4;
+inline bool E4StateGeneratorConfig::has_dx() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void E4StateGeneratorConfig::set_has_dx() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void E4StateGeneratorConfig::clear_has_dx() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void E4StateGeneratorConfig::clear_dx() {
+  dx_ = 0;
+  clear_has_dx();
+}
+inline double E4StateGeneratorConfig::dx() const {
+  // @@protoc_insertion_point(field_get:pb.E4StateGeneratorConfig.dx)
+  return dx_;
+}
+inline void E4StateGeneratorConfig::set_dx(double value) {
+  set_has_dx();
+  dx_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4StateGeneratorConfig.dx)
 }
 
 // -------------------------------------------------------------------

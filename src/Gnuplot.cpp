@@ -485,10 +485,10 @@ std::string Gnuplot::draw_bells(const google::protobuf::Message* msg){
 
 	std::stringstream plot_command;
 
-	const google::protobuf::FieldDescriptor *a0_fd = desc->FindFieldByName("a0");
+/*	const google::protobuf::FieldDescriptor *a0_fd = desc->FindFieldByName("a0");
 	double a0 = refl->GetDouble(*msg,a0_fd);
 	plot_command << "set object circle at 0,0 size "<< a0 <<"\n";
-
+*/
 	const google::protobuf::FieldDescriptor *phi_fd = desc->FindFieldByName("phi");
 	double phi = refl->GetDouble(*msg,phi_fd);
 
@@ -496,5 +496,23 @@ std::string Gnuplot::draw_bells(const google::protobuf::Message* msg){
 	double e = refl->GetDouble(*msg,e_fd);
 
 	plot_command << "set arrow 1 from 0,0 to " << 10*e*cos(phi) << "," << 10*e*sin(phi) << "\n";
+
+	// arrow for Aj
+	const FieldDescriptor* fd1 = desc->FindFieldByName("particles");
+	int n = refl->FieldSize(*msg, fd1);
+
+	double x=0, y=0;
+	for(int i=0; i<n; i++){
+		string sa = get_val(&refl->GetRepeatedMessage(*msg, fd1, i), NULL, "a");
+		string spsi = get_val(&refl->GetRepeatedMessage(*msg, fd1, i), NULL, "psi");
+		double a, psi;
+		sscanf(sa.c_str(), "%lf", &a);
+		sscanf(spsi.c_str(), "%lf", &psi);
+
+		x += a*cos(psi);
+		y += a*sin(psi);
+	}
+	plot_command << "set arrow 2 from 0,0 to " << 10*x/n << "," << 10*y/n << "\n";
+
 	return plot_command.str();
 }
