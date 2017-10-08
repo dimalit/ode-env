@@ -489,10 +489,24 @@ class E5StateGeneratorConfig : public ::google::protobuf::Message {
   inline double a0() const;
   inline void set_a0(double value);
 
-  // optional double E0 = 2;
+  // required double left = 2;
+  inline bool has_left() const;
+  inline void clear_left();
+  static const int kLeftFieldNumber = 2;
+  inline double left() const;
+  inline void set_left(double value);
+
+  // required double right = 3;
+  inline bool has_right() const;
+  inline void clear_right();
+  static const int kRightFieldNumber = 3;
+  inline double right() const;
+  inline void set_right(double value);
+
+  // optional double E0 = 4;
   inline bool has_e0() const;
   inline void clear_e0();
-  static const int kE0FieldNumber = 2;
+  static const int kE0FieldNumber = 4;
   inline double e0() const;
   inline void set_e0(double value);
 
@@ -500,6 +514,10 @@ class E5StateGeneratorConfig : public ::google::protobuf::Message {
  private:
   inline void set_has_a0();
   inline void clear_has_a0();
+  inline void set_has_left();
+  inline void clear_has_left();
+  inline void set_has_right();
+  inline void clear_has_right();
   inline void set_has_e0();
   inline void clear_has_e0();
 
@@ -508,6 +526,8 @@ class E5StateGeneratorConfig : public ::google::protobuf::Message {
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   double a0_;
+  double left_;
+  double right_;
   double e0_;
   friend void  protobuf_AddDesc_model_5fe5_2eproto();
   friend void protobuf_AssignDesc_model_5fe5_2eproto();
@@ -1013,15 +1033,63 @@ inline void E5StateGeneratorConfig::set_a0(double value) {
   // @@protoc_insertion_point(field_set:pb.E5StateGeneratorConfig.A0)
 }
 
-// optional double E0 = 2;
-inline bool E5StateGeneratorConfig::has_e0() const {
+// required double left = 2;
+inline bool E5StateGeneratorConfig::has_left() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void E5StateGeneratorConfig::set_has_e0() {
+inline void E5StateGeneratorConfig::set_has_left() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void E5StateGeneratorConfig::clear_has_e0() {
+inline void E5StateGeneratorConfig::clear_has_left() {
   _has_bits_[0] &= ~0x00000002u;
+}
+inline void E5StateGeneratorConfig::clear_left() {
+  left_ = 0;
+  clear_has_left();
+}
+inline double E5StateGeneratorConfig::left() const {
+  // @@protoc_insertion_point(field_get:pb.E5StateGeneratorConfig.left)
+  return left_;
+}
+inline void E5StateGeneratorConfig::set_left(double value) {
+  set_has_left();
+  left_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5StateGeneratorConfig.left)
+}
+
+// required double right = 3;
+inline bool E5StateGeneratorConfig::has_right() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void E5StateGeneratorConfig::set_has_right() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void E5StateGeneratorConfig::clear_has_right() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void E5StateGeneratorConfig::clear_right() {
+  right_ = 0;
+  clear_has_right();
+}
+inline double E5StateGeneratorConfig::right() const {
+  // @@protoc_insertion_point(field_get:pb.E5StateGeneratorConfig.right)
+  return right_;
+}
+inline void E5StateGeneratorConfig::set_right(double value) {
+  set_has_right();
+  right_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5StateGeneratorConfig.right)
+}
+
+// optional double E0 = 4;
+inline bool E5StateGeneratorConfig::has_e0() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void E5StateGeneratorConfig::set_has_e0() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void E5StateGeneratorConfig::clear_has_e0() {
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void E5StateGeneratorConfig::clear_e0() {
   e0_ = 0;

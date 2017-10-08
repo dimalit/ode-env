@@ -24,7 +24,9 @@ message E5State{
 
 message E5StateGeneratorConfig{
 	required double A0 = 1;
-	optional double E0 = 2;	
+	required double left = 2;
+	required double right = 3;
+	optional double E0 = 4;	
 }
 
 message E5Model{

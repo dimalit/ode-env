@@ -118,8 +118,10 @@ void protobuf_AssignDesc_model_5fe5_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E5State_Fields));
   E5StateGeneratorConfig_descriptor_ = file->message_type(2);
-  static const int E5StateGeneratorConfig_offsets_[2] = {
+  static const int E5StateGeneratorConfig_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E5StateGeneratorConfig, a0_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E5StateGeneratorConfig, left_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E5StateGeneratorConfig, right_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E5StateGeneratorConfig, e0_),
   };
   E5StateGeneratorConfig_reflection_ =
@@ -227,13 +229,13 @@ void protobuf_AddDesc_model_5fe5_2eproto() {
     "les\022\"\n\006fields\030\005 \003(\n2\022.pb.E5State.Fields\022"
     "\n\n\002A0\030\010 \001(\001\032,\n\tParticles\022\t\n\001x\030\002 \002(\001\022\t\n\001y"
     "\030\003 \002(\001\022\t\n\001z\030\004 \002(\001\032\036\n\006Fields\022\t\n\001x\030\006 \002(\001\022\t"
-    "\n\001y\030\007 \002(\001\"0\n\026E5StateGeneratorConfig\022\n\n\002A"
-    "0\030\001 \002(\001\022\n\n\002E0\030\002 \001(\001\"n\n\007E5Model\022\035\n\007pconfi"
-    "g\030\001 \002(\0132\014.pb.E5Config\022\032\n\005state\030\002 \002(\0132\013.p"
-    "b.E5State\022(\n\007sconfig\030\003 \002(\0132\027.pb.EXPetscS"
-    "olverConfig\"F\n\nE5Solution\022\032\n\005state\030\001 \002(\013"
-    "2\013.pb.E5State\022\034\n\007d_state\030\002 \001(\0132\013.pb.E5St"
-    "ate", 483);
+    "\n\001y\030\007 \002(\001\"M\n\026E5StateGeneratorConfig\022\n\n\002A"
+    "0\030\001 \002(\001\022\014\n\004left\030\002 \002(\001\022\r\n\005right\030\003 \002(\001\022\n\n\002"
+    "E0\030\004 \001(\001\"n\n\007E5Model\022\035\n\007pconfig\030\001 \002(\0132\014.p"
+    "b.E5Config\022\032\n\005state\030\002 \002(\0132\013.pb.E5State\022("
+    "\n\007sconfig\030\003 \002(\0132\027.pb.EXPetscSolverConfig"
+    "\"F\n\nE5Solution\022\032\n\005state\030\001 \002(\0132\013.pb.E5Sta"
+    "te\022\034\n\007d_state\030\002 \001(\0132\013.pb.E5State", 512);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e5.proto", &protobuf_RegisterTypes);
   E5Config::default_instance_ = new E5Config();
@@ -1416,6 +1418,8 @@ void E5State::Swap(E5State* other) {
 
 #ifndef _MSC_VER
 const int E5StateGeneratorConfig::kA0FieldNumber;
+const int E5StateGeneratorConfig::kLeftFieldNumber;
+const int E5StateGeneratorConfig::kRightFieldNumber;
 const int E5StateGeneratorConfig::kE0FieldNumber;
 #endif  // !_MSC_VER
 
@@ -1438,6 +1442,8 @@ E5StateGeneratorConfig::E5StateGeneratorConfig(const E5StateGeneratorConfig& fro
 void E5StateGeneratorConfig::SharedCtor() {
   _cached_size_ = 0;
   a0_ = 0;
+  left_ = 0;
+  right_ = 0;
   e0_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -1513,13 +1519,43 @@ bool E5StateGeneratorConfig::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(17)) goto parse_E0;
+        if (input->ExpectTag(17)) goto parse_left;
         break;
       }
 
-      // optional double E0 = 2;
+      // required double left = 2;
       case 2: {
         if (tag == 17) {
+         parse_left:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &left_)));
+          set_has_left();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(25)) goto parse_right;
+        break;
+      }
+
+      // required double right = 3;
+      case 3: {
+        if (tag == 25) {
+         parse_right:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &right_)));
+          set_has_right();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(33)) goto parse_E0;
+        break;
+      }
+
+      // optional double E0 = 4;
+      case 4: {
+        if (tag == 33) {
          parse_E0:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
@@ -1562,9 +1598,19 @@ void E5StateGeneratorConfig::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteDouble(1, this->a0(), output);
   }
 
-  // optional double E0 = 2;
+  // required double left = 2;
+  if (has_left()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->left(), output);
+  }
+
+  // required double right = 3;
+  if (has_right()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->right(), output);
+  }
+
+  // optional double E0 = 4;
   if (has_e0()) {
-    ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->e0(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(4, this->e0(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -1582,9 +1628,19 @@ void E5StateGeneratorConfig::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(1, this->a0(), target);
   }
 
-  // optional double E0 = 2;
+  // required double left = 2;
+  if (has_left()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(2, this->left(), target);
+  }
+
+  // required double right = 3;
+  if (has_right()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->right(), target);
+  }
+
+  // optional double E0 = 4;
   if (has_e0()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(2, this->e0(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(4, this->e0(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1604,7 +1660,17 @@ int E5StateGeneratorConfig::ByteSize() const {
       total_size += 1 + 8;
     }
 
-    // optional double E0 = 2;
+    // required double left = 2;
+    if (has_left()) {
+      total_size += 1 + 8;
+    }
+
+    // required double right = 3;
+    if (has_right()) {
+      total_size += 1 + 8;
+    }
+
+    // optional double E0 = 4;
     if (has_e0()) {
       total_size += 1 + 8;
     }
@@ -1639,6 +1705,12 @@ void E5StateGeneratorConfig::MergeFrom(const E5StateGeneratorConfig& from) {
     if (from.has_a0()) {
       set_a0(from.a0());
     }
+    if (from.has_left()) {
+      set_left(from.left());
+    }
+    if (from.has_right()) {
+      set_right(from.right());
+    }
     if (from.has_e0()) {
       set_e0(from.e0());
     }
@@ -1659,7 +1731,7 @@ void E5StateGeneratorConfig::CopyFrom(const E5StateGeneratorConfig& from) {
 }
 
 bool E5StateGeneratorConfig::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
 
   return true;
 }
@@ -1667,6 +1739,8 @@ bool E5StateGeneratorConfig::IsInitialized() const {
 void E5StateGeneratorConfig::Swap(E5StateGeneratorConfig* other) {
   if (other != this) {
     std::swap(a0_, other->a0_);
+    std::swap(left_, other->left_);
+    std::swap(right_, other->right_);
     std::swap(e0_, other->e0_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
