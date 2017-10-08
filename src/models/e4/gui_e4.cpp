@@ -86,7 +86,7 @@ void E4StateGeneratorWidget::newState(bool emit){
 		//double psi = rand() / (double)RAND_MAX * (2*M_PI) + 0;
 		double psi = ((j + (rand()/(double)RAND_MAX-0.5)) / N + z) * 2*M_PI;
 
-		double delta = rand() / (double)RAND_MAX * (2*config->delta_0()) - config->delta_0();
+		double delta = config->delta_0();//rand() / (double)RAND_MAX * (2*config->delta_0()) - config->delta_0();
 
 		pb::E4State::Particles p;
 		p.set_a(a0);//+0.1*sin(psi-2*M_PI*z));

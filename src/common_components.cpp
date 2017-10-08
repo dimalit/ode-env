@@ -705,6 +705,12 @@ void EXChartAnalyzer::processState(const OdeState* state, const OdeState* d_stat
 void EXChartAnalyzer::addChart(MessageChart* chart){
 	charts.push_back(chart);
 	vbox.pack_end(*chart, false, false, 1);
+	chart->signal_closed.connect(
+			sigc::bind(
+					sigc::mem_fun(*this, &EXChartAnalyzer::on_del_chart_clicked),
+					chart
+			)
+	);
 	this->show_all();
 }
 

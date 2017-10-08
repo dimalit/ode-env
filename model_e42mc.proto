@@ -9,6 +9,7 @@ message E42mcConfig{
 	optional double delta_0 = 2;
 	optional double alpha = 3;
 	optional double theta = 4;
+	optional double delta_phi = 5;	
 }
 
 message E42mcState{
@@ -24,6 +25,7 @@ message E42mcState{
 	required double x_m = 9;
 	required double y_m = 10;
 	optional double Eout = 11;
+	optional double a0 = 12;	
 }
 
 message E42mcStateGeneratorConfig{

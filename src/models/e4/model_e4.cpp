@@ -10,9 +10,10 @@
 E4Config::E4Config(){
 	set_n(1000);
 	set_delta_0(0);
-	set_alpha(0);
+	set_alpha(0.1);
 	set_e0(0);
 	set_delta_phi(0.0);
+	set_theta(1.0);
 }
 
 E4State::E4State(){

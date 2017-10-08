@@ -1140,6 +1140,36 @@ void ts42mc_fill_as_grid(E42mcState* state){
 	}// for
 }
 
+void ts4_fill_grid_with_rand(E4State* state){
+
+	double a0 = 1.0;
+
+	int N = state->particles_size();
+
+	// prepare shuffle
+	int* shuffle = new int[N];
+	for(int i=0; i<N; i++)shuffle[i] = i;
+	std::random_shuffle(shuffle, shuffle+N);
+
+	for(int i=0; i<N; i++){
+		int j = shuffle[i];
+		double z = i / (double)N * 5 + 0;
+
+		double psi = ((j + (rand()/(double)RAND_MAX-0.5)) / N + z) * 2*M_PI;
+
+		pb::E4State::Particles p;
+		p.set_a(a0);//+0.1*sin(psi-2*M_PI*z));
+		//p.set_a(a0*(1.0+0.2*sin(int(psi-z+phi))));
+		p.set_psi(psi);
+		p.set_z(z);
+		p.set_delta(0);
+
+		state->mutable_particles(i)->CopyFrom(p);
+	}
+
+	delete shuffle;
+}
+
 void exp_ts42mc(int argc, char *argv[]){
 	string problem_name = "model e42mc";
 
@@ -1671,15 +1701,16 @@ void exp_maxE_theta(int argc, char *argv[]){
 	double alpha = 0.1;
 	double e0 = 0.01;
 	pcfg->set_alpha(alpha);
+	pcfg->set_delta_phi(-alpha);
 
 	vector<double> thetas;
 //	thetas.push_back(0.001);
+//	thetas.push_back(0.005);
 //	thetas.push_back(0.015);
-//	thetas.push_back(0.02);
 
-	thetas.push_back(0.05);
-	thetas.push_back(0.1);
-	thetas.push_back(0.2);
+//	thetas.push_back(0.05);
+//	thetas.push_back(0.1);
+//	thetas.push_back(0.2);
 	thetas.push_back(0.5);
 
 	thetas.push_back(1);
@@ -1714,20 +1745,12 @@ void exp_maxE_theta(int argc, char *argv[]){
 	for(int theta_step=0; theta_step<thetas.size(); theta_step++){
 
 		double theta = thetas[theta_step];
-		double a0 = 1.0;
 		pcfg->set_theta(theta);
 
 		E4State* init_state = dynamic_cast<E4State*>(inst_fact->createState(pcfg));
 		init_state->set_e(e0);
 		init_state->set_phi(0);
-		for(int i=0; i<pcfg->n(); i++){
-			init_state->mutable_particles(i)->set_a(a0);
-			double z = i / (double)pcfg->n() * 5 + 0;
-			double psi = rand()/(double)RAND_MAX * (2*M_PI) + 0;
-			init_state->mutable_particles(i)->set_psi(psi);
-			init_state->mutable_particles(i)->set_z(z);
-		}
-		ts4_center_masses(init_state);
+		ts4_fill_grid_with_rand(init_state);
 
 		E4PetscSolver* solver = dynamic_cast<E4PetscSolver*>(solver_fact->createSolver(scfg, pcfg, init_state));
 
@@ -1759,7 +1782,7 @@ void exp_maxE_theta(int argc, char *argv[]){
 				max_time = time;
 			}
 
-			if(time>1000){
+			if(time > 100 && e < max_e/3.0){
 				fprintf(fp, "%d\t%lf\t%lf\t%lf\t%lf\n", counter, theta, max_e, estate->eout(), max_time);
 				fflush(fp);
 

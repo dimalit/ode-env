@@ -124,6 +124,13 @@ class E42mcConfig : public ::google::protobuf::Message {
   inline double theta() const;
   inline void set_theta(double value);
 
+  // optional double delta_phi = 5;
+  inline bool has_delta_phi() const;
+  inline void clear_delta_phi();
+  static const int kDeltaPhiFieldNumber = 5;
+  inline double delta_phi() const;
+  inline void set_delta_phi(double value);
+
   // @@protoc_insertion_point(class_scope:pb.E42mcConfig)
  private:
   inline void set_has_n();
@@ -134,6 +141,8 @@ class E42mcConfig : public ::google::protobuf::Message {
   inline void clear_has_alpha();
   inline void set_has_theta();
   inline void clear_has_theta();
+  inline void set_has_delta_phi();
+  inline void clear_has_delta_phi();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -142,6 +151,7 @@ class E42mcConfig : public ::google::protobuf::Message {
   double delta_0_;
   double alpha_;
   double theta_;
+  double delta_phi_;
   ::google::protobuf::uint32 n_;
   friend void  protobuf_AddDesc_model_5fe42mc_2eproto();
   friend void protobuf_AssignDesc_model_5fe42mc_2eproto();
@@ -373,6 +383,13 @@ class E42mcState : public ::google::protobuf::Message {
   inline double eout() const;
   inline void set_eout(double value);
 
+  // optional double a0 = 12;
+  inline bool has_a0() const;
+  inline void clear_a0();
+  static const int kA0FieldNumber = 12;
+  inline double a0() const;
+  inline void set_a0(double value);
+
   // @@protoc_insertion_point(class_scope:pb.E42mcState)
  private:
   inline void set_has_x_p();
@@ -385,6 +402,8 @@ class E42mcState : public ::google::protobuf::Message {
   inline void clear_has_y_m();
   inline void set_has_eout();
   inline void clear_has_eout();
+  inline void set_has_a0();
+  inline void clear_has_a0();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -396,6 +415,7 @@ class E42mcState : public ::google::protobuf::Message {
   double x_m_;
   double y_m_;
   double eout_;
+  double a0_;
   friend void  protobuf_AddDesc_model_5fe42mc_2eproto();
   friend void protobuf_AssignDesc_model_5fe42mc_2eproto();
   friend void protobuf_ShutdownFile_model_5fe42mc_2eproto();
@@ -823,6 +843,30 @@ inline void E42mcConfig::set_theta(double value) {
   // @@protoc_insertion_point(field_set:pb.E42mcConfig.theta)
 }
 
+// optional double delta_phi = 5;
+inline bool E42mcConfig::has_delta_phi() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void E42mcConfig::set_has_delta_phi() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void E42mcConfig::clear_has_delta_phi() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void E42mcConfig::clear_delta_phi() {
+  delta_phi_ = 0;
+  clear_has_delta_phi();
+}
+inline double E42mcConfig::delta_phi() const {
+  // @@protoc_insertion_point(field_get:pb.E42mcConfig.delta_phi)
+  return delta_phi_;
+}
+inline void E42mcConfig::set_delta_phi(double value) {
+  set_has_delta_phi();
+  delta_phi_ = value;
+  // @@protoc_insertion_point(field_set:pb.E42mcConfig.delta_phi)
+}
+
 // -------------------------------------------------------------------
 
 // E42mcState_Particles
@@ -1099,6 +1143,30 @@ inline void E42mcState::set_eout(double value) {
   set_has_eout();
   eout_ = value;
   // @@protoc_insertion_point(field_set:pb.E42mcState.Eout)
+}
+
+// optional double a0 = 12;
+inline bool E42mcState::has_a0() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void E42mcState::set_has_a0() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void E42mcState::clear_has_a0() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void E42mcState::clear_a0() {
+  a0_ = 0;
+  clear_has_a0();
+}
+inline double E42mcState::a0() const {
+  // @@protoc_insertion_point(field_get:pb.E42mcState.a0)
+  return a0_;
+}
+inline void E42mcState::set_a0(double value) {
+  set_has_a0();
+  a0_ = value;
+  // @@protoc_insertion_point(field_set:pb.E42mcState.a0)
 }
 
 // -------------------------------------------------------------------

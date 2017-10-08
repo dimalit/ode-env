@@ -49,11 +49,12 @@ void protobuf_AssignDesc_model_5fe42mc_2eproto() {
       "model_e42mc.proto");
   GOOGLE_CHECK(file != NULL);
   E42mcConfig_descriptor_ = file->message_type(0);
-  static const int E42mcConfig_offsets_[4] = {
+  static const int E42mcConfig_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E42mcConfig, n_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E42mcConfig, delta_0_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E42mcConfig, alpha_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E42mcConfig, theta_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E42mcConfig, delta_phi_),
   };
   E42mcConfig_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -67,13 +68,14 @@ void protobuf_AssignDesc_model_5fe42mc_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E42mcConfig));
   E42mcState_descriptor_ = file->message_type(1);
-  static const int E42mcState_offsets_[6] = {
+  static const int E42mcState_offsets_[7] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E42mcState, x_p_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E42mcState, y_p_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E42mcState, particles_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E42mcState, x_m_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E42mcState, y_m_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E42mcState, eout_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E42mcState, a0_),
   };
   E42mcState_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -208,22 +210,22 @@ void protobuf_AddDesc_model_5fe42mc_2eproto() {
 
   ::pb::protobuf_AddDesc_common_2eproto();
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\021model_e42mc.proto\022\002pb\032\014common.proto\"G\n"
+    "\n\021model_e42mc.proto\022\002pb\032\014common.proto\"Z\n"
     "\013E42mcConfig\022\t\n\001N\030\001 \002(\r\022\017\n\007delta_0\030\002 \001(\001"
-    "\022\r\n\005alpha\030\003 \001(\001\022\r\n\005theta\030\004 \001(\001\"\301\001\n\nE42mc"
-    "State\022\013\n\003x_p\030\001 \002(\001\022\013\n\003y_p\030\002 \002(\001\022+\n\tparti"
-    "cles\030\003 \003(\n2\030.pb.E42mcState.Particles\022\013\n\003"
-    "x_m\030\t \002(\001\022\013\n\003y_m\030\n \002(\001\022\014\n\004Eout\030\013 \001(\001\032D\n\t"
-    "Particles\022\t\n\001x\030\004 \002(\001\022\t\n\001y\030\005 \002(\001\022\t\n\001z\030\006 \002"
-    "(\001\022\n\n\002xn\030\007 \002(\001\022\n\n\002yn\030\010 \002(\001\"c\n\031E42mcState"
-    "GeneratorConfig\022\014\n\004E_p0\030\001 \002(\001\022\016\n\006phi_p0\030"
-    "\002 \002(\001\022\n\n\002A0\030\003 \002(\001\022\014\n\004E_m0\030\004 \002(\001\022\016\n\006phi_m"
-    "0\030\005 \002(\001\"w\n\nE42mcModel\022 \n\007pconfig\030\001 \002(\0132\017"
-    ".pb.E42mcConfig\022\035\n\005state\030\002 \002(\0132\016.pb.E42m"
-    "cState\022(\n\007sconfig\030\003 \002(\0132\027.pb.EXPetscSolv"
-    "erConfig\"O\n\rE42mcSolution\022\035\n\005state\030\001 \002(\013"
-    "2\016.pb.E42mcState\022\037\n\007d_state\030\002 \001(\0132\016.pb.E"
-    "42mcState", 609);
+    "\022\r\n\005alpha\030\003 \001(\001\022\r\n\005theta\030\004 \001(\001\022\021\n\tdelta_"
+    "phi\030\005 \001(\001\"\315\001\n\nE42mcState\022\013\n\003x_p\030\001 \002(\001\022\013\n"
+    "\003y_p\030\002 \002(\001\022+\n\tparticles\030\003 \003(\n2\030.pb.E42mc"
+    "State.Particles\022\013\n\003x_m\030\t \002(\001\022\013\n\003y_m\030\n \002("
+    "\001\022\014\n\004Eout\030\013 \001(\001\022\n\n\002a0\030\014 \001(\001\032D\n\tParticles"
+    "\022\t\n\001x\030\004 \002(\001\022\t\n\001y\030\005 \002(\001\022\t\n\001z\030\006 \002(\001\022\n\n\002xn\030"
+    "\007 \002(\001\022\n\n\002yn\030\010 \002(\001\"c\n\031E42mcStateGenerator"
+    "Config\022\014\n\004E_p0\030\001 \002(\001\022\016\n\006phi_p0\030\002 \002(\001\022\n\n\002"
+    "A0\030\003 \002(\001\022\014\n\004E_m0\030\004 \002(\001\022\016\n\006phi_m0\030\005 \002(\001\"w"
+    "\n\nE42mcModel\022 \n\007pconfig\030\001 \002(\0132\017.pb.E42mc"
+    "Config\022\035\n\005state\030\002 \002(\0132\016.pb.E42mcState\022(\n"
+    "\007sconfig\030\003 \002(\0132\027.pb.EXPetscSolverConfig\""
+    "O\n\rE42mcSolution\022\035\n\005state\030\001 \002(\0132\016.pb.E42"
+    "mcState\022\037\n\007d_state\030\002 \001(\0132\016.pb.E42mcState", 640);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e42mc.proto", &protobuf_RegisterTypes);
   E42mcConfig::default_instance_ = new E42mcConfig();
@@ -255,6 +257,7 @@ const int E42mcConfig::kNFieldNumber;
 const int E42mcConfig::kDelta0FieldNumber;
 const int E42mcConfig::kAlphaFieldNumber;
 const int E42mcConfig::kThetaFieldNumber;
+const int E42mcConfig::kDeltaPhiFieldNumber;
 #endif  // !_MSC_VER
 
 E42mcConfig::E42mcConfig()
@@ -279,6 +282,7 @@ void E42mcConfig::SharedCtor() {
   delta_0_ = 0;
   alpha_ = 0;
   theta_ = 0;
+  delta_phi_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -324,7 +328,9 @@ void E42mcConfig::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  ZR_(delta_0_, n_);
+  if (_has_bits_[0 / 32] & 31) {
+    ZR_(delta_0_, n_);
+  }
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -398,6 +404,21 @@ bool E42mcConfig::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(41)) goto parse_delta_phi;
+        break;
+      }
+
+      // optional double delta_phi = 5;
+      case 5: {
+        if (tag == 41) {
+         parse_delta_phi:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &delta_phi_)));
+          set_has_delta_phi();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -447,6 +468,11 @@ void E42mcConfig::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteDouble(4, this->theta(), output);
   }
 
+  // optional double delta_phi = 5;
+  if (has_delta_phi()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(5, this->delta_phi(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -475,6 +501,11 @@ void E42mcConfig::SerializeWithCachedSizes(
   // optional double theta = 4;
   if (has_theta()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(4, this->theta(), target);
+  }
+
+  // optional double delta_phi = 5;
+  if (has_delta_phi()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(5, this->delta_phi(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -508,6 +539,11 @@ int E42mcConfig::ByteSize() const {
 
     // optional double theta = 4;
     if (has_theta()) {
+      total_size += 1 + 8;
+    }
+
+    // optional double delta_phi = 5;
+    if (has_delta_phi()) {
       total_size += 1 + 8;
     }
 
@@ -550,6 +586,9 @@ void E42mcConfig::MergeFrom(const E42mcConfig& from) {
     if (from.has_theta()) {
       set_theta(from.theta());
     }
+    if (from.has_delta_phi()) {
+      set_delta_phi(from.delta_phi());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -578,6 +617,7 @@ void E42mcConfig::Swap(E42mcConfig* other) {
     std::swap(delta_0_, other->delta_0_);
     std::swap(alpha_, other->alpha_);
     std::swap(theta_, other->theta_);
+    std::swap(delta_phi_, other->delta_phi_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -983,6 +1023,7 @@ const int E42mcState::kParticlesFieldNumber;
 const int E42mcState::kXMFieldNumber;
 const int E42mcState::kYMFieldNumber;
 const int E42mcState::kEoutFieldNumber;
+const int E42mcState::kA0FieldNumber;
 #endif  // !_MSC_VER
 
 E42mcState::E42mcState()
@@ -1008,6 +1049,7 @@ void E42mcState::SharedCtor() {
   x_m_ = 0;
   y_m_ = 0;
   eout_ = 0;
+  a0_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1053,9 +1095,9 @@ void E42mcState::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  if (_has_bits_[0 / 32] & 59) {
+  if (_has_bits_[0 / 32] & 123) {
     ZR_(x_p_, y_p_);
-    ZR_(x_m_, eout_);
+    ZR_(x_m_, a0_);
   }
 
 #undef OFFSET_OF_FIELD_
@@ -1160,6 +1202,21 @@ bool E42mcState::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(97)) goto parse_a0;
+        break;
+      }
+
+      // optional double a0 = 12;
+      case 12: {
+        if (tag == 97) {
+         parse_a0:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &a0_)));
+          set_has_a0();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1220,6 +1277,11 @@ void E42mcState::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteDouble(11, this->eout(), output);
   }
 
+  // optional double a0 = 12;
+  if (has_a0()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(12, this->a0(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1262,6 +1324,11 @@ void E42mcState::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(11, this->eout(), target);
   }
 
+  // optional double a0 = 12;
+  if (has_a0()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(12, this->a0(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -1296,6 +1363,11 @@ int E42mcState::ByteSize() const {
 
     // optional double Eout = 11;
     if (has_eout()) {
+      total_size += 1 + 8;
+    }
+
+    // optional double a0 = 12;
+    if (has_a0()) {
       total_size += 1 + 8;
     }
 
@@ -1350,6 +1422,9 @@ void E42mcState::MergeFrom(const E42mcState& from) {
     if (from.has_eout()) {
       set_eout(from.eout());
     }
+    if (from.has_a0()) {
+      set_a0(from.a0());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1381,6 +1456,7 @@ void E42mcState::Swap(E42mcState* other) {
     std::swap(x_m_, other->x_m_);
     std::swap(y_m_, other->y_m_);
     std::swap(eout_, other->eout_);
+    std::swap(a0_, other->a0_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

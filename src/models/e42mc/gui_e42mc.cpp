@@ -105,6 +105,7 @@ void E42mcStateGeneratorWidget::newState(bool emit){
 	state->set_x_m(e_m*cos(phi_m));
 	state->set_y_m(e_m*sin(phi_m));
 
+	state->set_a0(a0);
 //	center_masses();
 
 	if(emit)

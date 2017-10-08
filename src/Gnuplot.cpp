@@ -485,23 +485,24 @@ std::string Gnuplot::draw_bells(const google::protobuf::Message* msg){
 
 	std::stringstream plot_command;
 
-/*	const google::protobuf::FieldDescriptor *a0_fd = desc->FindFieldByName("a0");
+	const google::protobuf::FieldDescriptor *a0_fd = desc->FindFieldByName("a0");
 	double a0 = refl->GetDouble(*msg,a0_fd);
-	plot_command << "set object circle at 0,0 size "<< a0 <<"\n";
-*/
+//	plot_command << "set object circle at 0,0 size "<< a0 <<"\n";
+
 	const google::protobuf::FieldDescriptor *phi_fd = desc->FindFieldByName("phi");
 	double phi = refl->GetDouble(*msg,phi_fd);
 
 	const google::protobuf::FieldDescriptor *e_fd = desc->FindFieldByName("E");
 	double e = refl->GetDouble(*msg,e_fd);
 
-	plot_command << "set arrow 1 from 0,0 to " << 10*e*cos(phi) << "," << 10*e*sin(phi) << "\n";
+	plot_command << "set arrow 1 from 0,0 to " << 10*e*cos(phi) << "," << 10*e*sin(phi) << " linecolor 1\n";
 
 	// arrow for Aj
 	const FieldDescriptor* fd1 = desc->FindFieldByName("particles");
 	int n = refl->FieldSize(*msg, fd1);
 
-	double x=0, y=0;
+	double x=0, y=0;			// particles
+	double nlx = 0, nly = 0;	// non-linearity
 	for(int i=0; i<n; i++){
 		string sa = get_val(&refl->GetRepeatedMessage(*msg, fd1, i), NULL, "a");
 		string spsi = get_val(&refl->GetRepeatedMessage(*msg, fd1, i), NULL, "psi");
@@ -511,8 +512,25 @@ std::string Gnuplot::draw_bells(const google::protobuf::Message* msg){
 
 		x += a*cos(psi);
 		y += a*sin(psi);
+
+		double a2 = a*a-a0*a0;
+		nlx += -a2*a*sin(psi);
+		nly +=  a2*a*cos(psi);
 	}
-	plot_command << "set arrow 2 from 0,0 to " << 10*x/n << "," << 10*y/n << "\n";
+	double alpha = 0.1;
+	nlx *= alpha/n;
+	nly *= alpha/n;
+
+	// a
+	plot_command << "set arrow 2 from 0,0 to " << 10*x/n << "," << 10*y/n << " linecolor 2\n";
+	//-theta*E
+	double theta = 1;
+	plot_command << "set arrow 3 from " << 10*x/n << "," << 10*y/n << " rto " << -theta*10*e*cos(phi) << "," << -theta*10*e*sin(phi) << " linecolor 2\n";
+
+	//-e
+	plot_command << "set arrow 4 from 0,0 to " << -10*e*cos(phi) << "," << -10*e*sin(phi) << " linecolor 3\n";
+	//nl
+	plot_command << "set arrow 5 from " << -10*e*cos(phi) << "," << -10*e*sin(phi) << " rto " << nlx*10 << ", " << nly*10 << " linecolor 3\n";
 
 	return plot_command.str();
 }

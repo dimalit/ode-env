@@ -1,0 +1,39 @@
+syntax = "proto2";
+
+package pb;
+
+import "common.proto";
+
+message E5Config{
+	required uint32 N = 1;
+	optional double E0 = 2;	
+}
+
+message E5State{
+	repeated group Particles = 1{
+		required double x = 2;
+		required double y = 3;
+		required double z = 4;
+	}
+	repeated group Fields = 5{
+		required double x = 6;
+		required double y = 7;
+	}
+	optional double A0 = 8;
+}
+
+message E5StateGeneratorConfig{
+	required double A0 = 1;
+	optional double E0 = 2;	
+}
+
+message E5Model{
+	required E5Config pconfig = 1;
+	required E5State state = 2;
+	required EXPetscSolverConfig sconfig = 3;
+}
+
+message E5Solution{
+	required E5State state = 1;
+	optional E5State d_state = 2;
+}
