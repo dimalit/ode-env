@@ -385,12 +385,14 @@ void EXPetscSolver<AllModel, ESolution>::run(int steps, double time, bool use_st
 	fflush(wf);
 	all.SerializeToFileDescriptor(fileno(wf));
 
+//	all.PrintDebugString();
+
 	ok = fwrite(&steps, sizeof(steps), 1, wf);
 		assert(ok == 1);
 	ok = fwrite(&time, sizeof(time), 1, wf);
 		assert(ok == 1);
 	fflush(wf);
-
+//exit(1);
 	if(!use_step){		// just final step
 		bool res = read_results();
 			assert(res==true);		// last
@@ -449,7 +451,14 @@ bool EXPetscSolver<AllModel, ESolution>::read_results(){
 	::google::protobuf::Message* d_state = dynamic_cast<::google::protobuf::Message*>(this->d_state);
 
 	state->CopyFrom(sol.state());
-	d_state->CopyFrom(sol.d_state());
+	if(sol.has_d_state())
+		d_state->CopyFrom(sol.d_state());
+	else
+		this->d_state = NULL;
+
+//	state->PrintDebugString();
+//	d_state->PrintDebugString();
+
 	return true;
 }
 

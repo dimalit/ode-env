@@ -22,11 +22,7 @@ private:
 	Glib::RefPtr<Gtk::ListStore> liststore1;
 	Gtk::Entry *entry_int1, *entry_int2;
 	Gtk::Entry *entry_aver_x, *entry_aver_y;
-	Gtk::Entry *entry_e_p, *entry_e_m, *entry_phi_p, *entry_phi_m;
-	Gtk::Entry *entry_eout;
-	Gtk::Entry *entry_cm_r, *entry_cm_rp, *entry_cm_rm;
-	Gtk::Entry *entry_aver_xp, *entry_aver_yp;
-	Gtk::Entry *entry_aver_xm, *entry_aver_ym;
+	Gtk::Entry *entry_cm_r;
 public:
 	E5ConservationAnalyzer(const E5Config* config);
 	virtual void loadConfig(const OdeConfig* config);

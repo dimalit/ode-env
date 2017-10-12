@@ -29,23 +29,12 @@ E5ConservationAnalyzer::E5ConservationAnalyzer(const E5Config* config){
 
 	b->get_widget("entry_int1", entry_int1);
 	b->get_widget("entry_int2", entry_int2);
-	b->get_widget("entry_e_p", entry_e_p);
-	b->get_widget("entry_phi_p", entry_phi_p);
-	b->get_widget("entry_e_m", entry_e_m);
-	b->get_widget("entry_phi_m", entry_phi_m);
-	b->get_widget("entry_eout", entry_eout);
 
 
 	b->get_widget("entry_aver_x", entry_aver_x);
 	b->get_widget("entry_aver_y", entry_aver_y);
-	b->get_widget("entry_aver_xp", entry_aver_xp);
-	b->get_widget("entry_aver_yp", entry_aver_yp);
-	b->get_widget("entry_aver_xm", entry_aver_xm);
-	b->get_widget("entry_aver_ym", entry_aver_ym);
 
 	b->get_widget("entry_cm_r", entry_cm_r);
-	b->get_widget("entry_cm_rp", entry_cm_rp);
-	b->get_widget("entry_cm_rm", entry_cm_rm);
 
 	b->get_widget("treeview1", treeview1);
 	liststore1 = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b->get_object("liststore1"));
@@ -71,8 +60,6 @@ void E5ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 
 	double sum_a_2 = 0;
 	double sum_x = 0, sum_y = 0;
-	double sum_xp = 0, sum_yp = 0;
-	double sum_xm = 0, sum_ym = 0;
 
 	for(int i=0; i<estate->particles_size(); i++){
 		E5State::Particles p = estate->particles(i);
@@ -87,17 +74,8 @@ void E5ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 
 		sum_a_2 += mod2(p.x(), p.y());
 
-		double xp = p.x(), xm = p.x();
-		double yp = p.y(), ym = p.y();
-
-		rotate(xp, yp, -2*M_PI*p.z());
-		rotate(xm, ym, +2*M_PI*p.z());
-
 		sum_x += p.x();
 		sum_y += p.y();
-
-		sum_xp += xp; sum_yp += yp;
-		sum_xm += xm; sum_ym += ym;
 	}
 
 	std::ostringstream buf;
@@ -116,28 +94,8 @@ void E5ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 	entry_aver_y->set_text(buf.str());
 
 	buf.str("");
-	buf << sum_xp/estate->particles_size();
-	entry_aver_xp->set_text(buf.str());
-	buf.str("");
-	buf << sum_yp/estate->particles_size();
-	entry_aver_yp->set_text(buf.str());
-
-	buf.str("");
-	buf << sum_xm/estate->particles_size();
-	entry_aver_xm->set_text(buf.str());
-	buf.str("");
-	buf << sum_ym/estate->particles_size();
-	entry_aver_ym->set_text(buf.str());
-
-	buf.str("");
 	buf << sqrt(sum_x*sum_x + sum_y*sum_y)/estate->particles_size();
 	entry_cm_r->set_text(buf.str());
-	buf.str("");
-	buf << sqrt(sum_xp*sum_xp + sum_yp*sum_yp)/estate->particles_size();
-	entry_cm_rp->set_text(buf.str());
-	buf.str("");
-	buf << sqrt(sum_xm*sum_xm + sum_ym*sum_ym)/estate->particles_size();
-	entry_cm_rm->set_text(buf.str());
 
 	++states_count;
 	last_update = ::time(NULL);
@@ -162,7 +120,7 @@ void E5ChartAnalyzer::processState(const OdeState* state, const OdeState* d_stat
 	const google::protobuf::Message* msg = dynamic_cast<const google::protobuf::Message*>(state);
 		assert(msg);
 	const google::protobuf::Message* d_msg = dynamic_cast<const google::protobuf::Message*>(d_state);
-		assert(d_msg);
+//		assert(d_msg);
 
 	for(int i=0; i<charts.size(); i++)
 			charts[i]->processMessage(msg, d_msg, time);

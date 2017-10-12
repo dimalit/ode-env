@@ -54,6 +54,8 @@ const OdeState* E5StateGeneratorWidget::getState(){
 }
 
 void E5StateGeneratorWidget::newState(bool emit){
+//	srand(0);
+
 	delete state;
 	state = new E5State(config);
 
