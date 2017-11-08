@@ -31,6 +31,7 @@ message E4StateGeneratorConfig{
 	required double phi0 = 2;
 	required double A0 = 3;
 	optional double dx = 4;
+	optional double dy = 5;
 }
 
 message E4Model{
@@ -62,4 +63,6 @@ message E4Special{
 		required double x = 14;
 		required double y = 15;
 	}
+	optional double aver_x = 19;
+	optional double aver_y = 20;
 }

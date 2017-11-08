@@ -203,6 +203,9 @@ public:
 //		gnuplot->setXAxisVar(var);
 //		update_title();
 //	}
+	void setStyle(Gnuplot::style_enum style){
+		gnuplot->setStyle(style);
+	}
 	bool getXAxisTime() const {
 		return gnuplot->getXAxisTime();
 	}

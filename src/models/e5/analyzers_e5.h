@@ -57,7 +57,33 @@ private:
 	virtual ::google::protobuf::Message* new_state(){ return new E5State();}
 };
 
+class E5FieldAnalyzer: public OdeAnalyzerWidget{
+public:
+	typedef E5Config Config;
+	typedef E5State State;
+private:
+	E5Config* config;
+	int states_count;
+
+	MessageChart chart;
+	pb::E5FieldProfile profile_message;
+public:
+	E5FieldAnalyzer(const E5Config* config);
+	virtual void loadConfig(const OdeConfig* config);
+	virtual void reset();
+	virtual void processState(const OdeState* state, const OdeState* d_state, double time);
+	virtual int getStatesCount(){
+		return states_count;
+	}
+	virtual ~E5FieldAnalyzer();
+
+	static std::string getDisplayName(){
+		return "Field profile analyzer for E5";
+	}
+};
+
 REGISTER_ANALYZER_WIDGET_CLASS(E5ConservationAnalyzer)
 REGISTER_ANALYZER_WIDGET_CLASS(E5ChartAnalyzer)
+REGISTER_ANALYZER_WIDGET_CLASS(E5FieldAnalyzer)
 
 #endif /* ANALYZERS_E5_H_ */

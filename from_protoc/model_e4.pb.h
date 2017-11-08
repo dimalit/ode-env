@@ -488,6 +488,13 @@ class E4StateGeneratorConfig : public ::google::protobuf::Message {
   inline double dx() const;
   inline void set_dx(double value);
 
+  // optional double dy = 5;
+  inline bool has_dy() const;
+  inline void clear_dy();
+  static const int kDyFieldNumber = 5;
+  inline double dy() const;
+  inline void set_dy(double value);
+
   // @@protoc_insertion_point(class_scope:pb.E4StateGeneratorConfig)
  private:
   inline void set_has_e0();
@@ -498,6 +505,8 @@ class E4StateGeneratorConfig : public ::google::protobuf::Message {
   inline void clear_has_a0();
   inline void set_has_dx();
   inline void clear_has_dx();
+  inline void set_has_dy();
+  inline void clear_has_dy();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -507,6 +516,7 @@ class E4StateGeneratorConfig : public ::google::protobuf::Message {
   double phi0_;
   double a0_;
   double dx_;
+  double dy_;
   friend void  protobuf_AddDesc_model_5fe4_2eproto();
   friend void protobuf_AssignDesc_model_5fe4_2eproto();
   friend void protobuf_ShutdownFile_model_5fe4_2eproto();
@@ -961,6 +971,20 @@ class E4Special : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedPtrField< ::pb::E4Special_Hist >*
       mutable_hist();
 
+  // optional double aver_x = 19;
+  inline bool has_aver_x() const;
+  inline void clear_aver_x();
+  static const int kAverXFieldNumber = 19;
+  inline double aver_x() const;
+  inline void set_aver_x(double value);
+
+  // optional double aver_y = 20;
+  inline bool has_aver_y() const;
+  inline void clear_aver_y();
+  static const int kAverYFieldNumber = 20;
+  inline double aver_y() const;
+  inline void set_aver_y(double value);
+
   // @@protoc_insertion_point(class_scope:pb.E4Special)
  private:
   inline void set_has_e_2();
@@ -989,6 +1013,10 @@ class E4Special : public ::google::protobuf::Message {
   inline void clear_has_wa();
   inline void set_has_wb();
   inline void clear_has_wb();
+  inline void set_has_aver_x();
+  inline void clear_has_aver_x();
+  inline void set_has_aver_y();
+  inline void clear_has_aver_y();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -1008,6 +1036,8 @@ class E4Special : public ::google::protobuf::Message {
   double wa_;
   double wb_;
   ::google::protobuf::RepeatedPtrField< ::pb::E4Special_Hist > hist_;
+  double aver_x_;
+  double aver_y_;
   friend void  protobuf_AddDesc_model_5fe4_2eproto();
   friend void protobuf_AssignDesc_model_5fe4_2eproto();
   friend void protobuf_ShutdownFile_model_5fe4_2eproto();
@@ -1494,6 +1524,30 @@ inline void E4StateGeneratorConfig::set_dx(double value) {
   set_has_dx();
   dx_ = value;
   // @@protoc_insertion_point(field_set:pb.E4StateGeneratorConfig.dx)
+}
+
+// optional double dy = 5;
+inline bool E4StateGeneratorConfig::has_dy() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void E4StateGeneratorConfig::set_has_dy() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void E4StateGeneratorConfig::clear_has_dy() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void E4StateGeneratorConfig::clear_dy() {
+  dy_ = 0;
+  clear_has_dy();
+}
+inline double E4StateGeneratorConfig::dy() const {
+  // @@protoc_insertion_point(field_get:pb.E4StateGeneratorConfig.dy)
+  return dy_;
+}
+inline void E4StateGeneratorConfig::set_dy(double value) {
+  set_has_dy();
+  dy_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4StateGeneratorConfig.dy)
 }
 
 // -------------------------------------------------------------------
@@ -2105,6 +2159,54 @@ inline ::google::protobuf::RepeatedPtrField< ::pb::E4Special_Hist >*
 E4Special::mutable_hist() {
   // @@protoc_insertion_point(field_mutable_list:pb.E4Special.hist)
   return &hist_;
+}
+
+// optional double aver_x = 19;
+inline bool E4Special::has_aver_x() const {
+  return (_has_bits_[0] & 0x00004000u) != 0;
+}
+inline void E4Special::set_has_aver_x() {
+  _has_bits_[0] |= 0x00004000u;
+}
+inline void E4Special::clear_has_aver_x() {
+  _has_bits_[0] &= ~0x00004000u;
+}
+inline void E4Special::clear_aver_x() {
+  aver_x_ = 0;
+  clear_has_aver_x();
+}
+inline double E4Special::aver_x() const {
+  // @@protoc_insertion_point(field_get:pb.E4Special.aver_x)
+  return aver_x_;
+}
+inline void E4Special::set_aver_x(double value) {
+  set_has_aver_x();
+  aver_x_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4Special.aver_x)
+}
+
+// optional double aver_y = 20;
+inline bool E4Special::has_aver_y() const {
+  return (_has_bits_[0] & 0x00008000u) != 0;
+}
+inline void E4Special::set_has_aver_y() {
+  _has_bits_[0] |= 0x00008000u;
+}
+inline void E4Special::clear_has_aver_y() {
+  _has_bits_[0] &= ~0x00008000u;
+}
+inline void E4Special::clear_aver_y() {
+  aver_y_ = 0;
+  clear_has_aver_y();
+}
+inline double E4Special::aver_y() const {
+  // @@protoc_insertion_point(field_get:pb.E4Special.aver_y)
+  return aver_y_;
+}
+inline void E4Special::set_aver_y(double value) {
+  set_has_aver_y();
+  aver_y_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4Special.aver_y)
 }
 
 

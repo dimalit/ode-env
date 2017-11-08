@@ -112,11 +112,12 @@ void protobuf_AssignDesc_model_5fe4_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E4State_Particles));
   E4StateGeneratorConfig_descriptor_ = file->message_type(2);
-  static const int E4StateGeneratorConfig_offsets_[4] = {
+  static const int E4StateGeneratorConfig_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4StateGeneratorConfig, e0_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4StateGeneratorConfig, phi0_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4StateGeneratorConfig, a0_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4StateGeneratorConfig, dx_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4StateGeneratorConfig, dy_),
   };
   E4StateGeneratorConfig_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -163,7 +164,7 @@ void protobuf_AssignDesc_model_5fe4_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E4Solution));
   E4Special_descriptor_ = file->message_type(5);
-  static const int E4Special_offsets_[14] = {
+  static const int E4Special_offsets_[16] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, e_2_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, aver_a_2_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, int_e_a_),
@@ -178,6 +179,8 @@ void protobuf_AssignDesc_model_5fe4_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, wa_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, wb_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, hist_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, aver_x_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E4Special, aver_y_),
   };
   E4Special_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -272,20 +275,21 @@ void protobuf_AddDesc_model_5fe4_2eproto() {
     "\n\003phi\030\002 \002(\001\022\014\n\004Eout\030\010 \001(\001\022(\n\tparticles\030\003"
     " \003(\n2\025.pb.E4State.Particles\022\n\n\002a0\030\t \001(\001\032"
     "=\n\tParticles\022\t\n\001a\030\004 \002(\001\022\013\n\003psi\030\005 \002(\001\022\t\n\001"
-    "z\030\006 \002(\001\022\r\n\005delta\030\007 \002(\001\"J\n\026E4StateGenerat"
+    "z\030\006 \002(\001\022\r\n\005delta\030\007 \002(\001\"V\n\026E4StateGenerat"
     "orConfig\022\n\n\002E0\030\001 \002(\001\022\014\n\004phi0\030\002 \002(\001\022\n\n\002A0"
-    "\030\003 \002(\001\022\n\n\002dx\030\004 \001(\001\"n\n\007E4Model\022\035\n\007pconfig"
-    "\030\001 \002(\0132\014.pb.E4Config\022\032\n\005state\030\002 \002(\0132\013.pb"
-    ".E4State\022(\n\007sconfig\030\003 \002(\0132\027.pb.EXPetscSo"
-    "lverConfig\"F\n\nE4Solution\022\032\n\005state\030\001 \002(\0132"
-    "\013.pb.E4State\022\034\n\007d_state\030\002 \001(\0132\013.pb.E4Sta"
-    "te\"\373\001\n\tE4Special\022\013\n\003e_2\030\001 \001(\001\022\020\n\010aver_a_"
-    "2\030\002 \001(\001\022\017\n\007int_e_a\030\004 \001(\001\022\n\n\002Na\030\005 \001(\001\022\n\n\002"
-    "Nb\030\006 \001(\001\022\t\n\001M\030\021 \001(\001\022\t\n\001N\030\022 \001(\001\022\n\n\002Ia\030\007 \001"
-    "(\001\022\n\n\002Ib\030\010 \001(\001\022\017\n\007Ia_aver\030\t \001(\001\022\017\n\007Ib_av"
-    "er\030\n \001(\001\022\n\n\002Wa\030\013 \001(\001\022\n\n\002Wb\030\014 \001(\001\022 \n\004hist"
-    "\030\r \003(\n2\022.pb.E4Special.Hist\032\034\n\004Hist\022\t\n\001x\030"
-    "\016 \002(\001\022\t\n\001y\030\017 \002(\001", 816);
+    "\030\003 \002(\001\022\n\n\002dx\030\004 \001(\001\022\n\n\002dy\030\005 \001(\001\"n\n\007E4Mode"
+    "l\022\035\n\007pconfig\030\001 \002(\0132\014.pb.E4Config\022\032\n\005stat"
+    "e\030\002 \002(\0132\013.pb.E4State\022(\n\007sconfig\030\003 \002(\0132\027."
+    "pb.EXPetscSolverConfig\"F\n\nE4Solution\022\032\n\005"
+    "state\030\001 \002(\0132\013.pb.E4State\022\034\n\007d_state\030\002 \001("
+    "\0132\013.pb.E4State\"\233\002\n\tE4Special\022\013\n\003e_2\030\001 \001("
+    "\001\022\020\n\010aver_a_2\030\002 \001(\001\022\017\n\007int_e_a\030\004 \001(\001\022\n\n\002"
+    "Na\030\005 \001(\001\022\n\n\002Nb\030\006 \001(\001\022\t\n\001M\030\021 \001(\001\022\t\n\001N\030\022 \001"
+    "(\001\022\n\n\002Ia\030\007 \001(\001\022\n\n\002Ib\030\010 \001(\001\022\017\n\007Ia_aver\030\t "
+    "\001(\001\022\017\n\007Ib_aver\030\n \001(\001\022\n\n\002Wa\030\013 \001(\001\022\n\n\002Wb\030\014"
+    " \001(\001\022 \n\004hist\030\r \003(\n2\022.pb.E4Special.Hist\022\016"
+    "\n\006aver_x\030\023 \001(\001\022\016\n\006aver_y\030\024 \001(\001\032\034\n\004Hist\022\t"
+    "\n\001x\030\016 \002(\001\022\t\n\001y\030\017 \002(\001", 860);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e4.proto", &protobuf_RegisterTypes);
   E4Config::default_instance_ = new E4Config();
@@ -1469,6 +1473,7 @@ const int E4StateGeneratorConfig::kE0FieldNumber;
 const int E4StateGeneratorConfig::kPhi0FieldNumber;
 const int E4StateGeneratorConfig::kA0FieldNumber;
 const int E4StateGeneratorConfig::kDxFieldNumber;
+const int E4StateGeneratorConfig::kDyFieldNumber;
 #endif  // !_MSC_VER
 
 E4StateGeneratorConfig::E4StateGeneratorConfig()
@@ -1493,6 +1498,7 @@ void E4StateGeneratorConfig::SharedCtor() {
   phi0_ = 0;
   a0_ = 0;
   dx_ = 0;
+  dy_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1538,7 +1544,9 @@ void E4StateGeneratorConfig::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  ZR_(e0_, dx_);
+  if (_has_bits_[0 / 32] & 31) {
+    ZR_(e0_, dy_);
+  }
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -1612,6 +1620,21 @@ bool E4StateGeneratorConfig::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(41)) goto parse_dy;
+        break;
+      }
+
+      // optional double dy = 5;
+      case 5: {
+        if (tag == 41) {
+         parse_dy:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &dy_)));
+          set_has_dy();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1661,6 +1684,11 @@ void E4StateGeneratorConfig::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteDouble(4, this->dx(), output);
   }
 
+  // optional double dy = 5;
+  if (has_dy()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(5, this->dy(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1689,6 +1717,11 @@ void E4StateGeneratorConfig::SerializeWithCachedSizes(
   // optional double dx = 4;
   if (has_dx()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(4, this->dx(), target);
+  }
+
+  // optional double dy = 5;
+  if (has_dy()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(5, this->dy(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1720,6 +1753,11 @@ int E4StateGeneratorConfig::ByteSize() const {
 
     // optional double dx = 4;
     if (has_dx()) {
+      total_size += 1 + 8;
+    }
+
+    // optional double dy = 5;
+    if (has_dy()) {
       total_size += 1 + 8;
     }
 
@@ -1762,6 +1800,9 @@ void E4StateGeneratorConfig::MergeFrom(const E4StateGeneratorConfig& from) {
     if (from.has_dx()) {
       set_dx(from.dx());
     }
+    if (from.has_dy()) {
+      set_dy(from.dy());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1790,6 +1831,7 @@ void E4StateGeneratorConfig::Swap(E4StateGeneratorConfig* other) {
     std::swap(phi0_, other->phi0_);
     std::swap(a0_, other->a0_);
     std::swap(dx_, other->dx_);
+    std::swap(dy_, other->dy_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -2697,6 +2739,8 @@ const int E4Special::kIbAverFieldNumber;
 const int E4Special::kWaFieldNumber;
 const int E4Special::kWbFieldNumber;
 const int E4Special::kHistFieldNumber;
+const int E4Special::kAverXFieldNumber;
+const int E4Special::kAverYFieldNumber;
 #endif  // !_MSC_VER
 
 E4Special::E4Special()
@@ -2730,6 +2774,8 @@ void E4Special::SharedCtor() {
   ib_aver_ = 0;
   wa_ = 0;
   wb_ = 0;
+  aver_x_ = 0;
+  aver_y_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -2778,8 +2824,9 @@ void E4Special::Clear() {
   if (_has_bits_[0 / 32] & 255) {
     ZR_(e_2_, ia_);
   }
-  if (_has_bits_[8 / 32] & 7936) {
+  if (_has_bits_[8 / 32] & 57088) {
     ZR_(ib_, wb_);
+    ZR_(aver_x_, aver_y_);
   }
 
 #undef OFFSET_OF_FIELD_
@@ -3004,6 +3051,36 @@ bool E4Special::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(153)) goto parse_aver_x;
+        break;
+      }
+
+      // optional double aver_x = 19;
+      case 19: {
+        if (tag == 153) {
+         parse_aver_x:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &aver_x_)));
+          set_has_aver_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(161)) goto parse_aver_y;
+        break;
+      }
+
+      // optional double aver_y = 20;
+      case 20: {
+        if (tag == 161) {
+         parse_aver_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &aver_y_)));
+          set_has_aver_y();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -3104,6 +3181,16 @@ void E4Special::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteDouble(18, this->n(), output);
   }
 
+  // optional double aver_x = 19;
+  if (has_aver_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(19, this->aver_x(), output);
+  }
+
+  // optional double aver_y = 20;
+  if (has_aver_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(20, this->aver_y(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -3186,6 +3273,16 @@ void E4Special::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(18, this->n(), target);
   }
 
+  // optional double aver_x = 19;
+  if (has_aver_x()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(19, this->aver_x(), target);
+  }
+
+  // optional double aver_y = 20;
+  if (has_aver_y()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(20, this->aver_y(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -3265,6 +3362,16 @@ int E4Special::ByteSize() const {
       total_size += 1 + 8;
     }
 
+    // optional double aver_x = 19;
+    if (has_aver_x()) {
+      total_size += 2 + 8;
+    }
+
+    // optional double aver_y = 20;
+    if (has_aver_y()) {
+      total_size += 2 + 8;
+    }
+
   }
   // repeated group Hist = 13 {
   total_size += 2 * this->hist_size();
@@ -3342,6 +3449,12 @@ void E4Special::MergeFrom(const E4Special& from) {
     if (from.has_wb()) {
       set_wb(from.wb());
     }
+    if (from.has_aver_x()) {
+      set_aver_x(from.aver_x());
+    }
+    if (from.has_aver_y()) {
+      set_aver_y(from.aver_y());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -3380,6 +3493,8 @@ void E4Special::Swap(E4Special* other) {
     std::swap(wa_, other->wa_);
     std::swap(wb_, other->wb_);
     hist_.Swap(&other->hist_);
+    std::swap(aver_x_, other->aver_x_);
+    std::swap(aver_y_, other->aver_y_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

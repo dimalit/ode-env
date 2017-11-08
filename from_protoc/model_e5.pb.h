@@ -41,6 +41,8 @@ class E5State_Fields;
 class E5StateGeneratorConfig;
 class E5Model;
 class E5Solution;
+class E5FieldProfile;
+class E5FieldProfile_Field;
 
 // ===================================================================
 
@@ -734,6 +736,199 @@ class E5Solution : public ::google::protobuf::Message {
   void InitAsDefaultInstance();
   static E5Solution* default_instance_;
 };
+// -------------------------------------------------------------------
+
+class E5FieldProfile_Field : public ::google::protobuf::Message {
+ public:
+  E5FieldProfile_Field();
+  virtual ~E5FieldProfile_Field();
+
+  E5FieldProfile_Field(const E5FieldProfile_Field& from);
+
+  inline E5FieldProfile_Field& operator=(const E5FieldProfile_Field& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const E5FieldProfile_Field& default_instance();
+
+  void Swap(E5FieldProfile_Field* other);
+
+  // implements Message ----------------------------------------------
+
+  E5FieldProfile_Field* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const E5FieldProfile_Field& from);
+  void MergeFrom(const E5FieldProfile_Field& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required double x = 2;
+  inline bool has_x() const;
+  inline void clear_x();
+  static const int kXFieldNumber = 2;
+  inline double x() const;
+  inline void set_x(double value);
+
+  // required double y = 3;
+  inline bool has_y() const;
+  inline void clear_y();
+  static const int kYFieldNumber = 3;
+  inline double y() const;
+  inline void set_y(double value);
+
+  // required double z = 4;
+  inline bool has_z() const;
+  inline void clear_z();
+  static const int kZFieldNumber = 4;
+  inline double z() const;
+  inline void set_z(double value);
+
+  // optional double E = 5;
+  inline bool has_e() const;
+  inline void clear_e();
+  static const int kEFieldNumber = 5;
+  inline double e() const;
+  inline void set_e(double value);
+
+  // @@protoc_insertion_point(class_scope:pb.E5FieldProfile.Field)
+ private:
+  inline void set_has_x();
+  inline void clear_has_x();
+  inline void set_has_y();
+  inline void clear_has_y();
+  inline void set_has_z();
+  inline void clear_has_z();
+  inline void set_has_e();
+  inline void clear_has_e();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  double x_;
+  double y_;
+  double z_;
+  double e_;
+  friend void  protobuf_AddDesc_model_5fe5_2eproto();
+  friend void protobuf_AssignDesc_model_5fe5_2eproto();
+  friend void protobuf_ShutdownFile_model_5fe5_2eproto();
+
+  void InitAsDefaultInstance();
+  static E5FieldProfile_Field* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class E5FieldProfile : public ::google::protobuf::Message {
+ public:
+  E5FieldProfile();
+  virtual ~E5FieldProfile();
+
+  E5FieldProfile(const E5FieldProfile& from);
+
+  inline E5FieldProfile& operator=(const E5FieldProfile& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const E5FieldProfile& default_instance();
+
+  void Swap(E5FieldProfile* other);
+
+  // implements Message ----------------------------------------------
+
+  E5FieldProfile* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const E5FieldProfile& from);
+  void MergeFrom(const E5FieldProfile& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef E5FieldProfile_Field Field;
+
+  // accessors -------------------------------------------------------
+
+  // repeated group Field = 1 {
+  inline int field_size() const;
+  inline void clear_field();
+  static const int kFieldFieldNumber = 1;
+  inline const ::pb::E5FieldProfile_Field& field(int index) const;
+  inline ::pb::E5FieldProfile_Field* mutable_field(int index);
+  inline ::pb::E5FieldProfile_Field* add_field();
+  inline const ::google::protobuf::RepeatedPtrField< ::pb::E5FieldProfile_Field >&
+      field() const;
+  inline ::google::protobuf::RepeatedPtrField< ::pb::E5FieldProfile_Field >*
+      mutable_field();
+
+  // @@protoc_insertion_point(class_scope:pb.E5FieldProfile)
+ private:
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedPtrField< ::pb::E5FieldProfile_Field > field_;
+  friend void  protobuf_AddDesc_model_5fe5_2eproto();
+  friend void protobuf_AssignDesc_model_5fe5_2eproto();
+  friend void protobuf_ShutdownFile_model_5fe5_2eproto();
+
+  void InitAsDefaultInstance();
+  static E5FieldProfile* default_instance_;
+};
 // ===================================================================
 
 
@@ -1316,6 +1511,140 @@ inline void E5Solution::set_allocated_d_state(::pb::E5State* d_state) {
     clear_has_d_state();
   }
   // @@protoc_insertion_point(field_set_allocated:pb.E5Solution.d_state)
+}
+
+// -------------------------------------------------------------------
+
+// E5FieldProfile_Field
+
+// required double x = 2;
+inline bool E5FieldProfile_Field::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void E5FieldProfile_Field::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void E5FieldProfile_Field::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void E5FieldProfile_Field::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+inline double E5FieldProfile_Field::x() const {
+  // @@protoc_insertion_point(field_get:pb.E5FieldProfile.Field.x)
+  return x_;
+}
+inline void E5FieldProfile_Field::set_x(double value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5FieldProfile.Field.x)
+}
+
+// required double y = 3;
+inline bool E5FieldProfile_Field::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void E5FieldProfile_Field::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void E5FieldProfile_Field::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void E5FieldProfile_Field::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+inline double E5FieldProfile_Field::y() const {
+  // @@protoc_insertion_point(field_get:pb.E5FieldProfile.Field.y)
+  return y_;
+}
+inline void E5FieldProfile_Field::set_y(double value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5FieldProfile.Field.y)
+}
+
+// required double z = 4;
+inline bool E5FieldProfile_Field::has_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void E5FieldProfile_Field::set_has_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void E5FieldProfile_Field::clear_has_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void E5FieldProfile_Field::clear_z() {
+  z_ = 0;
+  clear_has_z();
+}
+inline double E5FieldProfile_Field::z() const {
+  // @@protoc_insertion_point(field_get:pb.E5FieldProfile.Field.z)
+  return z_;
+}
+inline void E5FieldProfile_Field::set_z(double value) {
+  set_has_z();
+  z_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5FieldProfile.Field.z)
+}
+
+// optional double E = 5;
+inline bool E5FieldProfile_Field::has_e() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void E5FieldProfile_Field::set_has_e() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void E5FieldProfile_Field::clear_has_e() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void E5FieldProfile_Field::clear_e() {
+  e_ = 0;
+  clear_has_e();
+}
+inline double E5FieldProfile_Field::e() const {
+  // @@protoc_insertion_point(field_get:pb.E5FieldProfile.Field.E)
+  return e_;
+}
+inline void E5FieldProfile_Field::set_e(double value) {
+  set_has_e();
+  e_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5FieldProfile.Field.E)
+}
+
+// -------------------------------------------------------------------
+
+// E5FieldProfile
+
+// repeated group Field = 1 {
+inline int E5FieldProfile::field_size() const {
+  return field_.size();
+}
+inline void E5FieldProfile::clear_field() {
+  field_.Clear();
+}
+inline const ::pb::E5FieldProfile_Field& E5FieldProfile::field(int index) const {
+  // @@protoc_insertion_point(field_get:pb.E5FieldProfile.field)
+  return field_.Get(index);
+}
+inline ::pb::E5FieldProfile_Field* E5FieldProfile::mutable_field(int index) {
+  // @@protoc_insertion_point(field_mutable:pb.E5FieldProfile.field)
+  return field_.Mutable(index);
+}
+inline ::pb::E5FieldProfile_Field* E5FieldProfile::add_field() {
+  // @@protoc_insertion_point(field_add:pb.E5FieldProfile.field)
+  return field_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::pb::E5FieldProfile_Field >&
+E5FieldProfile::field() const {
+  // @@protoc_insertion_point(field_list:pb.E5FieldProfile.field)
+  return field_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::pb::E5FieldProfile_Field >*
+E5FieldProfile::mutable_field() {
+  // @@protoc_insertion_point(field_mutable_list:pb.E5FieldProfile.field)
+  return &field_;
 }
 
 

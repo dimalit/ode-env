@@ -191,11 +191,14 @@ void E4ChartAnalyzer::fill_spec_msg(const OdeState* state, const OdeState* d_sta
 	double Na = 0, Nb = 0;			// da/dt>0 and <0
 	double Ia = 0.0, Ib = 0.0;	// sum da/dt
 	double Wa = 0.0, Wb = 0.0;	// sum a^2
+	double sum_x = 0, sum_y = 0;
 	for(int i=0; i<N; i++){
 		E4State::Particles p = estate->particles(i);
 		E4State::Particles dp = dstate->particles(i);
 
 		sum_a_2 += p.a()*p.a();
+		sum_x += p.a()*cos(p.psi()-2*M_PI*p.z());
+		sum_y += p.a()*sin(p.psi()-2*M_PI*p.z());
 
 		if(dp.a() > 0.0){
 			Na++;
@@ -211,6 +214,9 @@ void E4ChartAnalyzer::fill_spec_msg(const OdeState* state, const OdeState* d_sta
 
 	Na/=N; Nb/=N;
 	Wa/=N; Wb/=N;
+
+	spec_msg->set_aver_x(sum_x/N);
+	spec_msg->set_aver_y(sum_y/N);
 
 	spec_msg->set_e_2(estate->e()*estate->e());
 	spec_msg->set_aver_a_2(sum_a_2/estate->particles_size());

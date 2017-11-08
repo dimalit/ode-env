@@ -106,15 +106,19 @@ void E4StateGeneratorWidget::newState(bool emit){
 
 	//center_masses();
 
-	// move by dx
+	// move by dx,dy
 	double dx = sgc->dx();
+	double dy = sgc->dy();
 	for(int i=0; i<N; i++){
 		E4State::Particles& p = *state->mutable_particles(i);
+		double a = p.a();
 
-		double scalar = dx*cos(p.psi()-2*M_PI*p.z());
-		p.set_a(p.a()-scalar);
-		scalar = -dx*sin(p.psi()-2*M_PI*p.z());
-		p.set_psi(p.psi()-scalar/p.a());
+		double scalar_x = dx*cos(p.psi()-2*M_PI*p.z());
+		double scalar_y = dy*sin(p.psi()-2*M_PI*p.z());
+		p.set_a(a+scalar_x+scalar_y);
+		scalar_x = -dx*sin(p.psi()-2*M_PI*p.z());
+		scalar_y = +dy*cos(p.psi()-2*M_PI*p.z());
+		p.set_psi(p.psi()+(scalar_x+scalar_y)/a);
 	}
 
 	if(emit)

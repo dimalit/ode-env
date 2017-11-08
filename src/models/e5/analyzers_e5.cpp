@@ -136,3 +136,84 @@ void E5ChartAnalyzer::addSpecial(MessageChart* chart){
 	this->show_all();
 }
 
+E5FieldAnalyzer::E5FieldAnalyzer(const E5Config* cfg):chart(std::vector<std::string>({"$field.x*$field.x + $field.y*$field.y"}), "field.z"){
+	states_count = 0;
+	this->config = NULL;
+	loadConfig(cfg);
+	chart.setStyle(Gnuplot::STYLE_LINES);
+}
+
+E5FieldAnalyzer::~E5FieldAnalyzer(){
+	delete this->config;
+}
+
+void E5FieldAnalyzer::loadConfig(const OdeConfig* cfg){
+	delete this->config;
+	this->config = NULL;
+	this->profile_message.Clear();
+	if(!cfg)
+		return;
+	const E5Config *ecfg = dynamic_cast<const E5Config*>(cfg);
+	assert(ecfg);
+	this->config = new E5Config(*dynamic_cast<const E5Config*>(cfg));
+	for(int i=0; i<ecfg->n()+20; i++){
+		this->profile_message.add_field();
+	}// for
+}
+
+void E5FieldAnalyzer::reset(){
+	states_count = 0;
+	chart.reset();
+}
+
+void E5FieldAnalyzer::processState(const OdeState* state, const OdeState*, double time){
+	const E5State* estate = dynamic_cast<const E5State*>(state);
+
+	for(int i=0; i<estate->fields_size(); i++){
+		E5State::Fields f = estate->fields(i);
+		E5State::Particles p = estate->particles(i);
+		pb::E5FieldProfile::Field* pf = profile_message.mutable_field(i+10);
+
+		pf->set_z(p.z());
+		pf->set_x(f.x());
+		pf->set_y(f.y());
+		pf->set_e(mod(pf->x(), pf->y()));
+	}
+
+	double min = estate->particles(0).z();
+	double max = estate->particles(estate->particles_size()-1).z();
+	double h = 3.0/10;
+
+	E5State::Fields left = estate->fields(0);
+	for(int i=0; i<10; i++){
+		pb::E5FieldProfile::Field* pf = profile_message.mutable_field(i);
+
+		double x = left.x();
+		double y = left.y();
+		double z = min-3.0+i*h;
+		rotate(x, y, min-z);
+
+		pf->set_z(z);
+		pf->set_x(x);
+		pf->set_y(y);
+		pf->set_e(mod(pf->x(), pf->y()));
+	}
+
+	int N = profile_message.field_size();
+	E5State::Fields right = estate->fields( estate->fields_size()-1 );
+	for(int i=0; i<10; i++){
+		pb::E5FieldProfile::Field* pf = profile_message.mutable_field(N-10+i);
+
+		double x = right.x();
+		double y = right.y();
+		double z = max+i*h;
+		rotate(x, y, z-max);
+
+		pf->set_z(z);
+		pf->set_x(x);
+		pf->set_y(y);
+		pf->set_e(mod(pf->x(), pf->y()));
+	}
+
+	chart.processMessage(&this->profile_message, NULL, time);
+}
