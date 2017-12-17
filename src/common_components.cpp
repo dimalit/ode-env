@@ -43,7 +43,7 @@ EXPetscSolverConfig::EXPetscSolverConfig(){
 	set_atol(1e-6);
 	set_rtol(1e-6);
 	set_init_step(0.01);
-	set_n_cores(1);
+	set_n_cores(2);
 }
 
 AbstractConfigWidget::AbstractConfigWidget(Message *msg){

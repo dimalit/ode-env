@@ -150,8 +150,10 @@ void E5ChartAnalyzer::addSpecial(MessageChart* chart){
 
 E5FieldAnalyzer::E5FieldAnalyzer(const E5Config* cfg):
 		field_chart(std::vector<std::string>({"$field.x*$field.x + $field.y*$field.y"}), "field.z"),
-		center_chart(std::vector<std::string>({"A"}), "")
+		center_chart(std::vector<std::string>({"A"}), "phi")
 {
+	center_chart.setPolar(true);
+
 	states_count = 0;
 	this->config = NULL;
 	loadConfig(cfg);

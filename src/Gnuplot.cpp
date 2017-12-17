@@ -304,7 +304,7 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 
 	if(polar){
 		plot_command << "set polar\n";
-		plot_command << draw_bells(msg) << "\n";
+		//plot_command << draw_bells(msg) << "\n";
 	}
 	if(parametric)
 		plot_command << "set parametric\n";
