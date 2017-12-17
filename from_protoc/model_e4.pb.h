@@ -140,6 +140,13 @@ class E4Config : public ::google::protobuf::Message {
   inline double delta_phi() const;
   inline void set_delta_phi(double value);
 
+  // optional double delta_psi = 7;
+  inline bool has_delta_psi() const;
+  inline void clear_delta_psi();
+  static const int kDeltaPsiFieldNumber = 7;
+  inline double delta_psi() const;
+  inline void set_delta_psi(double value);
+
   // @@protoc_insertion_point(class_scope:pb.E4Config)
  private:
   inline void set_has_n();
@@ -154,6 +161,8 @@ class E4Config : public ::google::protobuf::Message {
   inline void clear_has_e0();
   inline void set_has_delta_phi();
   inline void clear_has_delta_phi();
+  inline void set_has_delta_psi();
+  inline void clear_has_delta_psi();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -164,6 +173,7 @@ class E4Config : public ::google::protobuf::Message {
   double theta_;
   double e0_;
   double delta_phi_;
+  double delta_psi_;
   ::google::protobuf::uint32 n_;
   friend void  protobuf_AddDesc_model_5fe4_2eproto();
   friend void protobuf_AssignDesc_model_5fe4_2eproto();
@@ -1194,6 +1204,30 @@ inline void E4Config::set_delta_phi(double value) {
   set_has_delta_phi();
   delta_phi_ = value;
   // @@protoc_insertion_point(field_set:pb.E4Config.delta_phi)
+}
+
+// optional double delta_psi = 7;
+inline bool E4Config::has_delta_psi() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void E4Config::set_has_delta_psi() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void E4Config::clear_has_delta_psi() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void E4Config::clear_delta_psi() {
+  delta_psi_ = 0;
+  clear_has_delta_psi();
+}
+inline double E4Config::delta_psi() const {
+  // @@protoc_insertion_point(field_get:pb.E4Config.delta_psi)
+  return delta_psi_;
+}
+inline void E4Config::set_delta_psi(double value) {
+  set_has_delta_psi();
+  delta_psi_ = value;
+  // @@protoc_insertion_point(field_set:pb.E4Config.delta_psi)
 }
 
 // -------------------------------------------------------------------

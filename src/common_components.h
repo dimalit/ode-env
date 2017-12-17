@@ -370,7 +370,7 @@ void EXPetscSolver<AllModel, ESolution>::run(int steps, double time, bool use_st
 
 //	int tmp = open("tmp", O_WRONLY | O_CREAT, 0664);
 //	state->PrintDebugString();
-//	wf = fopen("all.tmp", "wb");
+//	wf = fopen("e5.bin", "wb");
 
 
 	// TODO: send them as two separate messages - and remove AllModel!!

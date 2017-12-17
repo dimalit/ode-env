@@ -43,6 +43,7 @@ class E5Model;
 class E5Solution;
 class E5FieldProfile;
 class E5FieldProfile_Field;
+class E5CenterField;
 
 // ===================================================================
 
@@ -929,6 +930,95 @@ class E5FieldProfile : public ::google::protobuf::Message {
   void InitAsDefaultInstance();
   static E5FieldProfile* default_instance_;
 };
+// -------------------------------------------------------------------
+
+class E5CenterField : public ::google::protobuf::Message {
+ public:
+  E5CenterField();
+  virtual ~E5CenterField();
+
+  E5CenterField(const E5CenterField& from);
+
+  inline E5CenterField& operator=(const E5CenterField& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const E5CenterField& default_instance();
+
+  void Swap(E5CenterField* other);
+
+  // implements Message ----------------------------------------------
+
+  E5CenterField* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const E5CenterField& from);
+  void MergeFrom(const E5CenterField& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required double A = 1;
+  inline bool has_a() const;
+  inline void clear_a();
+  static const int kAFieldNumber = 1;
+  inline double a() const;
+  inline void set_a(double value);
+
+  // required double phi = 2;
+  inline bool has_phi() const;
+  inline void clear_phi();
+  static const int kPhiFieldNumber = 2;
+  inline double phi() const;
+  inline void set_phi(double value);
+
+  // @@protoc_insertion_point(class_scope:pb.E5CenterField)
+ private:
+  inline void set_has_a();
+  inline void clear_has_a();
+  inline void set_has_phi();
+  inline void clear_has_phi();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  double a_;
+  double phi_;
+  friend void  protobuf_AddDesc_model_5fe5_2eproto();
+  friend void protobuf_AssignDesc_model_5fe5_2eproto();
+  friend void protobuf_ShutdownFile_model_5fe5_2eproto();
+
+  void InitAsDefaultInstance();
+  static E5CenterField* default_instance_;
+};
 // ===================================================================
 
 
@@ -1645,6 +1735,58 @@ inline ::google::protobuf::RepeatedPtrField< ::pb::E5FieldProfile_Field >*
 E5FieldProfile::mutable_field() {
   // @@protoc_insertion_point(field_mutable_list:pb.E5FieldProfile.field)
   return &field_;
+}
+
+// -------------------------------------------------------------------
+
+// E5CenterField
+
+// required double A = 1;
+inline bool E5CenterField::has_a() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void E5CenterField::set_has_a() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void E5CenterField::clear_has_a() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void E5CenterField::clear_a() {
+  a_ = 0;
+  clear_has_a();
+}
+inline double E5CenterField::a() const {
+  // @@protoc_insertion_point(field_get:pb.E5CenterField.A)
+  return a_;
+}
+inline void E5CenterField::set_a(double value) {
+  set_has_a();
+  a_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5CenterField.A)
+}
+
+// required double phi = 2;
+inline bool E5CenterField::has_phi() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void E5CenterField::set_has_phi() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void E5CenterField::clear_has_phi() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void E5CenterField::clear_phi() {
+  phi_ = 0;
+  clear_has_phi();
+}
+inline double E5CenterField::phi() const {
+  // @@protoc_insertion_point(field_get:pb.E5CenterField.phi)
+  return phi_;
+}
+inline void E5CenterField::set_phi(double value) {
+  set_has_phi();
+  phi_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5CenterField.phi)
 }
 
 

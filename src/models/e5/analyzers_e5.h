@@ -17,12 +17,16 @@ private:
 	E5Config* config;
 	int states_count;
 	time_t last_update;
+	bool auto_update;
 
 	Gtk::TreeView *treeview1;
 	Glib::RefPtr<Gtk::ListStore> liststore1;
 	Gtk::Entry *entry_int1, *entry_int2;
 	Gtk::Entry *entry_aver_x, *entry_aver_y;
 	Gtk::Entry *entry_cm_r;
+	Gtk::ToggleButton *button_update;
+
+	void on_update_toggled();
 public:
 	E5ConservationAnalyzer(const E5Config* config);
 	virtual void loadConfig(const OdeConfig* config);
@@ -65,8 +69,11 @@ private:
 	E5Config* config;
 	int states_count;
 
-	MessageChart chart;
+	MessageChart field_chart;
+	MessageChart center_chart;
 	pb::E5FieldProfile profile_message;
+	pb::E5CenterField center_message;
+
 public:
 	E5FieldAnalyzer(const E5Config* config);
 	virtual void loadConfig(const OdeConfig* config);

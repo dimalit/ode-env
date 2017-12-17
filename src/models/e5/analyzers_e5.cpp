@@ -19,6 +19,7 @@ void rotate(double& x, double& y, double alpha);
 // TODO: make Gnuplotting" functionality apart and use it to draw energy chars!
 E5ConservationAnalyzer::E5ConservationAnalyzer(const E5Config* config){
 	states_count = 0;
+	auto_update = false;
 
 	this->config = new E5Config(*config);
 
@@ -35,11 +36,15 @@ E5ConservationAnalyzer::E5ConservationAnalyzer(const E5Config* config){
 	b->get_widget("entry_aver_y", entry_aver_y);
 
 	b->get_widget("entry_cm_r", entry_cm_r);
+	b->get_widget("button_update", button_update);
 
 	b->get_widget("treeview1", treeview1);
 	liststore1 = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b->get_object("liststore1"));
 
 	this->add(*root);
+
+	button_update->set_active(auto_update);
+	button_update->signal_toggled().connect(sigc::mem_fun(*this, &E5ConservationAnalyzer::on_update_toggled));
 }
 
 void E5ConservationAnalyzer::loadConfig(const OdeConfig* config){
@@ -55,6 +60,9 @@ void E5ConservationAnalyzer::reset(){
 void E5ConservationAnalyzer::processState(const OdeState* state, const OdeState* d_state, double time){
 	const E5State* estate = dynamic_cast<const E5State*>(state);
 		assert(estate);
+
+	if(!auto_update)
+		return;
 
 	liststore1->clear();
 
@@ -109,6 +117,10 @@ E5ConservationAnalyzer::~E5ConservationAnalyzer(){
 	delete config;
 }
 
+void E5ConservationAnalyzer::on_update_toggled(){
+	this->auto_update = this->button_update->get_active();
+}
+
 E5ChartAnalyzer::E5ChartAnalyzer(const OdeConfig* config):EXChartAnalyzer(config) {
 }
 
@@ -136,11 +148,20 @@ void E5ChartAnalyzer::addSpecial(MessageChart* chart){
 	this->show_all();
 }
 
-E5FieldAnalyzer::E5FieldAnalyzer(const E5Config* cfg):chart(std::vector<std::string>({"$field.x*$field.x + $field.y*$field.y"}), "field.z"){
+E5FieldAnalyzer::E5FieldAnalyzer(const E5Config* cfg):
+		field_chart(std::vector<std::string>({"$field.x*$field.x + $field.y*$field.y"}), "field.z"),
+		center_chart(std::vector<std::string>({"A"}), "")
+{
 	states_count = 0;
 	this->config = NULL;
 	loadConfig(cfg);
-	chart.setStyle(Gnuplot::STYLE_LINES);
+	field_chart.setStyle(Gnuplot::STYLE_LINES);
+
+	Gtk::VBox* vbox = new Gtk::VBox();
+	this->add(*vbox);
+	vbox->add(field_chart);
+	vbox->add(center_chart);
+	//btn_save.signal_clicked().connect(sigc::mem_fun(*this, &E5FieldAnalyzer::on_save_cb));
 }
 
 E5FieldAnalyzer::~E5FieldAnalyzer(){
@@ -151,6 +172,7 @@ void E5FieldAnalyzer::loadConfig(const OdeConfig* cfg){
 	delete this->config;
 	this->config = NULL;
 	this->profile_message.Clear();
+	this->center_message.Clear();
 	if(!cfg)
 		return;
 	const E5Config *ecfg = dynamic_cast<const E5Config*>(cfg);
@@ -163,12 +185,14 @@ void E5FieldAnalyzer::loadConfig(const OdeConfig* cfg){
 
 void E5FieldAnalyzer::reset(){
 	states_count = 0;
-	chart.reset();
+	field_chart.reset();
+	center_chart.reset();
 }
 
 void E5FieldAnalyzer::processState(const OdeState* state, const OdeState*, double time){
 	const E5State* estate = dynamic_cast<const E5State*>(state);
 
+	// fill with fields and z from particles
 	for(int i=0; i<estate->fields_size(); i++){
 		E5State::Fields f = estate->fields(i);
 		E5State::Particles p = estate->particles(i);
@@ -182,8 +206,10 @@ void E5FieldAnalyzer::processState(const OdeState* state, const OdeState*, doubl
 
 	double min = estate->particles(0).z();
 	double max = estate->particles(estate->particles_size()-1).z();
+	// 3 left and 3 right extra space -> 10+10 particles
 	double h = 3.0/10;
 
+	// add 10 points to the left
 	E5State::Fields left = estate->fields(0);
 	for(int i=0; i<10; i++){
 		pb::E5FieldProfile::Field* pf = profile_message.mutable_field(i);
@@ -199,6 +225,7 @@ void E5FieldAnalyzer::processState(const OdeState* state, const OdeState*, doubl
 		pf->set_e(mod(pf->x(), pf->y()));
 	}
 
+	// add 10 points to the right
 	int N = profile_message.field_size();
 	E5State::Fields right = estate->fields( estate->fields_size()-1 );
 	for(int i=0; i<10; i++){
@@ -215,5 +242,15 @@ void E5FieldAnalyzer::processState(const OdeState* state, const OdeState*, doubl
 		pf->set_e(mod(pf->x(), pf->y()));
 	}
 
-	chart.processMessage(&this->profile_message, NULL, time);
+	/////////// 2 /////////
+	N=estate->fields_size();
+	E5State::Fields mid = estate->fields(N-1);
+	double A = mod(mid.x(), mid.y());
+	double phi = arg(mid.x(), mid.y());
+	center_message.set_a(A);
+	center_message.set_phi(phi);
+
+	// process!
+	field_chart.processMessage(&this->profile_message, NULL, time);
+	center_chart.processMessage(&this->center_message, NULL, time);
 }

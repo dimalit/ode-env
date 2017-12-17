@@ -365,6 +365,10 @@ void Gnuplot::printPlotCommand(FILE* fp, const google::protobuf::Message* msg, c
 
 	// print all!
 	plot_command << "\n";
+
+//	std::cerr << plot_command.str() << std::endl;
+//	std::cerr << super_buffer.str() << std::endl;
+
 	fprintf(fp, plot_command.str().c_str());
 	fprintf(fp, super_buffer.str().c_str());
 	fflush(fp);

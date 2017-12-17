@@ -47,6 +47,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* E5FieldProfile_Field_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   E5FieldProfile_Field_reflection_ = NULL;
+const ::google::protobuf::Descriptor* E5CenterField_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  E5CenterField_reflection_ = NULL;
 
 }  // namespace
 
@@ -207,6 +210,22 @@ void protobuf_AssignDesc_model_5fe5_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(E5FieldProfile_Field));
+  E5CenterField_descriptor_ = file->message_type(6);
+  static const int E5CenterField_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E5CenterField, a_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E5CenterField, phi_),
+  };
+  E5CenterField_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      E5CenterField_descriptor_,
+      E5CenterField::default_instance_,
+      E5CenterField_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E5CenterField, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(E5CenterField, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(E5CenterField));
 }
 
 namespace {
@@ -237,6 +256,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
     E5FieldProfile_descriptor_, &E5FieldProfile::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     E5FieldProfile_Field_descriptor_, &E5FieldProfile_Field::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    E5CenterField_descriptor_, &E5CenterField::default_instance());
 }
 
 }  // namespace
@@ -260,6 +281,8 @@ void protobuf_ShutdownFile_model_5fe5_2eproto() {
   delete E5FieldProfile_reflection_;
   delete E5FieldProfile_Field::default_instance_;
   delete E5FieldProfile_Field_reflection_;
+  delete E5CenterField::default_instance_;
+  delete E5CenterField_reflection_;
 }
 
 void protobuf_AddDesc_model_5fe5_2eproto() {
@@ -285,7 +308,8 @@ void protobuf_AddDesc_model_5fe5_2eproto() {
     "te\022\034\n\007d_state\030\002 \001(\0132\013.pb.E5State\"n\n\016E5Fi"
     "eldProfile\022\'\n\005field\030\001 \003(\n2\030.pb.E5FieldPr"
     "ofile.Field\0323\n\005Field\022\t\n\001x\030\002 \002(\001\022\t\n\001y\030\003 \002"
-    "(\001\022\t\n\001z\030\004 \002(\001\022\t\n\001E\030\005 \001(\001", 624);
+    "(\001\022\t\n\001z\030\004 \002(\001\022\t\n\001E\030\005 \001(\001\"\'\n\rE5CenterFiel"
+    "d\022\t\n\001A\030\001 \002(\001\022\013\n\003phi\030\002 \002(\001", 665);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "model_e5.proto", &protobuf_RegisterTypes);
   E5Config::default_instance_ = new E5Config();
@@ -297,6 +321,7 @@ void protobuf_AddDesc_model_5fe5_2eproto() {
   E5Solution::default_instance_ = new E5Solution();
   E5FieldProfile::default_instance_ = new E5FieldProfile();
   E5FieldProfile_Field::default_instance_ = new E5FieldProfile_Field();
+  E5CenterField::default_instance_ = new E5CenterField();
   E5Config::default_instance_->InitAsDefaultInstance();
   E5State::default_instance_->InitAsDefaultInstance();
   E5State_Particles::default_instance_->InitAsDefaultInstance();
@@ -306,6 +331,7 @@ void protobuf_AddDesc_model_5fe5_2eproto() {
   E5Solution::default_instance_->InitAsDefaultInstance();
   E5FieldProfile::default_instance_->InitAsDefaultInstance();
   E5FieldProfile_Field::default_instance_->InitAsDefaultInstance();
+  E5CenterField::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_model_5fe5_2eproto);
 }
 
@@ -2974,6 +3000,277 @@ void E5FieldProfile::Swap(E5FieldProfile* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = E5FieldProfile_descriptor_;
   metadata.reflection = E5FieldProfile_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int E5CenterField::kAFieldNumber;
+const int E5CenterField::kPhiFieldNumber;
+#endif  // !_MSC_VER
+
+E5CenterField::E5CenterField()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:pb.E5CenterField)
+}
+
+void E5CenterField::InitAsDefaultInstance() {
+}
+
+E5CenterField::E5CenterField(const E5CenterField& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:pb.E5CenterField)
+}
+
+void E5CenterField::SharedCtor() {
+  _cached_size_ = 0;
+  a_ = 0;
+  phi_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+E5CenterField::~E5CenterField() {
+  // @@protoc_insertion_point(destructor:pb.E5CenterField)
+  SharedDtor();
+}
+
+void E5CenterField::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void E5CenterField::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* E5CenterField::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return E5CenterField_descriptor_;
+}
+
+const E5CenterField& E5CenterField::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_model_5fe5_2eproto();
+  return *default_instance_;
+}
+
+E5CenterField* E5CenterField::default_instance_ = NULL;
+
+E5CenterField* E5CenterField::New() const {
+  return new E5CenterField;
+}
+
+void E5CenterField::Clear() {
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<E5CenterField*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  ZR_(a_, phi_);
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool E5CenterField::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:pb.E5CenterField)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required double A = 1;
+      case 1: {
+        if (tag == 9) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &a_)));
+          set_has_a();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(17)) goto parse_phi;
+        break;
+      }
+
+      // required double phi = 2;
+      case 2: {
+        if (tag == 17) {
+         parse_phi:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &phi_)));
+          set_has_phi();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:pb.E5CenterField)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:pb.E5CenterField)
+  return false;
+#undef DO_
+}
+
+void E5CenterField::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:pb.E5CenterField)
+  // required double A = 1;
+  if (has_a()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(1, this->a(), output);
+  }
+
+  // required double phi = 2;
+  if (has_phi()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->phi(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:pb.E5CenterField)
+}
+
+::google::protobuf::uint8* E5CenterField::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:pb.E5CenterField)
+  // required double A = 1;
+  if (has_a()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(1, this->a(), target);
+  }
+
+  // required double phi = 2;
+  if (has_phi()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(2, this->phi(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:pb.E5CenterField)
+  return target;
+}
+
+int E5CenterField::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required double A = 1;
+    if (has_a()) {
+      total_size += 1 + 8;
+    }
+
+    // required double phi = 2;
+    if (has_phi()) {
+      total_size += 1 + 8;
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void E5CenterField::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const E5CenterField* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const E5CenterField*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void E5CenterField::MergeFrom(const E5CenterField& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_a()) {
+      set_a(from.a());
+    }
+    if (from.has_phi()) {
+      set_phi(from.phi());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void E5CenterField::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void E5CenterField::CopyFrom(const E5CenterField& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool E5CenterField::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+
+  return true;
+}
+
+void E5CenterField::Swap(E5CenterField* other) {
+  if (other != this) {
+    std::swap(a_, other->a_);
+    std::swap(phi_, other->phi_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata E5CenterField::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = E5CenterField_descriptor_;
+  metadata.reflection = E5CenterField_reflection_;
   return metadata;
 }
 

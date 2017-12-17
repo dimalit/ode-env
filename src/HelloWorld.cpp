@@ -1,6 +1,7 @@
 #include "HelloWorld.h"
 
 #include "models/e42mc/analyzers_e42mc.h"
+#include "models/e5/analyzers_e5.h"
 
 #include <gtkmm/main.h>
 #include <gtkmm/builder.h>
@@ -112,6 +113,12 @@ HelloWorld::HelloWorld()
 		  chart = new MessageChart(vars, x_var, NULL);
 		  ana->addChart(chart);
 	  }
+
+	  E5ChartAnalyzer* ana5 = dynamic_cast<E5ChartAnalyzer*>(analyzer_widget);
+	  if(ana5){
+//		  MessageChart* chart = new MessageChart(vector<string>({"$particles.x*$particles.x + $particles.y*$particles.y"}), "$particles.z", NULL);
+//		  ana5->addChart(chart);
+	  }// ana5
   }
 
 //  // these are charts with "add" button
