@@ -46,51 +46,73 @@ public:
 	typedef E5State State;
 
 public:
-	E5ChartAnalyzer(const OdeConfig* config);
-	virtual void processState(const OdeState* state, const OdeState* d_state, double time);
-	virtual ~E5ChartAnalyzer();
+	E5ChartAnalyzer(const OdeConfig* config):EXChartAnalyzer(config){
+		Gtk::Widget *label = Gtk::manage( new Gtk::Label(getDisplayName()) );
+		vbox.pack_start(*label);
+	}
+	virtual ~E5ChartAnalyzer(){}
 
 	static std::string getDisplayName(){
 		return "customized for E5 EXChartAnalyzer";
 	}
 
-	virtual void addChart(MessageChart* chart);
-	virtual void addSpecial(MessageChart* chart);
-
 private:
 	virtual ::google::protobuf::Message* new_state(){ return new E5State();}
 };
 
-class E5FieldAnalyzer: public OdeAnalyzerWidget{
+class E5SpecialAnalyzer: public EXChartAnalyzer {
 public:
 	typedef E5Config Config;
 	typedef E5State State;
-private:
-	E5Config* config;
-	int states_count;
-
-	MessageChart field_chart;
-	MessageChart center_chart;
-	pb::E5FieldProfile profile_message;
-	pb::E5CenterField center_message;
 
 public:
-	E5FieldAnalyzer(const E5Config* config);
-	virtual void loadConfig(const OdeConfig* config);
-	virtual void reset();
+	E5SpecialAnalyzer(const E5Config* config);
+	virtual ~E5SpecialAnalyzer(){}
 	virtual void processState(const OdeState* state, const OdeState* d_state, double time);
-	virtual int getStatesCount(){
-		return states_count;
-	}
-	virtual ~E5FieldAnalyzer();
+	virtual void loadConfig(const OdeConfig* config);
 
 	static std::string getDisplayName(){
-		return "Field profile analyzer for E5";
+		return "Field profile & etc analyzer for E5";
 	}
+private:
+	pb::E5Special message;
+	MessageChart field_chart;
+	MessageChart out_chart_xy, out_chart_a;
+
+private:
+	virtual ::google::protobuf::Message* new_state(){ return new pb::E5Special();}
 };
+//
+//class E5FieldAnalyzer: public OdeAnalyzerWidget{
+//public:
+//	typedef E5Config Config;
+//	typedef E5State State;
+//private:
+//	E5Config* config;
+//	int states_count;
+//
+//	MessageChart field_chart;
+//	MessageChart out_chart_xy, out_chart_a;
+//	pb::E5FieldProfile profile_message;
+//	pb::E5CenterField center_message;
+//
+//public:
+//	E5FieldAnalyzer(const E5Config* config);
+//	virtual void loadConfig(const OdeConfig* config);
+//	virtual void reset();
+//	virtual void processState(const OdeState* state, const OdeState* d_state, double time);
+//	virtual int getStatesCount(){
+//		return states_count;
+//	}
+//	virtual ~E5FieldAnalyzer();
+//
+//	static std::string getDisplayName(){
+//		return "Field profile analyzer for E5";
+//	}
+//};
 
 REGISTER_ANALYZER_WIDGET_CLASS(E5ConservationAnalyzer)
 REGISTER_ANALYZER_WIDGET_CLASS(E5ChartAnalyzer)
-REGISTER_ANALYZER_WIDGET_CLASS(E5FieldAnalyzer)
+REGISTER_ANALYZER_WIDGET_CLASS(E5SpecialAnalyzer)
 
 #endif /* ANALYZERS_E5_H_ */

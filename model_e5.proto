@@ -41,16 +41,19 @@ message E5Solution{
 	optional E5State d_state = 2;
 }
 
-message E5FieldProfile{
+message E5Special{
 	repeated group Field = 1{
 		required double x = 2;
 		required double y = 3;
 		required double z = 4;
 		optional double E = 5;
 	}
-}
-
-message E5CenterField{
-	required double A = 1;
-	required double phi = 2; 
+	
+	required double right_A = 6;
+	required double right_phi = 7;
+	required double left_A = 8;
+	required double left_phi = 9;
+	optional double max_A = 10;	
+	
+	optional double sum_a2 = 11; 
 }

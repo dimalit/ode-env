@@ -95,6 +95,10 @@ void E5ConservationAnalyzer::processState(const OdeState* state, const OdeState*
 //	entry_int1->set_text(buf.str());
 
 	buf.str("");
+	buf << sum_a_2/estate->particles_size();
+	entry_int1->set_text(buf.str());
+
+	buf.str("");
 	buf << sum_x/estate->particles_size();
 	entry_aver_x->set_text(buf.str());
 	buf.str("");
@@ -121,84 +125,50 @@ void E5ConservationAnalyzer::on_update_toggled(){
 	this->auto_update = this->button_update->get_active();
 }
 
-E5ChartAnalyzer::E5ChartAnalyzer(const OdeConfig* config):EXChartAnalyzer(config) {
-}
-
-E5ChartAnalyzer::~E5ChartAnalyzer() {
-
-}
-
-void E5ChartAnalyzer::processState(const OdeState* state, const OdeState* d_state, double time){
-	const google::protobuf::Message* msg = dynamic_cast<const google::protobuf::Message*>(state);
-		assert(msg);
-	const google::protobuf::Message* d_msg = dynamic_cast<const google::protobuf::Message*>(d_state);
-//		assert(d_msg);
-
-	for(int i=0; i<charts.size(); i++)
-			charts[i]->processMessage(msg, d_msg, time);
-}
-
-void E5ChartAnalyzer::addChart(MessageChart* chart){
-	EXChartAnalyzer::addChart(chart);
-}
-
-void E5ChartAnalyzer::addSpecial(MessageChart* chart){
-	charts.push_back(chart);
-	vbox.pack_end(*chart, false, false, 1);
-	this->show_all();
-}
-
-E5FieldAnalyzer::E5FieldAnalyzer(const E5Config* cfg):
+E5SpecialAnalyzer::E5SpecialAnalyzer(const E5Config* cfg):
+		EXChartAnalyzer(cfg),
 		field_chart(std::vector<std::string>({"$field.x*$field.x + $field.y*$field.y"}), "field.z"),
-		center_chart(std::vector<std::string>({"A"}), "phi")
+		out_chart_xy(std::vector<std::string>({"right_A"}), "right_phi"),
+		out_chart_a(std::vector<std::string>({"right_A"}), "")
 {
-	center_chart.setPolar(true);
+	Gtk::Widget *label = Gtk::manage( new Gtk::Label(getDisplayName()) );
+	vbox.pack_start(*label);
 
-	states_count = 0;
-	this->config = NULL;
 	loadConfig(cfg);
+
+	out_chart_xy.setPolar(true);
+	out_chart_xy.setStyle(Gnuplot::STYLE_LINES);
+
 	field_chart.setStyle(Gnuplot::STYLE_LINES);
 
-	Gtk::VBox* vbox = new Gtk::VBox();
-	this->add(*vbox);
-	vbox->add(field_chart);
-	vbox->add(center_chart);
-	//btn_save.signal_clicked().connect(sigc::mem_fun(*this, &E5FieldAnalyzer::on_save_cb));
+	addChart(&field_chart);
+	addChart(&out_chart_xy);
+	addChart(&out_chart_a);
 }
 
-E5FieldAnalyzer::~E5FieldAnalyzer(){
-	delete this->config;
-}
-
-void E5FieldAnalyzer::loadConfig(const OdeConfig* cfg){
+void E5SpecialAnalyzer::loadConfig(const OdeConfig* cfg){
+	// TODO Move this into EXChartAnalyzer?!
 	delete this->config;
 	this->config = NULL;
-	this->profile_message.Clear();
-	this->center_message.Clear();
+	this->message.Clear();
 	if(!cfg)
 		return;
 	const E5Config *ecfg = dynamic_cast<const E5Config*>(cfg);
 	assert(ecfg);
 	this->config = new E5Config(*dynamic_cast<const E5Config*>(cfg));
 	for(int i=0; i<ecfg->n()+20; i++){
-		this->profile_message.add_field();
+		this->message.add_field();
 	}// for
 }
 
-void E5FieldAnalyzer::reset(){
-	states_count = 0;
-	field_chart.reset();
-	center_chart.reset();
-}
-
-void E5FieldAnalyzer::processState(const OdeState* state, const OdeState*, double time){
+void E5SpecialAnalyzer::processState(const OdeState* state, const OdeState*, double time){
 	const E5State* estate = dynamic_cast<const E5State*>(state);
 
 	// fill with fields and z from particles
 	for(int i=0; i<estate->fields_size(); i++){
 		E5State::Fields f = estate->fields(i);
 		E5State::Particles p = estate->particles(i);
-		pb::E5FieldProfile::Field* pf = profile_message.mutable_field(i+10);
+		pb::E5Special::Field* pf = message.mutable_field(i+10);
 
 		pf->set_z(p.z());
 		pf->set_x(f.x());
@@ -214,7 +184,7 @@ void E5FieldAnalyzer::processState(const OdeState* state, const OdeState*, doubl
 	// add 10 points to the left
 	E5State::Fields left = estate->fields(0);
 	for(int i=0; i<10; i++){
-		pb::E5FieldProfile::Field* pf = profile_message.mutable_field(i);
+		pb::E5Special::Field* pf = message.mutable_field(i);
 
 		double x = left.x();
 		double y = left.y();
@@ -228,10 +198,10 @@ void E5FieldAnalyzer::processState(const OdeState* state, const OdeState*, doubl
 	}
 
 	// add 10 points to the right
-	int N = profile_message.field_size();
+	int N = message.field_size();
 	E5State::Fields right = estate->fields( estate->fields_size()-1 );
 	for(int i=0; i<10; i++){
-		pb::E5FieldProfile::Field* pf = profile_message.mutable_field(N-10+i);
+		pb::E5Special::Field* pf = message.mutable_field(N-10+i);
 
 		double x = right.x();
 		double y = right.y();
@@ -246,13 +216,145 @@ void E5FieldAnalyzer::processState(const OdeState* state, const OdeState*, doubl
 
 	/////////// 2 /////////
 	N=estate->fields_size();
-	E5State::Fields mid = estate->fields(N-1);
-	double A = mod(mid.x(), mid.y());
-	double phi = arg(mid.x(), mid.y());
-	center_message.set_a(A);
-	center_message.set_phi(phi);
+	E5State::Fields r = estate->fields(N-1);
+	//E5State::Fields l = estate->fields(0);
+	E5State::Fields sum = r;
+	//sum.set_x(l.x()+r.x());
+	//sum.set_y(l.y()+r.y());
+	double A = mod(sum.x(), sum.y());
+	double phi = arg(sum.x(), sum.y());
+	message.set_right_a(A);
+	message.set_right_phi(phi);
+
+	///////// int 1////////
+	double sum_a_2 = 0;
+
+	for(int i=0; i<estate->particles_size(); i++){
+		E5State::Particles p = estate->particles(i);
+		E5State::Fields f = estate->fields(i);
+
+		sum_a_2 += mod2(p.x(), p.y());
+	}
+	message.set_sum_a2(sum_a_2/estate->particles_size());
 
 	// process!
-	field_chart.processMessage(&this->profile_message, NULL, time);
-	center_chart.processMessage(&this->center_message, NULL, time);
+	EXChartAnalyzer::processState(&this->message, NULL, time);
 }
+
+//E5FieldAnalyzer::E5FieldAnalyzer(const E5Config* cfg):
+//		field_chart(std::vector<std::string>({"$field.x*$field.x + $field.y*$field.y"}), "field.z"),
+//		out_chart_xy(std::vector<std::string>({"A"}), "phi"),
+//		out_chart_a(std::vector<std::string>({"A"}), "")
+//{
+//	out_chart_xy.setPolar(true);
+//	out_chart_xy.setStyle(Gnuplot::STYLE_LINES);
+//
+//	states_count = 0;
+//	this->config = NULL;
+//	loadConfig(cfg);
+//	field_chart.setStyle(Gnuplot::STYLE_LINES);
+//
+//	Gtk::VBox* vbox = new Gtk::VBox();
+//	this->add(*vbox);
+//	vbox->add(field_chart);
+//	vbox->add(out_chart_xy);
+//	vbox->add(out_chart_a);
+//	//btn_save.signal_clicked().connect(sigc::mem_fun(*this, &E5FieldAnalyzer::on_save_cb));
+//}
+//
+//E5FieldAnalyzer::~E5FieldAnalyzer(){
+//	delete this->config;
+//}
+//
+//void E5FieldAnalyzer::loadConfig(const OdeConfig* cfg){
+//	delete this->config;
+//	this->config = NULL;
+//	this->profile_message.Clear();
+//	this->center_message.Clear();
+//	if(!cfg)
+//		return;
+//	const E5Config *ecfg = dynamic_cast<const E5Config*>(cfg);
+//	assert(ecfg);
+//	this->config = new E5Config(*dynamic_cast<const E5Config*>(cfg));
+//	for(int i=0; i<ecfg->n()+20; i++){
+//		this->profile_message.add_field();
+//	}// for
+//}
+//
+//void E5FieldAnalyzer::reset(){
+//	states_count = 0;
+//	field_chart.reset();
+//	out_chart_xy.reset();
+//	out_chart_a.reset();
+//}
+//
+//void E5FieldAnalyzer::processState(const OdeState* state, const OdeState*, double time){
+//	const E5State* estate = dynamic_cast<const E5State*>(state);
+//
+//	// fill with fields and z from particles
+//	for(int i=0; i<estate->fields_size(); i++){
+//		E5State::Fields f = estate->fields(i);
+//		E5State::Particles p = estate->particles(i);
+//		pb::E5FieldProfile::Field* pf = profile_message.mutable_field(i+10);
+//
+//		pf->set_z(p.z());
+//		pf->set_x(f.x());
+//		pf->set_y(f.y());
+//		pf->set_e(mod(pf->x(), pf->y()));
+//	}
+//
+//	double min = estate->particles(0).z();
+//	double max = estate->particles(estate->particles_size()-1).z();
+//	// 3 left and 3 right extra space -> 10+10 particles
+//	double h = 3.0/10;
+//
+//	// add 10 points to the left
+//	E5State::Fields left = estate->fields(0);
+//	for(int i=0; i<10; i++){
+//		pb::E5FieldProfile::Field* pf = profile_message.mutable_field(i);
+//
+//		double x = left.x();
+//		double y = left.y();
+//		double z = min-3.0+i*h;
+//		rotate(x, y, min-z);
+//
+//		pf->set_z(z);
+//		pf->set_x(x);
+//		pf->set_y(y);
+//		pf->set_e(mod(pf->x(), pf->y()));
+//	}
+//
+//	// add 10 points to the right
+//	int N = profile_message.field_size();
+//	E5State::Fields right = estate->fields( estate->fields_size()-1 );
+//	for(int i=0; i<10; i++){
+//		pb::E5FieldProfile::Field* pf = profile_message.mutable_field(N-10+i);
+//
+//		double x = right.x();
+//		double y = right.y();
+//		double z = max+i*h;
+//		rotate(x, y, z-max);
+//
+//		pf->set_z(z);
+//		pf->set_x(x);
+//		pf->set_y(y);
+//		pf->set_e(mod(pf->x(), pf->y()));
+//	}
+//
+//	/////////// 2 /////////
+//	N=estate->fields_size();
+//	E5State::Fields r = estate->fields(N-1);
+//	//E5State::Fields l = estate->fields(0);
+//	E5State::Fields sum = r;
+//	//sum.set_x(l.x()+r.x());
+//	//sum.set_y(l.y()+r.y());
+//	double A = mod(sum.x(), sum.y());
+//	double phi = arg(sum.x(), sum.y());
+//	center_message.set_a(A);
+//	center_message.set_phi(phi);
+//
+//	// process!
+//	field_chart.processMessage(&this->profile_message, NULL, time);
+//	out_chart_xy.processMessage(&this->center_message, NULL, time);
+//	out_chart_a.processMessage(&this->center_message, NULL, time);
+//}

@@ -79,7 +79,7 @@ HelloWorld::HelloWorld()
   this->add(vbox);
 
   // analyzers //
-  Gtk::VBox *vb = Gtk::manage(new Gtk::VBox());
+  Gtk::VBox *vb = Gtk::manage(new Gtk::VBox(false, 10));
   win_analyzers.add(*vb);
   win_analyzers.set_title(prob_widget_fact->getDisplayName() + " analyzers");
 

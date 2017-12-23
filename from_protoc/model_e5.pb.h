@@ -41,9 +41,8 @@ class E5State_Fields;
 class E5StateGeneratorConfig;
 class E5Model;
 class E5Solution;
-class E5FieldProfile;
-class E5FieldProfile_Field;
-class E5CenterField;
+class E5Special;
+class E5Special_Field;
 
 // ===================================================================
 
@@ -739,14 +738,14 @@ class E5Solution : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class E5FieldProfile_Field : public ::google::protobuf::Message {
+class E5Special_Field : public ::google::protobuf::Message {
  public:
-  E5FieldProfile_Field();
-  virtual ~E5FieldProfile_Field();
+  E5Special_Field();
+  virtual ~E5Special_Field();
 
-  E5FieldProfile_Field(const E5FieldProfile_Field& from);
+  E5Special_Field(const E5Special_Field& from);
 
-  inline E5FieldProfile_Field& operator=(const E5FieldProfile_Field& from) {
+  inline E5Special_Field& operator=(const E5Special_Field& from) {
     CopyFrom(from);
     return *this;
   }
@@ -760,17 +759,17 @@ class E5FieldProfile_Field : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const E5FieldProfile_Field& default_instance();
+  static const E5Special_Field& default_instance();
 
-  void Swap(E5FieldProfile_Field* other);
+  void Swap(E5Special_Field* other);
 
   // implements Message ----------------------------------------------
 
-  E5FieldProfile_Field* New() const;
+  E5Special_Field* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const E5FieldProfile_Field& from);
-  void MergeFrom(const E5FieldProfile_Field& from);
+  void CopyFrom(const E5Special_Field& from);
+  void MergeFrom(const E5Special_Field& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -820,7 +819,7 @@ class E5FieldProfile_Field : public ::google::protobuf::Message {
   inline double e() const;
   inline void set_e(double value);
 
-  // @@protoc_insertion_point(class_scope:pb.E5FieldProfile.Field)
+  // @@protoc_insertion_point(class_scope:pb.E5Special.Field)
  private:
   inline void set_has_x();
   inline void clear_has_x();
@@ -844,18 +843,18 @@ class E5FieldProfile_Field : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_model_5fe5_2eproto();
 
   void InitAsDefaultInstance();
-  static E5FieldProfile_Field* default_instance_;
+  static E5Special_Field* default_instance_;
 };
 // -------------------------------------------------------------------
 
-class E5FieldProfile : public ::google::protobuf::Message {
+class E5Special : public ::google::protobuf::Message {
  public:
-  E5FieldProfile();
-  virtual ~E5FieldProfile();
+  E5Special();
+  virtual ~E5Special();
 
-  E5FieldProfile(const E5FieldProfile& from);
+  E5Special(const E5Special& from);
 
-  inline E5FieldProfile& operator=(const E5FieldProfile& from) {
+  inline E5Special& operator=(const E5Special& from) {
     CopyFrom(from);
     return *this;
   }
@@ -869,17 +868,17 @@ class E5FieldProfile : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const E5FieldProfile& default_instance();
+  static const E5Special& default_instance();
 
-  void Swap(E5FieldProfile* other);
+  void Swap(E5Special* other);
 
   // implements Message ----------------------------------------------
 
-  E5FieldProfile* New() const;
+  E5Special* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const E5FieldProfile& from);
-  void MergeFrom(const E5FieldProfile& from);
+  void CopyFrom(const E5Special& from);
+  void MergeFrom(const E5Special& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -899,7 +898,7 @@ class E5FieldProfile : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
-  typedef E5FieldProfile_Field Field;
+  typedef E5Special_Field Field;
 
   // accessors -------------------------------------------------------
 
@@ -907,117 +906,88 @@ class E5FieldProfile : public ::google::protobuf::Message {
   inline int field_size() const;
   inline void clear_field();
   static const int kFieldFieldNumber = 1;
-  inline const ::pb::E5FieldProfile_Field& field(int index) const;
-  inline ::pb::E5FieldProfile_Field* mutable_field(int index);
-  inline ::pb::E5FieldProfile_Field* add_field();
-  inline const ::google::protobuf::RepeatedPtrField< ::pb::E5FieldProfile_Field >&
+  inline const ::pb::E5Special_Field& field(int index) const;
+  inline ::pb::E5Special_Field* mutable_field(int index);
+  inline ::pb::E5Special_Field* add_field();
+  inline const ::google::protobuf::RepeatedPtrField< ::pb::E5Special_Field >&
       field() const;
-  inline ::google::protobuf::RepeatedPtrField< ::pb::E5FieldProfile_Field >*
+  inline ::google::protobuf::RepeatedPtrField< ::pb::E5Special_Field >*
       mutable_field();
 
-  // @@protoc_insertion_point(class_scope:pb.E5FieldProfile)
+  // required double right_A = 6;
+  inline bool has_right_a() const;
+  inline void clear_right_a();
+  static const int kRightAFieldNumber = 6;
+  inline double right_a() const;
+  inline void set_right_a(double value);
+
+  // required double right_phi = 7;
+  inline bool has_right_phi() const;
+  inline void clear_right_phi();
+  static const int kRightPhiFieldNumber = 7;
+  inline double right_phi() const;
+  inline void set_right_phi(double value);
+
+  // required double left_A = 8;
+  inline bool has_left_a() const;
+  inline void clear_left_a();
+  static const int kLeftAFieldNumber = 8;
+  inline double left_a() const;
+  inline void set_left_a(double value);
+
+  // required double left_phi = 9;
+  inline bool has_left_phi() const;
+  inline void clear_left_phi();
+  static const int kLeftPhiFieldNumber = 9;
+  inline double left_phi() const;
+  inline void set_left_phi(double value);
+
+  // optional double max_A = 10;
+  inline bool has_max_a() const;
+  inline void clear_max_a();
+  static const int kMaxAFieldNumber = 10;
+  inline double max_a() const;
+  inline void set_max_a(double value);
+
+  // optional double sum_a2 = 11;
+  inline bool has_sum_a2() const;
+  inline void clear_sum_a2();
+  static const int kSumA2FieldNumber = 11;
+  inline double sum_a2() const;
+  inline void set_sum_a2(double value);
+
+  // @@protoc_insertion_point(class_scope:pb.E5Special)
  private:
+  inline void set_has_right_a();
+  inline void clear_has_right_a();
+  inline void set_has_right_phi();
+  inline void clear_has_right_phi();
+  inline void set_has_left_a();
+  inline void clear_has_left_a();
+  inline void set_has_left_phi();
+  inline void clear_has_left_phi();
+  inline void set_has_max_a();
+  inline void clear_has_max_a();
+  inline void set_has_sum_a2();
+  inline void clear_has_sum_a2();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
-  ::google::protobuf::RepeatedPtrField< ::pb::E5FieldProfile_Field > field_;
+  ::google::protobuf::RepeatedPtrField< ::pb::E5Special_Field > field_;
+  double right_a_;
+  double right_phi_;
+  double left_a_;
+  double left_phi_;
+  double max_a_;
+  double sum_a2_;
   friend void  protobuf_AddDesc_model_5fe5_2eproto();
   friend void protobuf_AssignDesc_model_5fe5_2eproto();
   friend void protobuf_ShutdownFile_model_5fe5_2eproto();
 
   void InitAsDefaultInstance();
-  static E5FieldProfile* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class E5CenterField : public ::google::protobuf::Message {
- public:
-  E5CenterField();
-  virtual ~E5CenterField();
-
-  E5CenterField(const E5CenterField& from);
-
-  inline E5CenterField& operator=(const E5CenterField& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const E5CenterField& default_instance();
-
-  void Swap(E5CenterField* other);
-
-  // implements Message ----------------------------------------------
-
-  E5CenterField* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const E5CenterField& from);
-  void MergeFrom(const E5CenterField& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required double A = 1;
-  inline bool has_a() const;
-  inline void clear_a();
-  static const int kAFieldNumber = 1;
-  inline double a() const;
-  inline void set_a(double value);
-
-  // required double phi = 2;
-  inline bool has_phi() const;
-  inline void clear_phi();
-  static const int kPhiFieldNumber = 2;
-  inline double phi() const;
-  inline void set_phi(double value);
-
-  // @@protoc_insertion_point(class_scope:pb.E5CenterField)
- private:
-  inline void set_has_a();
-  inline void clear_has_a();
-  inline void set_has_phi();
-  inline void clear_has_phi();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 _has_bits_[1];
-  mutable int _cached_size_;
-  double a_;
-  double phi_;
-  friend void  protobuf_AddDesc_model_5fe5_2eproto();
-  friend void protobuf_AssignDesc_model_5fe5_2eproto();
-  friend void protobuf_ShutdownFile_model_5fe5_2eproto();
-
-  void InitAsDefaultInstance();
-  static E5CenterField* default_instance_;
+  static E5Special* default_instance_;
 };
 // ===================================================================
 
@@ -1605,188 +1575,280 @@ inline void E5Solution::set_allocated_d_state(::pb::E5State* d_state) {
 
 // -------------------------------------------------------------------
 
-// E5FieldProfile_Field
+// E5Special_Field
 
 // required double x = 2;
-inline bool E5FieldProfile_Field::has_x() const {
+inline bool E5Special_Field::has_x() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void E5FieldProfile_Field::set_has_x() {
+inline void E5Special_Field::set_has_x() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void E5FieldProfile_Field::clear_has_x() {
+inline void E5Special_Field::clear_has_x() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void E5FieldProfile_Field::clear_x() {
+inline void E5Special_Field::clear_x() {
   x_ = 0;
   clear_has_x();
 }
-inline double E5FieldProfile_Field::x() const {
-  // @@protoc_insertion_point(field_get:pb.E5FieldProfile.Field.x)
+inline double E5Special_Field::x() const {
+  // @@protoc_insertion_point(field_get:pb.E5Special.Field.x)
   return x_;
 }
-inline void E5FieldProfile_Field::set_x(double value) {
+inline void E5Special_Field::set_x(double value) {
   set_has_x();
   x_ = value;
-  // @@protoc_insertion_point(field_set:pb.E5FieldProfile.Field.x)
+  // @@protoc_insertion_point(field_set:pb.E5Special.Field.x)
 }
 
 // required double y = 3;
-inline bool E5FieldProfile_Field::has_y() const {
+inline bool E5Special_Field::has_y() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void E5FieldProfile_Field::set_has_y() {
+inline void E5Special_Field::set_has_y() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void E5FieldProfile_Field::clear_has_y() {
+inline void E5Special_Field::clear_has_y() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void E5FieldProfile_Field::clear_y() {
+inline void E5Special_Field::clear_y() {
   y_ = 0;
   clear_has_y();
 }
-inline double E5FieldProfile_Field::y() const {
-  // @@protoc_insertion_point(field_get:pb.E5FieldProfile.Field.y)
+inline double E5Special_Field::y() const {
+  // @@protoc_insertion_point(field_get:pb.E5Special.Field.y)
   return y_;
 }
-inline void E5FieldProfile_Field::set_y(double value) {
+inline void E5Special_Field::set_y(double value) {
   set_has_y();
   y_ = value;
-  // @@protoc_insertion_point(field_set:pb.E5FieldProfile.Field.y)
+  // @@protoc_insertion_point(field_set:pb.E5Special.Field.y)
 }
 
 // required double z = 4;
-inline bool E5FieldProfile_Field::has_z() const {
+inline bool E5Special_Field::has_z() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void E5FieldProfile_Field::set_has_z() {
+inline void E5Special_Field::set_has_z() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void E5FieldProfile_Field::clear_has_z() {
+inline void E5Special_Field::clear_has_z() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void E5FieldProfile_Field::clear_z() {
+inline void E5Special_Field::clear_z() {
   z_ = 0;
   clear_has_z();
 }
-inline double E5FieldProfile_Field::z() const {
-  // @@protoc_insertion_point(field_get:pb.E5FieldProfile.Field.z)
+inline double E5Special_Field::z() const {
+  // @@protoc_insertion_point(field_get:pb.E5Special.Field.z)
   return z_;
 }
-inline void E5FieldProfile_Field::set_z(double value) {
+inline void E5Special_Field::set_z(double value) {
   set_has_z();
   z_ = value;
-  // @@protoc_insertion_point(field_set:pb.E5FieldProfile.Field.z)
+  // @@protoc_insertion_point(field_set:pb.E5Special.Field.z)
 }
 
 // optional double E = 5;
-inline bool E5FieldProfile_Field::has_e() const {
+inline bool E5Special_Field::has_e() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void E5FieldProfile_Field::set_has_e() {
+inline void E5Special_Field::set_has_e() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void E5FieldProfile_Field::clear_has_e() {
+inline void E5Special_Field::clear_has_e() {
   _has_bits_[0] &= ~0x00000008u;
 }
-inline void E5FieldProfile_Field::clear_e() {
+inline void E5Special_Field::clear_e() {
   e_ = 0;
   clear_has_e();
 }
-inline double E5FieldProfile_Field::e() const {
-  // @@protoc_insertion_point(field_get:pb.E5FieldProfile.Field.E)
+inline double E5Special_Field::e() const {
+  // @@protoc_insertion_point(field_get:pb.E5Special.Field.E)
   return e_;
 }
-inline void E5FieldProfile_Field::set_e(double value) {
+inline void E5Special_Field::set_e(double value) {
   set_has_e();
   e_ = value;
-  // @@protoc_insertion_point(field_set:pb.E5FieldProfile.Field.E)
+  // @@protoc_insertion_point(field_set:pb.E5Special.Field.E)
 }
 
 // -------------------------------------------------------------------
 
-// E5FieldProfile
+// E5Special
 
 // repeated group Field = 1 {
-inline int E5FieldProfile::field_size() const {
+inline int E5Special::field_size() const {
   return field_.size();
 }
-inline void E5FieldProfile::clear_field() {
+inline void E5Special::clear_field() {
   field_.Clear();
 }
-inline const ::pb::E5FieldProfile_Field& E5FieldProfile::field(int index) const {
-  // @@protoc_insertion_point(field_get:pb.E5FieldProfile.field)
+inline const ::pb::E5Special_Field& E5Special::field(int index) const {
+  // @@protoc_insertion_point(field_get:pb.E5Special.field)
   return field_.Get(index);
 }
-inline ::pb::E5FieldProfile_Field* E5FieldProfile::mutable_field(int index) {
-  // @@protoc_insertion_point(field_mutable:pb.E5FieldProfile.field)
+inline ::pb::E5Special_Field* E5Special::mutable_field(int index) {
+  // @@protoc_insertion_point(field_mutable:pb.E5Special.field)
   return field_.Mutable(index);
 }
-inline ::pb::E5FieldProfile_Field* E5FieldProfile::add_field() {
-  // @@protoc_insertion_point(field_add:pb.E5FieldProfile.field)
+inline ::pb::E5Special_Field* E5Special::add_field() {
+  // @@protoc_insertion_point(field_add:pb.E5Special.field)
   return field_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::pb::E5FieldProfile_Field >&
-E5FieldProfile::field() const {
-  // @@protoc_insertion_point(field_list:pb.E5FieldProfile.field)
+inline const ::google::protobuf::RepeatedPtrField< ::pb::E5Special_Field >&
+E5Special::field() const {
+  // @@protoc_insertion_point(field_list:pb.E5Special.field)
   return field_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::pb::E5FieldProfile_Field >*
-E5FieldProfile::mutable_field() {
-  // @@protoc_insertion_point(field_mutable_list:pb.E5FieldProfile.field)
+inline ::google::protobuf::RepeatedPtrField< ::pb::E5Special_Field >*
+E5Special::mutable_field() {
+  // @@protoc_insertion_point(field_mutable_list:pb.E5Special.field)
   return &field_;
 }
 
-// -------------------------------------------------------------------
-
-// E5CenterField
-
-// required double A = 1;
-inline bool E5CenterField::has_a() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void E5CenterField::set_has_a() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void E5CenterField::clear_has_a() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void E5CenterField::clear_a() {
-  a_ = 0;
-  clear_has_a();
-}
-inline double E5CenterField::a() const {
-  // @@protoc_insertion_point(field_get:pb.E5CenterField.A)
-  return a_;
-}
-inline void E5CenterField::set_a(double value) {
-  set_has_a();
-  a_ = value;
-  // @@protoc_insertion_point(field_set:pb.E5CenterField.A)
-}
-
-// required double phi = 2;
-inline bool E5CenterField::has_phi() const {
+// required double right_A = 6;
+inline bool E5Special::has_right_a() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void E5CenterField::set_has_phi() {
+inline void E5Special::set_has_right_a() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void E5CenterField::clear_has_phi() {
+inline void E5Special::clear_has_right_a() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void E5CenterField::clear_phi() {
-  phi_ = 0;
-  clear_has_phi();
+inline void E5Special::clear_right_a() {
+  right_a_ = 0;
+  clear_has_right_a();
 }
-inline double E5CenterField::phi() const {
-  // @@protoc_insertion_point(field_get:pb.E5CenterField.phi)
-  return phi_;
+inline double E5Special::right_a() const {
+  // @@protoc_insertion_point(field_get:pb.E5Special.right_A)
+  return right_a_;
 }
-inline void E5CenterField::set_phi(double value) {
-  set_has_phi();
-  phi_ = value;
-  // @@protoc_insertion_point(field_set:pb.E5CenterField.phi)
+inline void E5Special::set_right_a(double value) {
+  set_has_right_a();
+  right_a_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5Special.right_A)
+}
+
+// required double right_phi = 7;
+inline bool E5Special::has_right_phi() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void E5Special::set_has_right_phi() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void E5Special::clear_has_right_phi() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void E5Special::clear_right_phi() {
+  right_phi_ = 0;
+  clear_has_right_phi();
+}
+inline double E5Special::right_phi() const {
+  // @@protoc_insertion_point(field_get:pb.E5Special.right_phi)
+  return right_phi_;
+}
+inline void E5Special::set_right_phi(double value) {
+  set_has_right_phi();
+  right_phi_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5Special.right_phi)
+}
+
+// required double left_A = 8;
+inline bool E5Special::has_left_a() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void E5Special::set_has_left_a() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void E5Special::clear_has_left_a() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void E5Special::clear_left_a() {
+  left_a_ = 0;
+  clear_has_left_a();
+}
+inline double E5Special::left_a() const {
+  // @@protoc_insertion_point(field_get:pb.E5Special.left_A)
+  return left_a_;
+}
+inline void E5Special::set_left_a(double value) {
+  set_has_left_a();
+  left_a_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5Special.left_A)
+}
+
+// required double left_phi = 9;
+inline bool E5Special::has_left_phi() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void E5Special::set_has_left_phi() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void E5Special::clear_has_left_phi() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void E5Special::clear_left_phi() {
+  left_phi_ = 0;
+  clear_has_left_phi();
+}
+inline double E5Special::left_phi() const {
+  // @@protoc_insertion_point(field_get:pb.E5Special.left_phi)
+  return left_phi_;
+}
+inline void E5Special::set_left_phi(double value) {
+  set_has_left_phi();
+  left_phi_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5Special.left_phi)
+}
+
+// optional double max_A = 10;
+inline bool E5Special::has_max_a() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void E5Special::set_has_max_a() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void E5Special::clear_has_max_a() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void E5Special::clear_max_a() {
+  max_a_ = 0;
+  clear_has_max_a();
+}
+inline double E5Special::max_a() const {
+  // @@protoc_insertion_point(field_get:pb.E5Special.max_A)
+  return max_a_;
+}
+inline void E5Special::set_max_a(double value) {
+  set_has_max_a();
+  max_a_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5Special.max_A)
+}
+
+// optional double sum_a2 = 11;
+inline bool E5Special::has_sum_a2() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void E5Special::set_has_sum_a2() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void E5Special::clear_has_sum_a2() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void E5Special::clear_sum_a2() {
+  sum_a2_ = 0;
+  clear_has_sum_a2();
+}
+inline double E5Special::sum_a2() const {
+  // @@protoc_insertion_point(field_get:pb.E5Special.sum_a2)
+  return sum_a2_;
+}
+inline void E5Special::set_sum_a2(double value) {
+  set_has_sum_a2();
+  sum_a2_ = value;
+  // @@protoc_insertion_point(field_set:pb.E5Special.sum_a2)
 }
 
 

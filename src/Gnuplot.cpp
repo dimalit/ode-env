@@ -168,11 +168,11 @@ void Gnuplot::print_numbers(const google::protobuf::Message* msg, const google::
 	// simple field
 	if(s.var_name.find('.') == std::string::npos){
 		// if need time
-		if(getXAxisTime() || getParametric()){
+		if(getXAxisTime() || getParametric() || getPolar()){
 			ostringstream stime; stime << time;
 			if(add_to_cache){
 				std::string yval = s.is_expression ? get_vals(msg, d_msg, s.columns) : get_val(msg, d_msg, s.var_name);
-				std::string xval = getParametric() ? get_val(msg, d_msg, this->x_axis) : stime.str();
+				std::string xval = getXAxisTime() ? stime.str() : get_val(msg, d_msg, this->x_axis);
 				s.data_cache.push_back(make_pair(xval, yval));
 			}
 

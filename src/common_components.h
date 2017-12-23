@@ -297,11 +297,12 @@ public:
 	virtual void loadConfig(const OdeConfig* config){}
 	virtual void reset();
 	virtual void processState(const OdeState* state, const OdeState* d_state, double time);
+	virtual void processState(const google::protobuf::Message* state, const google::protobuf::Message* d_state, double time);
 	virtual int getStatesCount();
 	virtual ~EXChartAnalyzer();
 
 	static std::string getDisplayName(){
-		return "customizable chart for E4";
+		return "customizable chart for EX";
 	}
 
 	virtual void addChart(MessageChart* chart);

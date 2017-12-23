@@ -696,10 +696,13 @@ void EXChartAnalyzer::processState(const OdeState* state, const OdeState* d_stat
 	const google::protobuf::Message* msg = dynamic_cast<const google::protobuf::Message*>(state);
 		assert(msg);
 	const google::protobuf::Message* d_msg = dynamic_cast<const google::protobuf::Message*>(d_state);
-		assert(d_msg);
 
+	processState(msg, d_msg, time);
+}
+
+void EXChartAnalyzer::processState(const google::protobuf::Message* state, const google::protobuf::Message* d_state, double time){
 	for(int i=0; i<charts.size(); i++)
-		charts[i]->processMessage(msg, d_msg, time);
+		charts[i]->processMessage(state, d_state, time);
 }
 
 void EXChartAnalyzer::addChart(MessageChart* chart){

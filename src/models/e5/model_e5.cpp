@@ -1,7 +1,7 @@
 #include <models/e5/model_e5.h>
 
 E5Config::E5Config(){
-	set_n(900);
+	set_n(100);
 	set_e0(0);
 }
 
