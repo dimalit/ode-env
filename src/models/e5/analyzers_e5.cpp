@@ -125,6 +125,10 @@ void E5ConservationAnalyzer::on_update_toggled(){
 	this->auto_update = this->button_update->get_active();
 }
 
+void E5ChartAnalyzer::addChart(MessageChart* chart){
+	EXChartAnalyzer::addChart(chart);
+}
+
 E5SpecialAnalyzer::E5SpecialAnalyzer(const E5Config* cfg):
 		EXChartAnalyzer(cfg),
 		field_chart(std::vector<std::string>({"$field.x*$field.x + $field.y*$field.y"}), "field.z"),

@@ -51,6 +51,7 @@ public:
 		vbox.pack_start(*label);
 	}
 	virtual ~E5ChartAnalyzer(){}
+	virtual void addChart(MessageChart* chart);
 
 	static std::string getDisplayName(){
 		return "customized for E5 EXChartAnalyzer";

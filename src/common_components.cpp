@@ -7,6 +7,8 @@
 
 #include "common_components.h"
 
+#include <gtkmm/scrolledwindow.h>
+
 #include <sstream>
 #include <iostream>
 
@@ -570,6 +572,7 @@ MessageChart::MessageChart(const std::vector<std::string>& vars, const std::stri
 	int socket_id = 0;
 	if(parent){
 		Gtk::Socket* socket = Gtk::manage(new Gtk::Socket());
+		socket->set_size_request(400, 400);
 		parent->add(*socket);
 		parent->show_all();
 		socket_id = socket->get_id();
@@ -673,7 +676,14 @@ EXChartAnalyzer::EXChartAnalyzer(const OdeConfig* config) {
 
 	this->add(vbox);
 
+	flow.set_orientation(Gtk::ORIENTATION_HORIZONTAL);
+	flow.set_valign(Gtk::ALIGN_START);
+	main_scroll.add(flow);
+	charts_frame.add(main_scroll);
+	charts_frame.set_size_request(400, 400);
+
 	this->show_all();
+	charts_frame.show_all();
 }
 
 EXChartAnalyzer::~EXChartAnalyzer() {
@@ -737,11 +747,22 @@ void EXChartAnalyzer::on_add_clicked(){
 }
 
 void EXChartAnalyzer::on_dialog_add_ok(ChartAddDialog* dialog){
-	MessageChart* chart = new MessageChart(dialog->vars, dialog->x_axis_var, NULL);
+	//Gtk::Container* socket = Gtk::manage(new Gtk::Adjustment());
+	//flow.attach(*socket, 0, 0, 1, 1);
+	//socket->set_size_request(400, 400);
+	//flow.add(*socket);
+
+//	Gtk::Widget* label = Gtk::manage(new Gtk::Label("test2"));
+//	flow.attach(*label, 1, 0, 1, 1);
+//	charts_frame.show_all();
+
+	MessageChart* chart = new MessageChart(dialog->vars, dialog->x_axis_var, &flow);
+	charts_frame.show_all();
 	chart->setPolar(dialog->polar);
 	chart->setParametric(dialog->parametric);
 	addChart(chart);
 	delete dialog;
+
 }
 
 void EXChartAnalyzer::on_dialog_cancel(ChartAddDialog* dialog){

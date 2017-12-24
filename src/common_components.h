@@ -17,6 +17,8 @@
 #include <google/protobuf/message.h>
 
 #include <gtkmm/builder.h>
+#include <gtkmm/flowbox.h>
+#include <gtkmm/scrolledwindow.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/comboboxtext.h>
@@ -290,6 +292,10 @@ protected:
 	Gtk::VBox vbox;
 	Gtk::Button btn_add;
 	Gtk::Button btn_reset;
+
+	Gtk::Window charts_frame;
+	Gtk::FlowBox flow;
+	Gtk::ScrolledWindow main_scroll;
 
 	const OdeConfig* config;
 public:
